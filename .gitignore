@@ -1,0 +1,8 @@
+*.bak
+*.temp
+
+# Office »º´æÎÄ¼þ
+~'$'*.docx
+~'$'*.ppt
+~'$'*.pptx 
+~'$'*.xls
