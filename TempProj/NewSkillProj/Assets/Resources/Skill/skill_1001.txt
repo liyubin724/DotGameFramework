@@ -1,0 +1,118 @@
+{
+    "groups": [{
+            "Name": "Time Line Group 0",
+            "TotalTime": 15.0,
+            "IsEnd": false,
+            "condition_compose": [{
+                "Name": "Game.TimeLine.WaitingTimeCondition",
+                "Time": 2.0
+            }],
+            "tracks": [{
+                "Name": "Track 1",
+                "items": [{
+                    "Name": "Game.TimeLine.CreateEmitEvent",
+                    "NodeType": 0,
+                    "NodeIndex": 0,
+                    "Index": 1,
+                    "FireTime": 0.100000001490116
+                }, {
+                    "Name": "Game.TimeLine.CreateEmitEvent",
+                    "NodeType": 0,
+                    "NodeIndex": 1,
+                    "Index": 2,
+                    "FireTime": 0.100000001490116
+                }, {
+                    "Name": "Game.TimeLine.CreateEmitEvent",
+                    "NodeType": 0,
+                    "NodeIndex": 2,
+                    "Index": 3,
+                    "FireTime": 0.100000001490116
+                }, {
+                    "Name": "Game.TimeLine.AddEffectEvent",
+                    "EffectConfigID": 1,
+                    "EmitIndex": 1,
+                    "Index": 4,
+                    "FireTime": 2.0
+                }, {
+                    "Name": "Game.TimeLine.AddEffectEvent",
+                    "EffectConfigID": 1,
+                    "EmitIndex": 2,
+                    "Index": 5,
+                    "FireTime": 2.0
+                }, {
+                    "Name": "Game.TimeLine.AddEffectEvent",
+                    "EffectConfigID": 1,
+                    "EmitIndex": 3,
+                    "Index": 6,
+                    "FireTime": 2.0
+                }]
+            }, {
+                "Name": "Track 2",
+
+                "items": [{
+                    "Name": "Game.TimeLine.RemoveEffectEvent",
+                    "EffectIndex": 4,
+                    "Index": 10,
+                    "FireTime": 5.0
+                }, {
+                    "Name": "Game.TimeLine.RemoveEffectEvent",
+                    "EffectIndex": 5,
+                    "Index": 11,
+                    "FireTime": 5.0
+                }, {
+                    "Name": "Game.TimeLine.RemoveEffectEvent",
+                    "EffectIndex": 6,
+                    "Index": 12,
+                    "FireTime": 5.0
+                }, {
+                    "Name": "Game.TimeLine.CreateBulletEvent",
+                    "BulletConfigID": 1,
+                    "EmitIndex": 1,
+                    "Index": 13,
+                    "FireTime": 5.0
+                }, {
+                    "Name": "Game.TimeLine.CreateBulletEvent",
+                    "BulletConfigID": 1,
+                    "EmitIndex": 2,
+                    "Index": 14,
+                    "FireTime": 5.0
+                }, {
+                    "Name": "Game.TimeLine.CreateBulletEvent",
+                    "BulletConfigID": 1,
+                    "EmitIndex": 3,
+                    "Index": 15,
+                    "FireTime": 5.0
+                }]
+            }, {
+                "Name": "Track 3",
+                "items": [{
+                    "Name": "Game.TimeLine.RemoveEffectEvent",
+                    "EffectIndex": 10,
+                    "Index": 20,
+                    "FireTime": 8.0
+                }, {
+                    "Name": "Game.TimeLine.RemoveEffectEvent",
+                    "EffectIndex": 11,
+                    "Index": 21,
+                    "FireTime": 10.0
+                }, {
+                    "Name": "Game.TimeLine.RemoveEffectEvent",
+                    "EffectIndex": 12,
+                    "Index": 22,
+                    "FireTime": 12.0
+                }]
+            }]
+        },
+        {
+            "Name": "Time Line Group 1",
+            "TotalTime": 0.00999999977648258,
+            "IsEnd": true,
+            "condition_compose": [],
+            "tracks": [{
+                "Name": "Track 1",
+                "Ordinal": 0,
+                "items": []
+            }]
+        }
+    ]
+}

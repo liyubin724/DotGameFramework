@@ -1,0 +1,21 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using Entitas;
+
+public class #SCRIPTNAME# : ICleanupSystem  
+{
+	private readonly Contexts contexts;
+	private readonly Services services;
+
+	public #SCRIPTNAME#(Contexts contexts,Services services)
+	{
+		this.contexts = contexts;
+		this.services = services;
+	}
+	
+	public void Cleanup() 
+	{
+		// cleanup code here 
+		// runs after every execute and reactive system has completed
+	}
+}

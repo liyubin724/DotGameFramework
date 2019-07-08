@@ -1,0 +1,20 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using Entitas;
+
+public class #SCRIPTNAME# : IExecuteSystem  
+{
+	private readonly Contexts contexts;
+	private readonly Services services;
+
+	public #SCRIPTNAME#(Contexts contexts,Services services)
+	{
+		this.contexts = contexts;
+		this.services = services;
+	}
+
+	public void Execute() 
+	{
+		// per-frame code goes here
+	}
+}

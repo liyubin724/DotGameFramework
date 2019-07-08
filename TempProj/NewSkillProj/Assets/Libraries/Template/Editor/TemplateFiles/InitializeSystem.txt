@@ -1,0 +1,22 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using Entitas;
+
+
+public class #SCRIPTNAME# : IInitializeSystem  
+{
+	private readonly Contexts contexts;
+	private readonly Services services;
+
+	public #SCRIPTNAME#(Contexts contexts,Services services)
+	{
+		this.contexts = contexts;
+		this.services = services;
+	}
+
+	public void Initialize() 
+	{
+		// Initialization code here
+	}		
+}
+

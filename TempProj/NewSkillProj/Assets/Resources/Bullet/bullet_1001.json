@@ -1,0 +1,94 @@
+{
+    "data":
+    {
+        "id":1,
+        "Name":"bullet_1001"
+    },
+    "groups":
+    [
+        {
+            "Name":"Time Line Group 1",
+            "TotalTime":10.0,
+            "condition_compose":
+            [
+            ],
+            "tracks":
+            [
+                {
+                    "Name":"Track 1",
+                    "Ordinal":0,
+                    "items":
+                    [
+                        {
+                            "Name":"Game.TimeLine.MoverEvent",
+                            "Index":1,
+                            "FireTime":2.0,
+                            "IsMover":true
+                        },
+                        {
+                            "Name":"Game.TimeLine.ChangeSpeedEvent",
+                            "Index":2,
+                            "FireTime":2.0,
+                            "Speed":8.0
+                        },
+                        {
+                            "Name":"Game.TimeLine.ChangeMotionTypeEvent",
+                            "Index":3,
+                            "FireTime":2.0,
+                            "Motion":1
+                        }
+                    ]
+                },
+                {
+                    "Name":"Track 2",
+                    "Ordinal":1,
+                    "items":
+                    [
+                        {
+                            "Name":"Game.TimeLine.ChangeAccelerationEvent",
+                            "Index":10,
+                            "FireTime":5.0,
+                            "Acceleration":5.0
+                        }
+                    ]
+                },
+                {
+                    "Name":"Track 3",
+                    "Ordinal":11,
+                    "items":
+                    [
+                        {
+                            "Name":"Game.TimeLine.ChangeAccelerationEvent",
+                            "Index":4,
+                            "FireTime":8.0,
+                            "Acceleration":-6.0
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "exit_group":
+    {
+        "Name":"Time Line Group 1",
+        "TotalTime":0.01,
+        "condition_compose":
+        [
+        ],
+        "tracks":
+        [
+            {
+                "Name":"Track 1",
+                "Ordinal":0,
+                "items":
+                [
+                    {
+                        "Name":"Game.TimeLine.RemoveAllEvent",
+                        "Index":10001,
+                        "FireTime":0.0
+                    }
+                ]
+            }
+        ]
+    }
+}

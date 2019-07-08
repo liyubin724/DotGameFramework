@@ -1,0 +1,9 @@
+﻿public class #SCRIPTNAME# : ServiceFeature
+{
+	public #SCRIPTNAME#(Contexts contexts, Services services) : base("#SCRIPTNAME#", contexts, services)
+    {
+		// call add function to add 
+		//Add(new XXSystems(contexts,services))
+		//Add(new XXSystem(contexts,services))
+    }
+}
