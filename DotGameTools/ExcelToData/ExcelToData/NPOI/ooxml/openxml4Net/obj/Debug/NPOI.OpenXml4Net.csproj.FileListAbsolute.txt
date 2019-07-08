@@ -1,0 +1,6 @@
+F:\Download\npoi-master\npoi-master\solution\Lib\NPOI.OpenXml4Net.XML
+F:\Download\npoi-master\npoi-master\solution\Lib\NPOI.OpenXml4Net.dll
+F:\Download\npoi-master\npoi-master\solution\Lib\NPOI.OpenXml4Net.pdb
+F:\Download\npoi-master\npoi-master\ooxml\openxml4Net\obj\Debug\NPOI.OpenXml4Net.csprojResolveAssemblyReference.cache
+F:\Download\npoi-master\npoi-master\ooxml\openxml4Net\obj\Debug\NPOI.OpenXml4Net.dll
+F:\Download\npoi-master\npoi-master\ooxml\openxml4Net\obj\Debug\NPOI.OpenXml4Net.pdb
