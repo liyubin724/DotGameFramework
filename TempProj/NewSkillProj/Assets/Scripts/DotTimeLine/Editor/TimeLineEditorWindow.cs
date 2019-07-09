@@ -66,7 +66,7 @@ public class TimeLineEditorWindow : EditorWindow
         {
             if (GUILayout.Button("Load", "toolbarbutton", GUILayout.Width(60)))
             {
-                string filePath = EditorUtility.OpenFilePanel("Load Config", Application.dataPath+"/Resources/Skill", "txt");
+                string filePath = EditorUtility.OpenFilePanel("Load Config", Application.dataPath+"/Resources", "txt");
                 if (!string.IsNullOrEmpty(filePath))
                 {
                     string assetPath = "Assets" + filePath.Replace(Application.dataPath, "");
