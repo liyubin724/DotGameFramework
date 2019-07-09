@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: ch_pc_hou_004_shen_part
-  m_EditorClassIdentifier: Assembly-CSharp:Dot.Core.Avator:AvatarPart
-  partType: 2
-  rendererParts:
-  - {fileID: 11400000, guid: 0a91f099b7bf84c498f9ab5a948380a6, type: 2}
+  m_Script: {fileID: 11500000, guid: 999840b21f9dadb4cb9bb06e1a01073c, type: 3}
+  m_Name: ch_pc_hou_008_jiao_part
+  m_EditorClassIdentifier: 
+  partType: 0
+  rendererParts: []
   prefabParts: []

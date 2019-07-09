@@ -9,20 +9,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: ch_pc_hou_004_jiao_renderer
-  m_EditorClassIdentifier: Assembly-CSharp:Dot.Core.Avator:AvatarRendererPart
-  mesh: {fileID: 4300000, guid: 5ad738c200243dd4fb9e5412ef198c83, type: 2}
+  m_Script: {fileID: 11500000, guid: b1230d58ed09d9e4982a69709dc90934, type: 3}
+  m_Name: ch_pc_hou_008_jiao_renderer
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 4300000, guid: 8867b466cf7d4b649bffc465725bee53, type: 2}
   materials:
-  - {fileID: 2100000, guid: 994333ce8938d4e1fb5a70f3ee808643, type: 2}
+  - {fileID: 2100000, guid: 8fc89b0dc32eb47ce892320e659ee642, type: 2}
   boneNames:
+  - Bip001 Tail
   - Bip001 Pelvis
   - Bip001 Spine
-  - Bip001 R Thigh
   - Bip001 L Thigh
+  - Bip001 R Thigh
+  - Bip001 Xtra01
   - Bip001 L Calf
   - Bip001 L Foot
+  - Bip001 L Toe0
   - Bip001 R Calf
   - Bip001 R Foot
+  - Bip001 R Toe0
   rootBoneName: Bip001 Pelvis
-  rendererNodeName: ch_pc_hou_004_jiao
+  rendererNodeName: ch_pc_hou_008_jiao

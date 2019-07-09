@@ -1,4 +1,4 @@
-﻿using Dot.Core.Avator;
+﻿using Dot.Core.Avatar;
 using Dot.Core.Entity;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;

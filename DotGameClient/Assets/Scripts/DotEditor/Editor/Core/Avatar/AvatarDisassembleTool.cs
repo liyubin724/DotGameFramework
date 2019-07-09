@@ -1,4 +1,4 @@
-﻿using Dot.Core.Avator;
+﻿using Dot.Core.Avatar;
 using Dot.Core.Entity;
 using System.Collections.Generic;
 using System.IO;
@@ -178,7 +178,7 @@ namespace DotEditor.Core.Avatar
             SkinnedMeshRenderer[] smrs = instanceGO.GetComponentsInChildren<SkinnedMeshRenderer>(true);
             foreach(var smr in smrs)
             {
-                string mrd = string.Format("{0}/{1}_{2}_renderer.asset", targetAssetDir, instanceGO.name, smr.name);
+                string mrd = string.Format("{0}/{1}_renderer.asset", targetAssetDir,/* instanceGO.name,*/ smr.name);
                 AvatarRendererPart part = AssetDatabase.LoadAssetAtPath<AvatarRendererPart>(mrd);
                 if(part == null)
                 {
@@ -206,7 +206,7 @@ namespace DotEditor.Core.Avatar
                 }
                 MeshUtility.Optimize(cMesh);
 
-                string meshAssetPath = string.Format("{0}/{1}_{2}_mesh.asset", targetAssetDir, instanceGO.name, smr.name);
+                string meshAssetPath = string.Format("{0}/{1}_mesh.asset", targetAssetDir, /*instanceGO.name,*/ smr.name);
 
                 AssetDatabase.DeleteAsset(meshAssetPath);
                 AssetDatabase.CreateAsset(cMesh, meshAssetPath);
@@ -215,7 +215,7 @@ namespace DotEditor.Core.Avatar
             }
             AssetDatabase.SaveAssets();
 
-            GameObject.Destroy(instanceGO);
+            GameObject.DestroyImmediate(instanceGO);
         }
 
         public static void CreatePart(string targetAssetDir,AvatarRendererPart[] rendererParts = null)
