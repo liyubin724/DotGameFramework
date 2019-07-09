@@ -1,0 +1,172 @@
+require "Game/Logic/Embattle/EmbattleGroundItem"
+local CS_Unity = CS.UnityEngine
+local CS_ObjectHandler = CS.Game.Logic.LogicHandler.ObjectHandler
+EmbattleGround = Class(function(self)
+    self.gameObject = nil
+    self.groundList = {}
+    self.embattleMgr = LuaGameManager.GetInstance():GetLogicMgr():GetEmbattleMgr()
+end)
+
+function EmbattleGround:InitObj(obj)
+    self.gameObject = obj
+    for i=1,16 do
+        local iO = CS_Unity.GameObject.Find("Plane"..i)
+        local iB = EmbattleGroundItem()
+        iB:InitObj(iO,i)
+        local iT = {}
+        iT.Index = i
+        iT.Item = iB
+        table.insert(self.groundList,iT)
+    end
+end
+
+function EmbattleGround:GetGameObject()
+    return self.gameObject
+end
+
+function EmbattleGround:MoveHero(oldIndex,newIndex)
+    if oldIndex < 1 or oldIndex > #self.groundList then
+        return
+    end
+    if newIndex < 1 or newIndex > #self.groundList then
+        return
+    end
+    local oldItem = self:GetItemBeaByIndex(oldIndex)
+    local newItem = self:GetItemBeaByIndex(newIndex)
+
+    local newHero = newItem:GetHeroItem()
+    newItem:SetHeroItem(oldItem:GetHeroItem())
+    if newItem:GetHeroItem() ~= nil then
+        local newHeroItem = newItem:GetHeroItem()
+        newHeroItem:SetGroundIndex(newIndex)
+        newHeroItem:GetTransform().parent = newItem:GetTransform()
+        CS_ObjectHandler.SetObjectLocalPosition(newHeroItem:GetGameObject(),0,0,0)
+        CS_ObjectHandler.SetObjectLocalEulerangles(newHeroItem:GetGameObject(),0,0,0)
+        newItem:UpdateDefaultState()
+        self.embattleMgr:UpdateGroundData(newIndex,newItem:GetHeroItem():GetHeroId())
+    end
+
+    oldItem:SetHeroItem(newHero)
+    if newHero ~= nil then
+        if oldItem:CanSelect(newHero:GetHeroId()) then
+            newHero:SetGroundIndex(oldIndex)
+            newHero:GetTransform().parent = oldItem:GetTransform()
+            CS_ObjectHandler.SetObjectLocalPosition(newHero:GetGameObject(),0,0,0)
+            CS_ObjectHandler.SetObjectLocalEulerangles(newHero:GetGameObject(),0,0,0)
+            oldItem:SetHeroItem(newHero)
+            self.embattleMgr:UpdateGroundData(oldIndex,oldItem:GetHeroItem():GetHeroId())
+        else
+            self.embattleMgr:AddHeroDataToList(newHero:GetHeroId())
+            CS_Unity.Object.DestroyImmediate(oldItem:GetHeroItem():GetGameObject())
+            oldItem:SetHeroItem(nil)
+            self.embattleMgr:UpdateGroundData(oldIndex,-1)
+        end
+    else
+        self.embattleMgr:UpdateGroundData(oldIndex,-1)
+    end
+    oldItem:UpdateDefaultState()
+end
+
+function EmbattleGround:InitHeroByIndexAndID(index,heroId)
+    for i=1,#self.groundList do
+        if self.groundList[i] and self.groundList[i].Index == index then
+            return self.groundList[i].Item:InitHeroByID(heroId)
+        end
+    end
+    return false
+end
+
+function EmbattleGround:GetItemBeaByIndex(index)
+    for i=1,#self.groundList do
+        if self.groundList[i] and self.groundList[i].Index == index then
+            return self.groundList[i].Item
+        end
+    end
+    return nil
+end
+
+function EmbattleGround:UpdateSelectState(index,heroId)
+    if #self.groundList >0 then
+        for i=1,#self.groundList do
+            if self.groundList[i] then
+                self.groundList[i].Item:SetSelectState(index,heroId)
+            end
+        end
+    end
+end
+
+function EmbattleGround:UpdateDefaultState()
+    if #self.groundList >0 then
+        for i=1,#self.groundList do
+            if self.groundList[i] then
+                self.groundList[i].Item:UpdateDefaultState()
+            end
+        end
+    end
+end
+
+function EmbattleGround:UpdateItemArea(heroId)
+    if #self.groundList >0 then
+        for i=1,#self.groundList do
+            if self.groundList[i] then
+                self.groundList[i].Item:UpdateItemArea(heroId)
+            end
+        end
+    end
+end
+
+function EmbattleGround:ShowState()
+    if #self.groundList >0 then
+        for i=1,#self.groundList do
+            if self.groundList[i] then
+                self.groundList[i].Item:ShowState()
+            end
+        end
+    end
+end
+
+function EmbattleGround:CloseState()
+    if #self.groundList >0 then
+        for i=1,#self.groundList do
+            if self.groundList[i] then
+                self.groundList[i].Item:CloseState()
+            end
+        end
+    end
+end
+
+function EmbattleGround:CanSelect(index,heroId)
+    if #self.groundList >0 then
+        for i=1,#self.groundList do
+            if self.groundList[i] and self.groundList[i].Index == index then
+                 return self.groundList[i].Item:CanSelect(heroId)
+            end
+        end
+    end
+    return false
+end
+
+function EmbattleGround:DisposeItem(gIndex,heroId)
+    if #self.groundList >0 then
+        for i=1,#self.groundList do
+            if self.groundList[i] and self.groundList[i].Index == gIndex then
+                self.groundList[i].Item:DoDispose()
+            end
+        end
+    end
+end
+
+function EmbattleGround:DoDestroy()
+    if #self.groundList >0 then
+        for i=1,#self.groundList do
+            if self.groundList[i] then
+                self.groundList[i].Item:DoDispose()
+            end
+        end
+    end
+    if self.gameObject then
+        CS_Unity.Object.DestroyImmediate(self.gameObject)
+        self.gameObject = nil
+    end
+    self.groundList = {}
+end

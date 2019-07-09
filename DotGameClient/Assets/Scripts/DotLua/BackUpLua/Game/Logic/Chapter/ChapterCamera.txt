@@ -1,0 +1,222 @@
+local CS_Vector3 = CS.UnityEngine.Vector3
+local CS_Unity = CS.UnityEngine
+local CS_ObjectHandler = CS.Game.Logic.LogicHandler.ObjectHandler
+ChapterCamera = Class(function(self)
+    self.isMove = false
+    self.transform = nil
+    self.qibingTrans = nil
+    self.qibingAnimator = nil
+    self.offset = CS_Unity.Vector3(20,15,-20)
+    self.speed = 90
+    self.length = 0
+    self.velocity = CS_Vector3(0,0,0)
+end)
+
+function ChapterCamera:DoStart()
+    if not self.transform then
+        return
+    end
+    self.cameraPos = self.transform.position
+    local loaderMgr = LuaGameManager.GetInstance():GetLoaderMgr()
+    local qibing = loaderMgr:LoadAssetAndInstantiateGO(GameConstValue.NameChapterQiBingPath)
+    if qibing then
+        self.qibingTrans = qibing.transform
+        self.qibingTrans.gameObject.name = GameConstValue.NameChapterShadeTarget
+        CS_ObjectHandler.SetObjectLayer(self.qibingTrans.gameObject,CS_Unity.LayerMask.NameToLayer("role"))
+        CS_ObjectHandler.SetObjectLocalScale(self.qibingTrans.gameObject,2,2,2)
+        self.qibingAnimator = self.qibingTrans:GetComponent(typeof(CS_Unity.Animator))
+        local chapterMgr = LuaGameManager.GetInstance():GetLogicMgr():GetChapterMgr()
+        local chapterId = chapterMgr:GetCurChapterId()
+        local chapterTrans = CS_Unity.GameObject.Find("tracker" ..(chapterId + 1)):GetComponent(typeof(CS_Unity.Transform))
+        local buildTrans = CS_Unity.GameObject.Find("build" ..(chapterId + 1)):GetComponent(typeof(CS_Unity.Transform))
+        if chapterTrans then
+            CS_ObjectHandler.SetObjectWorldPosition(self.qibingTrans.gameObject,chapterTrans.position.x,chapterTrans.position.y,chapterTrans.position.z)
+        end
+        if buildTrans then
+            self.qibingTrans:LookAt(buildTrans)
+        end
+
+        local effect = loaderMgr:LoadAssetAndInstantiateGO(GameConstValue.NameChapterQiBingEffectPath)
+        if effect then
+            effect.transform.parent = self.qibingTrans
+            CS_ObjectHandler.SetObjectLocalPosition(effect,0,0,0)
+        end
+
+        local shade = loaderMgr:LoadAssetAndInstantiateGO(GameConstValue.NameChapterQiBingShderPath)
+        if shade then
+            CS_ObjectHandler.SetObjectLocalPosition(shade,self.qibingTrans.position.x,self.qibingTrans.position.y,self.qibingTrans.position.z)
+            CS_ObjectHandler.SetObjectEulerangles(shade,0,0,0)
+            CS_ObjectHandler.SetObjectLocalScale(shade,1,1,1)
+            -- shade.transform.localScale = CS_Vector3.zero
+            -- to do projector
+        end
+    end
+    LuaGameManager.GetInstance():GetEventMgr():Register(GameEventID.GE_TRIGGER_CHAPTER_CAMERA,CallbackData(self,self.ResetCamera))
+end
+
+function ChapterCamera:DoUpdate()
+    if not self.transform then
+        return
+    end
+    if CS_Unity.Input.GetMouseButtonDown(0) and not self.isMove then
+        local layer = CS_Unity.LayerMask.NameToLayer("Build")
+        local ray = CS_Unity.Camera.main:ScreenPointToRay(CS_Unity.Input.mousePosition)
+        local isCast,hit = CS_ObjectHandler.PhysicsCast(ray,layer)
+        if isCast then
+
+            local build = hit.collider.transform
+            if build then
+                local buildName = build.gameObject.name
+                local indexStr = string.sub(buildName,-1)
+                local index = tonumber(indexStr)
+                if not index then
+                    return
+                end
+                local chapterMgr = LuaGameManager.GetInstance():GetLogicMgr():GetChapterMgr()
+                local curChapterIndex = chapterMgr:GetCurChapterId()
+                if index > curChapterIndex +1 then
+                    return
+                end
+                self.targetPos = build.position
+                chapterMgr:SetCurFightChapterId(index)
+                if curChapterIndex < index then
+                    self.targetBuild = build
+                    self:InitPoint(curChapterIndex+1)
+                    if CS_Unity.Vector3.Distance(self.qibingTrans.position, self.lsPoint[self.lsPoint.Count-1]) <= 0.01 then
+                        self.isMove = true
+                        self.isBack = false
+                        self:ShowChapterPanel()
+                        return
+                    end
+                    self.qibingMove = true
+                    if self.qibingAnimator then
+                        self.qibingAnimator:CrossFade("run",0)
+                    end
+                else
+                    self.isMove = true
+                    self.isBack = false
+                    self:ShowChapterPanel()
+                end
+            end
+        end
+    end
+
+    if self.qibingTrans and self.qibingMove and self.lsPoint.Count >0 then
+        self.length = self.length+CS_Unity.Time.deltaTime*self.speed
+        if self.length >= self.lsPoint.Count-1 then
+            self.length = self.lsPoint.Count-1
+        end
+
+        self.qibingTrans.position = self.lsPoint[math.floor(self.length)]
+        self.qibingTrans:LookAt(self.targetBuild)
+        if CS_Unity.Vector3.Distance(self.qibingTrans.position,self.lsPoint[self.lsPoint.Count-1]) <= 0.01 then
+            self.qibingAnimator:CrossFade("idle",0)
+            self.qibingMove = false
+            self.isMove = true
+            self.isBack = false
+            self:ShowChapterPanel()
+        end
+    end
+    if self.isMove and not self.isBack and not self.qibingMove then
+        self:MoveCamera(self.targetPos)
+    end
+    if self.isBack and not self.isMove and not self.qibingMove then
+        self:MoveCameraBack()
+    end
+end
+
+function ChapterCamera:OnDestroy()
+    LuaGameManager.GetInstance():GetEventMgr():Unregister(GameEventID.GE_TRIGGER_CHAPTER_CAMERA,CallbackData(self,self.ResetCamera))
+end
+
+function ChapterCamera:MoveCamera(target)
+    if not target then
+        return
+    end
+    self.transform.position = CS_Unity.Vector3.SmoothDamp(self.transform.position, target+self.offset,self.velocity,0.3)
+    if CS_Unity.Vector3.Distance(self.transform.position,target+self.offset) <= 0.01 then
+        self.isMove = false
+    end
+end
+
+function ChapterCamera:MoveCameraBack()
+    if not self.transform then
+        return
+    end
+    self.transform.position = CS_Unity.Vector3.SmoothDamp(self.transform.position,self.cameraPos,self.velocity,0.3)
+    if CS_Unity.Vector3.Distance(self.transform.position,self.cameraPos) <=1 then
+        local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+        uiMgr:OpenPanel("MainPanel",GameConstValue.NameUIMainPanelPath,LuaUIPanelLevel.Main,LuaUIPanelRelation.Exclusion)
+        self.isBack = false
+    end
+end
+
+function ChapterCamera:ResetCamera()
+    if self.isMove then
+        self.isMove = false
+    end
+    self.isBack = true
+end
+
+function ChapterCamera:ShowChapterPanel()
+    local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    uiMgr:OpenPanel("ChapterPanel",GameConstValue.NameUIChapterPanelPath,LuaUIPanelLevel.Main,LuaUIPanelRelation.Exclusion)
+end
+
+function ChapterCamera:InitPoint(trackIndex)
+    local trackTrans = CS_Unity.GameObject.Find("tracker" ..trackIndex):GetComponent(typeof(CS_Unity.Transform))
+    if not trackTrans then
+        return
+    end
+    self.basePoint = {}
+    self.lsPoint = {}
+    for i=1,trackTrans.childCount do
+        local point = trackTrans:Find("point"..i)
+        if point then
+            table.insert(self.basePoint,point.gameObject)
+        end
+    end
+    local pointPos = {}
+    for i=1,#self.basePoint do
+        table.insert(pointPos,self.basePoint[i].transform.position)
+    end
+
+    self.lsPoint = CS_ObjectHandler.TrackPoint(pointPos)
+end
+
+-- function ChapterCamera:GetTrackPoint(track)
+--     local vector3s = self:PathControlPointGenerator(track)
+--     local smoothAmount = #track*50
+--     for i=1,smoothAmount-1 do
+--         local pm = i/smoothAmount
+--         local currPt = self:InterP(vector3s,pm)
+--         table.insert(self.lsPoint,currPt)
+--     end
+-- end
+
+-- function ChapterCamera:PathControlPointGenerator(track)
+--     local suppliedPath = track
+--     local vector3s = {}
+--     for i=1,#suppliedPath do
+--         table.insert(vector3s,suppliedPath[i])
+--     end
+--     table.insert(vector3s,1,vector3s[1]*2-vector3s[2])
+--     table.insert(vector3s,#vector3s,vector3s[#vector3s-1]*2-vector3s[#vector3s-2])
+--     if vector3s[2] == vector3s[#vector3s-1] then
+--         vector3s[1] = vector3s[#vector3s-2]
+--         vector3s[#vector3s] = vector3s[3]
+--     end
+--     return vector3s
+-- end
+
+-- function ChapterCamera:InterP(pos,t)
+--     local length = #pos-3
+--     local currPt = math.min(math.floor(t*length),length-1)
+--     local u = t*length-currPt
+--     local a = pos[currPt]
+--     local b = pos[currPt+1]
+--     local c = pos[currPt+2]
+--     local d = pos[currPt+3]
+--     return 0.5*((-a + 3 * b - 3 * c + d) * (u * u * u)+ (2 * a - 5 * b + 4 * c - d) * (u * u)+ (-a + c) * u+ 2 * b)
+-- end
+ 

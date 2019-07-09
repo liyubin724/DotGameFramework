@@ -1,0 +1,373 @@
+GeneralManager = Class(function(self)
+    self._selectItemIndex = 1
+    self.configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+    self.generalConfig = self.configMgr:GetDataTable("TeamBase")
+    self.expitem = self.configMgr:GetDataByNameAndID("ConfigValue", "Team_expitem")
+    self.generalList = {10101,10102,10103,10104,10105,10106,10107,10108}
+	self.heroFragment = {}    --获取伙伴碎片
+end)
+
+--public func
+function GeneralManager:DoReset()
+    self._selectItemIndex = 1
+end
+
+function GeneralManager:GetGeneralBtnType()
+    return self._generalStrengType or EGeneralStrengType.One
+end
+
+function GeneralManager:SetGeneralBtnType(type)
+    self._generalStrengType = type
+end
+
+--根据品质或者职业排序
+function GeneralManager:SetSortList(quality, type)
+    local allHeroCfg = self.generalList
+
+    self.roleSortList = { }
+    for i, v in pairs( allHeroCfg ) do
+        local generalData = self.configMgr:GetDataByNameAndID("TeamBase", tostring(v))
+        -- print("is have",  i, generalData.name, quality, generalData.growClass, "   type", type, generalData.corps)
+		local isHave = (quality == QualityType.All or quality == generalData.growClass) and
+						(type == CorpsType.All or type == generalData.corps)
+		if isHave and generalData.visible == 1 then
+			self.roleSortList[#self.roleSortList+1] = v
+		end
+    end
+
+	table.sort( self.roleSortList, self.SortHeroList )
+end
+
+--获取排序后的list
+function GeneralManager:GetRoleSortList()
+    if self.roleSortList then
+        return self.roleSortList
+    end
+end
+
+--获取排序后的list数量
+function GeneralManager:GetRoleSortListCount()
+    if self.roleSortList then
+        return #self.roleSortList
+    end
+end
+
+function GeneralManager.SortHeroList( a, b )
+	local heroUnit_a = LuaGameManager.GetInstance():GetConfigMgr():GetDataByNameAndID("TeamBase", tostring(a))
+	local heroUnit_b = LuaGameManager.GetInstance():GetConfigMgr():GetDataByNameAndID("TeamBase", tostring(b))
+	-- 可合成
+	--if  heroUnit_a == nil and itemdatas[a.id] ~= nil and itemdatas[a.id].itemnum >= itemdatas[a.id].config.TargetNum and itemdatas[b.id] == nil then
+	--	return true
+	--elseif heroUnit_b == nil and itemdatas[a.id] == nil and itemdatas[b.id] ~= nil and itemdatas[b.id].itemnum >= itemdatas[b.id].config.TargetNum then
+	--	return false
+	--end
+
+	--有无英雄
+	if heroUnit_a  ~= nil and heroUnit_b == nil then
+		-- if self.heroFragment[heroUnit_b.tag] ~= nil and self.heroFragment[heroUnit_b.tag].itemnum >= self.heroFragment[heroUnit_b.tag].config.TargetNum then
+		-- 	return false
+		-- else
+		-- 	return true
+		-- end
+	elseif heroUnit_a == nil and heroUnit_b ~= nil then
+		-- if self.heroFragment[heroUnit_a.tag] ~= nil and self.heroFragment[heroUnit_a.tag].itemnum >= self.heroFragment[heroUnit_a.tag].config.TargetNum then
+		-- 	return true
+		-- else
+		-- 	return false
+		-- end
+    elseif heroUnit_a  ~= nil and heroUnit_b ~= nil then
+        --战斗力
+		if heroUnit_a.combatScore_Temp > heroUnit_b.combatScore_Temp then
+			return true
+		elseif heroUnit_a.combatScore_Temp < heroUnit_b.combatScore_Temp then
+			return false
+        end
+        
+		--品质
+		if heroUnit_a.growClass > heroUnit_b.growClass then
+			return true
+		elseif heroUnit_a.growClass < heroUnit_b.growClass then
+			return false
+        end
+        
+		--觉醒程度
+		if heroUnit_a.starTemp > heroUnit_b.starTemp then
+			return true
+		elseif heroUnit_a.starTemp < heroUnit_b.starTemp then
+			return false
+        end
+        
+		--等级
+		if heroUnit_a.lvTemp > heroUnit_b.lvTemp then
+			return true
+		elseif heroUnit_a.lvTemp < heroUnit_b.lvTemp then
+			return false
+		end
+	else
+		-- if self.heroFragment[heroUnit_b.tag] ~= nil and self.heroFragment[heroUnit_b.tag].itemnum >= self.heroFragment[heroUnit_b.tag].config.TargetNum then
+		-- 	return false
+		-- end
+		-- if self.heroFragment[heroUnit_a.tag] ~= nil and self.heroFragment[heroUnit_a.tag].itemnum >= self.heroFragment[heroUnit_a.tag].config.TargetNum then
+		-- 	return true
+		-- end
+	end
+
+	-- if self.heroFragment[heroUnit_a.tag] ~= nil and self.heroFragment[heroUnit_b.tag] == nil then
+	-- 	return true
+	-- elseif self.heroFragment[heroUnit_a.tag] == nil and self.heroFragment[heroUnit_b.tag] ~= nil then
+	-- 	return false
+	-- elseif self.heroFragment[heroUnit_a.tag] ~= nil and self.heroFragment[heroUnit_b.tag] ~= nil then
+	-- 	-- --碎片数量
+	-- 	-- if itemdatas[a.id].itemnum > itemdatas[b.id].itemnum then
+	-- 	-- 	return true
+	-- 	-- elseif 	itemdatas[a.id].itemnum < itemdatas[b.id].itemnum then
+	-- 	-- 	return false
+	-- 	-- end
+	-- 	--品质
+	-- 	if heroUnit_a.growClass > heroUnit_b.growClass then
+	-- 		return true
+	-- 	elseif heroUnit_a.growClass < heroUnit_b.growClass then
+	-- 		return false
+	-- 	end
+	-- end
+	-- --品质
+	-- if heroUnit_a.growClass > heroUnit_b.growClass then
+	-- 	return true
+	-- elseif heroUnit_a.growClass < heroUnit_b.growClass then
+	-- 	return false
+	-- end
+	return heroUnit_a.tag > heroUnit_b.tag
+end
+
+function GeneralManager:GetGeneralIdByIndex(index)
+   if self.roleSortList and self.roleSortList[index] then
+        return self.roleSortList[index]
+   end
+end
+
+--通过Index获取武将数据
+function GeneralManager:GetGeneralData(index)
+    local generalId = self:GetGeneralIdByIndex(index)
+    local generalData = self.configMgr:GetDataByNameAndID("TeamBase", tostring(generalId))
+    if generalData then
+        return generalData
+    end
+end
+
+--获取武将模型数据
+function GeneralManager:GetGeneralRoleModelData(roleModel)
+    local roleModelData = self.configMgr:GetDataByNameAndID("TeamRoleModel", tostring(roleModel))
+    if roleModelData then
+        return roleModelData
+    end
+end
+
+--获取当前武将选中标记
+function GeneralManager:GetSelectIndex()
+    return self._selectItemIndex
+end
+
+--设置当前武将选中标记
+function GeneralManager:SetSelectIndex(value)
+    self._selectItemIndex = value
+end
+
+--获取当前选中武将数据
+function GeneralManager:GetGeneralDataSelectIndex()
+    self.curGeneralData = self:GetGeneralData(self._selectItemIndex)
+    if self.curGeneralData then
+        return self.curGeneralData
+    end
+end
+
+--获取当前选中武将星级
+function GeneralManager:GetCurGeneralStarlevel()
+    if self.curGeneralData and self.curGeneralData.starTemp then
+        return self.curGeneralData.starTemp
+    end
+end
+
+--获取当前武将武力值
+function GeneralManager:GetGeneralStrongValueByStar(starLvl)
+    starLvl = starLvl or self.curGeneralData.starTemp
+    if self.curGeneralData and self.curGeneralData.strong and starLvl then
+        return self.curGeneralData.strong[starLvl]
+    end
+end
+
+--获取当前武将智力值
+function GeneralManager:GetGeneralIntelValueByStar(starLvl)
+    starLvl = starLvl or self.curGeneralData.starTemp
+    if self.curGeneralData and self.curGeneralData.intel and starLvl then
+        return self.curGeneralData.intel[starLvl]
+    end
+end
+
+--获取当前武将政治值
+function GeneralManager:GetGeneralPoliticalValueByStar(starLvl)
+    starLvl = starLvl or self.curGeneralData.starTemp
+    if self.curGeneralData and self.curGeneralData.political and starLvl then
+        return self.curGeneralData.political[starLvl]
+    end
+end
+
+--获取当前武将统帅值
+function GeneralManager:GetGeneralLeadValueByStar(starLvl)
+    starLvl = starLvl or self.curGeneralData.starTemp
+    if self.curGeneralData and self.curGeneralData.lead and starLvl then
+        return self.curGeneralData.lead[starLvl]
+    end
+end
+
+--获取当前武将挂载技能数据
+function GeneralManager:GetGeneralTeamSkillByType(type)
+    if self.curGeneralData and self.curGeneralData.teamSkill and self.curGeneralData.teamSkill[type] then
+        local skillId = self.curGeneralData.teamSkill[type].id
+        local skillData = self.configMgr:GetDataByNameAndID("Skill", tostring(skillId))
+        if skillId and skillData then
+            return skillData
+        end
+    end
+end
+
+--获取升级消耗道具数据
+function GeneralManager:GetGeneralExpIteme(index)
+    if self.expitem and self.expitem.content[index] then
+        local itemData =  self.configMgr:GetDataByNameAndID("Item",tostring(self.expitem.content[index]))
+        if itemData then
+            return itemData
+        end
+    end
+end
+
+--获取当前武将统属性攻击
+function GeneralManager:GetGeneralAttrAtk()
+    if self.curGeneralData and self.curGeneralData.tag then
+        local Attr =  self.configMgr:GetDataByNameAndID("TeamBattleAttr",tostring(self.curGeneralData.tag ))
+        local atk = (Attr.atkBase + Attr.atkLvStep[self.curGeneralData.starTemp]) * self.curGeneralData.lvTemp
+        if atk then
+            return math.floor(atk)
+        end
+        return 0
+    end
+end
+
+--获取当前武将统属性生命
+function GeneralManager:GetGeneralAttrHp()
+    if self.curGeneralData and self.curGeneralData.tag then
+        local Attr =  self.configMgr:GetDataByNameAndID("TeamBattleAttr",tostring(self.curGeneralData.tag ))
+        local hp = (Attr.hpBase + Attr.hpLvStep[self.curGeneralData.starTemp]) * self.curGeneralData.lvTemp
+        if hp then
+            return math.floor(hp)
+        end
+        return 0
+    end
+end
+
+--获取当前武将统属性防御
+function GeneralManager:GetGeneralAttrDef()
+    if self.curGeneralData and self.curGeneralData.tag then
+        local Attr =  self.configMgr:GetDataByNameAndID("TeamBattleAttr",tostring(self.curGeneralData.tag))
+        local def = (Attr.defBase + Attr.defLvStep[self.curGeneralData.starTemp]) * self.curGeneralData.lvTemp
+        if def then
+            return math.floor(def)
+        end
+        return 0
+    end
+end
+
+--获取当前武将官职数据
+function GeneralManager:GetGeneralQualTempData()
+    if self.curGeneralData and self.curGeneralData.qualTemp then
+        local TeamQualityData =  self.configMgr:GetDataByNameAndID("TeamQuality",tostring(self.curGeneralData.qualTemp))
+        if TeamQualityData then
+            return TeamQualityData
+        end
+    end
+end
+
+--是否上阵
+function GeneralManager:isCondition()
+    return true
+ end
+
+--是否激活
+function GeneralManager:isActivation()
+   return true
+end
+
+--是否拥有
+function GeneralManager:isHave()
+    return true
+end
+
+--是否招募
+function GeneralManager:isCanRecruit()
+    return true
+end
+
+--是否碎片
+function GeneralManager:isFragmentation()
+    return true
+end
+
+--碎片数量
+function GeneralManager:FragmentationCount()
+    return 0
+end
+
+--receive server data
+function GeneralManager:OnReceiveStoreData()
+    self:GetShopDataByModelMgr()
+    LuaGameManager.GetInstance():GetEventMgr():Trigger(GameEventID.GE_UPDATE_STORE_DATA)
+end
+
+function GeneralManager:GetShopCurrencyId( )
+    if self.shopConfig and self.shopConfig.currency then
+        return self.shopConfig.currency
+    end
+    return nil
+end
+
+--消耗类型
+function GeneralManager:GetCurrencyData( )
+    if self.shopConfig and self.shopConfig.currencyShow then
+        local configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+        local itemData = configMgr:GetDataByNameAndID("Item", tostring(self.shopConfig.currencyShow))
+        if itemData then
+            return itemData
+        end
+    end
+    return nil
+end
+
+--是否可以刷新
+function GeneralManager:isCanShopRefresh( )
+    if self.shopConfig and self.shopConfig.refreshMax then
+        if self:GetShopRefreshNum( ) > self.shopConfig.refreshMax then
+            return true
+        end
+    end
+    return false
+end
+
+--刷新价格
+function GeneralManager:GetShopRefreshPrice( )
+    if self.shopConfig.price[self:GetShopRefreshNum() + 1] then
+        return self.shopConfig.price[self:GetShopRefreshNum() + 1]
+    end
+    return 0
+end
+
+--刷新次数
+function GeneralManager:GetShopRefreshNum( )
+    return math.floor( self.shopData.refreshNum )
+end
+
+--获取item数据
+function GeneralManager:GetShopDataByGrid( gridId )
+    if self.shopData and self.shopData.gridMap then
+        return self.shopData.gridMap[tostring(gridId)]
+    end
+    return 0
+end

@@ -1,0 +1,33 @@
+SkillTipsManager = Class(function(self)
+    self._skillId = 0
+end)
+
+--private func
+function SkillTipsManager:DoReset()
+    self._skillId = 0
+end
+
+--public func
+function SkillTipsManager:InitData(skillId)
+    if not skillId then
+        return
+    end
+    
+    if self._skillId ~= skillId then
+        self._skillId = skillId
+    end
+    LuaGameManager.GetInstance():GetUIMgr():OpenPanel("SkillTips",GameConstValue.NameUISkillTipsPath,LuaUIPanelLevel.Top ,LuaUIPanelRelation.Exclusion)
+end
+
+function SkillTipsManager:GetSkillData()
+    local skillData = LuaGameManager.GetInstance():GetConfigMgr():GetDataByNameAndID("Skill", tostring(self._skillId))
+    if skillData then
+        return skillData
+    else
+        error("SkillTipsManager->SetData: error id "..self._skillId)
+    end
+end
+
+function BatchManager:GetItemId()
+    return self._skillId
+end

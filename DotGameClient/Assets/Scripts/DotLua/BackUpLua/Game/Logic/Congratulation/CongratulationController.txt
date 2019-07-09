@@ -1,0 +1,75 @@
+CongratulationController = Class(function(self)
+    self.congratulationMgr = LuaGameManager.GetInstance():GetLogicMgr():GetCongratulationMgr()
+    self.isInit = false
+end)
+
+function CongratulationController:DoAwake()
+end
+
+function CongratulationController:DoStart()
+    self.itemObj = {self.item1,self.item2,self.item3,self.item4,self.item5}
+    self.itemBeh = {self.itemBeh1,self.itemBeh2,self.itemBeh3,self.itemBeh4,self.itemBeh5}
+
+    self:UpdatePanel()
+end
+
+function CongratulationController:DoEnable(data)
+    if not self.isInit then
+        return
+    end
+    self:UpdatePanel()
+end
+
+function CongratulationController:UpdatePanel()
+    self:OnInit()
+    if #self.itemObj ~= #self.itemBeh then
+        print("error : CongratulationController data is error")
+    end
+    for i=1,#self.itemObj do
+        if self.congratulationMgr:HasNextData() then
+            self.itemObj[i]:SetActive(true)
+            local awardData = self.congratulationMgr:DequeueData()
+            if awardData and self.itemBeh[i] then
+                local rewardId = awardData:GetRewardId()
+                local amount = awardData:GetAmount()
+                print("CongratulationController", rewardId)
+                local itemId = RewardUtil:getFixedCode(rewardId)
+                if itemId then
+                    self.itemBeh[i]:SetData(itemId,amount)
+                end
+            end
+        else
+            self.itemObj[i]:SetActive(false)
+        end
+    end
+end
+
+function CongratulationController:OnInit()
+    self.isInit = true
+    for i=1,#self.itemObj do
+        if self.itemObj[i] then
+            self.itemObj[i]:SetActive(false)
+        end
+    end
+end
+
+function CongratulationController:DoDestroy()
+    self:OnInit()
+end
+
+function CongratulationController:OnClickClose()
+    if self.congratulationMgr:HasNextData() then
+        self:UpdatePanel()
+    else
+        self.congratulationMgr:DoReset()
+        local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+        uiMgr:ClosePanel("AwardPanel",LuaUIPanelLevel.Top)
+    end
+end
+
+--{"data":{
+    --"rewards":[
+        --{"amount":100000,"code":"0","currencyType":"GOLD","rewardConfigId":"4304","tag":"GOLD","type":"CURRENCY","typeValue":1},{"amount":1000,"code":"1","currencyType":"DIAMOND","rewardConfigId":"4304","tag":"DIAMOND","type":"CURRENCY","typeValue":1},{"amount":300,"code":"3","currencyType":"NONE","rewardConfigId":"4304","tag":"NONE","type":"CURRENCY","typeValue":1}
+        --]},
+--"resCode":200,
+--"diff":{"bag":{"bagMap":{"213002":{"count":14,"itemId":"213002","visible":true},"100005":{"count":4943000}}}}}

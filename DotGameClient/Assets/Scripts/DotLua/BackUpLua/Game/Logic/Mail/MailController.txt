@@ -1,0 +1,108 @@
+
+MailController = Class(function(self)
+end)
+
+--TODO:加到translate表
+local curTotal = "当前剩余%d封邮件"
+local curDate = "%d后过期"
+
+function MailController:DoAwake()
+
+end
+
+function MailController:DoStart()
+    LuaGameManager.GetInstance():GetEventMgr():Register(GameEventID.GE_UPDATE_MAIL_DATA,CallbackData(self,self.UpdatePanel))
+    LuaGameManager.GetInstance():GetEventMgr():Register(GameEventID.GE_SELECT_MAIL,CallbackData(self,self.RefreshMailDetails))
+    LuaNetMailHandler.GetAllMailRequestResponse(function()
+        self:InitPanel()
+    end)
+end
+
+function MailController:DoDestroy()
+    LuaGameManager.GetInstance():GetEventMgr():Unregister(GameEventID.GE_UPDATE_MAIL_DATA,CallbackData(self,self.UpdatePanel))
+    LuaGameManager.GetInstance():GetEventMgr():Unregister(GameEventID.GE_SELECT_MAIL,CallbackData(self,self.RefreshMailDetails))
+end
+--初始化面板
+function MailController:InitPanel()
+    self:UpdatePanel()
+end
+--更新面板
+function MailController:UpdatePanel()
+    self.mailScrollController:SetScrollItemData()
+    local mailMgr = LuaGameManager.GetInstance():GetLogicMgr():GetMailMgr()
+    local totalCount = mailMgr:GetMailTotalCount()
+    local bHaveMail = totalCount > 0
+    self.rightPanel:SetActive(bHaveMail)
+    local mailTotalCount = mailMgr:GetMailTotalCount()
+    local strTotal = string.format(curTotal, mailTotalCount)
+    self.mailNumber.text = strTotal
+end
+--更新邮件内容
+function MailController:RefreshMailDetails()
+    print("RefreshMailDetails")
+    local mailMgr = LuaGameManager.GetInstance():GetLogicMgr():GetMailMgr()
+    local selectIndex = mailMgr:GetSelectIndex()
+    local mailData = mailMgr:GetMailByIndex(selectIndex)
+    local mailConfig = mailMgr:GetMailConfigByIndex(selectIndex)
+    local residueTime = mailData.expire-mailData.sendTime
+    --TODO："剩余时间"需要提供统一接口，后边加
+    local days = residueTime/(24*3600)
+    local strData = string.format(curDate, days)
+
+    self.mailDate.text = strData
+    self.mailTitle.text = mailConfig.title
+    self.mailDesc.text = mailConfig.content
+    local bReward = #mailData.rewards > 0
+    --有附件且未领取显示领取，否则显示删除
+    self.btnGet:SetActive(bReward and not mailData.reward)
+    self.btnDelete:SetActive(not bReward or mailData.reward)
+    --如果未读，点击发送读取消息
+    if not mailData.read then
+        local mailId = mailMgr:GetMailIdByIndex(selectIndex)
+        LuaNetMailHandler.ReadMailRequestResponse(mailId, function()
+            --TODO:需要提供刷新单个item
+            --self:UpdatePanel()
+        end )
+    end
+    --刷新物品列表
+    self.itemScrollController:SetScrollItemData()
+end
+--获取所有邮件奖励
+function MailController:OnClickAllGet()
+    LuaNetMailHandler.GetAllRewardRequestResponse(function()
+        self:UpdatePanel()
+    end)
+end
+
+function MailController:OnClickGet()
+    local mailMgr = LuaGameManager.GetInstance():GetLogicMgr():GetMailMgr()
+    local selectIndex = mailMgr:GetSelectIndex()
+    local mailId = mailMgr:GetMailIdByIndex(selectIndex)
+    print("OnClickGet", mailId)
+    LuaNetMailHandler.GetRewardRequestResponse(mailId, function()
+        self:UpdatePanel()
+    end)
+end
+
+function MailController:OnClickDelete()
+    local mailMgr = LuaGameManager.GetInstance():GetLogicMgr():GetMailMgr()
+    local selectIndex = mailMgr:GetSelectIndex()
+    local mailId = mailMgr:GetMailIdByIndex(selectIndex)
+    LuaNetMailHandler.DeleteMailRequestResponse(mailId, 0, function()
+        self:UpdatePanel()
+    end)
+end
+
+function MailController:OnClickAllDelete()
+    print("OnClickAllDelete")
+    --添加邮件
+    --LuaNetMailHandler.DebugCmd()
+    LuaNetMailHandler.DeleteMailRequestResponse(mailId, 1, function()
+        self:UpdatePanel()
+    end)
+end
+
+function MailController:OnClose()
+    local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    uiMgr:ClosePanel("MailPanel",LuaUIPanelLevel.Default)
+end

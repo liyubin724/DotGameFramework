@@ -1,0 +1,141 @@
+--- Created by heyuchang.
+--- DateTime: 2019/2/21
+---武将养成
+
+GeneralController = Class(function(self)
+    self.generalMgr = LuaGameManager.GetInstance():GetLogicMgr():GetGeneralMgr()
+    self.uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    self.configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+end
+)
+
+function GeneralController:DoAwake()
+    LuaGameManager.GetInstance():GetEventMgr():Register(GameEventID.GE_UPDATE_General_DATA,CallbackData(self,self.RefreshPanelData))
+end
+
+function GeneralController:DoShow()
+    self.quality = QualityType.All
+    self.type = CorpsType.All
+    self:UpdateScrollItem()
+    self:RefreshPanelData()
+end
+
+function GeneralController:DoDestroy()
+    LuaGameManager.GetInstance():GetEventMgr():Unregister(GameEventID.GE_UPDATE_General_DATA,CallbackData(self,self.RefreshPanelData))
+end
+
+function GeneralController:UpdateScrollItem()
+    self.generalMgr:DoReset()
+    self.generalMgr:SetSortList(self.quality, self.type)
+    if self.generalMgr:GetRoleSortListCount() > 0 then
+        if self.scrollController then
+            self.scrollController:SetScrollItemData()
+        end
+    else
+        print("您还没有当前类型的武将")
+    end
+end
+
+function GeneralController:OnQualityClick( )
+	-- self.type = CorpsType.All
+	if self.qualityBtn_name.text == GlobalText.GeneralAllText then
+		self.quality = QualityType.All
+	elseif self.qualityBtn_name.text == GlobalText.GeneralQualityTypeSSRText then
+		self.quality = QualityType.SSR
+	elseif self.qualityBtn_name.text == GlobalText.GeneralQualityTypeSRText then
+		self.quality = QualityType.SR
+	elseif self.qualityBtn_name.text == GlobalText.GeneralQualityTypeRText then
+		self.quality = QualityType.R
+    end
+
+    self:UpdateScrollItem()
+end
+
+function GeneralController:OnTypeClick( )
+    -- self.quality = QualityType.All
+    if self.typeBtn_name.text == GlobalText.GeneralAllText then
+        self.type = CorpsType.All
+	elseif self.typeBtn_name.text == GlobalText.GeneralAttackText then
+        self.type = CorpsType.Assault
+	elseif self.typeBtn_name.text == GlobalText.GeneralDefenseText then
+		self.type = CorpsType.Strong
+	elseif self.typeBtn_name.text == GlobalText.GeneralRadicalText then
+		self.type = CorpsType.Methods
+	elseif self.typeBtn_name.text == GlobalText.GeneralShooterText then
+        self.type = CorpsType.Weak
+    elseif self.typeBtn_name.text == GlobalText.GeneralMagicText then
+        self.type = CorpsType.Almighty
+    end
+
+    self:UpdateScrollItem()
+end
+
+--刷新界面数据
+function GeneralController:RefreshPanelData()
+    local generalData = self.generalMgr:GetGeneralDataSelectIndex()
+    if generalData then
+        self.quality_ssr_img.gameObject:SetActive(false)
+        self.quality_sr_img.gameObject:SetActive(false)
+        local starlevel = self.generalMgr:GetCurGeneralStarlevel()
+        if self.starList then
+            for key, value in ipairs(self.starList) do
+                if key <= starlevel  then
+                    value.gameObject:SetActive(true)
+                else
+                    value.gameObject:SetActive(false)
+                end
+            end
+        end
+
+        if generalData.growClass ==  QualityType.R then
+            self.quality_sr_img.gameObject:SetActive(true)
+        elseif generalData.growClass ==  QualityType.SR then
+            self.quality_sr_img.gameObject:SetActive(true)
+        elseif generalData.growClass ==  QualityType.SSR then
+            self.quality_ssr_img.gameObject:SetActive(true)
+        end
+        if self.generalMgr:isActivation() then
+            self.quality_ssr_img.SpriteName = EActivatedQualityIcon[generalData.growClass]
+            self.quality_sr_img.SpriteName = EActivatedQualityIcon[generalData.growClass]
+        else
+            self.quality_ssr_img.SpriteName = EInactivatedQualityIcon[generalData.growClass]
+            self.quality_sr_img.SpriteName = EInactivatedQualityIcon[generalData.growClass]
+        end
+
+        self.powerValue.Text = generalData.combatScore_Temp
+        self.general_name.text = generalData.name
+        self.tip_text.text = MultiLanguageHelper.ParseHeroCorpsTypeIntroduceToString(generalData.corps)
+        self.general_level.text = MultiLanguageHelper.GetString( GlobalText.GeneralLevelText, generalData.lvTemp )
+        self.type_img.SpriteName = EGeneralCorps[generalData.corps]
+        local roleModelData = self.generalMgr:GetGeneralRoleModelData(generalData.roleModel)
+        if roleModelData and roleModelData.MiddleDraw then
+            -- self.general_icon.RawImagePath = string.format(GameConstValue.IconImagePrePath, roleModelData.MiddleDraw)
+        end
+    end
+end
+
+--装备
+function GeneralController:OnClickEquipBtn()
+    print("该功能未开启")
+end
+
+--星宿
+function GeneralController:OnClickConstellationBtn()
+    print("该功能未开启")
+end
+
+--强化
+function GeneralController:OnClickIntensifyBtn()
+    self.uiMgr:OpenPanel("GeneralStrengthenPanenl",GameConstValue.NameUIGeneralStrengthenPanelPath,LuaUIPanelLevel.Default,LuaUIPanelRelation.Exclusion)
+end
+
+--详情
+function GeneralController:OnClickDetailBtn()
+    self.uiMgr:OpenPanel("GeneralInfoPanenl",GameConstValue.NameUIGeneralInfoPanelPath,LuaUIPanelLevel.Top ,LuaUIPanelRelation.Exclusion)
+end
+
+function GeneralController:OnClickPanel()
+    self.generalMgr:DoReset()
+    self.uiMgr:ClosePanel("GeneralPanel",LuaUIPanelLevel.Default)
+    self.uiMgr:OpenPanel("MainPanel",GameConstValue.NameUIMainPanelPath,LuaUIPanelLevel.Main,LuaUIPanelRelation.Exclusion)
+end

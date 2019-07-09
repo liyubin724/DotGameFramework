@@ -1,0 +1,51 @@
+----private----
+LuaEventDispatcher = Class(function(self)
+    self.events = {}
+end)
+
+----public----
+function LuaEventDispatcher:Trigger(eventID,...)
+    local eventList = self.events[eventID]
+    if eventList then
+        for i = 1, #(eventList) do
+            eventList[i]:Invoke(...)
+        end
+    end
+end
+
+function LuaEventDispatcher:Register(eventID,callbackData)
+    if callbackData then
+        local eventList = self.events[eventID]
+        if not eventList then
+            eventList = {}
+            self.events[eventID] = eventList
+        end
+
+        table.insert(eventList,callbackData)
+    else
+        LuaDebugLogger.LogWarning("LuaEventDispatcher::Register->callbackData is Nil")
+    end
+end
+
+function LuaEventDispatcher:Unregister(eventID,callbackData)
+    if callbackData then
+        local eventList = self.events[eventID]
+        if eventList then
+            for i = #(eventList), 1,-1 do
+                if eventList[i]:Equal(callbackData) then
+                    table.remove(eventList,i)
+                end
+            end
+        end
+    else
+        LuaDebugLogger.LogWarning("LuaEventDispatcher::Unregister->callbackData is Nil")
+    end
+end
+
+function LuaEventDispatcher:DoReset()
+    self.events = {}
+end
+
+function LuaEventDispatcher:DoDispose()
+    self:DoReset()
+end

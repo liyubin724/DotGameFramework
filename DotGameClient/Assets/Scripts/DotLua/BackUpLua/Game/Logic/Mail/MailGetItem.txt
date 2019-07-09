@@ -1,0 +1,17 @@
+require "Game/Core/UI/LoopScroll/LoopScrollItem"
+
+MailGetItem = Class(LoopScrollItem,function(self)
+    self.index = 0
+end)
+
+function MailGetItem:OnClickItem()
+
+end
+
+function MailGetItem:SetItemData(index)
+
+end
+
+function MailGetItem:SetSelect(clickIndex)
+
+end

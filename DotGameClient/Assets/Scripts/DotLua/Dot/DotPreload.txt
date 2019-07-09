@@ -1,0 +1,13 @@
+require("Dot/Core/Util/Class")
+require("Dot/Core/Util/CallbackData")
+
+if IsDebug then
+    EasyJson = require("Dot/Core/Util/easyjson")
+end
+require("Dot/Core/Util/table")
+
+require("Dot/Core/Event/LuaEventDispatcher")
+require("Dot/Core/Debug/LuaDebugLogger")
+require("Dot/Core/Config/ConfigDatabase")
+
+require("Dot/Core/LuaManager")

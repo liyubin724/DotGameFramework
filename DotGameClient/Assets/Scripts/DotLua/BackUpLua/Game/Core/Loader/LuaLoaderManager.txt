@@ -1,0 +1,205 @@
+local CS_GameAsset = CS.Game.Core.Loader.GameAsset
+local CS_GameObjectHandler = CS.Game.Core.Loader.GameObjectHandler
+
+AssetLoaderPriorityType =
+{
+    Low = 1,
+    Default = 2,
+    High =3,
+}
+
+-----private----
+LuaLoaderData = Class(function(self)
+    self.loaderIndex = -1
+    self.finishCallback = nil
+    self.progressCallback = nil
+    self.isInstantiate = false
+end)
+
+function LuaLoaderData:SetData(loaderIndex,finishCallback,progressCallback,isInstantiate)
+    self.loaderIndex = loaderIndex
+    self.finishCallback = finishCallback
+    self.progressCallback = progressCallback
+    self.isInstantiate = isInstantiate or false
+end
+
+function LuaLoaderData:DoReset()
+    self.loaderIndex = -1
+    self.finishCallback = nil
+    self.progressCallback = nil
+    self.isInstantiate = false
+end
+
+----private---
+LuaLoaderManager = Class(function(self)
+    self.loadingAssetDic = {}
+    self.unusedLoaderDataList  = {}
+
+    CS_GameAsset.DefaultFinishCallback = LuaLoaderManager.OnAssetLoadFinish
+    CS_GameAsset.DefaultProgressCallback = LuaLoaderManager.OnAssetLoadProgress
+    CS_GameAsset.DefaultBatchFinishCallback = LuaLoaderManager.OnBatchAssetLoadFinish
+    CS_GameAsset.DefaultBatchProgressCallback = LuaLoaderManager.OnBatchAssetLoadProgress
+end)
+
+----public----
+function LuaLoaderManager:LoadAsset(assetPath)
+    return CS_GameAsset.LoadAsset(assetPath)
+end
+
+function LuaLoaderManager:LoadAssetAndInstantiateGO(assetPath)
+    local gameObj = CS_GameAsset.LoadAsset(assetPath)
+    return CS_GameObjectHandler.Instantiate(assetPath,gameObj)
+end
+
+function LuaLoaderManager:LoadBatchAsset(assetPathTable)
+    return CS_GameAsset.LoadBatchAsset(assetPathTable)
+end
+
+function LuaLoaderManager:LoadBatchAssetAndInstantiateGO(assetPathTable)
+    local gameObjs = CS_GameAsset.LoadBatchAsset(assetPathTable)
+    if not gameObjs or gameObjs.Length == 0 then
+        return nil
+    end
+
+    local gos = {}
+    for i = 1, #assetPathTable do
+        if gameObjs[i-1]:IsNull() then
+            table.insert(gos,nil)
+        else
+            local go = CS_GameObjectHandler.Instantiate(assetPathTable[i],gameObjs[i-1])
+            table.insert(gos,go)
+        end
+    end
+    return gos
+end
+
+function LuaLoaderManager:LoadAssetAsync(assetPath,finishCallback,progressCallback,priority)
+    local loaderIndex = CS_GameAsset.LoadAssetAsync(assetPath,priority or AssetLoaderPriorityType.Default)
+
+    self:AddLoaderData(loaderIndex,finishCallback,progressCallback,false)
+    return loaderIndex
+end
+
+function LuaLoaderManager:LoadAssetAsyncAndInstantiateGO(assetPath,finishCallback,progressCallback,priority)
+    local loaderIndex = CS_GameAsset.LoadAssetAsync(assetPath,priority or AssetLoaderPriorityType.Default)
+    self:AddLoaderData(loaderIndex,finishCallback,progressCallback,true)
+    return loaderIndex
+end
+
+function LuaLoaderManager:LoadBatchAssetAsync(assetPaths,finishCallback,progressCallback,priority)
+        local loaderIndex = CS_GameAsset.LoadBatchAssetAsync(assetPaths,priority or AssetLoaderPriorityType.Default)
+
+        self:AddLoaderData(loaderIndex,finishCallback,progressCallback,false)
+        return loaderIndex
+end
+
+function LuaLoaderManager:LoadBatchAssetAsyncAndInstantiateGO(assetPaths,finishCallback,progressCallback,priority)
+    local loaderIndex = CS_GameAsset.LoadBatchAssetAsync(assetPaths,priority or AssetLoaderPriorityType.Default)
+
+    self:AddLoaderData(loaderIndex,finishCallback,progressCallback,true)
+    return loaderIndex
+end
+
+function LuaLoaderManager:CancelLoad(index)
+    if self:RemoveLoaderData(index) then
+        CS_GameAsset.Unload(index)
+    end
+end
+
+----private----
+function LuaLoaderManager:DoReset()
+    local keys = table.keys(self.loadingAssetDic)
+    for i = 1, #keys do
+        self:CancelLoad(keys[i])
+    end
+end
+
+function LuaLoaderManager:DoDispose()
+    self:DoReset()
+    self.unusedLoaderDataList = nil
+    self.loadingAssetDic = nil
+end
+
+function LuaLoaderManager:AddLoaderData(loaderIndex,finishCallback,progressCallback,isInstantiate)
+    local loaderData = nil
+    if #(self.unusedLoaderDataList) > 0 then
+        loaderData = self.unusedLoaderDataList[1]
+        table.remove(self.unusedLoaderDataList,1)
+    else
+        loaderData = LuaLoaderData()
+    end
+    loaderData:SetData(loaderIndex,finishCallback,progressCallback,isInstantiate)
+
+    self.loadingAssetDic[loaderIndex] = loaderData
+end
+
+function LuaLoaderManager:RemoveLoaderData(index)
+    local loaderData = self.loadingAssetDic[index]
+    if loaderData then
+        self.loadingAssetDic[index] = nil
+        loaderData:DoReset()
+        table.insert(self.unusedLoaderDataList,loaderData)
+
+        return true
+    end
+    return false
+end
+
+----private static----
+function LuaLoaderManager.OnAssetLoadFinish(assetIndex,assetPath,uObj)
+    local loaderMgr = LuaGameManager.GetInstance():GetLoaderMgr()
+    local loaderData = loaderMgr.loadingAssetDic[assetIndex]
+    if loaderData then
+        if loaderData.finishCallback and loaderData.finishCallback:IsValid() then
+            local callbackData = uObj
+            if loaderData.isInstantiate then
+                callbackData = CS_GameObjectHandler.Instantiate(assetPath,uObj)
+            end
+
+            loaderData.finishCallback:Invoke(assetIndex,assetPath,callbackData)
+        end
+
+        loaderMgr:RemoveLoaderData(assetIndex)
+    end
+end
+
+function LuaLoaderManager.OnAssetLoadProgress(assetIndex,assetPath,progress)
+    local loaderMgr = LuaGameManager.GetInstance():GetLoaderMgr()
+    local loaderData = loaderMgr.loadingAssetDic[assetIndex]
+    if loaderData and loaderData.progressCallback and loaderData.progressCallback:IsValid() then
+        loaderData.progressCallback:Invoke(assetIndex,assetPath,progress)
+    end
+end
+
+function LuaLoaderManager.OnBatchAssetLoadFinish(assetIndex,assetPathTable,uObjTable)
+    local loaderMgr = LuaGameManager.GetInstance():GetLoaderMgr()
+    local loaderData = loaderMgr.loadingAssetDic[assetIndex]
+    if loaderData then
+        if loaderData.finishCallback and loaderData.finishCallback:IsValid() then
+            local callbackData = uObjTable
+            if loaderData.isInstantiate then
+                callbackData = {}
+                for i = 1, assetPathTable.Length do
+                    if uObjTable[i-1]:IsNull() then
+                        table.insert(gos,nil)
+                    else
+                        local go = CS_GameObjectHandler.Instantiate(assetPathTable[i-1],uObjTable[i-1])
+                        table.insert(callbackData,go)
+                    end
+                end
+            end
+
+            loaderData.finishCallback:Invoke(assetIndex,assetPathTable,callbackData)
+        end
+
+        loaderMgr:RemoveLoaderData(assetIndex)
+    end
+end
+
+function LuaLoaderManager.OnBatchAssetLoadProgress(assetIndex,assetPathTable,progressTable)
+    local loaderMgr = LuaGameManager.GetInstance():GetLoaderMgr()
+    local loaderData = loaderMgr.loadingAssetDic[assetIndex]
+    if loaderData and loaderData.progressCallback and loaderData.progressCallback:IsValid() then
+        loaderData.progressCallback:Invoke(assetIndex,assetPathTable,progressTable)
+    end
+end

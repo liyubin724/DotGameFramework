@@ -1,0 +1,54 @@
+CurrencyController = Class(function(self)
+
+end)
+
+function CurrencyController:DoAwake()
+    -- EventAction.UpdateMoneyInfo = EventAction.UpdateMoneyInfo + {self,self.OnUpdateMoney}
+end
+
+function CurrencyController:OnDestroy()
+    -- EventAction.UpdateMoneyInfo = EventAction.UpdateMoneyInfo - {self,self.OnUpdateMoney}
+end
+
+function CurrencyController:DoStart()
+    self:OnUpdateMoney()
+end
+
+--click event
+function CurrencyController:OnClickEnergy()
+    -- GameManager.LogicController:GetItem(100002,10)
+end
+
+function CurrencyController:OnClickGold()
+    -- GameManager.LogicController:GetItem(100005,10)
+end
+
+function CurrencyController:OnClickDiamond()
+    -- GameManager.LogicController:GetItem(100003,100)
+end
+
+function CurrencyController:OnUpdateMoney()
+    local dataMgr = LuaGameManager.GetInstance():GetModelMgr()
+    if self.energyLabel then
+        self.energyLabel.text = self:GetFormatValue(dataMgr:GetDataByKeys("bag","bagMap","100002","count"))
+    end
+    if self.goldLabel then
+        self.goldLabel.text = self:GetFormatValue(dataMgr:GetDataByKeys("bag","bagMap","100005","count"))
+    end
+    if self.diamondLabel then
+        self.diamondLabel.text = self:GetFormatValue(dataMgr:GetDataByKeys("bag","bagMap","100003","count"))
+    end
+end
+
+function CurrencyController:GetFormatValue(logicNum)
+    local num = logicNum
+    if logicNum >= 100000000 then
+        local num1 = num/100000000.0
+        return string.format("%.1f亿",num1)
+    end
+    if logicNum >= 1000000 then
+        local num1 = num/10000.0
+        return string.format("%.1f万",num1)
+    end
+    return tostring(math.floor(num))
+end

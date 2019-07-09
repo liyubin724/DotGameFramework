@@ -1,0 +1,64 @@
+ChapterController = Class(function(self)
+
+end)
+
+function ChapterController:DoAwake()
+    self.itemList = {self.item1,self.item2,self.item3,self.item4}
+    self.enemyList = {self.enemy1,self.enemy2,self.enemy3}
+end
+
+function ChapterController:DoStart()
+    local chapterMgr = LuaGameManager.GetInstance():GetLogicMgr():GetChapterMgr()
+    local fightChapterId = chapterMgr:GetCurFightChapterId()
+    local ChapterData = LuaGameManager.GetInstance():GetConfigMgr():GetDataByNameAndID("MainStage",fightChapterId)
+    if ChapterData then
+        if self.name then
+            self.name.text = ChapterData.stageName
+        end
+        if self.desc then
+            self.desc.text = ChapterData.stageIntroduce
+        end
+        local rewardData = RewardUtil:GetRewardConfigFixedData(ChapterData.stageReward)
+        for i=1,#self.itemList do
+            local id = nil
+            local count = nil
+            local data = rewardData[i]
+            if data then
+                id = RewardUtil:GetIDByRewardData(data)
+                count = data.amount
+            end
+            self.itemList[i]:InitItem(id,count)
+        end
+        local heroList = ChapterData.stageHero
+        for i=1,#self.enemyList do
+            if i<= #heroList then
+                self.enemyList[i]:SetData(heroList[i])
+            else
+                self.enemyList[i]:SetData(nil)
+            end
+        end
+    end
+end
+
+function ChapterController:OnDestroy()
+
+end
+
+function ChapterController:OnClickFight()
+    -- local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    -- uiMgr:ClosePanel("ChapterPanel",LuaUIPanelLevel.Main)
+    local loadingMgr = LuaGameManager.GetInstance():GetLoadingMgr()
+    loadingMgr:ChangeScene("Battlemap_01",nil,CallbackData(self,self.FightCallBack))
+end
+
+function ChapterController:FightCallBack()
+    -- local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    -- uiMgr:OpenPanel("EmbattlePanel",GameConstValue.NameUIEmbattlePanelPath,LuaUIPanelLevel.Main,LuaUIPanelRelation.Exclusion)
+    local embattleMgr = LuaGameManager.GetInstance():GetLogicMgr():GetEmbattleMgr()
+    embattleMgr:InitEmbattleGround()
+end
+
+function ChapterController:OnClickBack()
+    LuaGameManager.GetInstance():GetUIMgr():ClosePanel("ChapterPanel",LuaUIPanelLevel.Main)
+    LuaGameManager.GetInstance():GetEventMgr():Trigger(GameEventID.GE_TRIGGER_CHAPTER_CAMERA)
+end

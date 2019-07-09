@@ -1,0 +1,11 @@
+GeneralStrengthenPanel = Class(LuaUIPanel,function(self)
+
+end)
+
+
+function GeneralStrengthenPanel:DoShow(openData,isImmediately)
+    self._base.DoShow(self,openData,isImmediately)
+    if self.generalLevelController then
+        self.generalLevelController:DoShow(openData)
+    end
+end

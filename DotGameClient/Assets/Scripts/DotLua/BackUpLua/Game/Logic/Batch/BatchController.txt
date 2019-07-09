@@ -1,0 +1,89 @@
+BatchController = Class(function(self)
+    self.batchMgr = LuaGameManager.GetInstance():GetLogicMgr():GetBatchMgr()
+end)
+
+function BatchController:DoShow()
+    self:InitPanel()
+end
+
+function BatchController:InitPanel()
+    self.buttonType = self.batchMgr:GetButtonType()
+    if self.buttonType == EItemButtonType.Use then
+        self.panel_title.text = GlobalText.BatchUse
+        self.btn_name.text = GlobalText.BatchBtnUse
+        self.selling_price:SetActive(false)
+    else
+        self.panel_title.text = GlobalText.BatchSell
+        self.btn_name.text = GlobalText.BatchBtnSell
+        self.selling_price:SetActive(true)
+    end
+
+    local itemData = self.batchMgr:GetItemData()
+    if itemData then
+        local itemCount = self.batchMgr:GetItemCount()
+        self.item_name.text = itemData.name
+        self.item_des.text = itemData.desc
+        self.quality_img.SpriteName = EPropsClassTex[itemData.quality]
+        self.have_num.text = itemCount
+        self.totalNum = itemCount
+        self.useNum = 1
+        self.numer_slider.value = 0
+        self:ShowBatchText()
+        if self.icon then
+            self.icon.RawImagePath = string.format(GameConstValue.IconImagePrePath,itemData.icon)
+        end
+    end
+end
+
+function BatchController:ShowBatchText()
+    --防止数字上下越界，不为整数
+	if self.useNum < 1 then
+		self.useNum = 1
+	end
+	if self.useNum > self.totalNum then
+		self.useNum = self.totalNum
+    end
+    
+    self.item_number.text = MultiLanguageHelper.GetString( GlobalText.BatchVauleText, math.floor(self.useNum), self.totalNum )
+    local itemData = self.batchMgr:GetItemData()
+    if itemData then
+        if self.buttonType == EItemButtonType.Sell then
+            self.price.text = math.floor(self.useNum) * itemData.sellnumber
+        end
+    end
+end
+
+--更改用量显示
+function BatchController:ShowUseNum()
+    self.useNum = self.useNum + 0.1
+	self:ShowBatchText()
+    self.numer_slider.value = self.useNum / self.totalNum;
+end
+
+--减少
+function BatchController:OnDecreaseBtnClick( )
+	self.useNum = self.useNum - 1;
+	self:ShowUseNum()
+end
+
+--增加
+function BatchController:OnIncreaseBtnClick( )
+	self.useNum = self.useNum + 1;
+	self:ShowUseNum()
+end
+
+--滑动
+function BatchController:OnSliderd()
+    self.useNum = self.totalNum * self.numer_slider.value;
+    self:ShowBatchText()
+end
+
+--使用按钮
+function BatchController:OnClickSure()
+    self.batchMgr:Confirm(math.floor(self.useNum))
+end
+
+function BatchController:OnClickClose()
+    local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    uiMgr:ClosePanel("BatchPanel",LuaUIPanelLevel.Top)
+end

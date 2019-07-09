@@ -1,0 +1,10 @@
+EmbattlePanel = Class(LuaUIPanel,function(self)
+
+end)
+
+function EmbattlePanel:DoShow(openData,isImmediately)
+    self._base.DoShow(self,openData,isImmediately)
+    if self.controller then
+        self.controller:DoShow(openData)
+    end
+end

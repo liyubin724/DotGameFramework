@@ -1,0 +1,23 @@
+require "Game/Core/UI/LoopScroll/LoopScrollController"
+StoreScrollController = Class(LoopScrollController,function(self)
+    self.listData = {}
+end)
+
+function StoreScrollController:SetScrollItemData()
+    self.scrollView.TotalCount = 8
+end
+
+function StoreScrollController:SetItemData(item,index)
+    self.listData[index] = item
+    item:SetItemData(index)
+end
+
+function StoreScrollController:SetSelect(item,clickIndex)
+    item:SetSelect(clickIndex)
+end
+
+function StoreScrollController:GetItemByIndex(index)
+    if self.listData then
+        return self.listData[index]
+    end
+end

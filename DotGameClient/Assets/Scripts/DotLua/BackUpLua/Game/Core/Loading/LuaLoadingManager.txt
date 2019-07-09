@@ -1,0 +1,94 @@
+local CS_SceneManager = CS.UnityEngine.SceneManagement.SceneManager
+local CS_Resources = CS.UnityEngine.Resources
+local CS_GC = CS.System.GC
+
+LuaLoadingManager = Class(function(self)
+    self:OnInit()
+    self.uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    self.eventMgr = LuaGameManager.GetInstance():GetEventMgr()
+end)
+
+----private----
+function LuaLoadingManager:DoReset()
+    self:OnInit()
+end
+
+function LuaLoadingManager:DoDispose()
+
+end
+
+function LuaLoadingManager:DoTick()
+    if not self.targetSceneName or self.targetSceneName == "" then
+        return
+    end
+    if not self.uiMgr:PanelIsActive("LoadingPanel",LuaUIPanelLevel.Top) then
+        self.uiMgr:OpenPanel("LoadingPanel",GameConstValue.NameUILoadingPanelPath,LuaUIPanelLevel.Top,LuaUIPanelRelation.Exclusion)
+    else
+        if not self.isLoadingSceneDone then
+            if not self.loadingSceneAsync then
+                self.loadingSceneAsync = CS_SceneManager.LoadSceneAsync(GameConstValue.NameSceneLoadingScene)
+            else
+                if self.loadingSceneAsync.isDone then
+                    self.isLoadingSceneDone = true
+                    self.loadingSceneAsync = nil
+                    CS_GC.Collect()
+                    CS_Resources.UnloadUnusedAssets()
+                    CS_GC.Collect()
+
+                    self.progress = 0.1
+                end
+            end
+        else
+            if not self.isTargetSceneDone then
+                if not self.targetSceneAsync then
+                    self.targetSceneAsync = CS_SceneManager.LoadSceneAsync(self.targetSceneName)
+                else
+                    self.progress = 0.1+math.min(self.targetSceneAsync.progress,0.9)
+                    if self.targetSceneAsync.isDone then
+                        self.targetSceneAsync = nil
+                        self.isTargetSceneDone = true
+                    end
+                end
+            else
+                self.progress = 1
+                self.uiMgr:ClosePanel("LoadingPanel",LuaUIPanelLevel.Top)
+                self.isLoading = false
+                self.isTargetSceneDone = false
+                if self.onFinishedCallBack then
+                    self.onFinishedCallBack:Invoke()
+                end
+                self.isLoadCompleted = true
+                self.targetSceneName = nil
+            end
+        end
+    end
+end
+
+function LuaLoadingManager:OnInit()
+    self.progress = 0
+    self.isLoading = false
+    self.isLoadCompleted = false
+    self.isLoadingSceneDone = false
+    self.targetSceneName = nil
+    self.isTargetSceneDone = false
+    self.onFinishedCallBack = nil
+    self.loadingDataArray = nil
+    self.loadingSceneAsync = nil
+end
+
+----public-----
+function LuaLoadingManager:ChangeScene(sceneName,loadingDataArray,finishCallBack)
+    self.isLoadCompleted = false
+    self.isLoading = false
+    self.isLoadingSceneDone = false
+    self.isTargetSceneDone = false
+    self.loadingDataArray = loadingDataArray
+    self.progress = 0
+    self.uiMgr:OpenPanel("LoadingPanel",GameConstValue.NameUILoadingPanelPath,LuaUIPanelLevel.Top,LuaUIPanelRelation.Exclusion)
+    self.targetSceneName = sceneName
+    self.onFinishedCallBack = finishCallBack
+end
+
+function LuaLoadingManager:GetLoadingProgress()
+    return self.progress
+end

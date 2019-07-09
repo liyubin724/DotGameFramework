@@ -1,0 +1,20 @@
+require "Game/Core/UI/LoopScroll/LoopScrollController"
+EmbattleLoopController = Class(LoopScrollController,function(self)
+end)
+
+function EmbattleLoopController:SetScrollItemData(packType)
+    self.scrollView.TotalCount = 0
+    local embattleMgr = LuaGameManager.GetInstance():GetLogicMgr():GetEmbattleMgr()
+    local heroList = embattleMgr:GetHeroList()
+    if heroList then
+        self.scrollView.TotalCount = #heroList
+    end
+end
+
+function EmbattleLoopController:SetItemData(item,index)
+    item:SetItemData(index)
+end
+
+function EmbattleLoopController:SetSelect(item,clickIndex)
+    item:SetSelect(clickIndex)
+end

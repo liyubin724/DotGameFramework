@@ -1,0 +1,85 @@
+local CS_Unity = CS.UnityEngine
+local CS_ObjectHandler = CS.CS.Game.Logic.LogicHandler.ObjectHandler
+EmbattleController = Class(function(self)
+    self.embattleMgr = LuaGameManager.GetInstance():GetLogicMgr():GetEmbattleMgr()
+end)
+
+function EmbattleController:DoAwake()
+    local eventMgr = LuaGameManager.GetInstance():GetEventMgr()
+    eventMgr:Register(GameEventID.GE_UPDATE_EMBATTLE_DATA,CallbackData(self,self.UpdateHeroData))
+end
+
+function EmbattleController:DoStart()
+end
+
+function EmbattleController:DoShow(openData)
+    self:UpdateHeroData()
+end
+
+function EmbattleController:DoDisable()
+    self.embattleMgr:DestroyEmbattleGround()
+end
+
+function EmbattleController:UpdateHeroData()
+    local heroList = self.embattleMgr:GetHeroList()
+    local selectHeroIndex = self.embattleMgr:GetCurSelectHeroIndex()
+
+    if self.countName then
+        self.countName.text = string.format(GlobalText.EmbattleHeroText,tostring(8-#heroList))
+    end
+
+    if self.loopController then
+        self.loopController:SetScrollItemData()
+    end
+    local chapterMgr = LuaGameManager.GetInstance():GetLogicMgr():GetChapterMgr()
+    local curChapter = chapterMgr:GetCurFightChapterId()
+    local dataMgr = LuaGameManager.GetInstance():GetConfigMgr()
+    local chapterData = dataMgr:GetDataByNameAndID("MainStage",tostring(curChapter))
+    if chapterData then
+        for i=1,#self.enemyList do
+            local config = chapterData.npcConfig
+            local enemyId = -1
+            for j=1,#config do
+                local data = config[j]
+                if data.formationId == i then
+                    enemyId = data.npc
+                    break
+                end
+            end
+            if enemyId ~= -1 then
+                self.enemyList[i].gameObject:SetActive(true)
+                local enemyData = dataMgr:GetDataByNameAndID("NpcArmyValue",tostring(enemyId))
+                if enemyData then
+                    self.enemyList[i].SpriteName = EGeneralCorps[enemyData.crops]
+                end
+            else
+                self.enemyList[i].gameObject:SetActive(false)
+            end
+        end
+    end
+end
+
+function EmbattleController:DoDestroy()
+    local eventMgr = LuaGameManager.GetInstance():GetEventMgr()
+    eventMgr:Unregister(GameEventID.GE_UPDATE_EMBATTLE_DATA,CallbackData(self,self.UpdateHeroData))
+end
+
+--Click event
+function EmbattleController:OnClickFight()
+    
+end
+
+function EmbattleController:OnClickZuHe()
+    
+end
+
+function EmbattleController:OnClickBack()
+    self.embattleMgr:DestroyEmbattleGround()
+    local loadingMgr = LuaGameManager.GetInstance():GetLoadingMgr()
+    loadingMgr:ChangeScene("MainScene",nil,CallbackData(self,self.BackCallback))
+end
+
+function EmbattleController:BackCallback()
+    local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    uiMgr:OpenPanel("MainPanel",GameConstValue.NameUIMainPanelPath,LuaUIPanelLevel.Main,LuaUIPanelRelation.Exclusion)
+end

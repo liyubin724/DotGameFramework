@@ -1,0 +1,249 @@
+--- Created by heyuchang.
+--- DateTime: 2019/2/21
+---武将养成强化
+
+GeneralStrengthenController = Class(function(self)
+        self.generalMgr = LuaGameManager.GetInstance():GetLogicMgr():GetGeneralMgr()
+        self.uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    end
+)
+
+function GeneralStrengthenController:DoAwake()
+    if self.itemScrollController then
+        self.itemScrollController:SetScrollItemData()
+    end
+	LuaGameManager.GetInstance():GetEventMgr():Register(GameEventID.GE_UPDATE_General_HEAD_DATA,CallbackData(self,self.RefreshPanelData))
+end
+
+function GeneralStrengthenController:DoShow()
+    if self.scrollController then
+		self.scrollController:SetScrollItemData()
+	end
+    self:RefreshPanelData()
+end
+
+function GeneralStrengthenController:DoStart()
+    self.generalMgr:GetGeneralBtnType()
+end
+
+function GeneralStrengthenController:DoDestroy()
+	LuaGameManager.GetInstance():GetEventMgr():Unregister(GameEventID.GE_UPDATE_General_HEAD_DATA,CallbackData(self,self.RefreshPanelData))
+end
+
+--设置养成功能显隐
+function GeneralStrengthenController:SetStrengthenTypeData()
+	self.levelup.gameObject:SetActive(false)
+	self.general_upgrade.gameObject:SetActive(false)
+	self.general_starlevel.gameObject:SetActive(false)
+	if self.generalMgr:GetGeneralBtnType() == EGeneralStrengType.One then
+		self.levelup.gameObject:SetActive(true)
+	elseif self.generalMgr:GetGeneralBtnType() == EGeneralStrengType.Tow then
+		self.general_upgrade.gameObject:SetActive(true)
+	elseif self.generalMgr:GetGeneralBtnType() == EGeneralStrengType.Three then
+		self.general_starlevel.gameObject:SetActive(true)
+	elseif self.generalMgr:GetGeneralBtnType() == EGeneralStrengType.Four then
+		--self.levelup.gameObject:SetActive(true)
+	end
+end
+
+function GeneralStrengthenController:RefreshPanelData()
+    self.generalData = self.generalMgr:GetGeneralDataSelectIndex()
+    if self.generalData then
+        self.quality_ssr_img.gameObject:SetActive(false)
+        self.quality_sr_img.gameObject:SetActive(false)
+
+        local starlevel = self.generalMgr:GetCurGeneralStarlevel()
+        if self.starList then
+            for key, value in ipairs(self.starList) do
+                if key <= starlevel  then
+                    value.gameObject:SetActive(true)
+                else
+                    value.gameObject:SetActive(false)
+                end
+            end
+        end
+
+        if self.generalData.growClass ==  QualityType.R then
+            self.quality_sr_img.gameObject:SetActive(true)
+        elseif self.generalData.growClass ==  QualityType.SR then
+            self.quality_sr_img.gameObject:SetActive(true)
+        elseif self.generalData.growClass ==  QualityType.SSR then
+            self.quality_ssr_img.gameObject:SetActive(true)
+        end
+        if self.generalMgr:isActivation() then
+            self.quality_ssr_img.SpriteName = EActivatedQualityIcon[self.generalData.growClass]
+            self.quality_sr_img.SpriteName = EActivatedQualityIcon[self.generalData.growClass]
+        else
+            self.quality_ssr_img.SpriteName = EInactivatedQualityIcon[self.generalData.growClass]
+            self.quality_sr_img.SpriteName = EInactivatedQualityIcon[self.generalData.growClass]
+        end
+
+        self.powerValue.Text = self.generalData.combatScore_Temp
+        self.general_name.text = self.generalData.name
+        self.general_level.text = MultiLanguageHelper.GetString( GlobalText.GeneralLevelText, self.generalData.lvTemp )
+        self.type_img.SpriteName = EGeneralCorps[self.generalData.corps]
+
+        if self.generalMgr:GetGeneralBtnType() == EGeneralStrengType.One then
+            self:SetUplvlData()
+        elseif self.generalMgr:GetGeneralBtnType() == EGeneralStrengType.Tow then
+            self:SetpProData()
+        elseif self.generalMgr:GetGeneralBtnType() == EGeneralStrengType.Three then
+            self:SetUpStarData()
+        elseif self.generalMgr:GetGeneralBtnType() == EGeneralStrengType.Four then
+            self:SetFateData()
+        end
+
+        local roleModelData = self.generalMgr:GetGeneralRoleModelData(self.generalData.roleModel)
+        if roleModelData and roleModelData.MiddleDraw then
+            -- self.general_icon.RawImagePath = string.format(GameConstValue.IconImagePrePath, roleModelData.MiddleDraw)
+        end
+    end
+end
+
+--详情
+function GeneralStrengthenController:OnClickDetailBtn()
+    self.uiMgr:OpenPanel("GeneralInfoPanenl",GameConstValue.NameUIGeneralInfoPanelPath,LuaUIPanelLevel.Top ,LuaUIPanelRelation.Exclusion)
+end
+
+--官职预览
+function GeneralStrengthenController:OnClickPositionDetailsBtn()
+    self.uiMgr:OpenPanel("GeneralPositionDetailsPanel",GameConstValue.NameUIGeneralPositionDetailsPanelPath,LuaUIPanelLevel.Top ,LuaUIPanelRelation.Exclusion)
+end
+
+--升星预览
+function GeneralStrengthenController:OnClickUpStarPreviewBtn()
+    self.uiMgr:OpenPanel("GeneralUpStarPreviewPanel",GameConstValue.NameUIGeneralUpStarPreviewPath,LuaUIPanelLevel.Top ,LuaUIPanelRelation.Exclusion)
+end
+
+--武将预览
+function GeneralStrengthenController:OnClickGeneralPreviewBtn()
+    self.uiMgr:OpenPanel("GeneralPreviewPanel",GameConstValue.NameUIGeneralPreviewPanelPath,LuaUIPanelLevel.Top ,LuaUIPanelRelation.Exclusion)
+end
+
+--升级
+function GeneralStrengthenController:OnClickUplvl()
+	self.generalMgr:SetGeneralBtnType(EGeneralStrengType.One)
+    self:SetStrengthenTypeData()
+    self:SetUplvlData()
+end
+
+--官职
+function GeneralStrengthenController:OnClickUpProf()
+	self.generalMgr:SetGeneralBtnType(EGeneralStrengType.Tow)
+    self:SetStrengthenTypeData()
+    self:SetpProData()
+end
+
+--升星
+function GeneralStrengthenController:OnClickUpStar()
+	self.generalMgr:SetGeneralBtnType(EGeneralStrengType.Three)
+    self:SetStrengthenTypeData()
+    self:SetUpStarData()
+end
+
+--缘分
+function GeneralStrengthenController:OnClickFate()
+	self.generalMgr:SetGeneralBtnType(EGeneralStrengType.Four)
+    self:SetStrengthenTypeData()
+    self:SetFateData()
+end
+
+--升级数据
+function GeneralStrengthenController:SetUplvlData()
+
+    --四维
+    self.strong_value.text = self.generalMgr:GetGeneralStrongValueByStar()
+    self.intel_value.text = self.generalMgr:GetGeneralIntelValueByStar()
+    self.political_value.text = self.generalMgr:GetGeneralPoliticalValueByStar()
+    self.lead_value.text = self.generalMgr:GetGeneralLeadValueByStar()
+
+    --属性
+    self.atk_value.text = self.generalMgr:GetGeneralAttrAtk()
+    self.def_value.text = self.generalMgr:GetGeneralAttrDef()
+    self.hp_value.text = self.generalMgr:GetGeneralAttrHp()
+
+    self.corps_type.text = MultiLanguageHelper.ParseHeroCorpsTypeToString(self.generalData.corps)
+    self.corps_num.text = MultiLanguageHelper.GetString("*%d", self.generalData.membersNum)
+    self.upgrade_level.text = MultiLanguageHelper.GetString( GlobalText.GeneralLevelText, self.generalData.lvTemp )
+
+    local skillData1 = self.generalMgr:GetGeneralTeamSkillByType(TeamSkillType.One)
+    if skillData1 then
+        self.skill1_name.text = skillData1.skillName
+        if skillData1.icon then
+            self.skill1_icon.RawImagePath = string.format(GameConstValue.IconImagePrePath, skillData1.icon) 
+        end  
+    end
+   
+    local skillData2 = self.generalMgr:GetGeneralTeamSkillByType(TeamSkillType.Tow)
+    if skillData2 then
+        self.skill2_name.text = skillData2.skillName
+        if skillData2.icon then
+            self.skill2_icon.RawImagePath = string.format(GameConstValue.IconImagePrePath, skillData2.icon) 
+        end  
+    end
+
+    local skillData3 = self.generalMgr:GetGeneralTeamSkillByType(TeamSkillType.Three)
+    if skillData3 then
+        self.skill3_name.text = skillData3.skillName
+        if skillData3.icon then
+            self.skill3_icon.RawImagePath = string.format(GameConstValue.IconImagePrePath, skillData3.icon) 
+        end  
+    end
+end
+
+function GeneralStrengthenController:OnClickSkill(arg)
+    local skillData = self.generalMgr:GetGeneralTeamSkillByType(arg)
+    if skillData then
+        LuaGameManager.GetInstance():GetLogicMgr():GetSkillTipsMgr():InitData(skillData.tag)
+    end
+end
+
+--官职数据
+function GeneralStrengthenController:SetpProData()
+
+end
+
+--升星数据
+function GeneralStrengthenController:SetUpStarData()
+    local starlevel = self.generalMgr:GetCurGeneralStarlevel()
+    if self.starlevelList then
+        for key, value in ipairs(self.starlevelList) do
+            if key <= starlevel  then
+                value.gameObject:SetActive(true)
+            else
+                value.gameObject:SetActive(false)
+            end
+        end
+    end
+
+	--四维
+    self.wuValue1.text = self.generalMgr:GetGeneralStrongValueByStar()
+    self.zhiValue1.text = self.generalMgr:GetGeneralIntelValueByStar()
+    self.zhengValue1.text = self.generalMgr:GetGeneralPoliticalValueByStar()
+    self.tongValue1.text = self.generalMgr:GetGeneralLeadValueByStar()
+
+    self.wuValue2.text = self.generalMgr:GetGeneralStrongValueByStar(starlevel + 1)
+    self.zhiValue2.text = self.generalMgr:GetGeneralIntelValueByStar(starlevel + 1)
+    self.zhengValue2.text = self.generalMgr:GetGeneralPoliticalValueByStar(starlevel + 1)
+    self.tongValue2.text = self.generalMgr:GetGeneralLeadValueByStar(starlevel + 1)
+end
+
+--缘分数据
+function GeneralStrengthenController:SetFateData()
+	
+end
+
+--训练按钮点击
+function GeneralStrengthenController:OnClickTrainBtn()
+	
+end
+
+--晋升按钮点击
+function GeneralStrengthenController:OnClickAdvancedBtn()
+	
+end
+
+function GeneralStrengthenController:OnClickPanel()
+    self.uiMgr:ClosePanel("GeneralStrengthenPanenl",LuaUIPanelLevel.Default)
+    self.uiMgr:OpenPanel("GeneralPanel",GameConstValue.NameUIGeneralPanelPath,LuaUIPanelLevel.Default,LuaUIPanelRelation.Exclusion)
+end

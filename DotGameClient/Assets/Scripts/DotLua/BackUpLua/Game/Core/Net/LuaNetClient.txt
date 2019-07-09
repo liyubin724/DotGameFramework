@@ -1,0 +1,287 @@
+NetClientCompressType= {
+    None = 0,
+    Snappy = 1,
+}
+
+NetClientDataError = {
+    UnknownError = -1,
+    NoError = 0,
+    InvalidOpCode = 1,
+    DecompressError = 2,
+    DecodeError = 3,
+    CheckParamError = 4,
+}
+
+NetClientError = {
+    ServerClosed = 4000,
+    ConnectFailed = 4001,
+    ConnectBroken = 4002,
+    Inactive = 4004,
+    SessionError = 4005,
+    SessionBeReplaced = 4006,
+    ReqTimeOut = 4100,
+    FatalError = 4999,
+}
+
+NetClientErrorDetail = {
+    ServerClosedDetail = 1,--服务器关闭，建议客户端返回登录页面
+    ConnectFailedDetail = 2,--客户端重连或者返回登录页面
+    ConnectBrokenDetail = 3,--C++网络层通过一次repair后，仍然失败返回
+    WriteErrorDetail = 4,--写数据错误
+    ReadErrorDetail = 5,--读数据错误
+    CRCCheckFailedDetail = 6,--服务器crc校验失败
+    SessionErrorDetail = 7,--session错误，建议客户端重新登录
+    SessionErrorBeReplaced = 8,--玩家被顶号了，区分开 server close 的 session error
+    TimeOutDetail = 9,--超时
+    InactiveDetail = 100,--long time in idle 心跳超时
+    EstablishErrorDetail = 101,--登录验证过程中发生错误
+}
+
+----private----
+LuaNetClientListener = Class(function(self,netClient)
+    self.netClient = netClient
+end)
+
+---client <pigeon.Client> 触发事件的pigeon客户端对象引用
+---errcode <integer> Errors
+---detail <integer> 错误描述
+function LuaNetClientListener:onError(client,errCode,detail)
+    if self.netClient then
+        local errorCallback = self.netClient:GetErrorCallback()
+        if errorCallback then
+            errorCallback:Invoke(self.netClient:GetNetType(),errCode,detail)
+        end
+    end
+end
+
+---client <pigeon.Client> 触发事件的pigeon客户端对象引用
+---firstConnect <boolean> 是否是首次连接
+function LuaNetClientListener:onConnected(client,firstConnect)
+    if self.netClient then
+        local connectCallback = self.netClient:GetConnectCallback()
+        if connectCallback then
+            connectCallback:Invoke(self.netClient:GetNetType(),firstConnect)
+        end
+    end
+end
+
+---client <pigeon.Client> 触发事件的pigeon客户端对象引用
+---request <integer> 请求id
+---method <integer> 消息id
+---params <byte[]> 参数数据
+function LuaNetClientListener:onRequested(client,request,method,params)
+    if self.netClient then
+        local errorCallback = self.netClient:GetErrorCallback()
+        if errorCallback then
+            errorCallback:Invoke(self.netClient:GetNetType(),request,method,params)
+        end
+    end
+end
+
+---client <pigeon.Client> 触发事件的pigeon客户端对象引用
+---event <integer> 事件id
+---data <bytes[]> 参数数据
+---timestamp <float> 时间戳
+function LuaNetClientListener:onNotified(client,event,data,timestamp)
+    if self.netClient then
+        local notifyCallback = self.netClient:GetNotifyCallback()
+        if notifyCallback then
+            notifyCallback:Invoke(self.netClient:GetNetType(),event,data,timestamp)
+        end
+    end
+end
+
+
+LuaNetClient = Class(function(self,netType,connectCallback,errorCallback,notifyCallback,requestCallback)
+    self.ip = nil
+    self.port = nil
+    self.client = nil
+    self.netType = netType
+
+    self.connectCallback = connectCallback
+    self.errorCallback = errorCallback
+    self.notifyCallback = notifyCallback
+    self.requestCallback = requestCallback
+end)
+
+----private----
+function LuaNetClient:GetNetType()
+    return self.netType
+end
+
+function LuaNetClient:CreateClient()
+    self.client = pigeon.createClient()
+    self.client.listener = LuaNetClientListener(self)
+end
+
+function LuaNetClient:GetConnectCallback()
+    return self.connectCallback
+end
+
+function LuaNetClient:GetErrorCallback()
+    return self.errorCallback
+end
+
+function LuaNetClient:GetNotifyCallback()
+    return self.notifyCallback
+end
+
+function LuaNetClient:GetRequestCallback()
+    return self.requestCallback
+end
+
+---设置心跳间隔时长，要在Client.connect(host, port)后调用
+function LuaNetClient:SetHeartbeatInterval(millisecond)
+    self.client.setHeartbeatInterval(millisecond)
+end
+
+---设置心跳超时时长，要在Client.connect(host, port)后调用
+function LuaNetClient:SetHeartbeatTimeout(millisecond)
+    self.client.setHeartbeatTimeout(millisecond)
+end
+
+---设置RTO范围，要在Client.connect(host, port)后调用
+function LuaNetClient:SetReqRTOBounds(lbound, ubound)
+    self.client.setReqRTOBounds(lbound, ubound)
+end
+
+---设置请求超时时长，要在Client.connect(host, port)后调用
+function LuaNetClient:SetReqTimeout(millisecond)
+    self.client.setReqTimeout(millisecond)
+end
+
+---设置网络线程loop时间间隔
+function LuaNetClient:SetLoopInterval(millisecond)
+    self.client.setLoopInterval(millisecond)
+end
+
+----public----
+function LuaNetClient:GetIP()
+    return self.ip
+end
+
+function LuaNetClient:GetPort()
+    return self.port
+end
+
+---host <string> 服务器主机
+---port <integer> 端口号
+function LuaNetClient:Connect(ip,port)
+    if self.client and self:IsValid() then
+        --TODO warning
+        return
+    end
+
+    if not self.client then
+        self:CreateClient()
+    end
+
+    self.ip = ip
+    self.port = port
+
+    self.client.connect(ip,port)
+    self:SetLoopInterval(10)
+    self:SetHeartbeatInterval(15000)
+    self:SetHeartbeatTimeout(30000)
+    self:SetReqRTOBounds(1000,3000)
+    self:SetReqTimeout(3000)
+end
+
+function LuaNetClient:Request(msgID,dataBytes,callback)
+    if self:IsValid() then
+        self.client.request(msgID,dataBytes,callback)
+    end
+end
+
+function LuaNetClient:Response(msgID,compressType,err,dataBytes)
+    if self:IsValid() then
+        self.client.response(msgID,compressType,err,dataBytes)
+    end
+end
+
+function LuaNetClient:Notify(msgID,dataBytes)
+    if self:IsValid() then
+        self.client.Notify(msgID,dataBytes)
+    end
+end
+
+function LuaNetClient:Close()
+    self.client.close()
+    self.client = nil
+end
+
+function LuaNetClient:IsValid()
+    return self.client ~= nil and self.client.isvalid()
+end
+
+---获取心跳间隔时长
+function LuaNetClient:GetHeartbeatInterval()
+    return self.client.getHeartbeatInterval()
+end
+
+---获取心跳超时时长
+function LuaNetClient:GetHeartbeatTimeout()
+    return self.client.getHeartbeatTimeout()
+end
+
+---获取请求超时时长
+function LuaNetClient:GetReqTimeout()
+    return self.client.getReqTimeout()
+end
+
+---获取最大请求延迟
+function LuaNetClient:GetMaxReqDelay()
+    return self.client.getMaxReqDelay()
+end
+
+---获取平均请求延迟
+function LuaNetClient:GetAvgReqDelay()
+    return self.client.getAvgReqDelay()
+end
+
+---获取远端时间戳
+function LuaNetClient:RemoteTimestamp()
+    return self.client.remoteTimestamp()
+end
+
+---获取远端时间
+function LuaNetClient:RemoteTimeMillis()
+    return self.client.remoteTimeMillis()
+end
+
+---获取远端时间
+function LuaNetClient:RemoteTimescale()
+    return self.client.remoteTimescale()
+end
+
+---重置时间矫正器
+function LuaNetClient:TimeCorrectorReset()
+    return self.client.timeCorrectorReset()
+end
+
+---重置时间矫正器
+function LuaNetClient:GetCryptoConfig()
+    return self.client.getCryptoConfig()
+end
+
+---获取加密类型
+function LuaNetClient:GetCryptoType()
+    return self.client.getCryptoType()
+end
+
+function LuaNetClient:DoDispose()
+    if self:IsValid() then
+        self:Close()
+    end
+
+    self.client = nil
+    self.connectCallback = nil
+    self.errorCallback = nil
+    self.notifyCallback = nil
+    self.requestCallback = nil
+    self.ip = nil
+    self.port = nil
+    self.netType = nil
+end
+
+

@@ -1,0 +1,17 @@
+require "Game/Core/UI/LoopScroll/LoopScrollController"
+GeneralUpLevelScrollController = Class(LoopScrollController,function(self)
+    self.listData = {}
+end)
+
+function GeneralUpLevelScrollController:SetScrollItemData(packType)
+    self.scrollView.TotalCount = 4
+end
+
+function GeneralUpLevelScrollController:SetItemData(item,index)
+    -- print("itemIndex", index)
+    item:SetItemData(index)
+end
+
+function GeneralUpLevelScrollController:SetSelect(item,clickIndex)
+    item:SetSelect(clickIndex)
+end

@@ -1,0 +1,74 @@
+require "Game/Core/UI/LoopScroll/LoopScrollItem"
+
+GeneralStrengthenHeadItem = Class(LoopScrollItem,function(self)
+    self.index = 0
+    self.generalMgr = LuaGameManager.GetInstance():GetLogicMgr():GetGeneralMgr()
+end)
+
+function GeneralStrengthenHeadItem:SetItemData(index)
+    if not index then
+        return
+    end
+    self.index = index
+    self.select_img.gameObject:SetActive(false)
+    local generalData = self.generalMgr:GetGeneralData(index)
+    if generalData then
+        self.type_img.SpriteName = EGeneralCorps[generalData.corps]
+        self.quality_img.SpriteName = EGeneralHeadQuality[generalData.growClass]
+        self.select_img.SpriteName = EGeneralHeadQualitySelect[generalData.growClass]
+        if self.generalMgr:isCondition() then
+            
+        end
+
+        if self.starList then
+            for key, value in ipairs(self.starList) do
+                if key <= generalData.starTemp  then
+                    value.gameObject:SetActive(true)
+                else
+                    value.gameObject:SetActive(false)
+                end
+            end
+        end
+
+        local qualTempData = self.generalMgr:GetGeneralQualTempData()
+        if qualTempData then
+            self.grade_level.text = qualTempData.translateId
+        end
+
+        local selectIndex = self.generalMgr:GetSelectIndex()
+        if selectIndex ~= 0 then
+            if self.index == selectIndex then
+                self.select_img.gameObject:SetActive(true)
+            end
+        else
+            if index == 1 then
+                self.select_img.gameObject:SetActive(true)
+            end
+        end
+
+        self.general_level.text = generalData.lvTemp
+        local roleModelData = self.generalMgr:GetGeneralRoleModelData(generalData.roleModel)
+        if roleModelData and roleModelData.middleIcon then
+            self.general_icon.RawImagePath = string.format(GameConstValue.IconImagePrePath, roleModelData.middleIcon)
+        end
+    end
+end
+
+function GeneralStrengthenHeadItem:SetSelect(clickIndex)
+    if clickIndex == self.index then
+        self.select_img.gameObject:SetActive(true)
+    else
+        self.select_img.gameObject:SetActive(false)
+    end
+end
+
+function GeneralStrengthenHeadItem:OnClickItem()
+    local selectIndex = self.generalMgr:GetSelectIndex()
+    if self.index ~= selectIndex then
+        self.generalMgr:SetSelectIndex(self.index)
+        if self.general_list then
+            self.general_list.SelectIndex = self.index-1
+        end
+    end
+    LuaGameManager.GetInstance():GetEventMgr():Trigger(GameEventID.GE_UPDATE_General_HEAD_DATA)
+end

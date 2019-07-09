@@ -1,0 +1,13 @@
+TestPanel2Controller = Class(function(self)
+
+end)
+
+function TestPanel2Controller:OnCloseClick()
+    self.panel:DoClose()
+end
+
+function TestPanel2Controller:ResetData(data)
+    if data then
+        self.text.text = data.text
+    end
+end

@@ -1,0 +1,44 @@
+GameEventID = {
+    GE_UPDATE_PACK_DATA                                 = 1001,         --更新背包数据
+    GE_UPDATE_SELECT_ITEM_DATA                          = 1002,         --更新背包选中数据
+
+    GE_UPDATE_STORE_DATA                                = 1003,
+    GE_UPDATE_SHOP_BUY                                  = 1004,
+
+    GE_UPDATE_LOADING_DATA                              = 1010,         --更新加载面板进度条
+    GE_TRIGGER_CHAPTER_CAMERA                           = 1011,         --触发关卡相机回调    --邮件
+    GE_UPDATE_MAIL_DATA                                 = 1005,
+    GE_SELECT_MAIL                                      = 1006,
+
+    GE_UPDATE_SelectreWard_DATA                         = 1007,         --多选宝箱
+    
+    --布阵
+    GE_UPDATE_EMBATTLE_DATA                             = 1008,         --更新布阵数据
+    GE_UPDATE_General_DATA                              = 1009,         --武将列表数据更新
+    GE_UPDATE_General_HEAD_DATA                         = 1010,         --武将强化头像数据更新
+}
+
+--网络数据diff催动事件更新ID
+GameModelEventID = {
+    vipLevel = {
+        EventID = 10000,
+    },
+    level = {
+        EventID = 10001,
+    },
+    shopMap = {
+        EventID = 10008,
+    },
+    bag = {
+       EventID = 10002,
+       bagMap = {
+           EventID = 10005,
+           [10003] = {
+               EventID = 10003,
+           },
+           [10002] = {
+               EventID = 10004,
+           }
+       }
+    },
+}

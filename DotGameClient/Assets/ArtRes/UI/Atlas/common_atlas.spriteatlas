@@ -1,0 +1,111 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: common_atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: Standalone
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 4
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_AndroidETC2FallbackOverride: 0
+    - serializedVersion: 2
+      m_BuildTarget: Android
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 4
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_AndroidETC2FallbackOverride: 0
+    - serializedVersion: 2
+      m_BuildTarget: iPhone
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 4
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 21300000, guid: ae1ccdd8d3105dc4c8c78119467d3159, type: 3}
+    - {fileID: 21300000, guid: 4d97e54aaa120b64ea6bdc2648c19eaa, type: 3}
+    - {fileID: 21300000, guid: b017f2835aa21744aa6b975b79c5be78, type: 3}
+    - {fileID: 21300000, guid: 477d1d4357ec21345acf87790dee9dfb, type: 3}
+    - {fileID: 21300000, guid: a925ec40ecc90d84ead6f557b9687988, type: 3}
+    - {fileID: 21300000, guid: 181e4ee8e6d478541bb91c86b5749369, type: 3}
+    - {fileID: 21300000, guid: 22b972a766f9c564d87988b9f27b42a6, type: 3}
+    - {fileID: 21300000, guid: ef58fc12d2ada334c8d22c975b8e1f09, type: 3}
+    - {fileID: 21300000, guid: a5da4fb2dc846f2428c8785d9002823a, type: 3}
+    - {fileID: 21300000, guid: a6b57cd8eeb829d4b98c9e322be79083, type: 3}
+    - {fileID: 21300000, guid: 4ef5b8f2a3dcb3e42a84ce4b87deb2c8, type: 3}
+    - {fileID: 21300000, guid: ad5102b04a7f044459ec86493fffa158, type: 3}
+    - {fileID: 21300000, guid: 9a0dfbb813936fb45834298dc395833e, type: 3}
+    totalSpriteSurfaceArea: 0
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: a925ec40ecc90d84ead6f557b9687988, type: 3}
+  - {fileID: 21300000, guid: ad5102b04a7f044459ec86493fffa158, type: 3}
+  - {fileID: 21300000, guid: ef58fc12d2ada334c8d22c975b8e1f09, type: 3}
+  - {fileID: 21300000, guid: a5da4fb2dc846f2428c8785d9002823a, type: 3}
+  - {fileID: 21300000, guid: 4ef5b8f2a3dcb3e42a84ce4b87deb2c8, type: 3}
+  - {fileID: 21300000, guid: 477d1d4357ec21345acf87790dee9dfb, type: 3}
+  - {fileID: 21300000, guid: b017f2835aa21744aa6b975b79c5be78, type: 3}
+  - {fileID: 21300000, guid: 22b972a766f9c564d87988b9f27b42a6, type: 3}
+  - {fileID: 21300000, guid: 9a0dfbb813936fb45834298dc395833e, type: 3}
+  - {fileID: 21300000, guid: a6b57cd8eeb829d4b98c9e322be79083, type: 3}
+  - {fileID: 21300000, guid: ae1ccdd8d3105dc4c8c78119467d3159, type: 3}
+  - {fileID: 21300000, guid: 181e4ee8e6d478541bb91c86b5749369, type: 3}
+  - {fileID: 21300000, guid: 4d97e54aaa120b64ea6bdc2648c19eaa, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - btn_common_03
+  - btn_common_small_01
+  - btn_common_06
+  - btn_common_07
+  - btn_common_099
+  - btn_common_02
+  - btn_common_01
+  - btn_common_05
+  - btn_common_small_02
+  - btn_common_098
+  - btn_common_002
+  - btn_common_04
+  - btn_common_003
+  m_Tag: common_atlas
+  m_IsVariant: 0

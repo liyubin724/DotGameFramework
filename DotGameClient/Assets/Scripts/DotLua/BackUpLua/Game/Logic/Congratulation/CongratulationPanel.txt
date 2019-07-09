@@ -1,0 +1,26 @@
+CongratulationPanel = Class(LuaUIPanel,function(self)
+
+end)
+
+function CongratulationPanel:DoEnable(data)
+    self._base.DoEnable(self,data)
+    if self.luaController then
+        self.luaController:DoEnable(data)
+    end
+end
+
+function CongratulationPanel:DoAwake()
+
+end
+
+function CongratulationPanel:DoStart()
+
+end
+
+function CongratulationPanel:DoDestroy()
+
+end
+
+function CongratulationPanel:ClosePanel()
+    self._base.DoClose(self)
+end

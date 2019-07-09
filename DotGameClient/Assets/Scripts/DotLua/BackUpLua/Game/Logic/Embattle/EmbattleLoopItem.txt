@@ -1,0 +1,121 @@
+require "Game/Core/UI/LoopScroll/LoopScrollItem"
+local CS_ObjectHandler = CS.Game.Logic.LogicHandler.ObjectHandler
+local CS_Unity = CS.UnityEngine
+EmbattleLoopItem = Class(LoopScrollItem,function(self)
+    self.index = 0
+    self.heroId = 0
+    self.embattleMgr = LuaGameManager.GetInstance():GetLogicMgr():GetEmbattleMgr()
+end)
+
+function EmbattleLoopItem:SetItemData(index)
+    self.index = index
+    self.heroId = self.embattleMgr:GetHeroDataByIndex(self.index)
+
+    local configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+    local heroData = configMgr:GetDataByNameAndID("TeamBase",tostring(self.heroId))
+    if heroData then
+        if self.quality then
+            self.quality.SpriteName = EPropsClassTex[heroData.growClass]
+        end
+        if self.level then
+            self.level.text = heroData.lvTemp
+        end
+        local modelData = configMgr:GetDataByNameAndID("TeamRoleModel",tostring(heroData.roleModel))
+        if self.icon then
+            self.icon.RawImagePath = string.format(GameConstValue.IconHeroPrePath,modelData.middleIcon)
+        end
+        if self.type then
+            self.type.SpriteName = EGeneralCorps[heroData.corps]
+        end
+        for i=1,#self.starList do
+            if i<= tonumber(heroData.starTemp) then
+                self.starList[i]:SetActive(true)
+            else
+                self.starList[i]:SetActive(false)
+            end
+        end
+    end
+end
+
+function EmbattleLoopItem:BeginDrag()
+    if self.drag_Obj == nil then
+        local configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+        local heroData = configMgr:GetDataByNameAndID("TeamBase",tostring(self.heroId))
+        if not heroData then
+            return
+        end 
+        local modelData = configMgr:GetDataByNameAndID("TeamRoleModel",tostring(heroData.roleModel))
+        if not modelData then
+            return
+        end
+        local loaderMgr = LuaGameManager.GetInstance():GetLoaderMgr()
+        self.drag_Obj = loaderMgr:LoadAssetAndInstantiateGO(modelData.generid)
+        if self.drag_Obj then
+            CS_ObjectHandler.SetObjectLocalEulerangles(self.drag_Obj,0,90,0)
+        end
+    end
+    if self.drag_Obj == nil then
+        error("Drag model is nil -> hero index :"..self.index)
+    end
+    self.mCamera = self.embattleMgr:GetCamera()
+    if self.mGroundBehaviour == nil then
+        self.mGroundBehaviour = self.embattleMgr:GetGroundBehaviour()
+    end
+    if self.mSceneCenter == nil then
+        self.mSceneCenter = self.embattleMgr:GetGroundCenter()
+    end
+    self.mGroundBehaviour:UpdateItemArea(self.heroId)
+end
+
+function EmbattleLoopItem:OnDrag()
+    if self.drag_Obj then
+        local mousePos = CS_Unity.Input.mousePosition
+        local scenePos = self.mCamera:WorldToScreenPoint(self.mSceneCenter.position)
+        local worldPos = self.mCamera:ScreenToWorldPoint(CS_Unity.Vector3(mousePos.x,mousePos.y,scenePos.z))
+        CS_ObjectHandler.SetObjectWorldPosition(self.drag_Obj,worldPos.x,worldPos.y,worldPos.z)
+
+        local layer = CS_Unity.LayerMask.NameToLayer("LineUp")
+        local ray = self.mCamera:ScreenPointToRay(CS_Unity.Input.mousePosition)
+        local isCast,hit = CS_ObjectHandler.PhysicsCast(ray,layer)
+        if isCast then
+            self.mGroundBehaviour:ShowState()
+            local hitName = hit.transform.gameObject.name
+            local hitStr = string.sub(hitName,6,string.len(hitName))
+            local hitIndex = tonumber(hitStr)
+            if hitIndex ~= -1 then
+                self.mGroundBehaviour:UpdateSelectState(hitIndex,self.heroId)
+            end
+        else
+            self.mGroundBehaviour:CloseState()
+        end
+    end
+end
+
+function EmbattleLoopItem:EndDrag()   
+    local mousePos = CS_Unity.Input.mousePosition
+    local scenePos = self.mCamera:WorldToScreenPoint(self.mSceneCenter.position)
+    local worldPos = self.mCamera:ScreenToWorldPoint(CS_Unity.Vector3(mousePos.x,mousePos.y,scenePos.z))
+    
+    local layer = CS_Unity.LayerMask.NameToLayer("LineUp")
+    local ray = self.mCamera:ScreenPointToRay(CS_Unity.Input.mousePosition)
+    local isCast,hit = CS_ObjectHandler.PhysicsCast(ray,layer)
+    if isCast then
+        local hitName = hit.transform.gameObject.name
+        local hitStr = string.sub(hitName,6,string.len(hitName))
+        local hitIndex = tonumber(hitStr)
+        if hitIndex ~= -1 then
+            local dragId = self.heroId
+            if self.mGroundBehaviour:InitHeroByIndexAndID(hitIndex,dragId) then
+                self.embattleMgr:RemoveHeroDataToList(hitIndex,dragId)
+            end
+        end
+    end
+
+    if self.drag_Obj then
+        CS_Unity.Object.Destroy(self.drag_Obj)
+        self.drag_Obj = nil
+    end
+    if self.mGroundBehaviour then
+        self.mGroundBehaviour:CloseState()
+    end
+end

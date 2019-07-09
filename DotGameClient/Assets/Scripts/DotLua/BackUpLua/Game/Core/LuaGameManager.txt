@@ -1,0 +1,114 @@
+
+LuaGameManager = {}
+---private function----
+LuaGameManager.timerTick = 0.1
+
+function LuaGameManager.DoStart()
+    --LuaGameManager.timerMgr = LuaTimerManager()
+    --LuaGameManager.eventMgr = LuaEventManager()
+    --LuaGameManager.configMgr = ConfigManager("DataConfig/%s")
+    --LuaGameManager.netMgr = LuaNetManager()
+    --LuaGameManager.loaderMgr = LuaLoaderManager()
+    --LuaGameManager.uiMgr = LuaUIManager()
+    --LuaGameManager.modelMgr = LuaModelManager()
+    --LuaGameManager.loadingMgr = LuaLoadingManager()
+    --
+    --local uiPanelLevels = CS.Game.Core.GameApplication.application.panelLevelTran
+    --if uiPanelLevels.Length < LuaUIPanelLevel.Top then
+    --    --TODO:errmsg
+    --end
+    --for i = LuaUIPanelLevel.Bottom, LuaUIPanelLevel.Top do
+    --    LuaGameManager.uiMgr:SetLevelTransform(i,uiPanelLevels[i])
+    --end
+    
+
+end
+
+function LuaGameManager.DoUpdate(deltaTime)
+    --LuaGameManager.netMgr:DoUpdate()
+    --LuaGameManager.uiMgr:DoUpdate()
+end
+
+function LuaGameManager.DoTimerTick()
+    --LuaGameManager.timerMgr:DoTick(LuaGameManager.timerTick)
+    --LuaGameManager.loadingMgr:DoTick(LuaGameManager.timerTick)
+end
+
+function LuaGameManager.DoReset()
+    --LuaGameManager.timerMgr:DoReset()
+    --LuaGameManager.eventMgr:DoReset()
+    --LuaGameManager.configMgr:DoReset()
+    --LuaGameManager.netMgr:DoReset()
+    --LuaGameManager.loaderMgr:DoReset()
+    --LuaGameManager.uiMgr:DoReset()
+    --LuaGameManager.modelMgr:DoReset()
+    --LuaGameManager.loadingMgr:DoReset()
+end
+
+function LuaGameManager.DoDispose()
+    --LuaGameManager.DoReset()
+    --
+    --LuaGameManager.timerMgr:DoDispose()
+    --LuaGameManager.timerMgr = nil
+    --
+    --LuaGameManager.eventMgr:DoDispose()
+    --LuaGameManager.eventMgr = nil
+    --
+    --LuaGameManager.configMgr:DoDispose()
+    --LuaGameManager.configMgr = nil
+    --
+    --LuaGameManager.netMgr:DoDispose()
+    --LuaGameManager.netMgr = nil
+    --
+    --LuaGameManager.loaderMgr:DoDispose()
+    --LuaGameManager.loaderMgr = nil
+    --
+    --LuaGameManager.uiMgr:DoDispose()
+    --LuaGameManager.uiMgr = nil
+    --
+    --LuaGameManager.logicMgr:DoDispose()
+    --LuaGameManager.logicMgr = nil
+    --
+    --LuaGameManager.modelMgr:DoDispose()
+    --LuaGameManager.modelMgr = nil
+    --
+    --LuaGameManager.loadingMgr:DoDispose()
+    --LuaGameManager.loadingMgr = nil
+end
+
+----public-----
+function LuaGameManager.GetInstance()
+    return LuaGameManager
+end
+
+--function LuaGameManager:GetTimerMgr()
+--    return self.timerMgr
+--end
+--
+--function LuaGameManager:GetEventMgr()
+--    return self.eventMgr
+--end
+--
+--function LuaGameManager:GetNetMgr()
+--    return self.netMgr
+--end
+--
+--function LuaGameManager:GetLoaderMgr()
+--    return self.loaderMgr
+--end
+--
+--function LuaGameManager:GetUIMgr ()
+--    return self.uiMgr
+--end
+--
+--function LuaGameManager:GetModelMgr()
+--    return self.modelMgr
+--end
+--
+--function LuaGameManager:GetConfigMgr()
+--    return self.configMgr
+--end
+--
+--function LuaGameManager:GetLoadingMgr()
+--    return self.loadingMgr
+--end
