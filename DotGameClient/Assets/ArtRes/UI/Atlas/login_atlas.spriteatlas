@@ -1,0 +1,123 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: login_atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: Standalone
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 4
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_AndroidETC2FallbackOverride: 0
+    - serializedVersion: 2
+      m_BuildTarget: Android
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 4
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_AndroidETC2FallbackOverride: 0
+    - serializedVersion: 2
+      m_BuildTarget: iPhone
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 4
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 21300000, guid: e7a8e854552b7224f9e8f4e0284fd7ad, type: 3}
+    - {fileID: 21300000, guid: 270d7d61997b2ed42ab433f22bc938f4, type: 3}
+    - {fileID: 21300000, guid: 4be97a69958e26748a8ca8defec72094, type: 3}
+    - {fileID: 21300000, guid: 4ff48fc0a489db0438f36a60299be593, type: 3}
+    - {fileID: 21300000, guid: 8592969bad368204783605750954105c, type: 3}
+    - {fileID: 21300000, guid: f629a94fb3bb7394583e94d61a6d1e61, type: 3}
+    - {fileID: 21300000, guid: 3be3c21ce64544a408de2c479f1480fe, type: 3}
+    - {fileID: 21300000, guid: 45a31b40016402c4cb53818f7342e279, type: 3}
+    - {fileID: 21300000, guid: 69aca38466525954389ce798cc34ccb6, type: 3}
+    - {fileID: 21300000, guid: 9d99b43b8c255b74aa0ea6619e6b091d, type: 3}
+    - {fileID: 21300000, guid: 72754062be1c5174f9885d70d2d3a4bd, type: 3}
+    - {fileID: 21300000, guid: 421e90272d895a64cab4b8f34bf0bf04, type: 3}
+    - {fileID: 21300000, guid: 8a5246a62f6f5894bb50f202dc1ff544, type: 3}
+    - {fileID: 21300000, guid: 14f2eb406dd06ab49bb1b43e8b73070c, type: 3}
+    - {fileID: 21300000, guid: d5db463afc0f4014bbb681a7764a89ad, type: 3}
+    - {fileID: 21300000, guid: cbbc90267629eda4193d75e813615039, type: 3}
+    - {fileID: 21300000, guid: b115f77a1a438644fb0795465f23018d, type: 3}
+    totalSpriteSurfaceArea: 212748
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 45a31b40016402c4cb53818f7342e279, type: 3}
+  - {fileID: 21300000, guid: 14f2eb406dd06ab49bb1b43e8b73070c, type: 3}
+  - {fileID: 21300000, guid: 4ff48fc0a489db0438f36a60299be593, type: 3}
+  - {fileID: 21300000, guid: 270d7d61997b2ed42ab433f22bc938f4, type: 3}
+  - {fileID: 21300000, guid: 72754062be1c5174f9885d70d2d3a4bd, type: 3}
+  - {fileID: 21300000, guid: e7a8e854552b7224f9e8f4e0284fd7ad, type: 3}
+  - {fileID: 21300000, guid: 69aca38466525954389ce798cc34ccb6, type: 3}
+  - {fileID: 21300000, guid: cbbc90267629eda4193d75e813615039, type: 3}
+  - {fileID: 21300000, guid: 8a5246a62f6f5894bb50f202dc1ff544, type: 3}
+  - {fileID: 21300000, guid: 421e90272d895a64cab4b8f34bf0bf04, type: 3}
+  - {fileID: 21300000, guid: 4be97a69958e26748a8ca8defec72094, type: 3}
+  - {fileID: 21300000, guid: d5db463afc0f4014bbb681a7764a89ad, type: 3}
+  - {fileID: 21300000, guid: b115f77a1a438644fb0795465f23018d, type: 3}
+  - {fileID: 21300000, guid: 9d99b43b8c255b74aa0ea6619e6b091d, type: 3}
+  - {fileID: 21300000, guid: 8592969bad368204783605750954105c, type: 3}
+  - {fileID: 21300000, guid: 3be3c21ce64544a408de2c479f1480fe, type: 3}
+  - {fileID: 21300000, guid: f629a94fb3bb7394583e94d61a6d1e61, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - pic_login_005
+  - pic_login_012
+  - btn_login_006
+  - btn_login_004
+  - pic_login_009
+  - btn_login_001
+  - pic_login_007
+  - pic_login_014
+  - pic_login_011
+  - pic_login_010
+  - btn_login_005
+  - pic_login_013
+  - pic_login_015
+  - pic_login_008
+  - pic_charactor_001
+  - pic_charactor_003
+  - pic_charactor_002
+  m_Tag: login_atlas
+  m_IsVariant: 0

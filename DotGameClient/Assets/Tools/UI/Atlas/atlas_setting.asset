@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ef8dd83d5612714bb6d7322423eddb4, type: 3}
+  m_Name: atlas_setting
+  m_EditorClassIdentifier: 
+  atlasDirPath: Assets/ArtRes/UI/Atlas
+  atlasType: 0
+  isRotation: 0
+  maxSize: 2048
+  PixelsPerUnit: 100
+  padding: 4
+  isSRGB: 1
+  isReadOrWrite: 0
+  isMipmap: 0
+  filterMode: 1
+  uAtlasSetting:
+    isTightPacking: 0
+  tpAtlasSetting:
+    tpExePath: 
+    sheetFormat: unity-texture2d
+    isTrimSpriteName: 1
+    forceSquared: 1
+    sizeConstraint: 0
+    packMode: Best
+    paddingTrimMode: 0
+    meshType: 0
+    wrapMode: 1
+  winTextureFormat: 4
+  androidTextureFormat: 4
+  iosTextureFormat: 4
+  spriteFolders:
+  - Assets/ArtRes/UI/Common
+  - Assets/ArtRes/UI/Login

@@ -1,0 +1,13 @@
+require("Game/Core/UI/LoopScroll/LoopScrollItem")
+
+LoopScrollController = Class(function(self)
+
+end)
+
+function LoopScrollController:DoStart()
+
+end
+
+function LoopScrollController:SetItemData(item,index)
+  error("LoopScrollController::SetItemData->should be override")
+end

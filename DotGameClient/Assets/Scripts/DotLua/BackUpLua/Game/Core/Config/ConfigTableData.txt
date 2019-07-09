@@ -1,0 +1,91 @@
+ConfigTableData = Class(function(self,tablePath)
+    self.tablePath = tablePath
+
+    self.keys = nil
+    self.tableData = nil
+    self.subTables = nil
+
+    self:LoadTableData()
+end)
+
+----private----
+function ConfigTableData:LoadTableData()
+    if self.tableData then
+        return
+    end
+
+    self.tableData = require(self.tablePath)
+    if self.tableData.__split_index__ then
+        self.subTables = {}
+    end
+
+    if not self.tableData then
+        --TODO:error
+    end
+end
+
+----public----
+function ConfigTableData:GetKeys()
+    if not self.tableData then
+        self:LoadTableData()
+    end
+    if self.keys then
+        return self.keys
+    end
+
+    if self.tableData.__split_index__ then
+        self.keys = {}
+        for i = 1, self.tableData.__split_index__ do
+            if not self.subTables[i] then
+                self.subTables[i] = require(self.tablePath..tostring(i))
+            end
+
+            local subKeys = table.keys(self.subTables[i])
+            for i = 1, #subKeys do
+                table.insert(self.keys,subKeys[i])
+            end
+        end
+    else
+        self.keys = table.keys(self.tableData)
+    end
+    return self.keys
+end
+
+function ConfigTableData:GetDataByID(id)
+    if not self.tableData then
+        self:LoadTableData()
+    end
+
+    if not id then
+        --TODO:Error
+        return nil
+    end
+    if type(id) ~= "string" then
+        id = tostring(id)
+    end
+
+    if self.tableData.__split_index__ then
+        for i = 1, self.tableData.__split_index__ do
+            if id <= self.tableData[i] then
+                if not self.subTables[i] then
+                    self.subTables[i] = require(self.tablePath..tostring(i))
+                end
+
+                return self.subTables[i][id]
+            end
+        end
+    else
+        return self.tableData[id]
+    end
+end
+
+function ConfigTableData:GetDataByIDAndKey(id,key)
+    if not key then
+        return nil
+    end
+    local lineData = self:GetDataByID(id)
+    if not lineData then
+        return nil
+    end
+    return lineData[key]
+end

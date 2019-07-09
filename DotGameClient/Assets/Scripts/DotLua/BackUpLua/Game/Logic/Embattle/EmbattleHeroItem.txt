@@ -1,0 +1,145 @@
+local CS_Unity = CS.UnityEngine
+local CS_ObjectHandler = CS.Game.Logic.LogicHandler.ObjectHandler
+EmbattleHeroItem = Class(function(self)
+    self.init = false
+    self.groundIndex = -1
+    self.heroId = -1
+    self.oldPos = nil
+
+    self.isDrag = false
+    self.isPress = false
+
+    self.mUICamera = nil
+    self.mCamera = nil
+    self.embattleMgr = LuaGameManager.GetInstance():GetLogicMgr():GetEmbattleMgr()
+    self.groundBehaviour = self.embattleMgr:GetGroundBehaviour()
+end)
+
+function EmbattleHeroItem:DoStart()
+    self:Init()
+end
+
+function EmbattleHeroItem:InitData(gIndex,heroId)
+    if not self.init then
+        self:Init()
+    end
+    self.groundIndex = gIndex
+    self.heroId = heroId
+    self.heroInfo = self.embattleMgr:CreateHeroInfo()
+    if self.heroInfo then
+        self.heroInfo:SetData(self.transform,heroId)
+    end
+end
+
+function EmbattleHeroItem:GetHeroId()
+    return self.heroId
+end
+
+function EmbattleHeroItem:SetGroundIndex(index)
+    self.groundIndex = index
+end
+
+function EmbattleHeroItem:GetTransform()
+    return self.transform
+end
+
+function EmbattleHeroItem:GetGameObject()
+    return self.gameObject
+end
+
+function EmbattleHeroItem:Init()
+    if not self.init then
+        self.mCamera = self.embattleMgr:GetCamera()
+        self.mUICamera = self.embattleMgr:GetUICamera()
+        self.init = true
+    end
+end
+
+function EmbattleHeroItem:DoMouseDown()
+    if not CS_Unity.Input.GetMouseButton(0) then
+        return
+    end
+    if not self.isPress then
+        self.isPress = true
+    end
+    self.oldPos = self.transform.localPosition
+    self.groundBehaviour:UpdateItemArea(self.heroId)
+end
+
+function EmbattleHeroItem:DoMouseDrag()
+    if not self.isPress then
+        return
+    end
+    if not self.isDrag then
+        self.isDrag = true
+    end
+
+    local mousePos = CS_Unity.Input.mousePosition
+    local scenePos = self.mCamera:WorldToScreenPoint(self.embattleMgr:GetGroundCenter().position)
+    local pos = self.mCamera:ScreenToWorldPoint(CS_Unity.Vector3(mousePos.x, mousePos.y, scenePos.z))
+    CS_ObjectHandler.SetObjectWorldPosition(self.gameObject,pos.x,pos.y,pos.z)
+
+    local ray = self.mCamera:ScreenPointToRay(CS_Unity.Input.mousePosition)
+    local cast,hit = CS_ObjectHandler.PhysicsCast(ray,CS_Unity.LayerMask.NameToLayer("LineUp"))
+    if cast then
+        self.groundBehaviour:ShowState()
+        local hitName = hit.transform.gameObject.name
+        local hitStr = string.sub(hitName,6,string.len(hitName))
+        local hitIndex = tonumber(hitStr)
+        if hitIndex ~= -1 then
+            self.groundBehaviour:UpdateSelectState(hitIndex,self.heroId)
+        end
+    else
+        self.groundBehaviour:CloseState()
+    end
+end
+
+function EmbattleHeroItem:DoMouseUp()
+    if not self.isDrag then
+        return
+    end
+    self.isDrag = false
+    self.isPress = false
+
+    local ray = self.mCamera:ScreenPointToRay(CS_Unity.Input.mousePosition)
+    local cast,hit = CS_ObjectHandler.PhysicsCast(ray,CS_Unity.LayerMask.NameToLayer("LineUp"))
+    if cast then
+        local hitName = hit.transform.gameObject.name
+        local hitStr = string.sub(hitName,6,string.len(hitName))
+        local hitIndex = tonumber(hitStr)
+        if self.groundBehaviour:CanSelect(hitIndex,self.heroId) then
+            if self.groundIndex ~= hitIndex then
+                self.groundBehaviour:MoveHero(self.groundIndex,hitIndex)
+            else
+                CS_ObjectHandler.SetObjectLocalPosition(self.gameObject,self.oldPos.x,self.oldPos.y,self.oldPos.z)
+            end
+        else
+            CS_ObjectHandler.SetObjectLocalPosition(self.gameObject,self.oldPos.x,self.oldPos.y,self.oldPos.z)
+        end
+    else
+        local id = self.heroId
+        if id ~= -1 then
+            self.groundBehaviour:DisposeItem(self.groundIndex,id)
+            self.embattleMgr:AddHeroDataToList(id)
+        end
+    end
+    self.groundBehaviour:CloseState()
+end
+
+function EmbattleHeroItem:DoDestroy()
+    self.init = false
+    self.groundIndex = -1
+    self.heroId = -1
+    self.oldPos = nil
+end
+
+function EmbattleHeroItem:DoDispose()
+    self.init = false
+    self.groundIndex = -1
+    self.heroId = -1
+    self.oldPos = nil
+    if self.heroInfo then
+        self.heroInfo:DoDispose()
+        self.heroInfo = nil
+    end
+end

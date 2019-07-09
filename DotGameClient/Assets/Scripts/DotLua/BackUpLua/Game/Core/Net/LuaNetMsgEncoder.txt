@@ -1,0 +1,22 @@
+LuaNetMsgEncoder = Class(function(self)
+    self.header = ""
+    self.commonTable = {}
+end)
+
+function LuaNetMsgEncoder:SetMsgHeader(headerStr)
+    self.header = headerStr
+end
+
+function LuaNetMsgEncoder:SetMsgCommonData(commonTable)
+    self.commonTable = commonTable
+end
+
+function LuaNetMsgEncoder:EncodeMsg(msgTable)
+    local encodeData = self.commonTable
+    if msgTable ~= nil then
+        for k,v in pairs(msgTable) do
+            encodeData[k] = v
+        end
+    end
+    return string.format("%s%s",self.header,cjson.encode(encodeData))
+end

@@ -1,0 +1,254 @@
+local CS_Unity = CS.UnityEngine
+local CS_ObjectHandler = CS.Game.Logic.LogicHandler.ObjectHandler
+
+GroundState = {
+    None = 0,
+    Battle = 1,
+    Vacant = 2,
+}
+GroundArea = 
+{
+    None = 0,
+    Can = 1,
+    Not = 2,
+}
+
+EmbattleGroundItem = Class(function(self)
+    self.gameObject = nil
+    self.index = 0
+    self.heroItem = nil
+    self.heroInfo = nil
+    self.heroParent = nil
+
+    self.canShowObj = nil
+    self.notShowObj = nil
+    self.selectObj = nil
+    self.defaultObj = nil
+
+    self.groundState = GroundState.None
+    self.groundArea = GroundArea.None
+    
+    self.embattleMgr = LuaGameManager.GetInstance():GetLogicMgr():GetEmbattleMgr()
+    self.loaderMgr = LuaGameManager.GetInstance():GetLoaderMgr()
+end)
+
+function EmbattleGroundItem:HasHero()
+    return self.heroItem ~= nil
+end
+
+function EmbattleGroundItem:GetIndex()
+    return self.index
+end
+
+function EmbattleGroundItem:GetHeroItem()
+    return self.heroItem
+end
+
+function EmbattleGroundItem:SetHeroItem(item)
+    self.heroItem = item
+end
+
+function EmbattleGroundItem:GetGameObject()
+    return self.gameObject
+end
+
+function EmbattleGroundItem:GetTransform()
+    return self.gameObject.transform
+end
+
+function EmbattleGroundItem:InitObj(obj,index)
+    self.gameObject = obj
+    self.index = index
+    local heroId = self.embattleMgr:GetGroundHeroData(index)
+    if heroId ~= -1 then
+        self.groundState = GroundState.Battle
+        self:InitHeroByID(heroId)
+    else
+        self.groundState = GroundState.Vacant
+        if self.heroItem then
+            self.heroItem:DoDispose()
+            self.heroItem = nil
+        end
+    end
+    self:UpdateDefaultState()
+end
+
+function EmbattleGroundItem:UpdateItemArea(heroId)
+    if self:CanSelect(heroId) then
+        self.groundArea = GroundArea.Can
+    else
+        self.groundArea = GroundArea.Not
+    end
+end
+
+function EmbattleGroundItem:UpdateDefaultState()
+    if self.heroItem ~= nil or self.embattleMgr:IsAllEmbattle() then
+        if self.defaultObj then
+            self.defaultObj:SetActive(false)
+        end
+        return
+    end
+
+    if self.defaultObj == nil then
+        self.defaultObj = self.loaderMgr:LoadAssetAndInstantiateGO(GameConstValue.NameEmbattleGroundDefaultState)
+        self.defaultObj.transform.parent = self.gameObject.transform
+        CS_ObjectHandler.SetObjectLocalPosition(self.defaultObj,0,0,0)
+        self.defaultObj:SetActive(true)
+    else
+        self.defaultObj:SetActive(true)
+    end
+end
+
+function EmbattleGroundItem:InitHeroByID(heroId)
+    if not self:CanSelect(heroId) then
+        return false
+    end
+
+    if self.heroItem then
+        self.embattleMgr:AddHeroDataToList(self.heroItem:GetHeroId())
+        CS_Unity.Object.DestroyImmediate(self.heroItem:GetGameObject())
+        self.heroItem = nil
+    end
+
+    self.heroParent = CS_Unity.GameObject("HeroParent")
+    self.heroParent.transform.parent = self.gameObject.transform
+    CS_ObjectHandler.SetObjectLocalPosition(self.heroParent,0,0,0)
+    CS_ObjectHandler.SetObjectLocalEulerangles(self.heroParent,0,0,0)
+    self:InitChildItemByID(self.heroParent.transform,heroId)
+    local collider = self.heroParent:AddComponent(typeof(CS_Unity.BoxCollider))
+    if collider then
+        collider.size = CS_Unity.Vector3(5,0.3,5)
+    end
+    local heroBehaviour = self.heroParent:AddComponent(typeof(CS.Game.Logic.Lua.DragBehaviour))
+    if heroBehaviour then
+        self.heroItem = heroBehaviour:CreateLuaInstance("EmbattleHeroItem","Game/Logic/Embattle/EmbattleHeroItem")
+        self.heroItem:InitData(self.index,heroId)
+    end
+    return true
+end
+
+function EmbattleGroundItem:InitChildItemByID(parent,heroId)
+    local configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+    local heroData = configMgr:GetDataByNameAndID("TeamBase",tostring(heroId))
+    if not heroData then
+        error("EmbattleGroundItem.InitHeroByID -> error hero id :"..heroId)
+    end
+    local modelData = configMgr:GetDataByNameAndID("TeamRoleModel",tostring(heroData.roleModel))
+    if not modelData then
+        error("EmbattleGroundItem.InitHeroByID -> error hero model id :"..heroId)
+    end
+    local heroObj = self.loaderMgr:LoadAssetAndInstantiateGO(modelData.generid)
+    heroObj.transform:SetParent(parent,false)
+    CS_ObjectHandler.SetObjectLayer(heroObj,CS_Unity.LayerMask.NameToLayer("role"))
+    local heroPos = self.embattleMgr:GetHeroPos()
+    CS_ObjectHandler.SetObjectLocalPosition(heroObj,heroPos.x,heroPos.y,heroPos.z)
+    CS_ObjectHandler.SetObjectLocalEulerangles(heroObj,0,90,0)
+
+    if heroData.membersNum == 10 then
+        for i=1,10 do
+            local soldierObj = self.loaderMgr:LoadAssetAndInstantiateGO(modelData.soldierid)
+            soldierObj.transform:SetParent(parent,false)
+            CS_ObjectHandler.SetObjectLayer(soldierObj,CS_Unity.LayerMask.NameToLayer("role"))
+            local pos = self.embattleMgr:GetDefaultPos(i)
+            CS_ObjectHandler.SetObjectLocalPosition(soldierObj,pos.x,pos.y,pos.z)
+            CS_ObjectHandler.SetObjectLocalEulerangles(soldierObj,0,90,0)
+        end
+    elseif heroData.membersNum == 7  then
+        for i=1,7 do
+            local soldierObj = self.loaderMgr:LoadAssetAndInstantiateGO(modelData.soldierid)
+            soldierObj.transform:SetParent(parent,false)
+            CS_ObjectHandler.SetObjectLayer(soldierObj,CS_Unity.LayerMask.NameToLayer("role"))
+            local pos = self.embattleMgr:GetSpecialPos(i)
+            CS_ObjectHandler.SetObjectLocalPosition(soldierObj,pos.x,pos.y,pos.z)
+            CS_ObjectHandler.SetObjectLocalEulerangles(soldierObj,0,90,0)
+        end
+    end
+end
+
+function EmbattleGroundItem:CanSelect(heroId)
+    if not heroId then
+        return false
+    end
+    local configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+    local heroData = configMgr:GetDataByNameAndID("TeamBase",tostring(heroId))
+    if heroData then
+        local occu = heroData.corps
+        if occu == 0 then
+            return false
+        end
+        if occu == 1 or occu == 2 then
+            if self.index >=1 and self.index <=8 then
+                return true
+            end
+        elseif occu == 3 then
+            if self.index >=1 and self.index <= 16 then
+                return true
+            end
+        elseif occu == 4 or occu == 5 then
+            if self.index > 8 and self.index <= 16 then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+function EmbattleGroundItem:SetSelectState(index,heroId)
+    if index == self.index and self:CanSelect(heroId) then
+        if self.selectObj == nil then
+            self.selectObj = self.loaderMgr:LoadAssetAndInstantiateGO(GameConstValue.NameEmbattleGroundSelectState)
+            self.selectObj.transform.parent = self.gameObject.transform
+            CS_ObjectHandler.SetObjectLocalPosition(self.selectObj,0,0.002,0)
+            self.selectObj:SetActive(true)
+        else
+            self.selectObj:SetActive(true)
+        end
+    else
+        if self.selectObj then
+            self.selectObj:SetActive(false)
+        end
+    end
+end
+
+function EmbattleGroundItem:ShowState()
+    if self.groundArea == GroundArea.Can then
+        if self.canShowObj == nil then
+            self.canShowObj = self.loaderMgr:LoadAssetAndInstantiateGO(GameConstValue.NameEmbattleGroundCanState)
+            self.canShowObj.transform.parent = self.gameObject.transform
+            CS_ObjectHandler.SetObjectLocalPosition(self.canShowObj,0,0.001,0)
+            self.canShowObj:SetActive(true)
+        else
+            self.canShowObj:SetActive(true)
+        end
+    else
+        if self.notShowObj == nil then
+            self.notShowObj = self.loaderMgr:LoadAssetAndInstantiateGO(GameConstValue.NameEmbattleGroundNotState)
+            self.notShowObj.transform.parent = self.gameObject.transform
+            CS_ObjectHandler.SetObjectLocalPosition(self.notShowObj,0,0.001,0)
+            self.notShowObj:SetActive(true)
+        else
+            self.notShowObj:SetActive(true)
+        end
+    end
+end
+
+function EmbattleGroundItem:CloseState()
+    if self.canShowObj ~= nil then
+        self.canShowObj:SetActive(false)
+    end
+    if self.notShowObj ~= nil then
+        self.notShowObj:SetActive(false)
+    end
+    if self.selectObj ~= nil then
+        self.selectObj:SetActive(false)
+    end
+end
+
+function EmbattleGroundItem:DoDispose()
+    if self.heroItem then
+        self.heroItem:DoDispose()
+        CS_Unity.Object.DestroyImmediate(self.heroItem:GetGameObject())
+        self.heroItem = nil
+        self.heroParent = nil
+    end
+end

@@ -1,0 +1,27 @@
+require "Game/Core/UI/LoopScroll/LoopScrollController"
+PackageScrollController = Class(LoopScrollController,function(self)
+    self.listData = {}
+end)
+
+function PackageScrollController:SetScrollItemData(packType)
+    self.scrollView.TotalCount = 0
+    local packMgr = LuaGameManager.GetInstance():GetLogicMgr():GetPackMgr()
+    local packData = packMgr:GetPackDataByType(packType)
+    local dataCount = #packData
+    if packData then
+        if dataCount >= 100 then
+            self.scrollView.TotalCount = dataCount
+        else
+            self.scrollView.TotalCount = 100
+        end
+    end
+end
+
+function PackageScrollController:SetItemData(item,index)
+    -- print("itemIndex", index)
+    item:SetItemData(index)
+end
+
+function PackageScrollController:SetSelect(item,clickIndex)
+    item:SetSelect(clickIndex)
+end

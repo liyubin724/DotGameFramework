@@ -1,0 +1,19 @@
+--local GameAsset = CS.Game.Core.Loader.GameAsset
+
+TestSound = Class(function(self)
+
+end)
+
+function TestSound:DoAwake()
+  print("FFFFFFFFFF")
+  self.name.text = "FFFF"
+end
+
+function TestSound:DoStart()
+
+end
+
+function TestSound:DoDestroy()
+
+end
+

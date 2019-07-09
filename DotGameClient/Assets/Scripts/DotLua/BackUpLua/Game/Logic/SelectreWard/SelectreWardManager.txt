@@ -1,0 +1,126 @@
+SelectreWardManager = Class(function(self)
+    self._itemId = 0
+    self._itemCount = 0
+    self._itemData = nil
+    self._fragmentData = nil
+    self._selectItemIndex = 1
+end)
+
+--private func
+function SelectreWardManager:DoReset()
+    self._itemId = 0
+    self._itemCount = 0
+    self._itemData = nil
+    self._fragmentData = nil
+    self._selectItemIndex = 1
+
+end
+
+function SelectreWardManager:DoDispose()
+    self._itemId = nil
+    self._itemCount = nil
+    self._itemData = nil
+    self._fragmentData = nil
+    self._selectItemIndex = 1
+end
+
+--public func
+function SelectreWardManager:InitData(itemId,count)
+    if not itemId then
+        return
+    end
+    if self._itemId ~= itemId then
+        self._itemId = itemId
+    end
+    self._itemCount = count or 1
+
+    local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    uiMgr:OpenPanel("SelectreWardPanel",GameConstValue.NameUISelectreWardPanelPath,LuaUIPanelLevel.Top,LuaUIPanelRelation.Exclusion)
+end
+
+function SelectreWardManager:GetItemData()
+    local configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+    self._itemData = configMgr:GetDataByNameAndID("Item", tostring(self._itemId))
+    if self._itemData then
+        return self._itemData
+    else
+        error("CompoundManager->SetData: error id "..self._itemId)
+    end
+end
+
+--多奖励配置数据
+function SelectreWardManager:GetMultiRewardData()
+    local configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+    self._itemData = configMgr:GetDataByNameAndID("Item", tostring(self._itemId))
+    if self._itemData then
+        self._multiReward = self._itemData.multiReward
+    else
+        error("CompoundManager->SetData: error id "..self._itemId)
+    end
+end
+
+--奖励总数量
+function SelectreWardManager:GetMultiRewardCount()
+    if self._multiReward then
+        return #self._multiReward
+    end
+    return 0   
+end
+
+--通过index获取奖励Id
+function SelectreWardManager:GetRewardIdByIndex(index)
+    if self._multiReward and self._multiReward[index] then
+        return self._multiReward[index]
+    end
+    return nil   
+end
+
+--通过index获取奖励数据
+function SelectreWardManager:GetRewardItemDataByindex(index)
+    local rewardId = self:GetRewardIdByIndex(index)
+    if rewardId then
+        local fixedCode = RewardUtil:getFixedCode(rewardId)
+        local configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+        local itemData = configMgr:GetDataByNameAndID("Item", tostring(fixedCode))
+        if itemData then
+            return itemData
+        end
+    end
+    return nil   
+end
+
+--获取当前选中Index
+function SelectreWardManager:GetSelectItemIndex()
+    return self._selectItemIndex
+end
+
+--设置当前选中Index
+function SelectreWardManager:SetSelectItemIndex(value)
+    self._selectItemIndex = value
+end
+
+--获取当前选中item数据
+function SelectreWardManager:GetSelectItemData()
+    local itemData = self:GetRewardItemDataByindex(self._selectItemIndex)
+    if itemData then
+        return itemData
+    else
+        print("GetSelectItemData selectItemIndex itemData is nil", self._selectItemIndex)
+    end
+end
+
+function SelectreWardManager:GetItemId()
+    return self._itemId
+end
+
+function SelectreWardManager:GetItemCount()
+    return self._itemCount
+end
+
+function SelectreWardManager:Confirm(count)
+    if not self._itemId or self._itemId == 0 then
+        return
+    end
+    LuaNetPackHandler.SelectreWardtemRequestResponse(tostring(self._itemId), self._selectItemIndex, count)
+    LuaGameManager.GetInstance():GetUIMgr():ClosePanel("SelectreWardPanel",LuaUIPanelLevel.Top)
+end

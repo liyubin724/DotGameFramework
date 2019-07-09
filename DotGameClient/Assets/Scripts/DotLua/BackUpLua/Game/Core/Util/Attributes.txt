@@ -1,0 +1,27 @@
+
+function Attributes(self,symbol,options)
+    local opt = options or {is='rw'}
+    opt.is = options.is or 'rw'
+    local func = symbol:match('[^%w]*(.*)')
+    local formalFunc = func:sub(1, 1):upper()..func:sub(2)
+    local getFunc = 'get'..formalFunc
+    local setFunc = 'set'..formalFunc
+
+    assert(nil == rawget(self, getFunc))
+    assert(nil == rawget(self, setFunc))
+    
+    local default = options.default
+    if options.is:find('r') then
+        rawset(self, getFunc, function(self)
+            local v = self[symbol]
+            if v~=nil then return v end
+            return default
+        end)
+    end
+
+    if options.is:find('w') then
+        rawset(self, setFunc, function(self, value)
+            self[symbol] = value
+        end)
+    end
+end

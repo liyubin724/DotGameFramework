@@ -1,0 +1,57 @@
+require "Game/Core/UI/LoopScroll/LoopScrollItem"
+
+StoreItem = Class(LoopScrollItem,function(self)
+    self.index = 0
+end)
+
+function StoreItem:SetItemData(index)
+    if not index then
+        return
+    end
+    self.index = index
+    self.sign_img.gameObject:SetActive(false)
+    self.lock_img:SetActive(false)
+    self.sell_out_img:SetActive(false)
+    self.storeMgr = LuaGameManager.GetInstance():GetLogicMgr():GetStoreMgr()
+    local shopData = self.storeMgr:GetShopDataByGrid(index)
+    if shopData then
+        local configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+        local itemData = configMgr:GetDataByNameAndID("Item", shopData.code)
+        self.shopData = shopData
+        self.chushoujia.text = math.floor(shopData.costPrice)
+        self.yuanjiage.text = math.floor(shopData.costPrice * shopData.costOff)
+        if shopData.buyCount > 0 then
+            self.sell_out_img:SetActive(true)
+        end
+        local currencyData =  self.storeMgr:GetCurrencyData()
+        if currencyData then
+            self.currency_icon.RawImagePath = string.format(GameConstValue.IconImagePrePath,currencyData.icon)
+        end
+        if itemData and itemData.quality then
+            self.itemId = shopData.code
+            self.itemData = itemData
+            self.item_name.text = itemData.name
+            self.quality_img.SpriteName = EPropsClassTex[itemData.quality]
+            self.icon.RawImagePath = string.format(GameConstValue.IconImagePrePath,itemData.icon)
+            self.number.text =  math.floor(shopData.amount)
+        end
+    end
+end
+
+--设置出售标识
+function StoreItem:SetSellHide( data )
+    self.sell_out_img:SetActive(true)
+    self.shopData.buyCount = data.buyCount
+end
+
+function StoreItem:OnClickItem()
+    if self.shopData.buyCount > 0 then
+        print("已经购买过了该道具")
+        return false
+    elseif LuaGameManager.GetInstance():GetLogicMgr():GetStoreMgr():isCanShopRefresh() then
+        print("刷新次数到达上限")
+        return false
+    end
+    local arg = {shopData = self.shopData, index = self.index}
+    LuaGameManager.GetInstance():GetUIMgr():OpenPanel("CommonBuyPanel",GameConstValue.NameUICommonBuyPanelPath,LuaUIPanelLevel.Top,LuaUIPanelRelation.Exclusion, arg)
+end

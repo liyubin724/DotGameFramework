@@ -1,0 +1,35 @@
+require "Game/Core/UI/LoopScroll/LoopScrollItem"
+
+GeneralUpLevelItem = Class(LoopScrollItem,function(self)
+    self.index = 0
+    self.generalMgr = LuaGameManager.GetInstance():GetLogicMgr():GetGeneralMgr()
+end)
+
+function GeneralUpLevelItem:SetItemData(index)
+    if not index then
+        return
+    end
+    self.index = index
+    local itemCount = 0
+    local itemData = self.generalMgr:GetGeneralExpIteme(index)
+    if itemData then
+        if self.exp_item then
+            self.exp_item.SpriteName = EPropsClassTex[itemData.quality]
+        end
+        local packData = LuaGameManager.GetInstance():GetLogicMgr():GetPackMgr():GetItemDataById(itemData.tag)
+        if packData and packData._num then
+            itemCount = math.floor(packData._num)
+        end
+        if self.item_num then
+            self.item_num.text = itemCount
+        end
+		if self.item_icon and itemData.icon then
+            self.item_icon.RawImagePath = string.format(GameConstValue.IconImagePrePath,itemData.icon)
+		end
+    end
+end
+
+function GeneralUpLevelItem:OnClickItem()
+    print("当前道具不足")
+    -- LuaGameManager.GetInstance():GetEventMgr():Trigger(GameEventID.GE_UPDATE_SELECT_ITEM_DATA)
+end

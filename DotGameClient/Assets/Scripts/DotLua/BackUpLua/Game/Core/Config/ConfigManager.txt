@@ -1,0 +1,54 @@
+ConfigManager = Class(function(self,fullPathFormat)
+    self.fullPathFormat = fullPathFormat
+    self.cachedConfigDataDic = {}
+end)
+----public----
+function ConfigManager:GetDataTable(tableName)
+    if not tableName then
+        return nil
+    end
+
+    local configData = self.cachedConfigDataDic[tableName]
+    if not configData then
+        configData = ConfigTableData(string.format(self.fullPathFormat,tableName))
+        self.cachedConfigDataDic[tableName] = configData
+    end
+
+    return configData
+end
+
+function ConfigManager:GetDataByNameAndID(tableName,id)
+    local configData = self:GetDataTable(tableName)
+    if not configData then
+        return nil
+    end
+
+    return configData:GetDataByID(id)
+end
+
+function ConfigManager:GetDataByNameAndIDAndKey(tableName,id,key)
+    local configData = self:GetDataTable(tableName)
+    if not configData then
+        return nil
+    end
+
+    return configData:GetDataByIDAndKey(id,key)
+end
+
+function ConfigManager:GetKeysOfTable(tableName)
+    local configData = self:GetDataTable(tableName)
+    if not configData then
+        return nil
+    end
+
+    return configData:GetKeys()
+end
+
+----private----
+function ConfigManager:DoReset()
+    self.cachedConfigDataDic = {}
+end
+
+function ConfigManager:DoDispose()
+    self:DoReset()
+end

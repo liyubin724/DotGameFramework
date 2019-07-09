@@ -1,0 +1,29 @@
+ConfirmController = Class(function(self)
+    self.confirmMgr = LuaGameManager.GetInstance():GetLogicMgr():GetConfirmMgr()
+end)
+
+function ConfirmController:DoStart()
+    self:UpdatePanel()
+end
+
+function ConfirmController:DoEnable(data)
+    self:UpdatePanel()
+end
+
+function ConfirmController:UpdatePanel()
+    if self.desc then
+        local strData = self.confirmMgr:GetData()
+        if strData then
+            self.desc.text = strData
+        end
+    end
+end 
+
+function ConfirmController:OnClickSure()
+    self.confirmMgr:Confirm()
+end
+
+function ConfirmController:OnClickClose()
+    local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    uiMgr:ClosePanel("ConfirmPanel",LuaUIPanelLevel.Top)
+end

@@ -1,0 +1,29 @@
+--- Created by heyuchang.
+--- DateTime: 2019/2/21
+---升星预览
+
+GeneralUpStarPreviewController = Class(function(self)
+    self.generalMgr = LuaGameManager.GetInstance():GetLogicMgr():GetGeneralMgr()
+end
+)
+
+function GeneralUpStarPreviewController:DoAwake()
+    self:RefreshPanelData()
+end
+
+function GeneralUpStarPreviewController:DoStart()
+
+end
+
+function GeneralUpStarPreviewController:DoDestroy()
+
+end
+
+function GeneralUpStarPreviewController:RefreshPanelData()
+
+end
+
+function GeneralUpStarPreviewController:OnClickPanel()
+    local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    uiMgr:ClosePanel("GeneralStrengthenPanenl",LuaUIPanelLevel.Default)
+end

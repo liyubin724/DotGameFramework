@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: ch_pc_hou_004_tou_part
+  m_EditorClassIdentifier: Assembly-CSharp:Dot.Core.Avator:AvatarPart
+  partType: 0
+  rendererParts:
+  - {fileID: 11400000, guid: 396266e8b8e902948a640c4f73221a7c, type: 2}
+  - {fileID: 11400000, guid: 7420ab471624b8a4791cedc3937ecdc9, type: 2}
+  - {fileID: 11400000, guid: dde86e6fb55b10a4689804c9b013d1b4, type: 2}
+  - {fileID: 11400000, guid: e0c77681052c01047b2f38ba52968876, type: 2}
+  prefabParts: []

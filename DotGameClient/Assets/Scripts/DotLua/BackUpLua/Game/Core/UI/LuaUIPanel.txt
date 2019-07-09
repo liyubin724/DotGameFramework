@@ -1,0 +1,52 @@
+LuaUIPanel = Class(function (self)
+    self.rectTransform = nil
+    self.delayDestroyTime = 0
+    self.gameObject = nil
+    self.uguiPanel = nil
+    self.panelData = nil
+end)
+
+----public
+function LuaUIPanel:GetRectTransform()
+    return self.rectTransform
+end
+
+function LuaUIPanel:GetGameObject()
+    return self.gameObject
+end
+
+function LuaUIPanel:GetDestroyDelayTime()
+    return self.delayDestroyTime
+end
+
+function LuaUIPanel:DoShow(openData,isImmediately)
+    self.uguiPanel:OnShowPanel(isImmediately or false)
+end
+
+function LuaUIPanel:DoHidden(isImmediately)
+    self.uguiPanel:OnHidePanel(isImmediately or false)
+end
+
+function LuaUIPanel:DoClose(isImmediately)
+    self.waitingForClose = true
+    self:DoHidden(isImmediately or true)
+end
+
+----private
+function LuaUIPanel:SetPanelData(panelData)
+    self.panelData = panelData
+end
+
+function LuaUIPanel:OnShowPanelFinish()
+
+end
+
+function LuaUIPanel:OnHidePanelFinish()
+    if self.waitingForClose then
+        LuaGameManager.GetInstance():GetUIMgr():AddPanelToDestroy(self.panelData)
+    end
+    self.waitingForClose = false
+end
+
+
+

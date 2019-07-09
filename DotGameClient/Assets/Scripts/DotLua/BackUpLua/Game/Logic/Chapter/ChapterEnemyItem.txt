@@ -1,0 +1,25 @@
+ChapterEnemyItem = Class(function(self)
+
+end)
+
+function ChapterEnemyItem:SetData(enemyId)
+    if not enemyId then
+        if self.enemyObj then
+            self.enemyObj:SetActive(false)
+        end
+        return
+    end
+    local configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+    local baseData = configMgr:GetDataByNameAndID("TeamBase",tostring(enemyId))
+    if baseData then
+        if self.name then
+            self.name.text = baseData.name
+        end
+        local modelData = configMgr:GetDataByNameAndID("TeamRoleModel",baseData.roleModel)
+        if modelData then
+            if self.icon then
+                self.icon.RawImagePath = string.format(GameConstValue.IconHeroPrePath,modelData.MiddleDraw)
+            end
+        end
+    end
+end

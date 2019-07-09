@@ -1,0 +1,17 @@
+require "Game/Core/UI/LoopScroll/LoopScrollController"
+GeneralScrollController = Class(LoopScrollController,function(self)
+
+end)
+
+function GeneralScrollController:SetScrollItemData(packType)
+    self.scrollView.TotalCount = LuaGameManager.GetInstance():GetLogicMgr():GetGeneralMgr():GetRoleSortListCount()
+end
+
+function GeneralScrollController:SetItemData(item,index)
+    -- print("itemIndex", index)
+    item:SetItemData(index)
+end
+
+function GeneralScrollController:SetSelect(item,clickIndex)
+    item:SetSelect(clickIndex)
+end

@@ -1,0 +1,4 @@
+require "Game/Logic/NetHandler/LuaNetPackHandler"
+require "Game/Logic/NetHandler/LuaNetStoreHandler"
+require "Game/Logic/NetHandler/LuaNetMailHandler"
+require "Game/Logic/NetHandler/LuaNetGeneralStrengthenHandler"

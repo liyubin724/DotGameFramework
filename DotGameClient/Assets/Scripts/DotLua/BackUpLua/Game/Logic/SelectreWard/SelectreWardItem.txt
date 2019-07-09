@@ -1,0 +1,60 @@
+require "Game/Core/UI/LoopScroll/LoopScrollItem"
+
+SelectreWardItem = Class(LoopScrollItem,function(self)
+    self.index = 0
+end)
+
+function  SelectreWardItem:SetItemData(index)
+    if not index then
+        return
+    end
+    self.selectreWardMgr = LuaGameManager.GetInstance():GetLogicMgr():GetSelectreWardMgr()
+    self.index = index
+
+    local itemData = self.selectreWardMgr:GetRewardItemDataByindex(index)
+    if itemData then
+        if self.quality_img then
+            self.quality_img.SpriteName = EPropsClassTex[itemData.quality]
+        end
+        -- if self.number then
+        --     self.number.text = indexData.count..""
+        -- end
+        self.icon.RawImagePath = string.format(GameConstValue.IconImagePrePath,itemData.icon)
+    end
+    
+    local selectIndex = self.selectreWardMgr:GetSelectItemIndex()
+    if selectIndex ~= 0 then
+        if self.index == selectIndex then
+            self:OnClickItem()
+            self.select:SetActive(true)
+        end
+    else
+        if index == 1 then
+            self:OnClickItem()
+            self.select:SetActive(true)
+        end
+    end
+end
+
+function  SelectreWardItem:SetSelect(clickIndex)
+    if clickIndex == self.index then
+        if self.select then
+            self.select:SetActive(true)
+        end
+    else
+        if self.select then
+            self.select:SetActive(false)
+        end
+    end
+end
+
+function  SelectreWardItem:OnClickItem()
+    local selectIndex = self.selectreWardMgr:GetSelectItemIndex()
+    if self.index ~= selectIndex then
+        self.selectreWardMgr:SetSelectItemIndex(self.index)
+        if self.loopScroll then
+            self.loopScroll.SelectIndex = self.index-1
+        end
+    end
+    LuaGameManager.GetInstance():GetEventMgr():Trigger(GameEventID.GE_UPDATE_SelectreWard_DATA)
+end

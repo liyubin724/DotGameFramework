@@ -1,0 +1,23 @@
+require "Game/Core/UI/LoopScroll/LoopScrollController"
+MailItemScrollController = Class(LoopScrollController,function(self)
+    self.listData = {}
+end)
+
+function MailItemScrollController:SetScrollItemData()
+    local mailMgr = LuaGameManager.GetInstance():GetLogicMgr():GetMailMgr()
+    local selectIndex = mailMgr:GetSelectIndex()
+    local mailConfig = mailMgr:GetMailConfigByIndex(selectIndex)
+    local mailData = mailMgr:GetMailByIndex(selectIndex)
+    local count = 0
+    if mailConfig.rewardConfigId and not mailData.reward then
+        count = 1
+    end
+    self.scrollView.TotalCount = count
+end
+
+function MailItemScrollController:SetItemData(item,index)
+    item:SetItemData(index)
+end
+
+function MailItemScrollController:SetSelect(item,clickIndex)
+end

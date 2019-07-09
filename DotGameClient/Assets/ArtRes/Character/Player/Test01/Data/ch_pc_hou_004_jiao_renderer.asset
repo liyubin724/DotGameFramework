@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: ch_pc_hou_004_jiao_renderer
+  m_EditorClassIdentifier: Assembly-CSharp:Dot.Core.Avator:AvatarRendererPart
+  mesh: {fileID: 4300000, guid: 08e7677b83733834285924054fd87e89, type: 2}
+  materials:
+  - {fileID: 2100000, guid: 994333ce8938d4e1fb5a70f3ee808643, type: 2}
+  boneNames:
+  - Bip001 Pelvis
+  - Bip001 Spine
+  - Bip001 R Thigh
+  - Bip001 L Thigh
+  - Bip001 L Calf
+  - Bip001 L Foot
+  - Bip001 R Calf
+  - Bip001 R Foot
+  rootBoneName: Bip001 Pelvis
+  rendererNodeName: ch_pc_hou_004_jiao

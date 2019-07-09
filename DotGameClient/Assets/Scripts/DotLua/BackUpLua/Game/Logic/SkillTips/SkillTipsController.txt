@@ -1,0 +1,22 @@
+SkillTipsController = Class(function(self)
+    self.skillTipsMgr = LuaGameManager.GetInstance():GetLogicMgr():GetSkillTipsMgr()
+end)
+
+function SkillTipsController:DoShow()
+    self:InitPanel()
+end
+
+function SkillTipsController:InitPanel()
+    local skillData = self.skillTipsMgr:GetSkillData()
+    if skillData then
+        self.skill_name.text = skillData.skillName
+        self.skill_description.text = skillData.skillIntroduce
+        if self.skill_icon then
+            self.skill_icon.RawImagePath = string.format(GameConstValue.IconImagePrePath,skillData.icon)
+        end
+    end
+end
+
+function SkillTipsController:OnClickClose()
+    LuaGameManager.GetInstance():GetUIMgr():ClosePanel("SkillTips",LuaUIPanelLevel.Top)
+end

@@ -1,0 +1,72 @@
+ConfigDatabase =
+    Class(
+    function(self)
+        self.configs = {}
+    end
+)
+
+----public----
+function ConfigDatabase:SetRootPath(rootPath)
+    self.rootPath = rootPath
+    if IsDebug then
+        self:Check()
+    end
+end
+
+function ConfigDatabase:GetConfig(configName)
+    local data = self.configs[configName]
+    if not data then
+        data = self:LoadConfig(configName, true)
+    end
+    return data
+end
+
+function ConfigDatabase:ReleaseConfig(configName)
+    self.configs[configName] = nil
+end
+
+function ConfigDatabase:ReloadConfig(configName)
+    return self:LoadConfig(configName, true)
+end
+
+function ConfigDatabase:ReloadAll()
+    for key, _ in pairs(self.configs) do
+        self:ReloadConfig(key)
+    end
+end
+
+----private----
+function ConfigDatabase:Check()
+    if not self.rootPath then
+        error('ConfigDatabase::SetRootPath->rootPath is Nil')
+        return false
+    else
+        local lastChar = string.sub(self.rootPath, #self.rootPath)
+        if lastChar ~= '/' then
+            error('ConfigDatabase::SetRootPath->rootPath must finish with /')
+            return false
+        end
+    end
+
+    return true
+end
+
+function ConfigDatabase:LoadConfig(configName, autoUpdate)
+    if self.rootPath then
+        local data = require(self.rootPath .. configName)
+        if autoUpdate then
+            self.configs[configName] = data
+        end
+        return data
+    end
+    return nil
+end
+
+function ConfigDatabase:DoReset()
+    self.configs = {}
+end
+
+function ConfigDatabase:DoDispose()
+    self.rootPath = nil
+    self.configs = nil
+end

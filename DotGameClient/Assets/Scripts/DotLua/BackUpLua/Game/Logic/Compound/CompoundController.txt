@@ -1,0 +1,82 @@
+CompoundController = Class(function(self)
+    self.compoundMgr = LuaGameManager.GetInstance():GetLogicMgr():GetCompoundMgr()
+end)
+
+function CompoundController:DoShow()
+    self:InitPanel()
+end
+
+function CompoundController:InitPanel()
+    local itemData = self.compoundMgr:GetItemData()
+    print(itemData, itemData.desc, itemData.name)
+    local fragmentData = self.compoundMgr:GetFragmentData()
+    if itemData then
+        local itemCount = self.compoundMgr:GetItemCount()
+        local fragmentNum1 = self.compoundMgr:GetNeedFragmentNum1()
+        self.item1_name.text = itemData.name
+        self.quality1_img.SpriteName = EPropsClassTex[itemData.quality]
+        self.item1_num.text = itemCount
+        self.totalNum = math.floor(itemCount / fragmentNum1)
+        self.useNum = 1
+        self.numer_slider.value = 0
+        self:ShowBatchText()
+        if self.icon1 then
+            self.icon1.RawImagePath = string.format(GameConstValue.IconImagePrePath,itemData.icon)
+        end
+    end
+    if fragmentData then
+        print(fragmentData, fragmentData.desc, fragmentData.name)
+        -- local itemCount = self.compoundMgr:GetItemFragmentCount()
+        self.item2_name.text = fragmentData.name
+        self.quality2_img.SpriteName = EPropsClassTex[fragmentData.quality]
+        self.item2_num.text = itemCount
+        if self.icon2 then
+            self.icon2.RawImagePath = string.format(GameConstValue.IconImagePrePath,fragmentData.icon)
+        end
+    end
+end
+
+function CompoundController:ShowBatchText()
+    --防止数字上下越界，不为整数
+	if self.useNum < 1 then
+		self.useNum = 1
+	end
+	if self.useNum > self.totalNum then
+		self.useNum = self.totalNum
+    end
+    self.compound_number.text = MultiLanguageHelper.GetString( GlobalText.BatchVauleText, math.floor(self.useNum), self.totalNum )
+end
+
+--更改用量显示
+function CompoundController:ShowUseNum()
+    self.useNum = self.useNum + 0.1
+	self:ShowBatchText()
+    self.numer_slider.value = self.useNum / self.totalNum;
+end
+
+--减少
+function CompoundController:OnDecreaseBtnClick( )
+	self.useNum = self.useNum - 1;
+	self:ShowUseNum()
+end
+
+--增加
+function CompoundController:OnIncreaseBtnClick( )
+	self.useNum = self.useNum + 1;
+	self:ShowUseNum()
+end
+
+--滑动
+function CompoundController:OnSlider()
+    self.useNum = self.totalNum * self.numer_slider.value;
+    self:ShowBatchText()
+end
+
+function CompoundController:OnCompoundBtn()
+    self.compoundMgr:Confirm(math.floor(self.useNum))
+end
+
+function CompoundController:OnClickClose()
+    local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    uiMgr:ClosePanel("CompoundPanel",LuaUIPanelLevel.Top)
+end

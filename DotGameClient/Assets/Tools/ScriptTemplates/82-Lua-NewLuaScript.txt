@@ -1,0 +1,23 @@
+#NAME# = Class(function(self)
+
+end)
+
+function #NAME#:DoAwake()
+
+end
+
+function #NAME#:DoEnable()
+
+end
+
+function #NAME#:DoStart()
+
+end
+
+function #NAME#:DoDisable()
+
+end
+
+function #NAME#:DoDestroy()
+
+end

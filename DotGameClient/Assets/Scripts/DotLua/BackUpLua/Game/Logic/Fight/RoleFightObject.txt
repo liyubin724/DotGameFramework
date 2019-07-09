@@ -1,0 +1,3 @@
+RoleFightObject = Class(FightObjectBase,function(self)
+
+end)

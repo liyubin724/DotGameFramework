@@ -1,0 +1,23 @@
+MainUIPanel = Class(LuaUIPanel,function(self)
+
+end)
+
+function MainUIPanel:DoShow(data)
+    self._base.DoShow(self,data)
+end
+
+function MainUIPanel:DoAwake()
+
+end
+
+function MainUIPanel:DoStart()
+
+end
+
+function MainUIPanel:DoDestroy()
+
+end
+
+function MainUIPanel:ClosePanelClick()
+    self._base.DoClose(self)
+end

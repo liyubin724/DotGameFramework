@@ -1,0 +1,88 @@
+LuaNetMailHandler = {}
+
+function LuaNetMailHandler.GetAllMailRequestResponse(callback)
+    local netMgr = LuaGameManager.GetInstance():GetNetMgr()
+    netMgr:RequestWithTable(LuaNetMessageDef.ID_GAME_MAIL_INFO,{},function (req,resp)
+        if nil==req then
+            LuaGameManager.GetInstance():GetLogicMgr():GetMailMgr():RecordMailData(resp)
+            callback()
+        else
+            print("GetAllMailRequestResponse err!!")
+        end
+    end)
+end
+
+function LuaNetMailHandler.ReadMailRequestResponse(maidId, callback)
+    local netMgr = LuaGameManager.GetInstance():GetNetMgr()
+    netMgr:RequestWithTable(LuaNetMessageDef.ID_GAME_MAIL_READ,{["mailId"]=maidId},function (req,resp)
+        local data = table.tostring(resp)
+        print("ReadMailRequestResponse", data)
+        if nil==req then
+            LuaGameManager.GetInstance():GetLogicMgr():GetMailMgr():RecordMailData(resp)
+            callback()
+        else
+            print("ReadMailRequestResponse err!!")
+        end
+    end)
+end
+
+function LuaNetMailHandler.GetRewardRequestResponse(maidId, callback)
+    local netMgr = LuaGameManager.GetInstance():GetNetMgr()
+    netMgr:RequestWithTable(LuaNetMessageDef.ID_GAME_MAIL_GET,{["mailId"]=maidId},function (req,resp)
+        local data = table.tostring(resp)
+        print("GetRewardRequestResponse", data)
+        if nil==req then
+            LuaGameManager.GetInstance():GetLogicMgr():GetMailMgr():RecordMailData(resp)
+            callback()
+        else
+            print("GetRewardRequestResponse err!!")
+        end
+    end)
+end
+
+function LuaNetMailHandler.GetAllRewardRequestResponse(callback)
+    local netMgr = LuaGameManager.GetInstance():GetNetMgr()
+    netMgr:RequestWithTable(LuaNetMessageDef.ID_GAME_MAIL_ALLGET,{},function (req,resp)
+        local data = table.tostring(resp)
+        print("GetAllRewardRequestResponse", data)
+        if nil==req then
+            LuaGameManager.GetInstance():GetLogicMgr():GetMailMgr():RecordMailData(resp)
+            callback()
+        else
+            print("GetAllRewardRequestResponse err!!")
+        end
+    end)
+end
+--删除邮件
+--param: type 0 删除，1 全部删除
+function LuaNetMailHandler.DeleteMailRequestResponse(maidId, type, callback)
+    local netMgr = LuaGameManager.GetInstance():GetNetMgr()
+    netMgr:RequestWithTable(LuaNetMessageDef.ID_GAME_MAIL_DELETE,{["mailId"]=maidId, ["type"]=type},function (req,resp)
+        local data = table.tostring(resp)
+        print("DeleteMailRequestResponse", data)
+        if nil==req then
+            LuaGameManager.GetInstance():GetLogicMgr():GetMailMgr():RecordMailData(resp)
+            callback()
+        else
+            print("DeleteMailRequestResponse err!!")
+        end
+    end)
+end
+
+function LuaNetMailHandler.DebugCmd()
+    local netMgr = LuaGameManager.GetInstance():GetNetMgr()
+    local debugCmds = {
+        ["debugCmds"] =
+        {
+            {
+                ["type"] = 15,
+                ["params"] = {"1001"}
+            }
+        }
+    }
+    netMgr:RequestWithTable(99001, debugCmds, function (req,resp,err)
+        LuaGameManager.GetInstance():GetEventMgr():Trigger(GameEventID.GE_UPDATE_MAIL_DATA)
+        local str = table.tostring(resp)
+        print(str)
+    end)
+end

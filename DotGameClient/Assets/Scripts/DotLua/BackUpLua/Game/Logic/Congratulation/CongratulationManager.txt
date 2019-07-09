@@ -1,0 +1,76 @@
+CongratulationManager = Class(function(self)
+    self.rewardData = {}
+    self.rewardIndex = 0
+end)
+--private
+function CongratulationManager:DoReset()
+    self.rewardData = {}
+    self.rewardIndex = 0
+end
+
+function CongratulationManager:DoDispose()
+    self.rewardData = nil
+    self.rewardIndex = nil
+end
+
+--public
+function CongratulationManager:DequeueData()
+    if #self.rewardData >= self.rewardIndex then
+        self.rewardIndex = self.rewardIndex +1
+        return self.rewardData[self.rewardIndex]
+    end
+end
+
+function CongratulationManager:OnReceiveData(rewardList)
+    print("CongratulationManager->OnReceiveData")
+    if not rewardList then
+        return
+    end
+    if self.rewardIndex >= #self.rewardData then
+        self.rewardData = {}
+        self.rewardIndex = 0
+    end
+    for i=1,#rewardList do
+        local reward = rewardList[i]
+        if reward then
+            local rewardClass = RewardClass(reward.amount,reward.code,reward.typeValue, reward.rewardConfigId)
+            table.insert(self.rewardData,rewardClass)
+        end
+    end
+    if self:CanShowPanel() then
+        local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+        uiMgr:OpenPanel("AwardPanel",GameConstValue.NameUICongratulationPanelPath,LuaUIPanelLevel.Top,LuaUIPanelRelation.Exclusion)
+    end
+end
+
+function CongratulationManager:HasNextData()
+    return self.rewardData and #self.rewardData > self.rewardIndex
+end
+
+function CongratulationManager:CanShowPanel()
+    return self:HasNextData()
+end
+
+RewardClass = Class(function(self,amount,code,type, rewardId)
+    self.amount = amount
+    self.code = code
+    self.type = type
+    self.rewardId = rewardId
+end)
+
+function RewardClass:GetAmount()
+    return self.amount
+end
+
+function RewardClass:GetCode()
+    return self.code
+end
+
+function RewardClass:GetType()
+    return self.type
+end
+
+function RewardClass:GetRewardId()
+    return self.rewardId
+end
+

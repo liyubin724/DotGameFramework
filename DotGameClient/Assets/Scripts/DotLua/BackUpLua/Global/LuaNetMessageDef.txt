@@ -1,0 +1,32 @@
+LuaNetMessageDef = 
+{
+    ID_GAME_LOGIN_REQUEST                           = 10001,                           --角色登录
+    ID_GAME_DOWNLINE_REQUEST                        = 10002,                           --角色下线
+    ID_GAME_PACK_DATA_REQUEST                       = 10003,                           --背包数据
+    ID_GAME_MODIFY_NAME_REQUEST                     = 10004,                           --修改名称
+
+    ID_GAME_SALE_ITEM_REQUEST                       = 15001,                           --出售道具
+    ID_GAME_USE_ITEM_REQUEST                        = 15002,                           --使用道具
+    ID_GAME_USE_ITEM_BOX_REQUEST                    = 15003,                           --使用宝箱
+    ID_GAME_COMPOUND_ITEM_REQUEST                   = 15004,                            --合成道具
+
+    ID_GAME_SHOP_INFO                               = 17001,                           --获取商店数据
+    ID_GAME_SHOP_BUY                                = 17002,                           --购买商店物品
+    ID_GAME_SHOP_REFRESH                            = 17003,                           --刷新商店
+
+    ID_GAME_MAIL_INFO                               = 20001,                           --获取邮件数据
+    ID_GAME_MAIL_READ                               = 20002,                           --读取邮件
+    ID_GAME_MAIL_GET                                = 20003,                           --领取邮件
+    ID_GAME_MAIL_ALLGET                             = 20004,                           --批量领取邮件
+    ID_GAME_MAIL_DELETE                             = 20006,                           --删除邮件
+
+
+    ARENA_INFO                                      = 19001,                            --竞技场匹配对手
+    ARENA_BATTLE_START                              = 19002,                            --竞技场开战
+    ARENA_BATTLE_END                                = 19003,                            -- 竞技场结束
+    ARENA_REFRESH_ENEMY                             = 19004,                            --竞技场手动刷新对手
+    ARENA_BATTLE_RECORD                             = 19005,                            -- 竞技场战报
+    ARENA_BATTLE_VIDEO                              = 19006,                            -- 竞技场录像
+    ARENA_TAKE_REWARD                               = 19007,                            --竞技场领取奖励
+
+}    

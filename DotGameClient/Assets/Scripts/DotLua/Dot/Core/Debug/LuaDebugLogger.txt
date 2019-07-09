@@ -1,0 +1,24 @@
+----private----
+LuaDebugLogger = {}
+LuaDebugLogger.__index = LuaDebugLogger
+
+----public----
+function LuaDebugLogger.Error(message)
+    print(message)
+end
+
+function LuaDebugLogger.Info(message)
+    if IsDebug then
+        print(message)
+    end
+end
+
+function LuaDebugLogger.Warning(message)
+    if IsDebug then
+        print(message)
+    end
+end
+
+function LuaDebugLogger.Exeception(message)
+    error(message)
+end

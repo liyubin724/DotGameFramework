@@ -1,0 +1,19 @@
+TestPanel1RCController = Class(function(self)
+    self.testPanel2Path = ""
+end)
+
+function TestPanel1RCController:OnIndependentClick()
+    UIManager.LoadPanel(GameConstValue.TestPanel2Path,UILevelOfHierarchy.Default,UIPanelRelation.Independent,{text = "Opend Independent Data By Btn"})
+end
+
+function TestPanel1RCController:OnExclusionClick()
+    UIManager.LoadPanel(GameConstValue.TestPanel2Path,UILevelOfHierarchy.Default,UIPanelRelation.Exclusion,{text = "Opend Exclusion Data By Btn"})
+end
+
+function TestPanel1RCController:OnHiddenClick()
+    UIManager.LoadPanel(GameConstValue.TestPanel2Path,UILevelOfHierarchy.Default,UIPanelRelation.Hidden,{text = "Opend Hidden Data By Btn"},{text = "closed back Hidden Data Byt btn"})
+end
+
+function TestPanel1RCController:OnCloseClick()
+    self.panel:DoClose()
+end

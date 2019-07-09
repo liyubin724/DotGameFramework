@@ -1,0 +1,63 @@
+CommonBuyController = Class(function(self)
+    
+end)
+
+function CommonBuyController:DoShow(data)
+    self.index = data.index
+    self:InitPanel(data.shopData)
+end
+
+function CommonBuyController:InitPanel(shopData)
+    self.shopData = shopData
+    local configMgr = LuaGameManager.GetInstance():GetConfigMgr()
+    local itemData = configMgr:GetDataByNameAndID("Item", shopData.code)
+    local itemCount = 0
+    if itemData then
+        self.item_name.text = itemData.name
+        self.item_des.text = itemData.desc
+        self.price.text = math.floor(shopData.costPrice)
+        self.quality_img.SpriteName = EPropsClassTex[itemData.quality]
+
+        local packData = LuaGameManager.GetInstance():GetLogicMgr():GetPackMgr():GetItemDataById(shopData.code)
+        if packData and packData._num then
+            itemCount = math.floor(packData._num)
+        end
+        self.item_num.text = itemCount
+
+        self.currencyData =  LuaGameManager.GetInstance():GetLogicMgr():GetStoreMgr():GetCurrencyData()
+        if self.currencyData then
+            self.selling_price.RawImagePath = string.format(GameConstValue.IconImagePrePath, self.currencyData.icon)
+        end
+        if self.icon then
+            self.icon.RawImagePath = string.format(GameConstValue.IconImagePrePath,itemData.icon)
+        end
+    end
+end
+
+--判断购买消耗
+function CommonBuyController:isCanBuy( )
+    if self.shopData then
+        local modelMgr = LuaGameManager.GetInstance():GetModelMgr()
+        local diamond = modelMgr:GetDataByKeys("bag","bagMap",tostring(self.currencyData.tag),"count")
+        if diamond >= self.shopData.costPrice  then
+            return true
+        end
+    end
+    return false
+end
+
+--购买按钮
+function CommonBuyController:OnClickSure()
+    if self:isCanBuy() then
+        LuaNetStoreHandler.BuyItemRequestResponse(self.index)
+        local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+        uiMgr:ClosePanel("CommonBuyPanel",LuaUIPanelLevel.Top)
+    else
+        print("购买道具不足")
+    end
+end
+
+function CommonBuyController:OnClickClose()
+    local uiMgr = LuaGameManager.GetInstance():GetUIMgr()
+    uiMgr:ClosePanel("CommonBuyPanel",LuaUIPanelLevel.Top)
+end
