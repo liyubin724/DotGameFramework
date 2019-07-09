@@ -214,6 +214,8 @@ namespace DotEditor.Core.Avatar
                 part.mesh = AssetDatabase.LoadAssetAtPath<Mesh>(meshAssetPath);
             }
             AssetDatabase.SaveAssets();
+
+            GameObject.Destroy(instanceGO);
         }
 
         public static void CreatePart(string targetAssetDir,AvatarRendererPart[] rendererParts = null)
