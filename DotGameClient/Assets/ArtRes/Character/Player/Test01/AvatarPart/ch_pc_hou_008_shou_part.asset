@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: ch_pc_hou_008_shou_part
   m_EditorClassIdentifier: 
   partType: 0
-  rendererParts: []
+  rendererParts:
+  - {fileID: 11400000, guid: acae7bc9b6f1cae48985ebf7a1cbda2b, type: 2}
   prefabParts: []
