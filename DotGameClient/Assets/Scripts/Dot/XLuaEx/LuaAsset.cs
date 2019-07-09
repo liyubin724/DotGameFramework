@@ -1,5 +1,6 @@
 ﻿using Dot.Core;
 using Dot.Core.Logger;
+using Sirenix.OdinInspector;
 using System;
 using System.IO;
 using UnityEngine;
@@ -11,8 +12,11 @@ namespace Dot.XLuaEx
     public class LuaAsset
     {
         [SerializeField]
+        [ReadOnly]
         private string m_ScriptName = "";
         [SerializeField]
+        [FilePath(AbsolutePath =false,Extensions ="txt",ParentFolder ="Assets/Scripts/DotLua")]
+        [OnValueChanged("OnScriptPathChanged")]
         private string m_ScriptPath = "";
 
         public string LuaScriptPath
@@ -76,5 +80,13 @@ namespace Dot.XLuaEx
 
             return objTable;
         }
+
+        #region for odin
+        private void OnScriptPathChanged()
+        {
+            m_ScriptName = Path.GetFileNameWithoutExtension(m_ScriptPath);
+            m_ScriptPath = m_ScriptPath.Substring(0, m_ScriptPath.LastIndexOf("."));
+        }
+        #endregion
     }
 }

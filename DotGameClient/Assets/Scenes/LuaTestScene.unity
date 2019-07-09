@@ -309,3 +309,5 @@ MonoBehaviour:
   preloadLua:
   - m_ScriptName: DotPreload
     m_ScriptPath: Dot/DotPreload
+  - m_ScriptName: GamePreload
+    m_ScriptPath: Game/GamePreload
