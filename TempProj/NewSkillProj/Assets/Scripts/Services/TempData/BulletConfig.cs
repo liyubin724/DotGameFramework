@@ -15,6 +15,13 @@ public class BulletConfig : BaseConfig<BulletConfigData>
             maxTime = 10.0f,
             timeLineConfig = "Bullet/bullet_1001",
         });
+        AddData(new BulletConfigData()
+        {
+            id = 2,
+            assetPath = "Bullet/bullet_1",
+            maxTime = 10.0f,
+            timeLineConfig = "Bullet/bullet_1002",
+        });
     }
 }
 public class BulletConfigData : BaseConfigData

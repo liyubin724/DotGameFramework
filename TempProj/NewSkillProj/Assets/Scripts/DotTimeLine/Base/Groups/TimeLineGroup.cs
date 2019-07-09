@@ -13,7 +13,7 @@ namespace DotTimeLine.Base.Groups
         public float TotalTime { get; set; } = 10;
         public bool IsEnd { get; set; } = false;
 
-        public TimeLineConditionCompose conditionCompose = null;
+        public TimeLineConditionCompose conditionCompose = new TimeLineConditionCompose();
         public readonly List<TimeLineTrack> tracks = new List<TimeLineTrack>();
         public OnGroupFinished onFinished = null;
 

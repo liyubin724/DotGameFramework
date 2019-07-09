@@ -103,6 +103,10 @@ namespace DotTimeLine
             name += "(" + Item.Index + ")";
 
             GUI.Label(itemRect, name, IsSelected ? "flow node 6" : "flow node 5");
+            //Rect labelRect = GUILayoutUtility.GetRect(new GUIContent(name),EditorStyles.label);
+            //labelRect.x = itemRect.x;
+            //labelRect.y = itemRect.y + itemRect.height*0.5f-labelRect.height*0.5f;
+            //GUI.Label(labelRect, new GUIContent(name));
 
             if(Event.current.button == 0)
             {
@@ -110,29 +114,31 @@ namespace DotTimeLine
                 {
                     if (itemRect.Contains(Event.current.mousePosition))
                     {
-                        IsSelected = true;
-                        isPressed = true;
-
-                        setting.isChanged = true;
                         Event.current.Use();
+
+                        isPressed = true;
+                        IsSelected = true;
                     }
                 }
                 else if (Event.current.type == EventType.MouseUp)
                 {
                     if (isPressed)
                     {
-                        isPressed = false;
                         Event.current.Use();
+
+                        isPressed = false;
+                        setting.isChanged = true;
                     }
                 }
                 else if (Event.current.type == EventType.MouseDrag)
                 {
-                    if (isPressed)
+                    if (isPressed && IsSelected)
                     {
                         Vector2 deltaPos = Event.current.delta;
                         float deltaTime = deltaPos.x / setting.pixelForSecond;
                         Item.FireTime += deltaTime;
 
+                        Event.current.Use();
                         setting.isChanged = true;
                     }
                 }
