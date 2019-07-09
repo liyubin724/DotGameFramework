@@ -1,27 +1,23 @@
 ﻿using Dot.Core.Avatar;
 using Dot.Core.Entity;
-using Sirenix.OdinInspector;
-using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 
 namespace DotEditor.Core.Avatar
 {
-    public class AvatarPreviewWindow : OdinEditorWindow
+    public class AvatarPreviewWindow : EditorWindow
     {
         [MenuItem("Game/Avatar/Preview",false,101)]
         public static void ShowWindow()
         {
-            var win = EditorWindow.GetWindow<AvatarPreviewWindow>();
-            win.Show();
+            GetWindow<AvatarPreviewWindow>().Show();
         }
 
         public EntityNodeBehaviour skeletonNode = null;
         public AvatarPart[] aParts = new AvatarPart[0];
 
-        [Button]
-        public void Preview()
+        private void OnGUI()
         {
-
+            
         }
     }
 }
