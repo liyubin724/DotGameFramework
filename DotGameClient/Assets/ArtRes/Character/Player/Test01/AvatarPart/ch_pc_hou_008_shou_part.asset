@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 999840b21f9dadb4cb9bb06e1a01073c, type: 3}
   m_Name: ch_pc_hou_008_shou_part
   m_EditorClassIdentifier: 
-  partType: 0
+  partType: 3
   rendererParts:
   - {fileID: 11400000, guid: acae7bc9b6f1cae48985ebf7a1cbda2b, type: 2}
   prefabParts: []
