@@ -1,12 +1,11 @@
 ﻿using DotTimeLine.Base.Items;
-using DotTimeLine.Items;
 
 namespace Game.TimeLine
 {
     [TimeLineItem("Effect", "Remove Effect", TimeLineItemPlatform.Client)]
     public class RemoveEffectEvent : ATimeLineEventItem
     {
-        [TimeLineDependOn]
+        [TimeLineDependOn(typeof(AddEffectEvent))]
         public int EffectIndex { get; set; }
 
         public override void Trigger()

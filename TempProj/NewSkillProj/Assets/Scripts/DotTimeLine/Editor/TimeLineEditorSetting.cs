@@ -16,6 +16,8 @@ namespace DotTimeLine
         //runtime setting
         public Vector2 scrollPos = Vector2.zero;
         public bool isChanged = false;
+
+        public float PixelForStep { get { return pixelForSecond * timeStep; } }
         
     }
 }

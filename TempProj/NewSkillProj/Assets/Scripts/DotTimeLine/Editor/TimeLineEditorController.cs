@@ -1,5 +1,6 @@
 ﻿using DotTimeLine.Base;
 using DotTimeLine.Base.Groups;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -32,10 +33,9 @@ namespace DotTimeLine
             }
         }
         public Rect ItemClipRect { get; private set; }
-
-        private TimeLineEditorSetting setting = null;
         public TimeLineController Controller { get ; private set; }
-
+        
+        private TimeLineEditorSetting setting = null;
         private List<TimeLineEditorGroup> groups = new List<TimeLineEditorGroup>();
         private TimeLineEditorGroup selectedGroup = null;
         public TimeLineEditorGroup SelectedGroup
@@ -74,13 +74,7 @@ namespace DotTimeLine
             var groupOperRect = new Rect(rect.x, rect.y, setting.groupWidth, setting.timeHeight);
             using (new GUILayout.AreaScope(groupOperRect))
             {
-                using (var ccs = new EditorGUI.ChangeCheckScope())
-                {
-                    DrawOperation(groupOperRect);
-
-                    if (ccs.changed)
-                        setting.isChanged = true;
-                }
+                DrawOperation(groupOperRect);
             }
              
             var timeX = rect.x + setting.groupWidth + setting.trackWidth;
@@ -88,7 +82,6 @@ namespace DotTimeLine
             var timeWidth = rect.width - setting.trackWidth - setting.groupWidth - setting.propertyWidth;
             var timeHeight = setting.timeHeight;
             var timeRect = new Rect(timeX, timeY, timeWidth, timeHeight);
-
             using (new GUILayout.AreaScope(timeRect))
             {
                 DrawTimeLine(timeRect);
@@ -101,13 +94,7 @@ namespace DotTimeLine
             var groupRect = new Rect(groupX, groupY, groupWidth, groupheight);
             using (new GUILayout.AreaScope(groupRect))
             {
-                using (var ccs = new EditorGUI.ChangeCheckScope())
-                {
-                    DrawChilds(groupRect);
-
-                    if (ccs.changed)
-                        setting.isChanged = true;
-                }
+                DrawChilds(groupRect);
             }
 
             var trackX = rect.x + setting.groupWidth;
@@ -118,9 +105,9 @@ namespace DotTimeLine
             var trackOperRect = new Rect(rect.x + setting.groupWidth, rect.y, setting.trackWidth, setting.timeHeight);
             if (selectedGroup != null)
             {
+                selectedGroup.DrawOperation(trackOperRect);
                 using (var ccs = new EditorGUI.ChangeCheckScope())
                 {
-                    selectedGroup.DrawOperation(trackOperRect);
                     selectedGroup.DrawChilds(trackRect);
 
                     if (ccs.changed)
@@ -162,71 +149,49 @@ namespace DotTimeLine
                 using (new GUILayout.AreaScope(propertyRect))
                 {
                     EditorGUIUtility.labelWidth = 120;
-                    using (new EditorGUILayout.VerticalScope())
+                    using (new UnityEditor.EditorGUILayout.VerticalScope())
                     {
                         SelectedGroup.DrawProperty();
                     }
                 }
-
-
             }
 
-            DrawAreaLine(groupOperRect,Color.gray);
-            DrawAreaLine(trackOperRect, Color.gray);
-            DrawAreaLine(timeRect, Color.gray);
-            DrawAreaLine(ItemClipRect, Color.yellow);
-            DrawAreaLine(groupRect, Color.gray);
-            DrawAreaLine(trackRect, Color.gray);
-            DrawAreaLine(propertyRect, Color.gray);
+            EditorGUIUtil.DrawAreaLine(groupOperRect,Color.gray);
+            EditorGUIUtil.DrawAreaLine(trackOperRect, Color.gray);
+            EditorGUIUtil.DrawAreaLine(timeRect, Color.gray);
+            EditorGUIUtil.DrawAreaLine(ItemClipRect, Color.yellow);
+            EditorGUIUtil.DrawAreaLine(groupRect, Color.gray);
+            EditorGUIUtil.DrawAreaLine(trackRect, Color.gray);
+            EditorGUIUtil.DrawAreaLine(propertyRect, Color.gray);
         }
 
         private void UpdateScrollPos()
         {
-            using (var scop = new EditorGUILayout.ScrollViewScope(setting.scrollPos))
+            using (var scop = new UnityEditor.EditorGUILayout.ScrollViewScope(setting.scrollPos))
             {
-                float scrollWith = Mathf.Max(TimeLength * setting.pixelForSecond,ItemClipRect.width);
-                float scrollHeight = Mathf.Max(ItemHeight,ItemClipRect.height);
+                float scrollWith = Mathf.Max(TimeLength * setting.pixelForSecond, ItemClipRect.width);
+                float scrollHeight = Mathf.Max(ItemHeight, ItemClipRect.height);
 
-                GUILayout.Label("", GUILayout.Width(scrollWith), GUILayout.Height(scrollHeight-20));
+                GUILayout.Label("", GUILayout.Width(scrollWith), GUILayout.Height(scrollHeight - 20));
 
                 setting.scrollPos = scop.scrollPosition;
             }
         }
 
-        private void DrawAreaLine(Rect rect,Color color)
-        {
-            Handles.color = color;
-
-            var points = new Vector3[] {
-                new Vector3(rect.x, rect.y, 0),
-                new Vector3(rect.x + rect.width, rect.y, 0),
-                new Vector3(rect.x + rect.width, rect.y + rect.height, 0),
-                new Vector3(rect.x, rect.y + rect.height, 0),
-            };
-
-            var indexies = new int[] {
-                0, 1, 1, 2, 2, 3, 3, 0,
-            };
-
-            Handles.DrawLines(points, indexies);
-        }
-
         private void DrawTimeLine(Rect rect)
         {
-            float timeStep = 0.1f;
-            float piexlStep = setting.pixelForSecond * timeStep;
             using (new GUI.ClipScope(new Rect(0, 0, rect.width, rect.height)))
             {
-                int start = (int)(setting.scrollPos.x / piexlStep);
-                int end = (int)((setting.scrollPos.x + rect.width) / piexlStep);
+                int start = (int)(setting.scrollPos.x / setting.PixelForStep);
+                int end = (int)((setting.scrollPos.x + rect.width) / setting.PixelForStep);
                 for(int i = start;i<end;i++)
                 {
-                    var x = (piexlStep * i - setting.scrollPos.x);
+                    var x = (setting.PixelForStep * i - setting.scrollPos.x);
                     if(i%10 == 0)
                     {
                         Handles.color = new Color(0, 0, 0, 0.8f);
                         Handles.DrawLine(new Vector3(x, 0, 0), new Vector3(x, rect.height * 0.8f, 0));
-                        GUI.Label(new Rect(x, 5, 40, 40), (i * timeStep).ToString("F0"));
+                        GUI.Label(new Rect(x, 5, 40, 40), (i * setting.timeStep).ToString("F0"));
                     }
                     else if(i%5 == 0)
                     {
@@ -246,7 +211,6 @@ namespace DotTimeLine
         {
             using (new GUILayout.HorizontalScope())
             {
-                
                 if (GUILayout.Button("+", "ButtonLeft"))
                 {
                     TimeLineGroup tlGroup = new TimeLineGroup();
@@ -278,6 +242,8 @@ namespace DotTimeLine
                         TimeLineEditorGroup preGroup = groups[groupIndex - 1];
                         groups[groupIndex - 1] = selectedGroup;
                         groups[groupIndex] = preGroup;
+
+                        setting.isChanged = true;
                     }
                 }
                 using (new EditorGUI.DisabledGroupScope(SelectedGroup == null || groupIndex == groups.Count - 1))
@@ -287,6 +253,8 @@ namespace DotTimeLine
                         TimeLineEditorGroup nextGroup = groups[groupIndex + 1];
                         groups[groupIndex + 1] = selectedGroup;
                         groups[groupIndex] = nextGroup;
+
+                        setting.isChanged = true;
                     }
                 }
             }
@@ -317,8 +285,7 @@ namespace DotTimeLine
         
         public void DrawItemLine(Rect rect)
         {
-            float timeStep = 0.1f;
-            float piexlStep = setting.pixelForSecond * timeStep;
+            float piexlStep = setting.pixelForSecond * setting.timeStep;
             using (new GUI.ClipScope(new Rect(0, 0, rect.width, rect.height-16)))
             {
                 int startX = (int)(setting.scrollPos.x / piexlStep);
@@ -364,6 +331,16 @@ namespace DotTimeLine
                 Controller.groups.Add(g.Group);
                 g.FillGroup();
             }
+        }
+
+        internal int[] GetDependOnItem(Type type)
+        {
+            List<int> values = new List<int>();
+            groups.ForEach((group) =>
+            {
+                values.AddRange(group.GetDependOnItem(type));
+            });
+            return values.ToArray();
         }
     }
 }

@@ -6,6 +6,7 @@ namespace Game.TimeLine
     public class CreateBulletEvent : ATimeLineEventItem
     {
         public int BulletConfigID { get; set; }
+        [TimeLineDependOn(typeof(CreateEmitEvent))]
         public int EmitIndex { get; set; }
 
         public override void Trigger()

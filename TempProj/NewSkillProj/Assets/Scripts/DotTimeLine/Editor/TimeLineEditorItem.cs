@@ -41,14 +41,14 @@ namespace DotTimeLine
         public void DrawProperty()
         {
             GUILayout.Label(Item.GetType().Name + ":");
-            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            using (new UnityEditor.EditorGUILayout.VerticalScope(EditorStyles.helpBox))
             {
                 using (new EditorGUI.IndentLevelScope())
                 {
                     using (var sope = new EditorGUI.ChangeCheckScope())
                     {
-                        Item.Index = EditorGUILayout.IntField("Index:", Item.Index);
-                        Item.FireTime = EditorGUILayout.FloatField("Fire Time:", Item.FireTime);
+                        Item.Index = UnityEditor.EditorGUILayout.IntField("Index:", Item.Index);
+                        Item.FireTime = UnityEditor.EditorGUILayout.FloatField("Fire Time:", Item.FireTime);
                         if (Item.FireTime > Track.Group.Group.TotalTime)
                         {
                             Item.FireTime = Track.Group.Group.TotalTime;
@@ -56,7 +56,7 @@ namespace DotTimeLine
                         if (Item.GetType().IsSubclassOf(typeof(ATimeLineActionItem)))
                         {
                             var actionItem = (ATimeLineActionItem)Item;
-                            actionItem.Duration = EditorGUILayout.FloatField("Duration:", actionItem.Duration);
+                            actionItem.Duration = UnityEditor.EditorGUILayout.FloatField("Duration:", actionItem.Duration);
                             if (actionItem.Duration <= 0)
                             {
                                 actionItem.Duration = 0.01f;
@@ -70,7 +70,25 @@ namespace DotTimeLine
                         PropertyInfo[] pInfos = Item.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
                         foreach (var pi in pInfos)
                         {
-                            TimeLineEditorLayout.PropertyInfoField(Item, pi);
+                            TimeLineDependOnAttribute dependOn = pi.GetCustomAttribute<TimeLineDependOnAttribute>();
+                            if(dependOn!=null)
+                            {
+                                int[] dependItems = new int[0];
+                                if(dependOn.DependOnOption == TimeLineDependOnOption.Track)
+                                {
+                                    dependItems = Track.GetDependOnItem(dependOn.DependOnType);
+                                }else if(dependOn.DependOnOption == TimeLineDependOnOption.Group)
+                                {
+                                    dependItems = Track.Group.GetDependOnItem(dependOn.DependOnType);
+                                }else if(dependOn.DependOnOption == TimeLineDependOnOption.Controller)
+                                {
+                                    dependItems = Track.Group.Controller.GetDependOnItem(dependOn.DependOnType);
+                                }
+                                EditorGUIPropertyInfoLayout.PropertyInfoIntPopField(Item, pi, dependItems);
+                            }else
+                            {
+                                EditorGUILayoutUtil.PropertyInfoField(Item, pi);
+                            }
                         }
 
                         if (sope.changed)
@@ -81,6 +99,7 @@ namespace DotTimeLine
         }
 
         private bool isPressed = false;
+        public Rect ItemRect { get; private set; }
         public void DrawElement(Rect rect)
         {
             Rect itemRect = Rect.zero;
@@ -94,6 +113,8 @@ namespace DotTimeLine
             itemRect.width = setting.pixelForSecond * timeLen;
             itemRect.height = setting.trackHeight;
 
+            ItemRect = itemRect;
+
             string name = Item.GetType().Name;
             TimeLineItemAttribute attr = Item.GetType().GetCustomAttribute<TimeLineItemAttribute>();
             if(attr !=null)
@@ -103,10 +124,6 @@ namespace DotTimeLine
             name += "(" + Item.Index + ")";
 
             GUI.Label(itemRect, name, IsSelected ? "flow node 6" : "flow node 5");
-            //Rect labelRect = GUILayoutUtility.GetRect(new GUIContent(name),EditorStyles.label);
-            //labelRect.x = itemRect.x;
-            //labelRect.y = itemRect.y + itemRect.height*0.5f-labelRect.height*0.5f;
-            //GUI.Label(labelRect, new GUIContent(name));
 
             if(Event.current.button == 0)
             {
@@ -196,5 +213,6 @@ namespace DotTimeLine
                 }
             }
         }
+
     }
 }

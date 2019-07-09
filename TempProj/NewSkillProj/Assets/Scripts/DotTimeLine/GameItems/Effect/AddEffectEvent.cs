@@ -1,5 +1,4 @@
 ﻿using DotTimeLine.Base.Items;
-using DotTimeLine.Items;
 
 namespace Game.TimeLine
 {
@@ -7,6 +6,7 @@ namespace Game.TimeLine
     public class AddEffectEvent : ATimeLineEventItem
     {
         public int EffectConfigID { get; set; } = -1;
+        [TimeLineDependOn(typeof(CreateEmitEvent))]
         public int EmitIndex { get; set; } = -1;
 
         public override void Trigger()

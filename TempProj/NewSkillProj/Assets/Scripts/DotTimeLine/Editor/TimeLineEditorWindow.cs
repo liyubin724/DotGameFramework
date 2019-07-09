@@ -15,8 +15,8 @@ public class TimeLineEditorWindow : EditorWindow
         var win = GetWindow<TimeLineEditorWindow>();
         win.wantsMouseMove = true;
     }
-    private TimeLineEditorController tleController;
-    private TimeLineEditorSetting tleSetting;
+    private TimeLineEditorController editorController;
+    private TimeLineEditorSetting editorSetting;
     private string configPath = "";
 
     private int toolbarHeight = 20;
@@ -24,8 +24,8 @@ public class TimeLineEditorWindow : EditorWindow
 
     private void OnEnable() 
     {
-        tleSetting = new TimeLineEditorSetting();
-        minSize = new Vector2(tleSetting.groupWidth + tleSetting.trackWidth + tleSetting.propertyWidth + 200, tleSetting.timeHeight + 300);
+        editorSetting = new TimeLineEditorSetting();
+        minSize = new Vector2(editorSetting.groupWidth + editorSetting.trackWidth + editorSetting.propertyWidth + 200, editorSetting.timeHeight + 300);
     }
 
     private void OnGUI()
@@ -41,22 +41,17 @@ public class TimeLineEditorWindow : EditorWindow
         }
         GUILayout.EndArea();
 
-        Rect tleRect = new Rect(2, toolbarHeight + contentHeight + 2, position.width - 4, position.height - toolbarHeight - contentHeight - 4);
+        Rect rect = new Rect(2, toolbarHeight + contentHeight + 2, position.width - 4, position.height - toolbarHeight - contentHeight - 4);
 
-        if(tleController != null)
+        if(editorController != null)
         {
-            tleController.OnGUI(tleRect);
+            editorController.OnGUI(rect);
 
-            if(tleSetting.isChanged)
+            if(editorSetting.isChanged)
             {
-                tleSetting.isChanged = false;
+                editorSetting.isChanged = false;
                 Repaint();
             }
-        }
-
-        if(Event.current.type == EventType.MouseMove)
-        {
-            Repaint();
         }
     }
 
@@ -76,7 +71,7 @@ public class TimeLineEditorWindow : EditorWindow
                         TimeLineController controller = TimeLineReader.ReadController(JsonMapper.ToObject(textAsset.text));
                         if (controller != null)
                         {
-                            tleController = new TimeLineEditorController(controller, tleSetting);
+                            editorController = new TimeLineEditorController(controller, editorSetting);
                         }
                         configPath = filePath;
                     }
@@ -84,23 +79,23 @@ public class TimeLineEditorWindow : EditorWindow
             }
             if (GUILayout.Button("Create", "toolbarbutton", GUILayout.Width(60)))
             {
-                string filePath = EditorUtility.SaveFilePanel("Save Config", Application.dataPath, "timelineconfig", "txt");
+                string filePath = EditorUtility.SaveFilePanel("Save Config", Application.dataPath+"/Resources", "tl_config", "txt");
                 if (!string.IsNullOrEmpty(filePath))
                 {
                     TimeLineController controller = new TimeLineController();
-                    tleController = new TimeLineEditorController(controller, tleSetting);
-                    tleSetting.isChanged = true;
+                    editorController = new TimeLineEditorController(controller, editorSetting);
+                    editorSetting.isChanged = true;
                     configPath = filePath;
                 }
             }
 
-            if(tleController!=null)
+            if(editorController!=null)
             {
                 if (GUILayout.Button("Save", "toolbarbutton", GUILayout.Width(120)))
                 {
-                    tleController.FillController();
+                    editorController.FillController();
 
-                    string config = TimeLineWriter.WriteController(tleController.Controller).ToJson();
+                    string config = TimeLineWriter.WriteController(editorController.Controller).ToJson();
                     File.WriteAllText(configPath, config, new UTF8Encoding(false));
 
                     string assetPath = "Assets" + configPath.Replace(Application.dataPath, "");
@@ -113,10 +108,5 @@ public class TimeLineEditorWindow : EditorWindow
                 }
             }
         }
-    }
-
-    public void FillController()
-    {
-
     }
 }

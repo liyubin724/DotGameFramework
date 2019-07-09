@@ -93,13 +93,13 @@ namespace DotTimeLine
         public void DrawProperty()
         {
             GUILayout.Label("Track:");
-            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            using (new UnityEditor.EditorGUILayout.VerticalScope(EditorStyles.helpBox))
             {
                 using (var sope = new EditorGUI.ChangeCheckScope())
                 {
                     using (new EditorGUI.IndentLevelScope())
                     {
-                        Track.Name = EditorGUILayout.TextField("Name:", Track.Name);
+                        Track.Name = UnityEditor.EditorGUILayout.TextField("Name:", Track.Name);
                     }
                     if (sope.changed)
                         setting.isChanged = true;
@@ -108,7 +108,7 @@ namespace DotTimeLine
             
             if (SelectedItem != null)
             {
-                EditorGUILayout.Space();
+                UnityEditor.EditorGUILayout.Space();
                 SelectedItem.DrawProperty();
             }
         }
@@ -197,5 +197,7 @@ namespace DotTimeLine
             }
             Track.items.Sort();
         }
+
+        internal int[] GetDependOnItem(Type type) => (from item in items where item.Item.GetType() == type select item.Item.Index).ToArray();
     }
 }

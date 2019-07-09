@@ -55,10 +55,13 @@ namespace DotTimeLine
             }
         }
 
-        public float TimeLength { get
+        public float TimeLength
+        {
+            get
             {
                 return Group.TotalTime;
-            } }
+            }
+        }
 
         private List<TimeLineEditorTrack> tracks = new List<TimeLineEditorTrack>();
         public float ItemHeight
@@ -144,6 +147,8 @@ namespace DotTimeLine
                             TimeLineEditorTrack preTrack = tracks[trackIndex - 1];
                             tracks[trackIndex - 1] = SelectedTrack;
                             tracks[trackIndex] = preTrack;
+
+                            setting.isChanged = true;
                         }
                     }
                     using (new EditorGUI.DisabledGroupScope(selectedTrack == null || trackIndex == tracks.Count - 1))
@@ -153,6 +158,8 @@ namespace DotTimeLine
                             TimeLineEditorTrack nextTrack = tracks[trackIndex + 1];
                             tracks[trackIndex + 1] = SelectedTrack;
                             tracks[trackIndex] = nextTrack;
+
+                            setting.isChanged = true;
                         }
                     }
                 }
@@ -162,19 +169,19 @@ namespace DotTimeLine
         public void DrawProperty()
         {
             GUILayout.Label("Group:");
-            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            using (new UnityEditor.EditorGUILayout.VerticalScope(EditorStyles.helpBox))
             {
                 using (var sope = new EditorGUI.ChangeCheckScope())
                 {
                     using (new EditorGUI.IndentLevelScope())
                     {
-                        Group.Name = EditorGUILayout.TextField("Name:", Group.Name);
-                        Group.TotalTime = EditorGUILayout.FloatField("TotalTime:", Group.TotalTime);
-                        Group.IsEnd = EditorGUILayout.Toggle("IsEnd:", Group.IsEnd);
+                        Group.Name = UnityEditor.EditorGUILayout.TextField("Name:", Group.Name);
+                        Group.TotalTime = UnityEditor.EditorGUILayout.FloatField("TotalTime:", Group.TotalTime);
+                        Group.IsEnd = UnityEditor.EditorGUILayout.Toggle("IsEnd:", Group.IsEnd);
                     }
 
-                    EditorGUILayout.LabelField("Conditions:");
-                    using (new EditorGUILayout.HorizontalScope())
+                    UnityEditor.EditorGUILayout.LabelField("Conditions:");
+                    using (new UnityEditor.EditorGUILayout.HorizontalScope())
                     {
                         if (GUILayout.Button("Add"))
                         {
@@ -183,15 +190,15 @@ namespace DotTimeLine
                                          where !(assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder)
                                          from type in assembly.GetExportedTypes()
                                          where type.IsSubclassOf(typeof(ATimeLineCondition))
-                                         select type);
-                            foreach (var t in types)
+                                         select type).ToList();
+                            types.ForEach((t) =>
                             {
                                 menu.AddItem(new GUIContent(t.Name), false, (type) =>
                                 {
                                     ATimeLineCondition item = (ATimeLineCondition)((Type)type).Assembly.CreateInstance(((Type)type).FullName);
                                     Group.conditionCompose.conditions.Add(item);
                                 }, t);
-                            }
+                            });
                             menu.ShowAsContext();
                         }
                         if (GUILayout.Button("Clear"))
@@ -204,11 +211,11 @@ namespace DotTimeLine
                     {
                         ATimeLineCondition condition = Group.conditionCompose.conditions[i];
                         PropertyInfo[] pInfos = condition.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                        using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+                        using (new UnityEditor.EditorGUILayout.VerticalScope(EditorStyles.helpBox))
                         {
-                            using (new EditorGUILayout.HorizontalScope())
+                            using (new UnityEditor.EditorGUILayout.HorizontalScope())
                             {
-                                EditorGUILayout.LabelField(condition.GetType().Name);
+                                UnityEditor.EditorGUILayout.LabelField(condition.GetType().Name);
                                 GUILayout.FlexibleSpace();
                                 if (GUILayout.Button("-", GUILayout.Width(20)))
                                 {
@@ -220,7 +227,7 @@ namespace DotTimeLine
                             {
                                 foreach (var pi in pInfos)
                                 {
-                                    TimeLineEditorLayout.PropertyInfoField(condition, pi);
+                                    EditorGUILayoutUtil.PropertyInfoField(condition, pi);
                                 }
                             }
                         }
@@ -238,7 +245,7 @@ namespace DotTimeLine
             
             if (SelectedTrack != null)
             {
-                EditorGUILayout.Space();
+                UnityEditor.EditorGUILayout.Space();
                 SelectedTrack.DrawProperty();
             }
         }
@@ -252,7 +259,6 @@ namespace DotTimeLine
                 tracks[i].DrawItem(itemRect);
             }
         }
-
         
         public void OnTrackSelected(TimeLineEditorTrack track)
         {
@@ -271,6 +277,16 @@ namespace DotTimeLine
 
                 track.FillTrack();
             }
+        }
+
+        internal int[] GetDependOnItem(Type type)
+        {
+            List<int> values = new List<int>();
+            tracks.ForEach((track) =>
+            {
+                values.AddRange(track.GetDependOnItem(type));
+            });
+            return values.ToArray();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using DotTimeLine.Base.Items;
-using DotTimeLine.Items;
 using UnityEngine;
 
 namespace Game.TimeLine
@@ -9,7 +8,7 @@ namespace Game.TimeLine
     {
         public int EffectConfigID { get; set; } = -1;
 
-        [TimeLineDependOn]
+        [TimeLineDependOn(typeof(CreateEmitEvent))]
         public int EmitIndex { get; set; } = -1;
 
         private GameEntity effectEntity;
