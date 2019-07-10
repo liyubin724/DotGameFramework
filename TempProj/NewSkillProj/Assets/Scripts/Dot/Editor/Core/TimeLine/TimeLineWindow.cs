@@ -8,12 +8,12 @@ using UnityEngine;
 
 namespace DotEditor.Core.TimeLine
 {
-    public class TimeLineEditorWindow : EditorWindow
+    public class TimeLineWindow : EditorWindow
     {
         [MenuItem("Tools/TimeLine Window %#T")]
         private static void OpenWindow()
         {
-            var win = GetWindow<TimeLineEditorWindow>();
+            var win = GetWindow<TimeLineWindow>();
             win.wantsMouseMove = true;
         }
         private TimeLineEditorController editorController;
