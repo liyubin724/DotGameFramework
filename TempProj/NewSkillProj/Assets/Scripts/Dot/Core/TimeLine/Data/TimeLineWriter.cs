@@ -1,15 +1,15 @@
-﻿using DotTimeLine.Base;
-using DotTimeLine.Base.Condition;
-using DotTimeLine.Base.Groups;
-using DotTimeLine.Base.Items;
-using DotTimeLine.Base.Tracks;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Condition;
+using Dot.Core.TimeLine.Base.Groups;
+using Dot.Core.TimeLine.Base.Item;
+using Dot.Core.TimeLine.Base.Tracks;
 using LitJson;
 using System;
 using System.Reflection;
 using UnityEngine;
 using SystemObject = System.Object;
 
-namespace DotTimeLine.Data
+namespace Dot.Core.TimeLine.Data
 {
     public static class TimeLineWriter
     {

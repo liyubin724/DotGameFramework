@@ -1,4 +1,4 @@
-﻿namespace DotTimeLine.Base
+﻿namespace Dot.Core.TimeLine.Base
 {
     public enum TimeLineState
     {

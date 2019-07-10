@@ -1,4 +1,4 @@
-﻿namespace DotTimeLine.Base.Condition
+﻿namespace Dot.Core.TimeLine.Base.Condition
 {
     public abstract class ATimeLineCondition : ATimeLineEnv
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotTimeLine.Base.Items
+namespace Dot.Core.TimeLine.Base.Item
 {
     public abstract class ATimeLineItem : ATimeLineEnv,IComparable<ATimeLineItem>
     {

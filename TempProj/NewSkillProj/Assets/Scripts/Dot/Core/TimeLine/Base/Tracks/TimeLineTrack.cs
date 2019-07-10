@@ -1,7 +1,7 @@
-﻿using DotTimeLine.Base.Items;
+﻿using Dot.Core.TimeLine.Base.Item;
 using System.Collections.Generic;
 
-namespace DotTimeLine.Base.Tracks
+namespace Dot.Core.TimeLine.Base.Tracks
 {
     public class TimeLineTrack : ATimeLineEnv
     {

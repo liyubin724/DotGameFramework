@@ -1,5 +1,5 @@
-﻿using DotTimeLine.Base.Items;
-using DotTimeLine.Base.Tracks;
+﻿using Dot.Core.TimeLine.Base.Item;
+using Dot.Core.TimeLine.Base.Tracks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using static UnityEditor.GenericMenu;
 
-namespace DotTimeLine
+namespace DotEditor.Core.TimeLine
 {
     public class TimeLineEditorTrack
     {

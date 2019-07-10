@@ -1,5 +1,5 @@
-﻿using DotTimeLine.Base;
-using DotTimeLine.Data;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Data;
 using Game.TimeLine;
 using LitJson;
 using System.IO;

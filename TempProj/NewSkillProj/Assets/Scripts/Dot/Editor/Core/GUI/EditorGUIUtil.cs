@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using SystemObject = System.Object;
 
-namespace DotTimeLine
+namespace DotEditor.Core.EGUI
 {
     public static class EditorGUIPropertyInfoLayout
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Entitas;
 
-namespace DotTimeLine.Base.Condition
+namespace Dot.Core.TimeLine.Base.Condition
 {
     public class TimeLineConditionCompose : ATimeLineEnv
     {

@@ -11,7 +11,7 @@ public partial class GameEntity {
     public TimeLineControllerComponent timeLineController { get { return (TimeLineControllerComponent)GetComponent(GameComponentsLookup.TimeLineController); } }
     public bool hasTimeLineController { get { return HasComponent(GameComponentsLookup.TimeLineController); } }
 
-    public void AddTimeLineController(string newAssetPath, DotTimeLine.Base.TimeLineController newController) {
+    public void AddTimeLineController(string newAssetPath, Dot.Core.TimeLine.Base.TimeLineController newController) {
         var index = GameComponentsLookup.TimeLineController;
         var component = (TimeLineControllerComponent)CreateComponent(index, typeof(TimeLineControllerComponent));
         component.assetPath = newAssetPath;
@@ -19,7 +19,7 @@ public partial class GameEntity {
         AddComponent(index, component);
     }
 
-    public void ReplaceTimeLineController(string newAssetPath, DotTimeLine.Base.TimeLineController newController) {
+    public void ReplaceTimeLineController(string newAssetPath, Dot.Core.TimeLine.Base.TimeLineController newController) {
         var index = GameComponentsLookup.TimeLineController;
         var component = (TimeLineControllerComponent)CreateComponent(index, typeof(TimeLineControllerComponent));
         component.assetPath = newAssetPath;

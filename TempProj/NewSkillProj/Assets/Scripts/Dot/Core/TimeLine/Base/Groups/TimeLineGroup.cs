@@ -1,9 +1,9 @@
-﻿using DotTimeLine.Base.Condition;
-using DotTimeLine.Base.Tracks;
+﻿using Dot.Core.TimeLine.Base.Condition;
+using Dot.Core.TimeLine.Base.Tracks;
 using Entitas;
 using System.Collections.Generic;
 
-namespace DotTimeLine.Base.Groups
+namespace Dot.Core.TimeLine.Base.Groups
 {
     public delegate void OnGroupFinished(TimeLineGroup group);
 

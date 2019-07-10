@@ -1,4 +1,4 @@
-﻿using DotTimeLine.Base.Items;
+﻿using Dot.Core.TimeLine.Base.Item;
 
 namespace DotTimeLine
 {

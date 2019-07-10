@@ -1,4 +1,4 @@
-﻿namespace DotTimeLine.Data
+﻿namespace Dot.Core.TimeLine.Data
 {
     public static class TimeLineConst
     {

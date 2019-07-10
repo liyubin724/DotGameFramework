@@ -1,4 +1,4 @@
-﻿using DotTimeLine.Base.Condition;
+﻿using Dot.Core.TimeLine.Base.Condition;
 
 namespace Game.TimeLine
 {

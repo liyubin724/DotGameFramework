@@ -1,4 +1,4 @@
-﻿using DotTimeLine.Base;
+﻿using Dot.Core.TimeLine.Base;
 using Entitas;
 
 [Game]

@@ -1,6 +1,7 @@
-﻿using DotTimeLine.Base.Condition;
-using DotTimeLine.Base.Groups;
-using DotTimeLine.Base.Tracks;
+﻿using Dot.Core.TimeLine.Base.Condition;
+using Dot.Core.TimeLine.Base.Groups;
+using Dot.Core.TimeLine.Base.Tracks;
+using DotEditor.Core.EGUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace DotTimeLine
+namespace DotEditor.Core.TimeLine
 {
     public class TimeLineEditorGroup
     {

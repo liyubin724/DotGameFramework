@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace DotTimeLine
+namespace DotEditor.Core.TimeLine
 {
     public class TimeLineEditorSetting
     {

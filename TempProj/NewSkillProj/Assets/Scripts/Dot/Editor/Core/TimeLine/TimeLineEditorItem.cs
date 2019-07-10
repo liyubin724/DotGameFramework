@@ -1,9 +1,10 @@
-﻿using DotTimeLine.Base.Items;
+﻿using Dot.Core.TimeLine.Base.Item;
+using DotEditor.Core.EGUI;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace DotTimeLine
+namespace DotEditor.Core.TimeLine
 {
     public class TimeLineEditorItem
     {

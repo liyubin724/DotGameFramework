@@ -1,11 +1,12 @@
-﻿using DotTimeLine.Base;
-using DotTimeLine.Base.Groups;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Groups;
+using DotEditor.Core.EGUI;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace DotTimeLine
+namespace DotEditor.Core.TimeLine
 {
     public class TimeLineEditorController
     {

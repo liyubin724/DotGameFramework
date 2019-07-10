@@ -1,9 +1,9 @@
-﻿using DotTimeLine.Base.Condition;
-using DotTimeLine.Base.Groups;
+﻿using Dot.Core.TimeLine.Base.Condition;
+using Dot.Core.TimeLine.Base.Groups;
 using Entitas;
 using System.Collections.Generic;
 
-namespace DotTimeLine.Base
+namespace Dot.Core.TimeLine.Base
 {
     public class TimeLineController : ATimeLineEnv
     {

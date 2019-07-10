@@ -1,8 +1,6 @@
 ﻿using Entitas;
-using System.Reflection;
-using System.Text;
 
-namespace DotTimeLine.Base
+namespace Dot.Core.TimeLine.Base
 {
     public abstract class ATimeLineEnv
     {
