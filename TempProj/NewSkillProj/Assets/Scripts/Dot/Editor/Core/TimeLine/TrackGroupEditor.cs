@@ -1,11 +1,7 @@
-﻿using Dot.Core.TimeLine.Base.Condition;
-using Dot.Core.TimeLine.Base.Group;
+﻿using Dot.Core.TimeLine.Base.Group;
 using Dot.Core.TimeLine.Base.Tracks;
-using DotEditor.Core.EGUI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -170,15 +166,15 @@ namespace DotEditor.Core.TimeLine
         public void DrawProperty()
         {
             GUILayout.Label("Group:");
-            using (new UnityEditor.EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
             {
                 using (var sope = new EditorGUI.ChangeCheckScope())
                 {
                     using (new EditorGUI.IndentLevelScope())
                     {
-                        Group.Name = UnityEditor.EditorGUILayout.TextField("Name", Group.Name);
-                        Group.TotalTime = UnityEditor.EditorGUILayout.FloatField("TotalTime", Group.TotalTime);
-                        Group.IsAwaysRun = UnityEditor.EditorGUILayout.Toggle("IsAwaysRun", Group.IsAwaysRun);
+                        Group.Name = EditorGUILayout.TextField("Name", Group.Name);
+                        Group.TotalTime = EditorGUILayout.FloatField("TotalTime", Group.TotalTime);
+                        Group.IsAwaysRun = EditorGUILayout.Toggle("IsAwaysRun", Group.IsAwaysRun);
                     }
                     if (sope.changed)
                         setting.isChanged = true;
@@ -200,7 +196,7 @@ namespace DotEditor.Core.TimeLine
             
             if (SelectedTrack != null)
             {
-                UnityEditor.EditorGUILayout.Space();
+                EditorGUILayout.Space();
                 SelectedTrack.DrawProperty();
             }
         }

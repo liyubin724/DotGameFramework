@@ -63,12 +63,12 @@ namespace Dot.Core.TimeLine.Data
                 Debug.LogError("ERROR");
             }
 
-            group.endCondition = new ParallelCondition();
-            group.endCondition.IsReadonly = true;
-            TimeOverCondition toCondition = new TimeOverCondition();
-            toCondition.IsReadonly = true;
-            toCondition.TotalTime = group.TotalTime;
-            group.endCondition.conditions.Add(toCondition);
+            //group.endCondition = new ParallelCondition();
+            //group.endCondition.IsReadonly = true;
+            //TimeOverCondition toCondition = new TimeOverCondition();
+            //toCondition.IsReadonly = true;
+            //toCondition.TotalTime = group.TotalTime;
+            //group.endCondition.conditions.Add(toCondition);
 
             JsonData tracksJsonData = jsonData[DataConst.TIME_LINE_TRACKS];
             if(tracksJsonData != null && tracksJsonData.Count>0)

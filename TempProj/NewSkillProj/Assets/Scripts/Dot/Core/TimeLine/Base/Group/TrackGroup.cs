@@ -10,7 +10,35 @@ namespace Dot.Core.TimeLine.Base.Group
     public class TrackGroup : AEntitasEnv
     {
         public string Name { get; set; } = "Time Line Group";
-        public float TotalTime { get; set; } = 10;
+        private float totalTime = 10.0f;
+        public float TotalTime
+        {
+            get
+            {
+                return totalTime;
+            }
+            set
+            {
+                totalTime = value;
+                if(endCondition == null)
+                {
+                    endCondition = new ParallelCondition();
+                    endCondition.IsReadonly = true;
+                    TimeOverCondition toCondition = new TimeOverCondition();
+                    toCondition.IsReadonly = true;
+                    toCondition.TotalTime = TotalTime;
+                    endCondition.conditions.Add(toCondition);
+                }
+                foreach(var c in endCondition.conditions)
+                {
+                    if(c.GetType() == typeof(TimeOverCondition))
+                    {
+                        ((TimeOverCondition)c).TotalTime = totalTime;
+                        break;
+                    }
+                }
+            }
+        }
         public bool IsAwaysRun { get; set; } = false;
 
         public ACondition beginCondition = null;
@@ -65,6 +93,19 @@ namespace Dot.Core.TimeLine.Base.Group
                 track?.Stop();
             });
             onFinished?.Invoke(this);
+        }
+
+
+        public static TrackGroup CreateNew()
+        {
+            TrackGroup group = new TrackGroup();
+            group.endCondition = new ParallelCondition();
+            group.endCondition.IsReadonly = true;
+            TimeOverCondition toCondition = new TimeOverCondition();
+            toCondition.IsReadonly = true;
+            toCondition.TotalTime = group.TotalTime;
+            group.endCondition.conditions.Add(toCondition);
+            return group;
         }
 
         //public void Pause()

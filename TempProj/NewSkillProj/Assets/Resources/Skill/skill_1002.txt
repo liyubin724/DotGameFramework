@@ -1,1 +1,121 @@
-{"groups":[{"Name":"Begin","TotalTime":15.0,"IsAwaysRun":false,"end_conditon":{"Name":"Dot.Core.TimeLine.Base.Condition.ParallelCondition","IsReadonly":true,"child":[{"Name":"Dot.Core.TimeLine.Base.Condition.TimeOverCondition","TotalTime":15.0,"IsReadonly":true}]},"tracks":[{"Name":"Emit 0","items":[{"Name":"Game.TimeLine.CreateEmitEvent","NodeType":0,"NodeIndex":0,"Index":1,"FireTime":0.0},{"Name":"Game.TimeLine.AddEffectEvent","EffectConfigID":1,"EmitIndex":1,"Index":4,"FireTime":0.990000486373901},{"Name":"Game.TimeLine.RemoveEffectEvent","EffectIndex":4,"Index":7,"FireTime":4.37999677658081}]},{"Name":"Emit 0 bullet","items":[{"Name":"Game.TimeLine.CreateBulletEvent","BulletConfigID":2,"EmitIndex":1,"Index":10,"FireTime":2.95000100135803}]},{"Name":"Emit 1","items":[{"Name":"Game.TimeLine.CreateEmitEvent","NodeType":0,"NodeIndex":1,"Index":2,"FireTime":0.0},{"Name":"Game.TimeLine.AddEffectEvent","EffectConfigID":1,"EmitIndex":2,"Index":5,"FireTime":3.43999862670898},{"Name":"Game.TimeLine.RemoveEffectEvent","EffectIndex":5,"Index":8,"FireTime":5.47999811172485}]},{"Name":"Emit 1 bullet","items":[{"Name":"Game.TimeLine.CreateBulletEvent","BulletConfigID":2,"EmitIndex":2,"Index":11,"FireTime":3.92999172210693}]},{"Name":"Emit 2","items":[{"Name":"Game.TimeLine.CreateEmitEvent","NodeType":0,"NodeIndex":2,"Index":3,"FireTime":0.0},{"Name":"Game.TimeLine.AddEffectEvent","EffectConfigID":1,"EmitIndex":3,"Index":6,"FireTime":4.29000091552734},{"Name":"Game.TimeLine.RemoveEffectEvent","EffectIndex":6,"Index":9,"FireTime":6.18000221252441}]},{"Name":"Emit 2 bullet","items":[{"Name":"Game.TimeLine.CreateBulletEvent","BulletConfigID":2,"EmitIndex":3,"Index":12,"FireTime":4.68000078201294}]}]},{"Name":"End","TotalTime":0.00999999977648258,"IsAwaysRun":false,"end_conditon":{"Name":"Dot.Core.TimeLine.Base.Condition.ParallelCondition","IsReadonly":true,"child":[{"Name":"Dot.Core.TimeLine.Base.Condition.TimeOverCondition","TotalTime":0.00999999977648258,"IsReadonly":true}]},"tracks":[{"Name":"Clear","items":[]}]}]}
+{
+    "groups": [{
+        "Name": "Begin",
+        "TotalTime": 15.8500003814697,
+        "IsAwaysRun": false,
+        "end_conditon": {
+            "Name": "Dot.Core.TimeLine.Base.Condition.ParallelCondition",
+            "IsReadonly": true,
+            "child": [{
+                "Name": "Dot.Core.TimeLine.Base.Condition.TimeOverCondition",
+                "TotalTime": 15.8500003814697,
+                "IsReadonly": true
+            }]
+        },
+        "tracks": [{
+            "Name": "Emit 0",
+            "items": [{
+                "Name": "Game.TimeLine.CreateEmitEvent",
+                "NodeType": 0,
+                "NodeIndex": 0,
+                "Index": 1,
+                "FireTime": 0.0
+            }, {
+                "Name": "Game.TimeLine.AddEffectEvent",
+                "EffectConfigID": 1,
+                "EmitIndex": 1,
+                "Index": 4,
+                "FireTime": 0.990000486373901
+            }, {
+                "Name": "Game.TimeLine.RemoveEffectEvent",
+                "EffectIndex": 4,
+                "Index": 7,
+                "FireTime": 4.37999677658081
+            }]
+        }, {
+            "Name": "Emit 0 bullet",
+            "items": [{
+                "Name": "Game.TimeLine.CreateBulletEvent",
+                "BulletConfigID": 2,
+                "EmitIndex": 1,
+                "Index": 10,
+                "FireTime": 2.95000100135803
+            }]
+        }, {
+            "Name": "Emit 1",
+            "items": [{
+                "Name": "Game.TimeLine.CreateEmitEvent",
+                "NodeType": 0,
+                "NodeIndex": 1,
+                "Index": 2,
+                "FireTime": 0.0
+            }, {
+                "Name": "Game.TimeLine.AddEffectEvent",
+                "EffectConfigID": 1,
+                "EmitIndex": 2,
+                "Index": 5,
+                "FireTime": 3.43999862670898
+            }, {
+                "Name": "Game.TimeLine.RemoveEffectEvent",
+                "EffectIndex": 5,
+                "Index": 8,
+                "FireTime": 5.47999811172485
+            }]
+        }, {
+            "Name": "Emit 1 bullet",
+            "items": [{
+                "Name": "Game.TimeLine.CreateBulletEvent",
+                "BulletConfigID": 2,
+                "EmitIndex": 2,
+                "Index": 11,
+                "FireTime": 3.92999172210693
+            }]
+        }, {
+            "Name": "Emit 2",
+            "items": [{
+                "Name": "Game.TimeLine.CreateEmitEvent",
+                "NodeType": 0,
+                "NodeIndex": 2,
+                "Index": 3,
+                "FireTime": 0.0
+            }, {
+                "Name": "Game.TimeLine.AddEffectEvent",
+                "EffectConfigID": 1,
+                "EmitIndex": 3,
+                "Index": 6,
+                "FireTime": 4.29000091552734
+            }, {
+                "Name": "Game.TimeLine.RemoveEffectEvent",
+                "EffectIndex": 6,
+                "Index": 9,
+                "FireTime": 6.18000221252441
+            }]
+        }, {
+            "Name": "Emit 2 bullet",
+            "items": [{
+                "Name": "Game.TimeLine.CreateBulletEvent",
+                "BulletConfigID": 2,
+                "EmitIndex": 3,
+                "Index": 12,
+                "FireTime": 4.68000078201294
+            }]
+        }]
+    }, {
+        "Name": "End",
+        "TotalTime": 0.00999999977648258,
+        "IsAwaysRun": false,
+        "end_conditon": {
+            "Name": "Dot.Core.TimeLine.Base.Condition.ParallelCondition",
+            "IsReadonly": true,
+            "child": [{
+                "Name": "Dot.Core.TimeLine.Base.Condition.TimeOverCondition",
+                "TotalTime": 0.00999999977648258,
+                "IsReadonly": true
+            }]
+        },
+        "tracks": [{
+            "Name": "Clear",
+            "items": []
+        }]
+    }]
+}

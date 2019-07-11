@@ -214,11 +214,11 @@ namespace DotEditor.Core.TimeLine
             {
                 if (GUILayout.Button("+", "ButtonLeft"))
                 {
-                    TrackGroup tlGroup = new TrackGroup();
+                    TrackGroup tlGroup = TrackGroup.CreateNew();
                     TrackGroupEditor tleGroup = new TrackGroupEditor(tlGroup,setting);
                     tleGroup.Controller = this;
                     groups.Add(tleGroup);
-
+                    
                     SelectedGroup = tleGroup;
                 }
                 int groupIndex = -1;

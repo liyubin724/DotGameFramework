@@ -43,15 +43,15 @@ namespace Dot.Core.TimeLine.Data
                 {
                     jsonData[DataConst.TIME_LINE_GROUP_BEGIN_CONDITION] = WriteConditoin(group.beginCondition);
                 }
-                if(group.endCondition ==null)
-                {
-                    group.endCondition = new ParallelCondition();
-                    group.endCondition.IsReadonly = true;
-                    TimeOverCondition toCondition = new TimeOverCondition();
-                    toCondition.IsReadonly = true;
-                    toCondition.TotalTime = group.TotalTime;
-                    group.endCondition.conditions.Add(toCondition);
-                }
+                //if(group.endCondition ==null)
+                //{
+                //    group.endCondition = new ParallelCondition();
+                //    group.endCondition.IsReadonly = true;
+                //    TimeOverCondition toCondition = new TimeOverCondition();
+                //    toCondition.IsReadonly = true;
+                //    toCondition.TotalTime = group.TotalTime;
+                //    group.endCondition.conditions.Add(toCondition);
+                //}
                 jsonData[DataConst.TIME_LINE_GROUP_END_CONDITION] = WriteConditoin(group.endCondition);
 
                 JsonData tracksData = new JsonData();
