@@ -43,10 +43,32 @@ namespace Dot.Core.TimeLine.Data
             {
                 Name = (string)jsonData[DataConst.TIME_LINE_NAME],
                 TotalTime = (float)jsonData[DataConst.TIME_LINE_GROUP_TOTALTIME],
-                IsAwaysRun = (bool)jsonData[DataConst.TIME_LINE_GROUP_ISEND],
-
-                //conditionCompose = ReadConditionCompose(jsonData[TimeLineConst.TIME_LINE_CONDITION_COMPOSE])
             };
+            if (jsonData.ContainsKey(DataConst.TIME_LINE_GROUP_ISAWAYSRUN))
+            {
+                group.IsAwaysRun = (bool)jsonData[DataConst.TIME_LINE_GROUP_ISAWAYSRUN];
+            }
+
+            if (jsonData.ContainsKey(DataConst.TIME_LINE_GROUP_BEGIN_CONDITION))
+            {
+                group.beginCondition = ReadCondition(jsonData[DataConst.TIME_LINE_GROUP_BEGIN_CONDITION]);
+            }
+            if(jsonData.ContainsKey(DataConst.TIME_LINE_GROUP_END_CONDITION))
+            {
+                group.endCondition = (ParallelCondition)ReadCondition(jsonData[DataConst.TIME_LINE_GROUP_END_CONDITION]);
+            }
+
+            if(group.endCondition == null)
+            {
+                Debug.LogError("ERROR");
+            }
+
+            group.endCondition = new ParallelCondition();
+            group.endCondition.IsReadonly = true;
+            TimeOverCondition toCondition = new TimeOverCondition();
+            toCondition.IsReadonly = true;
+            toCondition.TotalTime = group.TotalTime;
+            group.endCondition.conditions.Add(toCondition);
 
             JsonData tracksJsonData = jsonData[DataConst.TIME_LINE_TRACKS];
             if(tracksJsonData != null && tracksJsonData.Count>0)
@@ -113,7 +135,20 @@ namespace Dot.Core.TimeLine.Data
 
         public static ACondition ReadCondition(JsonData jsonData)
         {
-            return ReadFromJson<ACondition>(jsonData);
+            if (jsonData == null)
+                return null;
+            var condition = ReadFromJson<ACondition>(jsonData);
+            if (jsonData.ContainsKey(DataConst.TIME_LINE_Child_CONDITION))
+            {
+                AComposeCondition composeCondition = (AComposeCondition)condition;
+                JsonData childrenJsonData = jsonData[DataConst.TIME_LINE_Child_CONDITION];
+                for(int i =0;i<childrenJsonData.Count;++i)
+                {
+                    composeCondition.conditions.Add(ReadCondition(childrenJsonData[i]));
+                }
+            }
+
+            return condition;
         }
 
         private static T ReadFromJson<T>(JsonData jsonData) where T:class

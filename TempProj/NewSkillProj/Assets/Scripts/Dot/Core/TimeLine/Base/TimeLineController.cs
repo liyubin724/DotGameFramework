@@ -102,7 +102,7 @@ namespace Dot.Core.TimeLine.Base
             {
                 if(runningIndex>=0&&runningIndex<groups.Count)
                 {
-                    AComposeCondition condition = groups[runningIndex].beginCondition;
+                    ACondition condition = groups[runningIndex].beginCondition;
                     condition?.DoUpdate(deltaTime);
                     if (condition == null || condition.Evaluate())
                     {

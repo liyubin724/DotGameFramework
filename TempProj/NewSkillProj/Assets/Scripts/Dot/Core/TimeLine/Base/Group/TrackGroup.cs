@@ -13,7 +13,7 @@ namespace Dot.Core.TimeLine.Base.Group
         public float TotalTime { get; set; } = 10;
         public bool IsAwaysRun { get; set; } = false;
 
-        public AComposeCondition beginCondition = null;
+        public ACondition beginCondition = null;
         public ParallelCondition endCondition = null;
 
         public readonly List<TrackLine> tracks = new List<TrackLine>();

@@ -37,9 +37,22 @@ namespace Dot.Core.TimeLine.Data
             {
                 jsonData[DataConst.TIME_LINE_NAME] = group.Name;
                 jsonData[DataConst.TIME_LINE_GROUP_TOTALTIME] = group.TotalTime;
-                jsonData[DataConst.TIME_LINE_GROUP_ISEND] = group.IsAwaysRun;
+                jsonData[DataConst.TIME_LINE_GROUP_ISAWAYSRUN] = group.IsAwaysRun;
 
-                //jsonData[TimeLineConst.TIME_LINE_CONDITION_COMPOSE] = WriteConditionCompose(group.conditionCompose);
+                if(group.beginCondition!=null)
+                {
+                    jsonData[DataConst.TIME_LINE_GROUP_BEGIN_CONDITION] = WriteConditoin(group.beginCondition);
+                }
+                if(group.endCondition ==null)
+                {
+                    group.endCondition = new ParallelCondition();
+                    group.endCondition.IsReadonly = true;
+                    TimeOverCondition toCondition = new TimeOverCondition();
+                    toCondition.IsReadonly = true;
+                    toCondition.TotalTime = group.TotalTime;
+                    group.endCondition.conditions.Add(toCondition);
+                }
+                jsonData[DataConst.TIME_LINE_GROUP_END_CONDITION] = WriteConditoin(group.endCondition);
 
                 JsonData tracksData = new JsonData();
                 tracksData.SetJsonType(JsonType.Array);
@@ -97,9 +110,27 @@ namespace Dot.Core.TimeLine.Data
             return WriteToJson(item);
         }
 
+
         public static JsonData WriteConditoin(ACondition condition)
         {
-            return WriteToJson(condition);
+            if(condition == null)
+            {
+                return null;
+            }
+            JsonData conditionJsonData = WriteToJson(condition);
+
+            if (condition.GetType().IsSubclassOf(typeof(AComposeCondition)))
+            {
+                JsonData childJsonData = new JsonData();
+                childJsonData.SetJsonType(JsonType.Array);
+                foreach(var c in ((AComposeCondition)condition).conditions)
+                {
+                    childJsonData.Add(WriteConditoin(c));
+                }
+                conditionJsonData[DataConst.TIME_LINE_Child_CONDITION] = childJsonData;
+            }
+
+            return conditionJsonData;
         }
 
         public static JsonData WriteToJson<T>(T data) where T:class

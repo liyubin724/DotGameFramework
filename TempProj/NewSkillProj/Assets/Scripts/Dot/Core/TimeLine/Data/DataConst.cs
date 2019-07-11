@@ -5,11 +5,13 @@
         public static readonly string TIME_LINE_NAME = "Name";
         public static readonly string TIME_LINE_GROUPS = "groups";
         public static readonly string TIME_LINE_TRACKS = "tracks";
-        public static readonly string TIME_LINE_CONDITION_COMPOSE = "condition_compose";
         public static readonly string TIME_LINE_ITEMS = "items";
-        public static readonly string TIME_LINE_EXIT_GROUP = "exit_group";
+
+        public static readonly string TIME_LINE_GROUP_BEGIN_CONDITION = "begin_condition";
+        public static readonly string TIME_LINE_GROUP_END_CONDITION = "end_conditon";
+        public static readonly string TIME_LINE_Child_CONDITION = "child";
 
         public static readonly string TIME_LINE_GROUP_TOTALTIME = "TotalTime";
-        public static readonly string TIME_LINE_GROUP_ISEND = "IsEnd";
+        public static readonly string TIME_LINE_GROUP_ISAWAYSRUN = "IsAwaysRun";
     }
 }
