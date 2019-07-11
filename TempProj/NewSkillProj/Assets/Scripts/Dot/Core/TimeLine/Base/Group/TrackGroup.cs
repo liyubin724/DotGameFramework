@@ -13,8 +13,8 @@ namespace Dot.Core.TimeLine.Base.Group
         public float TotalTime { get; set; } = 10;
         public bool IsAwaysRun { get; set; } = false;
 
-        public ParallelCondition beginParallel = new ParallelCondition();
-        public AComposeCondition endCompose = null;
+        public AComposeCondition beginCondition = null;
+        public ParallelCondition endCondition = null;
 
         public readonly List<TrackLine> tracks = new List<TrackLine>();
         public OnGroupFinished onFinished = null;
@@ -26,16 +26,16 @@ namespace Dot.Core.TimeLine.Base.Group
             {
                 track?.Initialize(contexts, services, entity);
             });
-            beginParallel?.Initialize(contexts, services, entity);
-            endCompose?.Initialize(contexts, services, entity);
+            beginCondition?.Initialize(contexts, services, entity);
+            endCondition?.Initialize(contexts, services, entity);
         }
 
         public void DoUpdate(float deltaTime)
         {
-            if(endCompose!=null)
+            if(endCondition!=null)
             {
-                endCompose.DoUpdate(deltaTime);
-                if(endCompose.Evaluate())
+                endCondition.DoUpdate(deltaTime);
+                if(endCondition.Evaluate())
                 {
                     Stop();
                     return;
@@ -52,8 +52,8 @@ namespace Dot.Core.TimeLine.Base.Group
         {
             onFinished = null;
 
-            beginParallel?.DoReset();
-            endCompose?.DoReset();
+            beginCondition?.DoReset();
+            endCondition?.DoReset();
 
             base.DoReset();
         }
