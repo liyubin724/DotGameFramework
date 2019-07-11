@@ -21,10 +21,10 @@ public class TestTimeLineJson : MonoBehaviour
         {
             JsonData itemJsonData = jsonData["groups"][0]["tracks"][0]["items"][0];
 
-            CreateEmitEvent ceEvent = (CreateEmitEvent)TimeLineReader.ReadItem(itemJsonData);
+            CreateEmitEvent ceEvent = (CreateEmitEvent)JsonDataReader.ReadItem(itemJsonData);
             Debug.Log(ObjectDumper.Dump(ceEvent, DumpStyle.Console));
 
-            string val = TimeLineWriter.WriteToJson(ceEvent).ToJson();
+            string val = JsonDataWriter.WriteToJson(ceEvent).ToJson();
             Debug.Log(val);
         }
         if(GUILayout.Button("Convert To Condition"))
@@ -36,10 +36,10 @@ public class TestTimeLineJson : MonoBehaviour
 
         if(GUILayout.Button("Convert To Controller"))
         {
-            TimeLineController controller = TimeLineReader.ReadController(jsonData);
+            TimeLineController controller = JsonDataReader.ReadController(jsonData);
             Debug.Log(ObjectDumper.Dump( controller, DumpStyle.Console));
 
-            string configJson= TimeLineWriter.WriteController(controller).ToJson();
+            string configJson= JsonDataWriter.WriteController(controller).ToJson();
             File.WriteAllText(@"D:\config.json", configJson);
         }
     }

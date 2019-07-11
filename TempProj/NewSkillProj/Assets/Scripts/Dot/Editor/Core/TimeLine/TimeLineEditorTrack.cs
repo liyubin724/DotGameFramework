@@ -61,10 +61,10 @@ namespace DotEditor.Core.TimeLine
             }
         }
 
-        public TimeLineTrack Track { get; private set; }
+        public TrackLine Track { get; private set; }
         private TimeLineEditorSetting setting = null;
         private List<TimeLineEditorItem> items = new List<TimeLineEditorItem>();
-        public TimeLineEditorTrack(TimeLineTrack tlTrack,TimeLineEditorSetting setting)
+        public TimeLineEditorTrack(TrackLine tlTrack,TimeLineEditorSetting setting)
         {
             Track = tlTrack;
             this.setting = setting;
@@ -129,13 +129,13 @@ namespace DotEditor.Core.TimeLine
                 var types = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
                                   where !(assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder)
                                   from type in assembly.GetExportedTypes()
-                                  where type.IsSubclassOf(typeof(ATimeLineEventItem)) || type.IsSubclassOf(typeof(ATimeLineActionItem))
+                                  where type.IsSubclassOf(typeof(AEventItem)) || type.IsSubclassOf(typeof(AActionItem))
                                   select type);
                 var fireTime = (Event.current.mousePosition.x + setting.scrollPos.x) / setting.pixelForSecond;
 
                 MenuFunction2 callback = (type) =>
                 {
-                    ATimeLineItem item = (ATimeLineItem)((Type)type).Assembly.CreateInstance(((Type)type).FullName);
+                    AItem item = (AItem)((Type)type).Assembly.CreateInstance(((Type)type).FullName);
                     item.FireTime = fireTime;
                     TimeLineEditorItem eItem = new TimeLineEditorItem(item, setting);
                     eItem.Track = this;
@@ -147,7 +147,7 @@ namespace DotEditor.Core.TimeLine
 
                 foreach(var type in types)
                 {
-                    if(type.IsSubclassOf(typeof(ATimeLineEventItem)))
+                    if(type.IsSubclassOf(typeof(AEventItem)))
                     {
                         TimeLineMarkAttribute attr = type.GetCustomAttribute<TimeLineMarkAttribute>();
                         if(attr!=null)
@@ -157,7 +157,7 @@ namespace DotEditor.Core.TimeLine
                 menu.AddSeparator("");
                 foreach(var type in types)
                 {
-                    if (type.IsSubclassOf(typeof(ATimeLineActionItem)))
+                    if (type.IsSubclassOf(typeof(AActionItem)))
                     {
                         TimeLineMarkAttribute attr = type.GetCustomAttribute<TimeLineMarkAttribute>();
                         if (attr != null)

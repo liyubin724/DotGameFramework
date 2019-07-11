@@ -1,6 +1,6 @@
 ﻿using Dot.Core.TimeLine.Base;
 using Dot.Core.TimeLine.Base.Condition;
-using Dot.Core.TimeLine.Base.Groups;
+using Dot.Core.TimeLine.Base.Group;
 using Dot.Core.TimeLine.Base.Item;
 using Dot.Core.TimeLine.Base.Tracks;
 using LitJson;
@@ -11,7 +11,7 @@ using SystemObject = System.Object;
 
 namespace Dot.Core.TimeLine.Data
 {
-    public static class TimeLineWriter
+    public static class JsonDataWriter
     {
         public static JsonData WriteController(TimeLineController controller)
         {
@@ -24,20 +24,20 @@ namespace Dot.Core.TimeLine.Data
             {
                 groupsData.Add(WriteGroup(controller.groups[i]));
             }
-            jsonData[TimeLineConst.TIME_LINE_GROUPS] = groupsData;
+            jsonData[DataConst.TIME_LINE_GROUPS] = groupsData;
 
             return jsonData;
         }
 
-        public static JsonData WriteGroup(TimeLineGroup group)
+        public static JsonData WriteGroup(TrackGroup group)
         {
             JsonData jsonData = new JsonData();
             jsonData.SetJsonType(JsonType.Object);
             if(group !=null)
             {
-                jsonData[TimeLineConst.TIME_LINE_NAME] = group.Name;
-                jsonData[TimeLineConst.TIME_LINE_GROUP_TOTALTIME] = group.TotalTime;
-                jsonData[TimeLineConst.TIME_LINE_GROUP_ISEND] = group.IsAwaysRun;
+                jsonData[DataConst.TIME_LINE_NAME] = group.Name;
+                jsonData[DataConst.TIME_LINE_GROUP_TOTALTIME] = group.TotalTime;
+                jsonData[DataConst.TIME_LINE_GROUP_ISEND] = group.IsAwaysRun;
 
                 //jsonData[TimeLineConst.TIME_LINE_CONDITION_COMPOSE] = WriteConditionCompose(group.conditionCompose);
 
@@ -47,12 +47,12 @@ namespace Dot.Core.TimeLine.Data
                 {
                     tracksData.Add(WriteTrack(group.tracks[i]));
                 }
-                jsonData[TimeLineConst.TIME_LINE_TRACKS] = tracksData;
+                jsonData[DataConst.TIME_LINE_TRACKS] = tracksData;
             }
             return jsonData;
         }
 
-        public static JsonData WriteConditionCompose(ATimeLineComposeCondition conditionCompose)
+        public static JsonData WriteConditionCompose(AComposeCondition conditionCompose)
         {
             JsonData jsonData = new JsonData();
             jsonData.SetJsonType(JsonType.Array);
@@ -69,35 +69,35 @@ namespace Dot.Core.TimeLine.Data
             return jsonData;
         }
 
-        public static JsonData WriteTrack(TimeLineTrack track)
+        public static JsonData WriteTrack(TrackLine track)
         {
             if (track == null) return null;
 
             JsonData jsonData = new JsonData
             {
-                [TimeLineConst.TIME_LINE_NAME] = track.Name
+                [DataConst.TIME_LINE_NAME] = track.Name
             };
 
             JsonData itemsData = new JsonData();
             itemsData.SetJsonType(JsonType.Array);
             for (int i = 0; i < track.items.Count; i++)
             {
-                ATimeLineItem item = track.items[i];
+                AItem item = track.items[i];
                 JsonData itemData = WriteItem(item);
                 if(itemData!=null)
                     itemsData.Add(itemData);
             }
-            jsonData[TimeLineConst.TIME_LINE_ITEMS] = itemsData;
+            jsonData[DataConst.TIME_LINE_ITEMS] = itemsData;
 
             return jsonData;
         }
 
-        public static JsonData WriteItem(ATimeLineItem item)
+        public static JsonData WriteItem(AItem item)
         {
             return WriteToJson(item);
         }
 
-        public static JsonData WriteConditoin(ATimeLineCondition condition)
+        public static JsonData WriteConditoin(ACondition condition)
         {
             return WriteToJson(condition);
         }
@@ -110,7 +110,7 @@ namespace Dot.Core.TimeLine.Data
             JsonData jsonData = new JsonData();
             jsonData.SetJsonType(JsonType.Object);
 
-            jsonData[TimeLineConst.TIME_LINE_NAME] = data.GetType().FullName;
+            jsonData[DataConst.TIME_LINE_NAME] = data.GetType().FullName;
             PropertyInfo[] pInfos = data.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (var pi in pInfos)
             {

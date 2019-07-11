@@ -4,9 +4,9 @@ using Dot.Core.TimeLine.Base.Item;
 namespace Game.TimeLine
 {
     [TimeLineMark("Event/Sound", "Stop Sound", TimeLineExportPlatform.Client)]
-    public class StopSoundEvent : ATimeLineEventItem
+    public class StopSoundEvent : AEventItem
     {
-        [TimeLineDependOn(typeof(PlaySoundEvent))]
+        [ItemDependOnAttribute(typeof(PlaySoundEvent))]
         public int SoundIndex { get; set; }
 
         public override void Trigger()

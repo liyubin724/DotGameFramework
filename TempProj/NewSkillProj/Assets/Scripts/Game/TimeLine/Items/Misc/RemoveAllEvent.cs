@@ -2,7 +2,7 @@
 
 namespace DotTimeLine
 {
-    public class RemoveAllEvent : ATimeLineEventItem
+    public class RemoveAllEvent : AEventItem
     {
         public override void Trigger()
         {

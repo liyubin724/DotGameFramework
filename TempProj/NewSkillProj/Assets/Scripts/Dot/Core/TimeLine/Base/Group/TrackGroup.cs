@@ -3,20 +3,20 @@ using Dot.Core.TimeLine.Base.Tracks;
 using Entitas;
 using System.Collections.Generic;
 
-namespace Dot.Core.TimeLine.Base.Groups
+namespace Dot.Core.TimeLine.Base.Group
 {
-    public delegate void OnGroupFinished(TimeLineGroup group);
+    public delegate void OnGroupFinished(TrackGroup group);
 
-    public class TimeLineGroup : ATimeLineEnv
+    public class TrackGroup : AEntitasEnv
     {
         public string Name { get; set; } = "Time Line Group";
         public float TotalTime { get; set; } = 10;
         public bool IsAwaysRun { get; set; } = false;
 
-        public TimeLineParallelCondition beginParallel = new TimeLineParallelCondition();
-        public ATimeLineComposeCondition endCompose = null;
+        public ParallelCondition beginParallel = new ParallelCondition();
+        public AComposeCondition endCompose = null;
 
-        public readonly List<TimeLineTrack> tracks = new List<TimeLineTrack>();
+        public readonly List<TrackLine> tracks = new List<TrackLine>();
         public OnGroupFinished onFinished = null;
         
         public override void Initialize(Contexts contexts, Services services, IEntity entity)

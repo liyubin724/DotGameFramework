@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Game.TimeLine
 {
     [TimeLineMark("Event/Skill", "Create Emit", TimeLineExportPlatform.ALL)]
-    public class CreateEmitEvent : ATimeLineEventItem
+    public class CreateEmitEvent : AEventItem
     {
         public BindNodeType NodeType { get; set; } = BindNodeType.Main;
         public int NodeIndex { get; set; } = 0;

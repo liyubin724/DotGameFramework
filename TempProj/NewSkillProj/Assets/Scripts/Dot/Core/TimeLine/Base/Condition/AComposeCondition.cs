@@ -3,9 +3,9 @@ using Entitas;
 
 namespace Dot.Core.TimeLine.Base.Condition
 {
-    public abstract class ATimeLineComposeCondition : ATimeLineCondition
+    public abstract class AComposeCondition : ACondition
     {
-        public readonly List<ATimeLineCondition> conditions = new List<ATimeLineCondition>();
+        public readonly List<ACondition> conditions = new List<ACondition>();
 
         public override void Initialize(Contexts contexts, Services services, IEntity entity)
         {

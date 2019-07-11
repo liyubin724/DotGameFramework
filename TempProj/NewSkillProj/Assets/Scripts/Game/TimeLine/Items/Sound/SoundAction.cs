@@ -4,7 +4,7 @@ using Dot.Core.TimeLine.Base.Item;
 namespace Game.TimeLine
 {
     [TimeLineMark("Action/Sound", "Sound", TimeLineExportPlatform.Client)]
-    public class SoundAction : ATimeLineActionItem
+    public class SoundAction : AActionItem
     {
         public int SoundConfigID { get; set; }
 

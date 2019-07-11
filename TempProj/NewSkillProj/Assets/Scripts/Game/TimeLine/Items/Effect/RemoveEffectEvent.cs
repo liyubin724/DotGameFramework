@@ -4,9 +4,9 @@ using Dot.Core.TimeLine.Base.Item;
 namespace Game.TimeLine
 {
     [TimeLineMarkAttribute("Event/Effect", "Remove Effect", TimeLineExportPlatform.Client)]
-    public class RemoveEffectEvent : ATimeLineEventItem
+    public class RemoveEffectEvent : AEventItem
     {
-        [TimeLineDependOn(typeof(AddEffectEvent))]
+        [ItemDependOnAttribute(typeof(AddEffectEvent))]
         public int EffectIndex { get; set; }
 
         public override void Trigger()

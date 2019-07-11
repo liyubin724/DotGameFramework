@@ -2,7 +2,7 @@
 
 namespace Dot.Core.TimeLine.Base
 {
-    public abstract class ATimeLineEnv
+    public abstract class AEntitasEnv
     {
         protected Contexts contexts = null;
         protected Services services = null;

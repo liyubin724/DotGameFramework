@@ -4,10 +4,10 @@ using Dot.Core.TimeLine.Base.Item;
 namespace Game.TimeLine
 {
     [TimeLineMark("Event/Skill", "Create Bullet", TimeLineExportPlatform.ALL)]
-    public class CreateBulletEvent : ATimeLineEventItem
+    public class CreateBulletEvent : AEventItem
     {
         public int BulletConfigID { get; set; }
-        [TimeLineDependOn(typeof(CreateEmitEvent))]
+        [ItemDependOnAttribute(typeof(CreateEmitEvent))]
         public int EmitIndex { get; set; }
 
         public override void Trigger()

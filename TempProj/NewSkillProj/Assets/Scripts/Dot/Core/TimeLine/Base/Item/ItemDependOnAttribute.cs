@@ -2,7 +2,7 @@
 
 namespace Dot.Core.TimeLine.Base.Item
 {
-    public enum TimeLineDependOnOption
+    public enum DependOnOption
     {
         Track,
         Group,
@@ -10,12 +10,12 @@ namespace Dot.Core.TimeLine.Base.Item
     }
 
     [AttributeUsage(AttributeTargets.Property,AllowMultiple =false)]
-    public class TimeLineDependOnAttribute : Attribute
+    public class ItemDependOnAttribute : Attribute
     {
         public Type DependOnType { get; }
-        public TimeLineDependOnOption DependOnOption { get; }
+        public DependOnOption DependOnOption { get; }
         
-        public TimeLineDependOnAttribute(Type type, TimeLineDependOnOption option = TimeLineDependOnOption.Group)
+        public ItemDependOnAttribute(Type type, DependOnOption option = DependOnOption.Group)
         {
             DependOnType = type;
             DependOnOption = option;

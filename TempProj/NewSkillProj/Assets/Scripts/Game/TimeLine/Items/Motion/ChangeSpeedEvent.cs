@@ -4,7 +4,7 @@ using Dot.Core.TimeLine.Base.Item;
 namespace Game.TimeLine
 {
     [TimeLineMarkAttribute("Event/Motion", "Change Speed", TimeLineExportPlatform.ALL)]
-    public class ChangeSpeedEvent : ATimeLineEventItem
+    public class ChangeSpeedEvent : AEventItem
     {
         public float Speed { get; set; }
         public override void Trigger()

@@ -1,13 +1,13 @@
 ﻿using Dot.Core.TimeLine.Base.Condition;
-using Dot.Core.TimeLine.Base.Groups;
+using Dot.Core.TimeLine.Base.Group;
 using Entitas;
 using System.Collections.Generic;
 
 namespace Dot.Core.TimeLine.Base
 {
-    public class TimeLineController : ATimeLineEnv
+    public class TimeLineController : AEntitasEnv
     {
-        public List<TimeLineGroup> groups = new List<TimeLineGroup>();
+        public List<TrackGroup> groups = new List<TrackGroup>();
         public TimeLineState State { get; set; } = TimeLineState.Invalid;
 
         private int runningIndex = -1;
@@ -76,7 +76,7 @@ namespace Dot.Core.TimeLine.Base
             }
         }
 
-        private void OnGroupFinished(TimeLineGroup group)
+        private void OnGroupFinished(TrackGroup group)
         {
             if(State == TimeLineState.Running)
             {
@@ -102,7 +102,7 @@ namespace Dot.Core.TimeLine.Base
             {
                 if(runningIndex>=0&&runningIndex<groups.Count)
                 {
-                    ATimeLineComposeCondition condition = groups[runningIndex].beginParallel;
+                    AComposeCondition condition = groups[runningIndex].beginParallel;
                     condition?.DoUpdate(deltaTime);
                     if (condition == null || condition.Evaluate())
                     {

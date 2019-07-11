@@ -1,6 +1,6 @@
 ﻿namespace Dot.Core.TimeLine.Base.Item
 {
-    public abstract class ATimeLineActionItem : ATimeLineItem
+    public abstract class AActionItem : AItem
     {
         protected float duration = 1.0f;
         public float Duration

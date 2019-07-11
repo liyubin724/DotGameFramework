@@ -4,7 +4,7 @@ using Dot.Core.TimeLine.Base.Item;
 namespace Game.TimeLine
 {
     [TimeLineMarkAttribute("Event/Motion", "Mover", TimeLineExportPlatform.ALL)]
-    public class MoverEvent : ATimeLineEventItem
+    public class MoverEvent : AEventItem
     {
         public bool IsMover { get; set; } = false;
 

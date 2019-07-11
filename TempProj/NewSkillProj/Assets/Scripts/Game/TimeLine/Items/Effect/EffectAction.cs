@@ -4,11 +4,11 @@ using Dot.Core.TimeLine.Base.Item;
 namespace Game.TimeLine
 {
     [TimeLineMarkAttribute("Action/Effect", "Effect", TimeLineExportPlatform.Client)]
-    public class EffectAction : ATimeLineActionItem
+    public class EffectAction : AActionItem
     {
         public int EffectConfigID { get; set; } = -1;
 
-        [TimeLineDependOn(typeof(CreateEmitEvent))]
+        [ItemDependOnAttribute(typeof(CreateEmitEvent))]
         public int EmitIndex { get; set; } = -1;
 
         private GameEntity effectEntity;

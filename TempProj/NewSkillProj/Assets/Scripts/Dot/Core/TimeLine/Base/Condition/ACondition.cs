@@ -1,6 +1,6 @@
 ﻿namespace Dot.Core.TimeLine.Base.Condition
 {
-    public abstract class ATimeLineCondition : ATimeLineEnv
+    public abstract class ACondition : AEntitasEnv
     {
         public bool IsReadonly { get; set; }
 

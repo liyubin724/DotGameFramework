@@ -2,7 +2,7 @@
 
 namespace Dot.Core.TimeLine.Base.Item
 {
-    public abstract class ATimeLineItem : ATimeLineEnv,IComparable<ATimeLineItem>
+    public abstract class AItem : AEntitasEnv,IComparable<AItem>
     {
         public int Index { get; set; }
 
@@ -24,7 +24,7 @@ namespace Dot.Core.TimeLine.Base.Item
         {
         }
 
-        public int CompareTo(ATimeLineItem other)
+        public int CompareTo(AItem other)
         {
             if (other == null)
                 return -1;

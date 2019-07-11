@@ -1,5 +1,5 @@
 ﻿using Dot.Core.TimeLine.Base;
-using Dot.Core.TimeLine.Base.Groups;
+using Dot.Core.TimeLine.Base.Group;
 using DotEditor.Core.EGUI;
 using System;
 using System.Collections.Generic;
@@ -214,7 +214,7 @@ namespace DotEditor.Core.TimeLine
             {
                 if (GUILayout.Button("+", "ButtonLeft"))
                 {
-                    TimeLineGroup tlGroup = new TimeLineGroup();
+                    TrackGroup tlGroup = new TrackGroup();
                     TimeLineEditorGroup tleGroup = new TimeLineEditorGroup(tlGroup,setting);
                     tleGroup.Controller = this;
                     groups.Add(tleGroup);

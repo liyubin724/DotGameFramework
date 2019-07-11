@@ -1,5 +1,5 @@
 ﻿using Dot.Core.TimeLine.Base.Condition;
-using Dot.Core.TimeLine.Base.Groups;
+using Dot.Core.TimeLine.Base.Group;
 using Dot.Core.TimeLine.Base.Tracks;
 using DotEditor.Core.EGUI;
 using System;
@@ -73,9 +73,9 @@ namespace DotEditor.Core.TimeLine
             }
         }
         
-        public TimeLineGroup Group { get; private set; }
+        public TrackGroup Group { get; private set; }
         private TimeLineEditorSetting setting = null;
-        public TimeLineEditorGroup(TimeLineGroup tlGroup,TimeLineEditorSetting setting)
+        public TimeLineEditorGroup(TrackGroup tlGroup,TimeLineEditorSetting setting)
         {
             Group = tlGroup;
             foreach(var track in tlGroup.tracks)
@@ -119,7 +119,7 @@ namespace DotEditor.Core.TimeLine
                 {
                     if (GUILayout.Button("+", "ButtonLeft"))
                     {
-                        TimeLineTrack tlTrack = new TimeLineTrack();
+                        TrackLine tlTrack = new TrackLine();
                         TimeLineEditorTrack tleTrack = new TimeLineEditorTrack(tlTrack,setting);
                         tleTrack.Group = this;
                         tracks.Add(tleTrack);

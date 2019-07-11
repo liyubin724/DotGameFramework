@@ -32,9 +32,9 @@ namespace DotEditor.Core.TimeLine
             }
         }
 
-        public ATimeLineItem Item { get; private set; }
+        public AItem Item { get; private set; }
         private TimeLineEditorSetting setting = null;
-        public TimeLineEditorItem(ATimeLineItem tlItem,TimeLineEditorSetting setting)
+        public TimeLineEditorItem(AItem tlItem,TimeLineEditorSetting setting)
         {
             Item = tlItem;
             this.setting = setting;
@@ -55,9 +55,9 @@ namespace DotEditor.Core.TimeLine
                         {
                             Item.FireTime = Track.Group.Group.TotalTime;
                         }
-                        if (Item.GetType().IsSubclassOf(typeof(ATimeLineActionItem)))
+                        if (Item.GetType().IsSubclassOf(typeof(AActionItem)))
                         {
-                            var actionItem = (ATimeLineActionItem)Item;
+                            var actionItem = (AActionItem)Item;
                             actionItem.Duration = UnityEditor.EditorGUILayout.FloatField("Duration:", actionItem.Duration);
                             if (actionItem.Duration <= 0)
                             {
@@ -72,17 +72,17 @@ namespace DotEditor.Core.TimeLine
                         PropertyInfo[] pInfos = Item.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
                         foreach (var pi in pInfos)
                         {
-                            TimeLineDependOnAttribute dependOn = pi.GetCustomAttribute<TimeLineDependOnAttribute>();
+                            ItemDependOnAttribute dependOn = pi.GetCustomAttribute<ItemDependOnAttribute>();
                             if(dependOn!=null)
                             {
                                 int[] dependItems = new int[0];
-                                if(dependOn.DependOnOption == TimeLineDependOnOption.Track)
+                                if(dependOn.DependOnOption == DependOnOption.Track)
                                 {
                                     dependItems = Track.GetDependOnItem(dependOn.DependOnType);
-                                }else if(dependOn.DependOnOption == TimeLineDependOnOption.Group)
+                                }else if(dependOn.DependOnOption == DependOnOption.Group)
                                 {
                                     dependItems = Track.Group.GetDependOnItem(dependOn.DependOnType);
-                                }else if(dependOn.DependOnOption == TimeLineDependOnOption.Controller)
+                                }else if(dependOn.DependOnOption == DependOnOption.Controller)
                                 {
                                     dependItems = Track.Group.Controller.GetDependOnItem(dependOn.DependOnType);
                                 }
@@ -108,9 +108,9 @@ namespace DotEditor.Core.TimeLine
             itemRect.x = Item.FireTime * setting.pixelForSecond - setting.scrollPos.x;
             itemRect.y = rect.y;
             float timeLen = setting.timeStep;
-            if(Item.GetType().IsSubclassOf(typeof(ATimeLineActionItem)))
+            if(Item.GetType().IsSubclassOf(typeof(AActionItem)))
             {
-                timeLen = ((ATimeLineActionItem)Item).Duration;
+                timeLen = ((AActionItem)Item).Duration;
             }
             itemRect.width = setting.pixelForSecond * timeLen;
             itemRect.height = setting.trackHeight;

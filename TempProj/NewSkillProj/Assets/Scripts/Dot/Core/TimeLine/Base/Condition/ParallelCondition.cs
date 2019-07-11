@@ -1,7 +1,7 @@
 ﻿namespace Dot.Core.TimeLine.Base.Condition
 {
     [TimeLineMark("Condition/Parallel","Parallel",TimeLineExportPlatform.ALL)]
-    public class TimeLineParallelCondition : ATimeLineComposeCondition
+    public sealed class ParallelCondition : AComposeCondition
     {
         public override bool Evaluate()
         {

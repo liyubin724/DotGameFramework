@@ -1,6 +1,6 @@
 ﻿namespace Dot.Core.TimeLine.Data
 {
-    public static class TimeLineConst
+    public static class DataConst
     {
         public static readonly string TIME_LINE_NAME = "Name";
         public static readonly string TIME_LINE_GROUPS = "groups";

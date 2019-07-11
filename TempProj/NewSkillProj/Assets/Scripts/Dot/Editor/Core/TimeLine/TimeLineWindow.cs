@@ -69,7 +69,7 @@ namespace DotEditor.Core.TimeLine
                         TextAsset textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(assetPath);
                         if (textAsset != null)
                         {
-                            TimeLineController controller = TimeLineReader.ReadController(JsonMapper.ToObject(textAsset.text));
+                            TimeLineController controller = JsonDataReader.ReadController(JsonMapper.ToObject(textAsset.text));
                             if (controller != null)
                             {
                                 editorController = new TimeLineEditorController(controller, editorSetting);
@@ -96,7 +96,7 @@ namespace DotEditor.Core.TimeLine
                     {
                         editorController.FillController();
 
-                        string config = TimeLineWriter.WriteController(editorController.Controller).ToJson();
+                        string config = JsonDataWriter.WriteController(editorController.Controller).ToJson();
                         File.WriteAllText(configPath, config, new UTF8Encoding(false));
 
                         string assetPath = "Assets" + configPath.Replace(Application.dataPath, "");

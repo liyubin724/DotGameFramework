@@ -1,6 +1,6 @@
 ﻿using Dot.Core.TimeLine.Base;
 using Dot.Core.TimeLine.Base.Condition;
-using Dot.Core.TimeLine.Base.Groups;
+using Dot.Core.TimeLine.Base.Group;
 using Dot.Core.TimeLine.Base.Item;
 using Dot.Core.TimeLine.Base.Tracks;
 using LitJson;
@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Dot.Core.TimeLine.Data
 {
-    public static class TimeLineReader
+    public static class JsonDataReader
     {
         public static TimeLineController ReadController(JsonData jsonData)
         {
@@ -18,12 +18,12 @@ namespace Dot.Core.TimeLine.Data
 
             TimeLineController controller = new TimeLineController();
 
-            if(jsonData.ContainsKey(TimeLineConst.TIME_LINE_GROUPS))
+            if(jsonData.ContainsKey(DataConst.TIME_LINE_GROUPS))
             {
-                JsonData groupsJsonData = jsonData[TimeLineConst.TIME_LINE_GROUPS];
+                JsonData groupsJsonData = jsonData[DataConst.TIME_LINE_GROUPS];
                 for (var i = 0; i < groupsJsonData.Count; ++i)
                 {
-                    TimeLineGroup group = ReadGroup(groupsJsonData[i]);
+                    TrackGroup group = ReadGroup(groupsJsonData[i]);
                     if (group != null)
                     {
                         controller.groups.Add(group);
@@ -34,26 +34,26 @@ namespace Dot.Core.TimeLine.Data
             return controller;
         }
 
-        public static TimeLineGroup ReadGroup(JsonData jsonData)
+        public static TrackGroup ReadGroup(JsonData jsonData)
         {
             if (jsonData == null) return null;
-            if (!jsonData.ContainsKey(TimeLineConst.TIME_LINE_NAME)) return null;
+            if (!jsonData.ContainsKey(DataConst.TIME_LINE_NAME)) return null;
 
-            TimeLineGroup group = new TimeLineGroup
+            TrackGroup group = new TrackGroup
             {
-                Name = (string)jsonData[TimeLineConst.TIME_LINE_NAME],
-                TotalTime = (float)jsonData[TimeLineConst.TIME_LINE_GROUP_TOTALTIME],
-                IsAwaysRun = (bool)jsonData[TimeLineConst.TIME_LINE_GROUP_ISEND],
+                Name = (string)jsonData[DataConst.TIME_LINE_NAME],
+                TotalTime = (float)jsonData[DataConst.TIME_LINE_GROUP_TOTALTIME],
+                IsAwaysRun = (bool)jsonData[DataConst.TIME_LINE_GROUP_ISEND],
 
                 //conditionCompose = ReadConditionCompose(jsonData[TimeLineConst.TIME_LINE_CONDITION_COMPOSE])
             };
 
-            JsonData tracksJsonData = jsonData[TimeLineConst.TIME_LINE_TRACKS];
+            JsonData tracksJsonData = jsonData[DataConst.TIME_LINE_TRACKS];
             if(tracksJsonData != null && tracksJsonData.Count>0)
             {
                 for(int i =0;i< tracksJsonData.Count;++i)
                 {
-                    TimeLineTrack track = ReadTrack(tracksJsonData[i]);
+                    TrackLine track = ReadTrack(tracksJsonData[i]);
                     if(track!=null)
                     {
                         group.tracks.Add(track);
@@ -64,14 +64,14 @@ namespace Dot.Core.TimeLine.Data
             return group;
         }
 
-        public static ATimeLineComposeCondition ReadConditionCompose(JsonData jsonData)
+        public static AComposeCondition ReadConditionCompose(JsonData jsonData)
         {
-            ATimeLineComposeCondition result = null;//new ATimeLineComposeCondition();
+            AComposeCondition result = null;//new ATimeLineComposeCondition();
             if(jsonData!=null && jsonData.Count>0)
             {
                 for(int i =0;i<jsonData.Count;++i)
                 {
-                    ATimeLineCondition condition = ReadCondition(jsonData[i]);
+                    ACondition condition = ReadCondition(jsonData[i]);
                     if(condition!=null)
                     {
                         result.conditions.Add(condition);
@@ -81,21 +81,21 @@ namespace Dot.Core.TimeLine.Data
             return result;
         }
 
-        public static TimeLineTrack ReadTrack(JsonData jsonData)
+        public static TrackLine ReadTrack(JsonData jsonData)
         {
             if (jsonData == null) return null;
-            if(!jsonData.ContainsKey(TimeLineConst.TIME_LINE_NAME))
+            if(!jsonData.ContainsKey(DataConst.TIME_LINE_NAME))
             {
                 return null;
             }
 
-            TimeLineTrack track = new TimeLineTrack();
-            track.Name = (string)jsonData[TimeLineConst.TIME_LINE_NAME];
+            TrackLine track = new TrackLine();
+            track.Name = (string)jsonData[DataConst.TIME_LINE_NAME];
 
-            JsonData itemsJsonData = jsonData[TimeLineConst.TIME_LINE_ITEMS];
+            JsonData itemsJsonData = jsonData[DataConst.TIME_LINE_ITEMS];
             for (int i = 0; i < itemsJsonData.Count; ++i)
             {
-                ATimeLineItem item = ReadItem(itemsJsonData[i]);
+                AItem item = ReadItem(itemsJsonData[i]);
                 if (item != null)
                 {
                     track.items.Add(item);
@@ -106,21 +106,21 @@ namespace Dot.Core.TimeLine.Data
             return track;
         }
 
-        public static ATimeLineItem ReadItem(JsonData jsonData)
+        public static AItem ReadItem(JsonData jsonData)
         {
-            return ReadFromJson<ATimeLineItem>(jsonData);
+            return ReadFromJson<AItem>(jsonData);
         }
 
-        public static ATimeLineCondition ReadCondition(JsonData jsonData)
+        public static ACondition ReadCondition(JsonData jsonData)
         {
-            return ReadFromJson<ATimeLineCondition>(jsonData);
+            return ReadFromJson<ACondition>(jsonData);
         }
 
         private static T ReadFromJson<T>(JsonData jsonData) where T:class
         {
             if (jsonData == null)
                 return null;
-            if(!jsonData.ContainsKey(TimeLineConst.TIME_LINE_NAME))
+            if(!jsonData.ContainsKey(DataConst.TIME_LINE_NAME))
             {
                 return null;
             }

@@ -4,10 +4,10 @@ using Dot.Core.TimeLine.Base.Item;
 namespace Game.TimeLine
 {
     [TimeLineMarkAttribute("Event/Effect","Add Effect",TimeLineExportPlatform.Client)]
-    public class AddEffectEvent : ATimeLineEventItem
+    public class AddEffectEvent : AEventItem
     {
         public int EffectConfigID { get; set; } = -1;
-        [TimeLineDependOn(typeof(CreateEmitEvent))]
+        [ItemDependOnAttribute(typeof(CreateEmitEvent))]
         public int EmitIndex { get; set; } = -1;
 
         public override void Trigger()

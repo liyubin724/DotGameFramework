@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Dot.Core.TimeLine.Base.Tracks
 {
-    public class TimeLineTrack : ATimeLineEnv
+    public class TrackLine : AEntitasEnv
     {
         public string Name { get; set; } = "Time Line Track";
-        public List<ATimeLineItem> items = new List<ATimeLineItem>();
+        public List<AItem> items = new List<AItem>();
 
-        private readonly List<ATimeLineItem> waitingItems = new List<ATimeLineItem>();
-        private readonly List<ATimeLineItem> runningItems = new List<ATimeLineItem>();
+        private readonly List<AItem> waitingItems = new List<AItem>();
+        private readonly List<AItem> runningItems = new List<AItem>();
         private float elapsedTime = 0f;
 
         public void DoUpdate(float deltaTime)
@@ -28,7 +28,7 @@ namespace Dot.Core.TimeLine.Base.Tracks
             }
             while(waitingItems.Count>0)
             {
-                ATimeLineItem item = waitingItems[0];
+                AItem item = waitingItems[0];
                 if(item.FireTime>elapsedTime)
                 {
                     break;
@@ -44,8 +44,8 @@ namespace Dot.Core.TimeLine.Base.Tracks
             
             for (int i=runningItems.Count-1;i>=0;--i)
             {
-                ATimeLineItem item = runningItems[i];
-                if (item is ATimeLineEventItem eventItem)
+                AItem item = runningItems[i];
+                if (item is AEventItem eventItem)
                 {
                     if (previousTime <= eventItem.FireTime && elapsedTime > eventItem.FireTime)
                     {
@@ -53,7 +53,7 @@ namespace Dot.Core.TimeLine.Base.Tracks
                     }
                     runningItems.RemoveAt(i);
                     item.DoReset();
-                }else if(item is ATimeLineActionItem actionItem)
+                }else if(item is AActionItem actionItem)
                 {
                     if (previousTime <= actionItem.FireTime && elapsedTime > actionItem.FireTime)
                     {
@@ -81,7 +81,7 @@ namespace Dot.Core.TimeLine.Base.Tracks
         {
             runningItems.ForEach((item) =>
             {
-                if (item is ATimeLineActionItem actionItem)
+                if (item is AActionItem actionItem)
                 {
                     actionItem.Stop();
                 }
@@ -93,7 +93,7 @@ namespace Dot.Core.TimeLine.Base.Tracks
         {
             runningItems.ForEach((item) =>
             {
-                if (item is ATimeLineActionItem actionItem)
+                if (item is AActionItem actionItem)
                 {
                     actionItem.Pause();
                 }
@@ -104,7 +104,7 @@ namespace Dot.Core.TimeLine.Base.Tracks
         {
             runningItems.ForEach((item) =>
             {
-                if (item is ATimeLineActionItem actionItem)
+                if (item is AActionItem actionItem)
                 {
                     actionItem.Pause();
                 }

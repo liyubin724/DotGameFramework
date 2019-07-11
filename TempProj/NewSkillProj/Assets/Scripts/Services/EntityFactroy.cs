@@ -73,7 +73,7 @@ public class EntityFactroy : Service
 
         SkillConfigData data = services.dataService.GetSkillData(skillConfigID);
         JsonData jsonData = JsonMapper.ToObject(Resources.Load<TextAsset>(data.timeLineConfig).text);
-        TimeLineController controller = TimeLineReader.ReadController(jsonData);
+        TimeLineController controller = JsonDataReader.ReadController(jsonData);
         controller.Initialize(CachedContexts, services, skillEntity);
         skillEntity.AddTimeLineController(data.timeLineConfig, controller);
 
@@ -146,7 +146,7 @@ public class EntityFactroy : Service
         bulletEntity.AddAddSkeleton(data.assetPath);
 
         JsonData jsonData = JsonMapper.ToObject(Resources.Load<TextAsset>(data.timeLineConfig).text);
-        TimeLineController controller = TimeLineReader.ReadController(jsonData);
+        TimeLineController controller = JsonDataReader.ReadController(jsonData);
         controller.Initialize(CachedContexts, services, bulletEntity);
         bulletEntity.AddTimeLineController(data.timeLineConfig, controller);
         
