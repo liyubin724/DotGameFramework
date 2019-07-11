@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using static UnityEditor.GenericMenu;
 
 namespace DotEditor.Core.TimeLine
 {
@@ -117,7 +116,6 @@ namespace DotEditor.Core.TimeLine
         public void DrawItem(Rect rect)
         {
             //GUI.Label(rect, "", IsSelected ? "flow node 5 on" : "flow node 5");
-            
             for(var i =0;i<items.Count;i++)
             {
                 items[i].DrawElement(rect);
@@ -126,44 +124,24 @@ namespace DotEditor.Core.TimeLine
             if(Event.current.button == 1 && Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
             {
                 GenericMenu menu = new GenericMenu();
-                var types = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                                  where !(assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder)
-                                  from type in assembly.GetExportedTypes()
-                                  where type.IsSubclassOf(typeof(AEventItem)) || type.IsSubclassOf(typeof(AActionItem))
-                                  select type);
+
                 var fireTime = (Event.current.mousePosition.x + setting.scrollPos.x) / setting.pixelForSecond;
-
-                MenuFunction2 callback = (type) =>
+                foreach(var type in setting.ItemTypes)
                 {
-                    AItem item = (AItem)((Type)type).Assembly.CreateInstance(((Type)type).FullName);
-                    item.FireTime = fireTime;
-                    ItemEditor eItem = new ItemEditor(item, setting);
-                    eItem.Track = this;
-                    items.Add(eItem);
+                    TimeLineMarkAttribute attr = type.GetCustomAttribute<TimeLineMarkAttribute>();
+                    if (attr != null)
+                        menu.AddItem(new GUIContent(attr.Category + "/" + attr.Label), false, ()=>
+                        {
+                            AItem item = (AItem)type.Assembly.CreateInstance(type.FullName);
+                            item.FireTime = fireTime;
+                            ItemEditor eItem = new ItemEditor(item, setting);
+                            eItem.Track = this;
+                            items.Add(eItem);
 
-                    eItem.IsSelected = true;
-                    setting.isChanged = true;
-                };
-
-                foreach(var type in types)
-                {
-                    if(type.IsSubclassOf(typeof(AEventItem)))
-                    {
-                        TimeLineMarkAttribute attr = type.GetCustomAttribute<TimeLineMarkAttribute>();
-                        if(attr!=null)
-                            menu.AddItem(new GUIContent("Event/" + attr.Category + "/" + attr.Label), false, callback, type);
-                    }
+                            eItem.IsSelected = true;
+                        });
                 }
-                menu.AddSeparator("");
-                foreach(var type in types)
-                {
-                    if (type.IsSubclassOf(typeof(AActionItem)))
-                    {
-                        TimeLineMarkAttribute attr = type.GetCustomAttribute<TimeLineMarkAttribute>();
-                        if (attr != null)
-                            menu.AddItem(new GUIContent("Action/" + attr.Category + "/" + attr.Label), false, callback, type);
-                    }
-                }
+
                 menu.ShowAsContext();
 
                 Event.current.Use();
@@ -176,7 +154,6 @@ namespace DotEditor.Core.TimeLine
 
             SelectedItem = item;
             IsSelected = true;
-
         }
 
         public void OnItemDelete(ItemEditor item)

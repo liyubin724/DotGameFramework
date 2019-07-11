@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿using Dot.Core.TimeLine.Base.Condition;
+using Dot.Core.TimeLine.Base.Item;
+using System;
+using System.Linq;
+using UnityEngine;
 
 namespace DotEditor.Core.TimeLine
 {
@@ -18,6 +22,45 @@ namespace DotEditor.Core.TimeLine
         public bool isChanged = false;
 
         public float PixelForStep { get { return pixelForSecond * timeStep; } }
-        
+
+        private Type[] itemTypes = null;
+        public Type[] ItemTypes
+        {
+            get
+            {
+                if(itemTypes == null)
+                {
+                    itemTypes = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                                 where !(assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder)
+                                 from type in assembly.GetExportedTypes()
+                                 where type.IsSubclassOf(typeof(AEventItem)) || type.IsSubclassOf(typeof(AActionItem))
+                                 select type).ToArray();
+                }
+                if (itemTypes == null)
+                {
+                    itemTypes = new Type[0];
+                }
+                return itemTypes;
+            }
+        }
+
+        public Type[] conditionTypes = null;
+        public Type[] ConditionTypes
+        {
+            get
+            {
+                if(conditionTypes == null)
+                {
+                    conditionTypes = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                                      where !(assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder)
+                                      from type in assembly.GetExportedTypes()
+                                      where type.IsSubclassOf(typeof(ACondition))
+                                      select type).ToArray();
+                }
+                if (conditionTypes == null) conditionTypes = new Type[0];
+
+                return conditionTypes;
+            }
+        }
     }
 }
