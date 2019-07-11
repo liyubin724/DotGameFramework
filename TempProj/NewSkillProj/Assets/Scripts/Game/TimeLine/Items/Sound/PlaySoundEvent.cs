@@ -1,8 +1,9 @@
-﻿using Dot.Core.TimeLine.Base.Item;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Item;
 
 namespace Game.TimeLine
 {
-    [TimeLineItem("Sound", "Play Sound", TimeLineItemPlatform.Client)]
+    [TimeLineMark("Event/Sound", "Play Sound", TimeLineExportPlatform.Client)]
     public class PlaySoundEvent : ATimeLineEventItem
     {
         public int SoundConfigID { get; set; }

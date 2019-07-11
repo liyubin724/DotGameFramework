@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Dot.Core.TimeLine.Base.Item
+namespace Dot.Core.TimeLine.Base
 {
-    public enum TimeLineItemPlatform
+    public enum TimeLineExportPlatform
     {
         Client,
         Server,
@@ -10,12 +10,12 @@ namespace Dot.Core.TimeLine.Base.Item
     }
 
     [AttributeUsage(AttributeTargets.Class,AllowMultiple =false,Inherited =true)]
-    public class TimeLineItemAttribute : Attribute
+    public class TimeLineMarkAttribute : Attribute
     {
         public string Category { get; }
         public string Label { get; }
-        public TimeLineItemPlatform Target{get;}
-        public TimeLineItemAttribute(string category,string label,TimeLineItemPlatform target)
+        public TimeLineExportPlatform Target{get;}
+        public TimeLineMarkAttribute(string category,string label,TimeLineExportPlatform target)
         {
             Category = category;
             Label = label;

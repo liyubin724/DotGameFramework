@@ -11,14 +11,14 @@ namespace Dot.Core.TimeLine.Base.Groups
     {
         public string Name { get; set; } = "Time Line Group";
         public float TotalTime { get; set; } = 10;
-        public bool IsEnd { get; set; } = false;
+        public bool IsAwaysRun { get; set; } = false;
 
-        public TimeLineConditionCompose conditionCompose = new TimeLineConditionCompose();
+        public TimeLineParallelCondition beginParallel = new TimeLineParallelCondition();
+        public ATimeLineComposeCondition endCompose = null;
+
         public readonly List<TimeLineTrack> tracks = new List<TimeLineTrack>();
         public OnGroupFinished onFinished = null;
-
-
-        private float elapsedTime = 0f;
+        
         public override void Initialize(Contexts contexts, Services services, IEntity entity)
         {
             base.Initialize(contexts, services, entity);
@@ -26,27 +26,35 @@ namespace Dot.Core.TimeLine.Base.Groups
             {
                 track?.Initialize(contexts, services, entity);
             });
-            conditionCompose?.Initialize(contexts, services, entity);
+            beginParallel?.Initialize(contexts, services, entity);
+            endCompose?.Initialize(contexts, services, entity);
         }
 
         public void DoUpdate(float deltaTime)
         {
+            if(endCompose!=null)
+            {
+                endCompose.DoUpdate(deltaTime);
+                if(endCompose.Evaluate())
+                {
+                    Stop();
+                    return;
+                }
+            }
+
             tracks?.ForEach((track) =>
             {
                 track?.DoUpdate(deltaTime);
             });
-
-            elapsedTime += deltaTime;
-            if(elapsedTime>=TotalTime)
-            {
-                Stop();
-            }
         }
 
         public override void DoReset()
         {
             onFinished = null;
-            conditionCompose?.DoReset();
+
+            beginParallel?.DoReset();
+            endCompose?.DoReset();
+
             base.DoReset();
         }
 
@@ -59,20 +67,20 @@ namespace Dot.Core.TimeLine.Base.Groups
             onFinished?.Invoke(this);
         }
 
-        public void Pause()
-        {
-            tracks?.ForEach((track) =>
-            {
-                track?.Pause();
-            });
-        }
+        //public void Pause()
+        //{
+        //    tracks?.ForEach((track) =>
+        //    {
+        //        track?.Pause();
+        //    });
+        //}
 
-        public void Resume()
-        {
-            tracks?.ForEach((track) =>
-            {
-                track?.Resume();
-            });
-        }
+        //public void Resume()
+        //{
+        //    tracks?.ForEach((track) =>
+        //    {
+        //        track?.Resume();
+        //    });
+        //}
     }
 }

@@ -1,8 +1,9 @@
-﻿using Dot.Core.TimeLine.Base.Item;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Item;
 
 namespace Game.TimeLine
 {
-    [TimeLineItem("Skill", "Create Bullet", TimeLineItemPlatform.ALL)]
+    [TimeLineMark("Event/Skill", "Create Bullet", TimeLineExportPlatform.ALL)]
     public class CreateBulletEvent : ATimeLineEventItem
     {
         public int BulletConfigID { get; set; }

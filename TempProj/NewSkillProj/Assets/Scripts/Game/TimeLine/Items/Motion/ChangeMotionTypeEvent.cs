@@ -1,8 +1,9 @@
-﻿using Dot.Core.TimeLine.Base.Item;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Item;
 
 namespace Game.TimeLine
 {
-    [TimeLineItem("Motion", "Change Motion", TimeLineItemPlatform.ALL)]
+    [TimeLineMarkAttribute("Event/Motion", "Change Motion", TimeLineExportPlatform.ALL)]
     public class ChangeMotionTypeEvent : ATimeLineEventItem
     {
         public MotionType Motion { get; set; }

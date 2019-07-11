@@ -1,8 +1,9 @@
-﻿using Dot.Core.TimeLine.Base.Item;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Item;
 
 namespace Game.TimeLine
 {
-    [TimeLineItem("Motion", "Mover", TimeLineItemPlatform.ALL)]
+    [TimeLineMarkAttribute("Event/Motion", "Mover", TimeLineExportPlatform.ALL)]
     public class MoverEvent : ATimeLineEventItem
     {
         public bool IsMover { get; set; } = false;

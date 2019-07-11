@@ -1,4 +1,5 @@
-﻿using Dot.Core.TimeLine.Base.Item;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Item;
 using Dot.Core.TimeLine.Base.Tracks;
 using System;
 using System.Collections.Generic;
@@ -148,7 +149,7 @@ namespace DotEditor.Core.TimeLine
                 {
                     if(type.IsSubclassOf(typeof(ATimeLineEventItem)))
                     {
-                        TimeLineItemAttribute attr = type.GetCustomAttribute<TimeLineItemAttribute>();
+                        TimeLineMarkAttribute attr = type.GetCustomAttribute<TimeLineMarkAttribute>();
                         if(attr!=null)
                             menu.AddItem(new GUIContent("Event/" + attr.Category + "/" + attr.Label), false, callback, type);
                     }
@@ -158,7 +159,7 @@ namespace DotEditor.Core.TimeLine
                 {
                     if (type.IsSubclassOf(typeof(ATimeLineActionItem)))
                     {
-                        TimeLineItemAttribute attr = type.GetCustomAttribute<TimeLineItemAttribute>();
+                        TimeLineMarkAttribute attr = type.GetCustomAttribute<TimeLineMarkAttribute>();
                         if (attr != null)
                             menu.AddItem(new GUIContent("Action/" + attr.Category + "/" + attr.Label), false, callback, type);
                     }

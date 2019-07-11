@@ -3,7 +3,7 @@ using Entitas;
 
 namespace Dot.Core.TimeLine.Base.Condition
 {
-    public class TimeLineConditionCompose : ATimeLineEnv
+    public abstract class ATimeLineComposeCondition : ATimeLineCondition
     {
         public readonly List<ATimeLineCondition> conditions = new List<ATimeLineCondition>();
 
@@ -16,26 +16,21 @@ namespace Dot.Core.TimeLine.Base.Condition
             });
         }
 
-        public bool Evaluate()
-        {
-            bool result = true;
-            foreach(var c in conditions)
-            {
-                if(!c.Evaluate())
-                {
-                    result = false;
-                    break;
-                }
-            }
-            return result;
-        }
-
-        public void DoUpdate(float deltaTime)
+        public override void DoUpdate(float deltaTime)
         {
             foreach(var c in conditions)
             {
                 c.DoUpdate(deltaTime);
             }
+        }
+
+        public override void DoReset()
+        {
+            foreach(var c in conditions)
+            {
+                c.DoReset();
+            }
+            base.DoReset();
         }
     }
 }

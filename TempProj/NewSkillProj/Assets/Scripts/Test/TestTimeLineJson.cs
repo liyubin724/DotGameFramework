@@ -29,9 +29,9 @@ public class TestTimeLineJson : MonoBehaviour
         }
         if(GUILayout.Button("Convert To Condition"))
         {
-            JsonData conditionJsonData = jsonData["groups"][0]["condition_compose"][0];
-            WaitingTimeCondition wtCondition = (WaitingTimeCondition)TimeLineReader.ReadCondition(conditionJsonData);
-            Debug.Log(wtCondition);
+            //JsonData conditionJsonData = jsonData["groups"][0]["condition_compose"][0];
+            //WaitingTimeCondition wtCondition = (WaitingTimeCondition)TimeLineReader.ReadCondition(conditionJsonData);
+            //Debug.Log(wtCondition);
         }
 
         if(GUILayout.Button("Convert To Controller"))

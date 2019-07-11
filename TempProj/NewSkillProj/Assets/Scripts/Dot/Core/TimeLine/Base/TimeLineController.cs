@@ -50,7 +50,7 @@ namespace Dot.Core.TimeLine.Base
             }
             if(State == TimeLineState.Running)
             {
-                if(!groups[runningIndex].IsEnd)
+                if(!groups[runningIndex].IsAwaysRun)
                 {
                     groups[runningIndex].onFinished = null;
                     groups[runningIndex].Stop();
@@ -63,7 +63,7 @@ namespace Dot.Core.TimeLine.Base
             runningIndex = -1;
             for (int i = runningIndex + 1; i < groups.Count; ++i)
             {
-                if (groups[i].IsEnd)
+                if (groups[i].IsAwaysRun)
                 {
                     runningIndex = i;
                     State = TimeLineState.Running;
@@ -102,7 +102,7 @@ namespace Dot.Core.TimeLine.Base
             {
                 if(runningIndex>=0&&runningIndex<groups.Count)
                 {
-                    TimeLineConditionCompose condition = groups[runningIndex].conditionCompose;
+                    ATimeLineComposeCondition condition = groups[runningIndex].beginParallel;
                     condition?.DoUpdate(deltaTime);
                     if (condition == null || condition.Evaluate())
                     {

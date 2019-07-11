@@ -1,9 +1,10 @@
-﻿using Dot.Core.TimeLine.Base.Item;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Item;
 using System.Collections.Generic;
 
 namespace Game.TimeLine
 {
-    [TimeLineItem("Skill", "Create Emit", TimeLineItemPlatform.ALL)]
+    [TimeLineMark("Event/Skill", "Create Emit", TimeLineExportPlatform.ALL)]
     public class CreateEmitEvent : ATimeLineEventItem
     {
         public BindNodeType NodeType { get; set; } = BindNodeType.Main;

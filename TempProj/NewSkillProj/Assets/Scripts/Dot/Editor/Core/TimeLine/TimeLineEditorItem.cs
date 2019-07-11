@@ -1,4 +1,5 @@
-﻿using Dot.Core.TimeLine.Base.Item;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Item;
 using DotEditor.Core.EGUI;
 using System.Reflection;
 using UnityEditor;
@@ -117,7 +118,7 @@ namespace DotEditor.Core.TimeLine
             ItemRect = itemRect;
 
             string name = Item.GetType().Name;
-            TimeLineItemAttribute attr = Item.GetType().GetCustomAttribute<TimeLineItemAttribute>();
+            TimeLineMarkAttribute attr = Item.GetType().GetCustomAttribute<TimeLineMarkAttribute>();
             if(attr !=null)
             {
                 name = attr.Label;

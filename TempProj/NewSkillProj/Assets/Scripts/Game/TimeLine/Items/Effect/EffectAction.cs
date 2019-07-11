@@ -1,8 +1,9 @@
-﻿using Dot.Core.TimeLine.Base.Item;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Item;
 
 namespace Game.TimeLine
 {
-    [TimeLineItem("Effect", "Effect", TimeLineItemPlatform.Client)]
+    [TimeLineMarkAttribute("Action/Effect", "Effect", TimeLineExportPlatform.Client)]
     public class EffectAction : ATimeLineActionItem
     {
         public int EffectConfigID { get; set; } = -1;

@@ -43,9 +43,9 @@ namespace Dot.Core.TimeLine.Data
             {
                 Name = (string)jsonData[TimeLineConst.TIME_LINE_NAME],
                 TotalTime = (float)jsonData[TimeLineConst.TIME_LINE_GROUP_TOTALTIME],
-                IsEnd = (bool)jsonData[TimeLineConst.TIME_LINE_GROUP_ISEND],
+                IsAwaysRun = (bool)jsonData[TimeLineConst.TIME_LINE_GROUP_ISEND],
 
-                conditionCompose = ReadConditionCompose(jsonData[TimeLineConst.TIME_LINE_CONDITION_COMPOSE])
+                //conditionCompose = ReadConditionCompose(jsonData[TimeLineConst.TIME_LINE_CONDITION_COMPOSE])
             };
 
             JsonData tracksJsonData = jsonData[TimeLineConst.TIME_LINE_TRACKS];
@@ -64,9 +64,9 @@ namespace Dot.Core.TimeLine.Data
             return group;
         }
 
-        public static TimeLineConditionCompose ReadConditionCompose(JsonData jsonData)
+        public static ATimeLineComposeCondition ReadConditionCompose(JsonData jsonData)
         {
-            TimeLineConditionCompose result = new TimeLineConditionCompose();
+            ATimeLineComposeCondition result = null;//new ATimeLineComposeCondition();
             if(jsonData!=null && jsonData.Count>0)
             {
                 for(int i =0;i<jsonData.Count;++i)

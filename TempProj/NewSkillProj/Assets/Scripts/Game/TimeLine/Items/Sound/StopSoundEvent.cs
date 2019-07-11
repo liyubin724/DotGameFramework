@@ -1,8 +1,9 @@
-﻿using Dot.Core.TimeLine.Base.Item;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Item;
 
 namespace Game.TimeLine
 {
-    [TimeLineItem("Sound", "Stop Sound", TimeLineItemPlatform.Client)]
+    [TimeLineMark("Event/Sound", "Stop Sound", TimeLineExportPlatform.Client)]
     public class StopSoundEvent : ATimeLineEventItem
     {
         [TimeLineDependOn(typeof(PlaySoundEvent))]

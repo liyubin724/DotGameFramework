@@ -1,8 +1,9 @@
-﻿using Dot.Core.TimeLine.Base.Item;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Item;
 
 namespace Game.TimeLine
 {
-    [TimeLineItem("Effect", "Remove Effect", TimeLineItemPlatform.Client)]
+    [TimeLineMarkAttribute("Event/Effect", "Remove Effect", TimeLineExportPlatform.Client)]
     public class RemoveEffectEvent : ATimeLineEventItem
     {
         [TimeLineDependOn(typeof(AddEffectEvent))]

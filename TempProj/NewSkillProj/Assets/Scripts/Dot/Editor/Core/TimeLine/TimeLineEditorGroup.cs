@@ -178,66 +178,66 @@ namespace DotEditor.Core.TimeLine
                     {
                         Group.Name = UnityEditor.EditorGUILayout.TextField("Name:", Group.Name);
                         Group.TotalTime = UnityEditor.EditorGUILayout.FloatField("TotalTime:", Group.TotalTime);
-                        Group.IsEnd = UnityEditor.EditorGUILayout.Toggle("IsEnd:", Group.IsEnd);
+                        Group.IsAwaysRun = UnityEditor.EditorGUILayout.Toggle("IsEnd:", Group.IsAwaysRun);
                     }
 
-                    UnityEditor.EditorGUILayout.LabelField("Conditions:");
-                    using (new UnityEditor.EditorGUILayout.HorizontalScope())
-                    {
-                        if (GUILayout.Button("Add"))
-                        {
-                            GenericMenu menu = new GenericMenu();
-                            var types = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                                         where !(assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder)
-                                         from type in assembly.GetExportedTypes()
-                                         where type.IsSubclassOf(typeof(ATimeLineCondition))
-                                         select type).ToList();
-                            types.ForEach((t) =>
-                            {
-                                menu.AddItem(new GUIContent(t.Name), false, (type) =>
-                                {
-                                    ATimeLineCondition item = (ATimeLineCondition)((Type)type).Assembly.CreateInstance(((Type)type).FullName);
-                                    Group.conditionCompose.conditions.Add(item);
-                                }, t);
-                            });
-                            menu.ShowAsContext();
-                        }
-                        if (GUILayout.Button("Clear"))
-                        {
-                            Group.conditionCompose.conditions.Clear();
-                        }
-                    }
-                    int deleteIndex = -1;
-                    for (int i = 0; i < Group.conditionCompose.conditions.Count; ++i)
-                    {
-                        ATimeLineCondition condition = Group.conditionCompose.conditions[i];
-                        PropertyInfo[] pInfos = condition.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                        using (new UnityEditor.EditorGUILayout.VerticalScope(EditorStyles.helpBox))
-                        {
-                            using (new UnityEditor.EditorGUILayout.HorizontalScope())
-                            {
-                                UnityEditor.EditorGUILayout.LabelField(condition.GetType().Name);
-                                GUILayout.FlexibleSpace();
-                                if (GUILayout.Button("-", GUILayout.Width(20)))
-                                {
-                                    deleteIndex = i;
-                                }
-                            }
+                    //UnityEditor.EditorGUILayout.LabelField("Conditions:");
+                    //using (new UnityEditor.EditorGUILayout.HorizontalScope())
+                    //{
+                    //    if (GUILayout.Button("Add"))
+                    //    {
+                    //        GenericMenu menu = new GenericMenu();
+                    //        var types = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                    //                     where !(assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder)
+                    //                     from type in assembly.GetExportedTypes()
+                    //                     where type.IsSubclassOf(typeof(ATimeLineCondition))
+                    //                     select type).ToList();
+                    //        types.ForEach((t) =>
+                    //        {
+                    //            menu.AddItem(new GUIContent(t.Name), false, (type) =>
+                    //            {
+                    //                ATimeLineCondition item = (ATimeLineCondition)((Type)type).Assembly.CreateInstance(((Type)type).FullName);
+                    //                Group.conditionCompose.conditions.Add(item);
+                    //            }, t);
+                    //        });
+                    //        menu.ShowAsContext();
+                    //    }
+                    //    if (GUILayout.Button("Clear"))
+                    //    {
+                    //        Group.conditionCompose.conditions.Clear();
+                    //    }
+                    //}
+                    //int deleteIndex = -1;
+                    //for (int i = 0; i < Group.conditionCompose.conditions.Count; ++i)
+                    //{
+                    //    ATimeLineCondition condition = Group.conditionCompose.conditions[i];
+                    //    PropertyInfo[] pInfos = condition.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                    //    using (new UnityEditor.EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+                    //    {
+                    //        using (new UnityEditor.EditorGUILayout.HorizontalScope())
+                    //        {
+                    //            UnityEditor.EditorGUILayout.LabelField(condition.GetType().Name);
+                    //            GUILayout.FlexibleSpace();
+                    //            if (GUILayout.Button("-", GUILayout.Width(20)))
+                    //            {
+                    //                deleteIndex = i;
+                    //            }
+                    //        }
 
-                            using (new EditorGUI.IndentLevelScope())
-                            {
-                                foreach (var pi in pInfos)
-                                {
-                                    EditorGUILayoutUtil.PropertyInfoField(condition, pi);
-                                }
-                            }
-                        }
-                    }
-                    if (deleteIndex >= 0)
-                    {
-                        Group.conditionCompose.conditions.RemoveAt(deleteIndex);
-                    }
-                    deleteIndex = -1;
+                    //        using (new EditorGUI.IndentLevelScope())
+                    //        {
+                    //            foreach (var pi in pInfos)
+                    //            {
+                    //                EditorGUILayoutUtil.PropertyInfoField(condition, pi);
+                    //            }
+                    //        }
+                    //    }
+                    //}
+                    //if (deleteIndex >= 0)
+                    //{
+                    //    Group.conditionCompose.conditions.RemoveAt(deleteIndex);
+                    //}
+                    //deleteIndex = -1;
 
                     if (sope.changed)
                         setting.isChanged = true;
