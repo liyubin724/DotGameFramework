@@ -16,8 +16,8 @@ namespace DotEditor.Core.TimeLine
             var win = GetWindow<TimeLineWindow>();
             win.wantsMouseMove = true;
         }
-        private TimeLineEditorController editorController;
-        private TimeLineEditorSetting editorSetting;
+        private ControllerEditor editorController;
+        private EditorSetting editorSetting;
         private string configPath = "";
 
         private int toolbarHeight = 20;
@@ -25,7 +25,7 @@ namespace DotEditor.Core.TimeLine
 
         private void OnEnable()
         {
-            editorSetting = new TimeLineEditorSetting();
+            editorSetting = new EditorSetting();
             minSize = new Vector2(editorSetting.groupWidth + editorSetting.trackWidth + editorSetting.propertyWidth + 200, editorSetting.timeHeight + 300);
         }
 
@@ -72,7 +72,7 @@ namespace DotEditor.Core.TimeLine
                             TimeLineController controller = JsonDataReader.ReadController(JsonMapper.ToObject(textAsset.text));
                             if (controller != null)
                             {
-                                editorController = new TimeLineEditorController(controller, editorSetting);
+                                editorController = new ControllerEditor(controller, editorSetting);
                             }
                             configPath = filePath;
                         }
@@ -84,7 +84,7 @@ namespace DotEditor.Core.TimeLine
                     if (!string.IsNullOrEmpty(filePath))
                     {
                         TimeLineController controller = new TimeLineController();
-                        editorController = new TimeLineEditorController(controller, editorSetting);
+                        editorController = new ControllerEditor(controller, editorSetting);
                         editorSetting.isChanged = true;
                         configPath = filePath;
                     }

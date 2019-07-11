@@ -11,9 +11,9 @@ using UnityEngine;
 
 namespace DotEditor.Core.TimeLine
 {
-    public class TimeLineEditorGroup
+    public class TrackGroupEditor
     {
-        public TimeLineEditorController Controller { get; set; }
+        public ControllerEditor Controller { get; set; }
         private bool isSelected = false;
         public bool IsSelected
         {
@@ -35,8 +35,8 @@ namespace DotEditor.Core.TimeLine
                 setting.isChanged = true;
             }
         }
-        private TimeLineEditorTrack selectedTrack = null;
-        public TimeLineEditorTrack SelectedTrack
+        private TrackLineEditor selectedTrack = null;
+        public TrackLineEditor SelectedTrack
         {
             get
             {
@@ -64,7 +64,7 @@ namespace DotEditor.Core.TimeLine
             }
         }
 
-        private List<TimeLineEditorTrack> tracks = new List<TimeLineEditorTrack>();
+        private List<TrackLineEditor> tracks = new List<TrackLineEditor>();
         public float ItemHeight
         {
             get
@@ -74,13 +74,13 @@ namespace DotEditor.Core.TimeLine
         }
         
         public TrackGroup Group { get; private set; }
-        private TimeLineEditorSetting setting = null;
-        public TimeLineEditorGroup(TrackGroup tlGroup,TimeLineEditorSetting setting)
+        private EditorSetting setting = null;
+        public TrackGroupEditor(TrackGroup tlGroup,EditorSetting setting)
         {
             Group = tlGroup;
             foreach(var track in tlGroup.tracks)
             {
-                TimeLineEditorTrack tleTrack = new TimeLineEditorTrack(track,setting);
+                TrackLineEditor tleTrack = new TrackLineEditor(track,setting);
                 tleTrack.Group = this;
                 tracks.Add(tleTrack);
             }
@@ -120,7 +120,7 @@ namespace DotEditor.Core.TimeLine
                     if (GUILayout.Button("+", "ButtonLeft"))
                     {
                         TrackLine tlTrack = new TrackLine();
-                        TimeLineEditorTrack tleTrack = new TimeLineEditorTrack(tlTrack,setting);
+                        TrackLineEditor tleTrack = new TrackLineEditor(tlTrack,setting);
                         tleTrack.Group = this;
                         tracks.Add(tleTrack);
                         SelectedTrack = tleTrack;
@@ -145,7 +145,7 @@ namespace DotEditor.Core.TimeLine
                     {
                         if (GUILayout.Button("\u2191", "ButtonMid"))
                         {
-                            TimeLineEditorTrack preTrack = tracks[trackIndex - 1];
+                            TrackLineEditor preTrack = tracks[trackIndex - 1];
                             tracks[trackIndex - 1] = SelectedTrack;
                             tracks[trackIndex] = preTrack;
 
@@ -156,7 +156,7 @@ namespace DotEditor.Core.TimeLine
                     {
                         if (GUILayout.Button("\u2193", "ButtonRight"))
                         {
-                            TimeLineEditorTrack nextTrack = tracks[trackIndex + 1];
+                            TrackLineEditor nextTrack = tracks[trackIndex + 1];
                             tracks[trackIndex + 1] = SelectedTrack;
                             tracks[trackIndex] = nextTrack;
 
@@ -261,7 +261,7 @@ namespace DotEditor.Core.TimeLine
             }
         }
         
-        public void OnTrackSelected(TimeLineEditorTrack track)
+        public void OnTrackSelected(TrackLineEditor track)
         {
             GUI.FocusControl("");
 

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace DotEditor.Core.TimeLine
 {
-    public class TimeLineEditorController
+    public class ControllerEditor
     {
         public float TimeLength
         {
@@ -36,10 +36,10 @@ namespace DotEditor.Core.TimeLine
         public Rect ItemClipRect { get; private set; }
         public TimeLineController Controller { get ; private set; }
         
-        private TimeLineEditorSetting setting = null;
-        private List<TimeLineEditorGroup> groups = new List<TimeLineEditorGroup>();
-        private TimeLineEditorGroup selectedGroup = null;
-        public TimeLineEditorGroup SelectedGroup
+        private EditorSetting setting = null;
+        private List<TrackGroupEditor> groups = new List<TrackGroupEditor>();
+        private TrackGroupEditor selectedGroup = null;
+        public TrackGroupEditor SelectedGroup
         {
             get
             {
@@ -57,13 +57,13 @@ namespace DotEditor.Core.TimeLine
             }
         }
 
-        public TimeLineEditorController(TimeLineController tlController,TimeLineEditorSetting setting)
+        public ControllerEditor(TimeLineController tlController,EditorSetting setting)
         {
             Controller = tlController;
             this.setting = setting;
             tlController.groups.ForEach((group) =>
             {
-                var tleGroup = new TimeLineEditorGroup(group,setting);
+                var tleGroup = new TrackGroupEditor(group,setting);
                 tleGroup.Controller = this;
                 groups.Add(tleGroup);
             });
@@ -215,7 +215,7 @@ namespace DotEditor.Core.TimeLine
                 if (GUILayout.Button("+", "ButtonLeft"))
                 {
                     TrackGroup tlGroup = new TrackGroup();
-                    TimeLineEditorGroup tleGroup = new TimeLineEditorGroup(tlGroup,setting);
+                    TrackGroupEditor tleGroup = new TrackGroupEditor(tlGroup,setting);
                     tleGroup.Controller = this;
                     groups.Add(tleGroup);
 
@@ -240,7 +240,7 @@ namespace DotEditor.Core.TimeLine
                 {
                     if (GUILayout.Button("\u2191", "ButtonMid"))
                     {
-                        TimeLineEditorGroup preGroup = groups[groupIndex - 1];
+                        TrackGroupEditor preGroup = groups[groupIndex - 1];
                         groups[groupIndex - 1] = selectedGroup;
                         groups[groupIndex] = preGroup;
 
@@ -251,7 +251,7 @@ namespace DotEditor.Core.TimeLine
                 {
                     if (GUILayout.Button("\u2193", "ButtonRight"))
                     {
-                        TimeLineEditorGroup nextGroup = groups[groupIndex + 1];
+                        TrackGroupEditor nextGroup = groups[groupIndex + 1];
                         groups[groupIndex + 1] = selectedGroup;
                         groups[groupIndex] = nextGroup;
 

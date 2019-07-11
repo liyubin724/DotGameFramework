@@ -2,7 +2,7 @@
 
 namespace DotEditor.Core.TimeLine
 {
-    public class TimeLineEditorSetting
+    public class EditorSetting
     {
         public float timeStep = 0.1f;
         public int pixelForSecond = 100;

@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace DotEditor.Core.TimeLine
 {
-    public class TimeLineEditorItem
+    public class ItemEditor
     {
-        public TimeLineEditorTrack Track { get; set; }
+        public TrackLineEditor Track { get; set; }
         private bool isSelected = false;
         public bool IsSelected
         {
@@ -33,8 +33,8 @@ namespace DotEditor.Core.TimeLine
         }
 
         public AItem Item { get; private set; }
-        private TimeLineEditorSetting setting = null;
-        public TimeLineEditorItem(AItem tlItem,TimeLineEditorSetting setting)
+        private EditorSetting setting = null;
+        public ItemEditor(AItem tlItem,EditorSetting setting)
         {
             Item = tlItem;
             this.setting = setting;

@@ -11,9 +11,9 @@ using static UnityEditor.GenericMenu;
 
 namespace DotEditor.Core.TimeLine
 {
-    public class TimeLineEditorTrack
+    public class TrackLineEditor
     {
-        public TimeLineEditorGroup Group { get; set; }
+        public TrackGroupEditor Group { get; set; }
         
         private bool isSelected = false;
         public bool IsSelected
@@ -39,8 +39,8 @@ namespace DotEditor.Core.TimeLine
                 setting.isChanged = true;
             }
         }
-        private TimeLineEditorItem selectedItem = null;
-        public TimeLineEditorItem SelectedItem
+        private ItemEditor selectedItem = null;
+        public ItemEditor SelectedItem
         {
             get
             {
@@ -62,15 +62,15 @@ namespace DotEditor.Core.TimeLine
         }
 
         public TrackLine Track { get; private set; }
-        private TimeLineEditorSetting setting = null;
-        private List<TimeLineEditorItem> items = new List<TimeLineEditorItem>();
-        public TimeLineEditorTrack(TrackLine tlTrack,TimeLineEditorSetting setting)
+        private EditorSetting setting = null;
+        private List<ItemEditor> items = new List<ItemEditor>();
+        public TrackLineEditor(TrackLine tlTrack,EditorSetting setting)
         {
             Track = tlTrack;
             this.setting = setting;
             foreach(var item in tlTrack.items)
             {
-                TimeLineEditorItem tleItem = new TimeLineEditorItem(item,setting);
+                ItemEditor tleItem = new ItemEditor(item,setting);
                 tleItem.Track = this;
                 items.Add(tleItem);
             }
@@ -137,7 +137,7 @@ namespace DotEditor.Core.TimeLine
                 {
                     AItem item = (AItem)((Type)type).Assembly.CreateInstance(((Type)type).FullName);
                     item.FireTime = fireTime;
-                    TimeLineEditorItem eItem = new TimeLineEditorItem(item, setting);
+                    ItemEditor eItem = new ItemEditor(item, setting);
                     eItem.Track = this;
                     items.Add(eItem);
 
@@ -170,7 +170,7 @@ namespace DotEditor.Core.TimeLine
             }
         }
         
-        public void OnItemSelected(TimeLineEditorItem item)
+        public void OnItemSelected(ItemEditor item)
         {
             GUI.FocusControl("");
 
@@ -179,7 +179,7 @@ namespace DotEditor.Core.TimeLine
 
         }
 
-        public void OnItemDelete(TimeLineEditorItem item)
+        public void OnItemDelete(ItemEditor item)
         {
             items.Remove(item);
             if(SelectedItem == item)
