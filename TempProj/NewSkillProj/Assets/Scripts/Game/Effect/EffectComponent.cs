@@ -1,6 +1,6 @@
 ﻿using Entitas;
 
-public enum EffectType
+public enum EffectUsedEnv
 {
     None,
     BindNode,

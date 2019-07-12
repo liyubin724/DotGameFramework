@@ -58,7 +58,7 @@ public class EntityFactroy : Service
         PlayerView playerView = new PlayerView($"Player_{playerEntity.uniqueID.value}",viewRootTransfrom);
         playerEntity.AddVirtualView(playerView);
         playerView.InitializeView(CachedContexts, services, playerEntity);
-        playerEntity.AddAddSkeleton("Character/Capsule");
+        playerEntity.AddAddSkeleton("Character/PS_AR_Aurora_final");
 
         playerEntity.AddPosition(Vector3.zero);
 
@@ -68,7 +68,7 @@ public class EntityFactroy : Service
     public GameEntity CreateSkillEntity(GameEntity entity,int skillConfigID)
     {
         GameEntity skillEntity = CreateChildrenEntity(entity);
-        skillEntity.isSkill = true;
+        skillEntity.isNewSkill = true;
         skillEntity.AddConfigID(skillConfigID);
 
         SkillConfigData data = services.dataService.GetSkillData(skillConfigID);
@@ -104,7 +104,7 @@ public class EntityFactroy : Service
         return effectEntity;
     }
 
-    public GameEntity CreateEffectEntity(GameEntity entity,int effectConfigID,EffectType bindType,BindNodeType nodeType,int nodeIndex)
+    public GameEntity CreateEffectEntity(GameEntity entity,int effectConfigID,EffectUsedEnv bindType,BindNodeType nodeType,int nodeIndex)
     {
         GameEntity effectEntity = CreateChildrenEntity(entity);
         effectEntity.isEffect = true;

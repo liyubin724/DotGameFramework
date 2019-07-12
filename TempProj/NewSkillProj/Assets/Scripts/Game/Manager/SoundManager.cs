@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class SoundManager : Singleton<SoundManager>
+public class SoundManager : Dot.Core.Utill.Singleton<SoundManager>
 {
     private Stack<AudioSource> unusedCamereASStack = new Stack<AudioSource>();
     private Camera mainCamera = null;

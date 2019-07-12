@@ -23,9 +23,9 @@ public class MoverSystem : IExecuteSystem
         {
             if(e.isMover)
             {
-                if(e.hasMotionType)
+                if(e.hasMotionCurveType)
                 {
-                    if(e.motionType.value == MotionType.Linear)
+                    if(e.motionCurveType.value == MotionCurveType.Linear)
                     {
                         float curSpeed = e.hasSpeed ? e.speed.value : 0.0f;
                         float curAcc = e.hasAcceleration ? e.acceleration.value : 0.0f;

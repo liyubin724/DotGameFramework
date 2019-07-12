@@ -1,7 +1,7 @@
 ﻿using Entitas;
 
 [Game]
-public class SkillComponent : IComponent 
+public class NewSkillComponent : IComponent 
 {
 
 }	

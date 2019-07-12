@@ -3,7 +3,7 @@
 [Game]
 public class EffectBindComponent : IComponent 
 {
-    public EffectType bindType = EffectType.BindNode;
+    public EffectUsedEnv bindType = EffectUsedEnv.BindNode;
     public BindNodeType nodeType = BindNodeType.Main;
     public int bindIndex = -1;
 }

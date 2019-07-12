@@ -1,12 +1,12 @@
 ﻿using Entitas;
 
 [Game]
-public class MotionTypeComponent : IComponent 
+public class MotionCurveTypeComponent : IComponent 
 {
-    public MotionType value = MotionType.None;
+    public MotionCurveType value = MotionCurveType.None;
 }	
 
-public enum MotionType
+public enum MotionCurveType
 {
     None,
     Linear,
