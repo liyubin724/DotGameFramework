@@ -14,15 +14,15 @@ namespace Game.TimeLine
             var entities = contexts.game.GetEntitiesWithChildOf((entity as GameEntity).uniqueID.value);
             foreach (var e in entities)
             {
-                if (e.isSound && e.hasFCID && e.fCID.value == SoundIndex)
-                {
-                    e.isMarkDestroy = true;
-                    //TODO:Stop Sound
-#if DTL_DEBUG
-                services.logService.Log(DebugLogType.Info, "DTLStopSoundEvent::DoEnter->Stop Sound");
-#endif
-                    break;
-                }
+//                if (e.isSound && e.hasFCID && e.fCID.value == SoundIndex)
+//                {
+//                    e.isMarkDestroy = true;
+//                    //TODO:Stop Sound
+//#if DTL_DEBUG
+//                services.logService.Log(DebugLogType.Info, "DTLStopSoundEvent::DoEnter->Stop Sound");
+//#endif
+//                    break;
+//                }
             }
         }
     }

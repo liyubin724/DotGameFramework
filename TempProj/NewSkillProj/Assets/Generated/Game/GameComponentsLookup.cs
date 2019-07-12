@@ -20,29 +20,28 @@ public static class GameComponentsLookup {
     public const int Effect = 9;
     public const int Emit = 10;
     public const int EmitSkill = 11;
-    public const int FCID = 12;
-    public const int MainPlayer = 13;
-    public const int MarkDestroy = 14;
-    public const int MarkDestroyListener = 15;
-    public const int MotionType = 16;
-    public const int Mover = 17;
-    public const int Name = 18;
+    public const int MainPlayer = 12;
+    public const int MarkDestroy = 13;
+    public const int MarkDestroyListener = 14;
+    public const int MotionCurveType = 15;
+    public const int Mover = 16;
+    public const int Name = 17;
+    public const int NewSkill = 18;
     public const int OwnerID = 19;
     public const int Player = 20;
     public const int Position = 21;
     public const int PositionListener = 22;
-    public const int Skill = 23;
-    public const int SkillEmit = 24;
-    public const int Sound = 25;
-    public const int Speed = 26;
-    public const int Time = 27;
-    public const int TimeDecrease = 28;
-    public const int TimeLineController = 29;
-    public const int TimeLineID = 30;
-    public const int UniqueID = 31;
-    public const int VirtualView = 32;
+    public const int SkillEmit = 23;
+    public const int Sound = 24;
+    public const int Speed = 25;
+    public const int Time = 26;
+    public const int TimeDecrease = 27;
+    public const int TimeLineController = 28;
+    public const int TimeLineID = 29;
+    public const int UniqueID = 30;
+    public const int VirtualView = 31;
 
-    public const int TotalComponents = 33;
+    public const int TotalComponents = 32;
 
     public static readonly string[] componentNames = {
         "Acceleration",
@@ -57,18 +56,17 @@ public static class GameComponentsLookup {
         "Effect",
         "Emit",
         "EmitSkill",
-        "FCID",
         "MainPlayer",
         "MarkDestroy",
         "MarkDestroyListener",
-        "MotionType",
+        "MotionCurveType",
         "Mover",
         "Name",
+        "NewSkill",
         "OwnerID",
         "Player",
         "Position",
         "PositionListener",
-        "Skill",
         "SkillEmit",
         "Sound",
         "Speed",
@@ -93,18 +91,17 @@ public static class GameComponentsLookup {
         typeof(EffectComponent),
         typeof(EmitComponent),
         typeof(EmitSkillComponent),
-        typeof(FCIDComponent),
         typeof(MainPlayerComponent),
         typeof(MarkDestroyComponent),
         typeof(MarkDestroyListenerComponent),
-        typeof(MotionTypeComponent),
+        typeof(MotionCurveTypeComponent),
         typeof(MoverComponent),
         typeof(NameComponent),
+        typeof(NewSkillComponent),
         typeof(OwnerIDComponent),
         typeof(PlayerComponent),
         typeof(PositionComponent),
         typeof(PositionListenerComponent),
-        typeof(SkillComponent),
         typeof(SkillEmitComponent),
         typeof(SoundComponent),
         typeof(SpeedComponent),

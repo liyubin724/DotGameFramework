@@ -11,7 +11,7 @@ public partial class GameEntity {
     public EffectBindComponent effectBind { get { return (EffectBindComponent)GetComponent(GameComponentsLookup.EffectBind); } }
     public bool hasEffectBind { get { return HasComponent(GameComponentsLookup.EffectBind); } }
 
-    public void AddEffectBind(EffectType newBindType, BindNodeType newNodeType, int newBindIndex) {
+    public void AddEffectBind(EffectUsedEnv newBindType, BindNodeType newNodeType, int newBindIndex) {
         var index = GameComponentsLookup.EffectBind;
         var component = (EffectBindComponent)CreateComponent(index, typeof(EffectBindComponent));
         component.bindType = newBindType;
@@ -20,7 +20,7 @@ public partial class GameEntity {
         AddComponent(index, component);
     }
 
-    public void ReplaceEffectBind(EffectType newBindType, BindNodeType newNodeType, int newBindIndex) {
+    public void ReplaceEffectBind(EffectUsedEnv newBindType, BindNodeType newNodeType, int newBindIndex) {
         var index = GameComponentsLookup.EffectBind;
         var component = (EffectBindComponent)CreateComponent(index, typeof(EffectBindComponent));
         component.bindType = newBindType;

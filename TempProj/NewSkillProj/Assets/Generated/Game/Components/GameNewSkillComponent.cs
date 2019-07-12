@@ -8,18 +8,18 @@
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly SkillComponent skillComponent = new SkillComponent();
+    static readonly NewSkillComponent newSkillComponent = new NewSkillComponent();
 
-    public bool isSkill {
-        get { return HasComponent(GameComponentsLookup.Skill); }
+    public bool isNewSkill {
+        get { return HasComponent(GameComponentsLookup.NewSkill); }
         set {
-            if (value != isSkill) {
-                var index = GameComponentsLookup.Skill;
+            if (value != isNewSkill) {
+                var index = GameComponentsLookup.NewSkill;
                 if (value) {
                     var componentPool = GetComponentPool(index);
                     var component = componentPool.Count > 0
                             ? componentPool.Pop()
-                            : skillComponent;
+                            : newSkillComponent;
 
                     AddComponent(index, component);
                 } else {
@@ -40,17 +40,17 @@ public partial class GameEntity {
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherSkill;
+    static Entitas.IMatcher<GameEntity> _matcherNewSkill;
 
-    public static Entitas.IMatcher<GameEntity> Skill {
+    public static Entitas.IMatcher<GameEntity> NewSkill {
         get {
-            if (_matcherSkill == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Skill);
+            if (_matcherNewSkill == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.NewSkill);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherSkill = matcher;
+                _matcherNewSkill = matcher;
             }
 
-            return _matcherSkill;
+            return _matcherNewSkill;
         }
     }
 }
