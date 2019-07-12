@@ -10,7 +10,7 @@ public static class GameComponentsLookup {
 
     public const int Acceleration = 0;
     public const int AddSkeleton = 1;
-    public const int Asset = 2;
+    public const int BindNodeEffect = 2;
     public const int Bullet = 3;
     public const int ChildOf = 4;
     public const int ConfigID = 5;
@@ -18,35 +18,33 @@ public static class GameComponentsLookup {
     public const int DirectionListener = 7;
     public const int EffectBind = 8;
     public const int Effect = 9;
-    public const int Emit = 10;
-    public const int EmitSkill = 11;
-    public const int MainPlayer = 12;
-    public const int MarkDestroy = 13;
-    public const int MarkDestroyListener = 14;
-    public const int MotionCurveType = 15;
-    public const int Mover = 16;
-    public const int Name = 17;
-    public const int NewSkill = 18;
-    public const int OwnerID = 19;
-    public const int Player = 20;
-    public const int Position = 21;
-    public const int PositionListener = 22;
-    public const int SkillEmit = 23;
-    public const int Sound = 24;
-    public const int Speed = 25;
-    public const int Time = 26;
-    public const int TimeDecrease = 27;
-    public const int TimeLineController = 28;
-    public const int TimeLineID = 29;
-    public const int UniqueID = 30;
-    public const int VirtualView = 31;
+    public const int EmitSkill = 10;
+    public const int MainPlayer = 11;
+    public const int MarkDestroy = 12;
+    public const int MarkDestroyListener = 13;
+    public const int MotionCurveType = 14;
+    public const int Mover = 15;
+    public const int Name = 16;
+    public const int NewSkill = 17;
+    public const int OwnerID = 18;
+    public const int Player = 19;
+    public const int Position = 20;
+    public const int PositionListener = 21;
+    public const int Sound = 22;
+    public const int Speed = 23;
+    public const int Time = 24;
+    public const int TimeDecrease = 25;
+    public const int TimeLineController = 26;
+    public const int TimeLineID = 27;
+    public const int UniqueID = 28;
+    public const int VirtualView = 29;
 
-    public const int TotalComponents = 32;
+    public const int TotalComponents = 30;
 
     public static readonly string[] componentNames = {
         "Acceleration",
         "AddSkeleton",
-        "Asset",
+        "BindNodeEffect",
         "Bullet",
         "ChildOf",
         "ConfigID",
@@ -54,7 +52,6 @@ public static class GameComponentsLookup {
         "DirectionListener",
         "EffectBind",
         "Effect",
-        "Emit",
         "EmitSkill",
         "MainPlayer",
         "MarkDestroy",
@@ -67,7 +64,6 @@ public static class GameComponentsLookup {
         "Player",
         "Position",
         "PositionListener",
-        "SkillEmit",
         "Sound",
         "Speed",
         "Time",
@@ -81,7 +77,7 @@ public static class GameComponentsLookup {
     public static readonly System.Type[] componentTypes = {
         typeof(AccelerationComponent),
         typeof(AddSkeletonComponent),
-        typeof(AssetComponent),
+        typeof(BindNodeEffectComponent),
         typeof(BulletComponent),
         typeof(ChildOfComponent),
         typeof(ConfigIDComponent),
@@ -89,7 +85,6 @@ public static class GameComponentsLookup {
         typeof(DirectionListenerComponent),
         typeof(EffectBindComponent),
         typeof(EffectComponent),
-        typeof(EmitComponent),
         typeof(EmitSkillComponent),
         typeof(MainPlayerComponent),
         typeof(MarkDestroyComponent),
@@ -102,7 +97,6 @@ public static class GameComponentsLookup {
         typeof(PlayerComponent),
         typeof(PositionComponent),
         typeof(PositionListenerComponent),
-        typeof(SkillEmitComponent),
         typeof(SoundComponent),
         typeof(SpeedComponent),
         typeof(TimeComponent),

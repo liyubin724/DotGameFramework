@@ -37,14 +37,6 @@ public class EntityFactroy : Service
         GameEntity childEntity = CreateEntity();
         childEntity.AddChildOf(entity.uniqueID.value);
 
-        if(entity.hasOwnerID)
-        {
-            childEntity.ReplaceOwnerID(entity.ownerID.value);
-        }else
-        {
-            childEntity.ReplaceOwnerID(entity.uniqueID.value);
-        }
-
         return childEntity;
     }
 
@@ -56,20 +48,21 @@ public class EntityFactroy : Service
         playerEntity.AddConfigID(0);
 
         PlayerView playerView = new PlayerView($"Player_{playerEntity.uniqueID.value}",viewRootTransfrom);
-        playerEntity.AddVirtualView(playerView);
         playerView.InitializeView(CachedContexts, services, playerEntity);
-        playerEntity.AddAddSkeleton("Character/PS_AR_Aurora_final");
+        playerEntity.AddVirtualView(playerView);
 
+        playerEntity.AddAddSkeleton("Character/PS_AR_Aurora_final");
         playerEntity.AddPosition(Vector3.zero);
 
         return playerEntity;
     }
 
-    public GameEntity CreateSkillEntity(GameEntity entity,int skillConfigID)
+    public GameEntity CreateSkillEntity(GameEntity playerEntity,int skillConfigID)
     {
-        GameEntity skillEntity = CreateChildrenEntity(entity);
+        GameEntity skillEntity = CreateChildrenEntity(playerEntity);
         skillEntity.isNewSkill = true;
         skillEntity.AddConfigID(skillConfigID);
+        skillEntity.AddOwnerID(playerEntity.uniqueID.value);
 
         SkillConfigData data = services.dataService.GetSkillData(skillConfigID);
         JsonData jsonData = JsonMapper.ToObject(Resources.Load<TextAsset>(data.timeLineConfig).text);
@@ -89,11 +82,14 @@ public class EntityFactroy : Service
 
         return timeEntity;
     }
+
     public GameEntity CreateEffectEntity(GameEntity entity, int effectConfigID)
     {
         GameEntity effectEntity = CreateChildrenEntity(entity);
         effectEntity.isEffect = true;
         effectEntity.AddConfigID(effectConfigID);
+        effectEntity.AddOwnerID(entity.ownerID.value);
+
         EffectView view = new EffectView($"Effect_{effectEntity.uniqueID.value}");
         effectEntity.AddVirtualView(view);
         view.InitializeView(CachedContexts, services, effectEntity);
@@ -137,6 +133,7 @@ public class EntityFactroy : Service
         GameEntity bulletEntity = CreateChildrenEntity(entity);
         bulletEntity.isBullet = true;
         bulletEntity.AddConfigID(bulletConfigID);
+        bulletEntity.AddOwnerID(entity.ownerID.value);
 
         BulletView view = new BulletView($"Bullet_{bulletEntity.uniqueID.value}",viewRootTransfrom);
         view.InitializeView(CachedContexts, services, bulletEntity);

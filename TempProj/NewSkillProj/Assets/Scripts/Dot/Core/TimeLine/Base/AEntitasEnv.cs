@@ -8,6 +8,11 @@ namespace Dot.Core.TimeLine.Base
         protected Services services = null;
         protected IEntity entity = null;
 
+        protected GameEntity GetGameEntity()
+        {
+            return (GameEntity)entity;
+        }
+
         public virtual void Initialize(Contexts contexts, Services services, IEntity entity)
         {
             this.contexts = contexts;

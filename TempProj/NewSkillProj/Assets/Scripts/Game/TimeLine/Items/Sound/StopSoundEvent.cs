@@ -6,7 +6,7 @@ namespace Game.TimeLine
     [TimeLineMark("Event/Sound", "Stop Sound", TimeLineExportPlatform.Client)]
     public class StopSoundEvent : AEventItem
     {
-        [ItemDependOnAttribute(typeof(PlaySoundEvent))]
+        [ItemDependOn(typeof(PlaySoundEvent))]
         public int SoundIndex { get; set; }
 
         public override void Trigger()
