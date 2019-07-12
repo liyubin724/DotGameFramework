@@ -1,6 +1,6 @@
 ﻿namespace Dot.Core.TimeLine.Base.Condition
 {
-    [TimeLineMark("Condition/Sequence","Sequence",TimeLineExportPlatform.ALL)]
+    [TimeLineMark("Condition","Sequence",TimeLineExportPlatform.ALL)]
     public sealed class SequenceCondition : AComposeCondition
     {
         public override bool Evaluate()

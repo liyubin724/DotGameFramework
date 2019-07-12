@@ -44,7 +44,7 @@ namespace DotEditor.Core.TimeLine
             }
         }
 
-        public Type[] conditionTypes = null;
+        private Type[] conditionTypes = null;
         public Type[] ConditionTypes
         {
             get

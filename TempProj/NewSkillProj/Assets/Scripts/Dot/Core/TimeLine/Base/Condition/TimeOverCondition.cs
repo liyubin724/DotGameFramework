@@ -1,6 +1,6 @@
 ﻿namespace Dot.Core.TimeLine.Base.Condition
 {
-    [TimeLineMark("Condition/Time Over","Time Over",TimeLineExportPlatform.ALL)]
+    [TimeLineMark("Condition/Time","Time Over",TimeLineExportPlatform.ALL)]
     public class TimeOverCondition : ACondition
     {
         public float TotalTime { get; set; }

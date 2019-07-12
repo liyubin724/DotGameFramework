@@ -1,7 +1,10 @@
-﻿using Dot.Core.TimeLine.Base.Group;
+﻿using Dot.Core.TimeLine.Base;
+using Dot.Core.TimeLine.Base.Condition;
+using Dot.Core.TimeLine.Base.Group;
 using Dot.Core.TimeLine.Base.Tracks;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -183,13 +186,23 @@ namespace DotEditor.Core.TimeLine
                 EditorGUILayout.LabelField("Conditions:");
                 using (new EditorGUILayout.HorizontalScope())
                 {
-                    if (GUILayout.Button("Begin Condition", "LargeButtonLeft"))
+                    if(GUILayout.Button("Begin Condition"))
                     {
-                        TimeLineConditionWindow.ShowWindow(Group.beginCondition, setting);
+                        ConditionEditor.ShowWin(Group.beginCondition, setting,(condition)=>
+                        {
+                            Group.beginCondition = condition;
+                        });
                     }
-                    if (GUILayout.Button("End Condition", "LargeButtonRight"))
+                    if (GUILayout.Button("End Condition"))
                     {
-                        TimeLineConditionWindow.ShowWindow(Group.endCondition, setting);
+                        ConditionEditor.ShowWin(Group.endCondition, setting, (condition) =>
+                        {
+                            ParallelCondition pc = (ParallelCondition)condition;
+                            if(pc!=null)
+                            {
+                                Group.endCondition = pc;
+                            }
+                        });
                     }
                 }
             }
@@ -199,6 +212,29 @@ namespace DotEditor.Core.TimeLine
                 EditorGUILayout.Space();
                 SelectedTrack.DrawProperty();
             }
+        }
+
+        private int conditionSelectedIndex = 0;
+        private ACondition DrawConditionProperty(ACondition conditon)
+        {
+            if(conditon == null)
+            {
+                if(GUILayout.Button("Create", "DropDownButton"))
+                {
+                    
+                }
+            }else
+            {
+                if(conditon.GetType() == typeof(AComposeCondition))
+                {
+
+                }else
+                {
+
+                }
+            }
+
+            return conditon;
         }
 
         public void DrawTrack(Rect clipRect)
