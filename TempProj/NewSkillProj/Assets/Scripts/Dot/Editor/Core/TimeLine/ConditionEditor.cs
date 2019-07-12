@@ -49,10 +49,10 @@ namespace DotEditor.Core.TimeLine
 
     public class ConditionEditor : EditorWindow
     {
-        private static readonly float INNER_WIN_WIDTH = 120;
-        private static readonly float INNER_WIN_HEIGHT = 150;
+        private static readonly float INNER_WIN_WIDTH = 150;
+        private static readonly float INNER_WIN_HEIGHT = 180;
         private static readonly float INNER_WIN_WIDTH_SPACE = 20;
-        private static readonly float INNER_WIN_HEIGHT_SPACE = 60;
+        private static readonly float INNER_WIN_HEIGHT_SPACE = 40;
 
         private ACondition condition;
         private EditorSetting setting;
@@ -84,6 +84,7 @@ namespace DotEditor.Core.TimeLine
         private Vector2 scrollPos = Vector2.zero;
         private void OnGUI()
         {
+            EditorGUIUtility.labelWidth = 80;
             if (condition == null && Event.current.button == 1 && Event.current.type == EventType.MouseUp)
             {
                 CreateNewMenu(null);
@@ -130,9 +131,12 @@ namespace DotEditor.Core.TimeLine
 
             float x = colIndex * (INNER_WIN_WIDTH + INNER_WIN_WIDTH_SPACE);
             float y = rowIndex * (INNER_WIN_HEIGHT + INNER_WIN_HEIGHT_SPACE);
-            data.rect = GUILayout.Window(winID, new Rect(x, y, INNER_WIN_WIDTH, INNER_WIN_HEIGHT), (id) =>
+            data.rect = GUI.Window(winID, new Rect(x, y, INNER_WIN_WIDTH, INNER_WIN_HEIGHT), (id) =>
             {
-                DrawInnerWinContent(data);
+                using (new GUILayout.AreaScope(new Rect(2, 20, INNER_WIN_WIDTH - 4, INNER_WIN_HEIGHT - 20)))
+                {
+                    DrawInnerWinContent(data);
+                }
                 GUI.DragWindow();
             }, new GUIContent("" + winID));
 
@@ -194,7 +198,7 @@ namespace DotEditor.Core.TimeLine
             }
             else
             {
-                PropertyInfo[] pInfos = data.condition.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                PropertyInfo[] pInfos = data.condition.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
                 foreach (var pi in pInfos)
                 {
                     EditorGUILayoutUtil.PropertyInfoField(data.condition, pi);
