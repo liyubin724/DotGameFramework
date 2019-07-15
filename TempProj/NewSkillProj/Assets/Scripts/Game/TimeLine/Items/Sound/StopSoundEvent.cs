@@ -1,5 +1,6 @@
 ﻿using Dot.Core.TimeLine.Base;
 using Dot.Core.TimeLine.Base.Item;
+using Entitas;
 
 namespace Game.TimeLine
 {
@@ -11,18 +12,14 @@ namespace Game.TimeLine
 
         public override void Trigger()
         {
-            var entities = contexts.game.GetEntitiesWithChildOf((entity as GameEntity).uniqueID.value);
-            foreach (var e in entities)
+            IGroup<GameEntity> soundGroup = contexts.game.GetGroup(GameMatcher.AllOf(GameMatcher.Sound, GameMatcher.TimeLineID));
+            foreach(var e in soundGroup.GetEntities())
             {
-//                if (e.isSound && e.hasFCID && e.fCID.value == SoundIndex)
-//                {
-//                    e.isMarkDestroy = true;
-//                    //TODO:Stop Sound
-//#if DTL_DEBUG
-//                services.logService.Log(DebugLogType.Info, "DTLStopSoundEvent::DoEnter->Stop Sound");
-//#endif
-//                    break;
-//                }
+                if(e.timeLineID.value == SoundIndex)
+                {
+                    e.isMarkDestroy = true;
+                    break;
+                }
             }
         }
     }

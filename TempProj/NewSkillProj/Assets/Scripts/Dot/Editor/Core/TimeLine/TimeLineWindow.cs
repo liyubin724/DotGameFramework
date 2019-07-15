@@ -14,6 +14,7 @@ namespace DotEditor.Core.TimeLine
         private static void OpenWindow()
         {
             var win = GetWindow<TimeLineWindow>();
+            win.titleContent = new GUIContent("Time Line");
             win.wantsMouseMove = true;
         }
         private ControllerEditor editorController;

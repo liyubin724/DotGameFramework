@@ -9,7 +9,11 @@ namespace Game.TimeLine
         public float Speed { get; set; }
         public override void Trigger()
         {
-            (entity as GameEntity).ReplaceSpeed(Speed);
+            GetGameEntity().ReplaceSpeed(Speed);
+
+#if TIMELINE_DEBUG
+            services.logService.Log(DebugLogType.Info, $"ChangeSpeedEvent::Trigger->Change speed.value = {Speed}");
+#endif
         }
     }
 }

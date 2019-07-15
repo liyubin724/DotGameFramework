@@ -5,7 +5,7 @@ using Entitas;
 namespace Game.TimeLine
 {
     [TimeLineMark("Event/Effect", "Remove Bind Node Effect", TimeLineExportPlatform.Client)]
-    public class RemoveBindNodeEffectEvent : AEventItem
+    public class RemoveEffectByBindNodeEvent : AEventItem
     {
         public int NodeIndex { get; set; } = 0;
         public BindNodeType NodeType { get; set; } = BindNodeType.Main;
@@ -21,7 +21,9 @@ namespace Game.TimeLine
 #endif
             foreach(var entity in entityGroup.GetEntities())
             {
-                if(entity.configID.value == ConfigID && entity.bindNodeEffect.nodeIndex == NodeIndex && entity.bindNodeEffect.nodeType == NodeType)
+                if(entity.configID.value == ConfigID && 
+                    entity.bindNodeEffect.nodeIndex == NodeIndex && 
+                    entity.bindNodeEffect.nodeType == NodeType)
                 {
                     entity.isMarkDestroy = true;
 #if TIMELINE_DEBUG
@@ -34,7 +36,7 @@ namespace Game.TimeLine
 #if TIMELINE_DEBUG
             if(isFound)
             {
-                services.logService.Log(DebugLogType.Error, $"RemoveBindNodeEffectEvent::Trigger->Remove Effect Success. configId = {ConfigID}, index = {NodeIndex},type = {NodeType}");
+                services.logService.Log(DebugLogType.Info, $"RemoveBindNodeEffectEvent::Trigger->Remove Effect Success. configId = {ConfigID}, index = {NodeIndex},type = {NodeType}");
             }
             else
             {

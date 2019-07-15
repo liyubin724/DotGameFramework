@@ -9,9 +9,9 @@ namespace Game.TimeLine
         public float Acceleration { get; set; }
         public override void Trigger()
         {
-            (entity as GameEntity).ReplaceAcceleration(Acceleration);
-#if DTL_DEBUG
-            services.logService.Log(DebugLogType.Info, "DTLChangeAccelerationEvent::Trigger->Changed Acc");
+            GetGameEntity().ReplaceAcceleration(Acceleration);
+#if TIMELINE_DEBUG
+            services.logService.Log(DebugLogType.Info, $"ChangeAccelerationEvent::Trigger->Changed Acc.value = {Acceleration}");
 #endif
         }
     }

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 
-public class PackRootView : VirtualView,IMarkDestroyListener,IPositionListener,ISkeletonView,INodeBehaviourView
+public class PackRootView : VirtualView,
+    IMarkDestroyListener,IPositionListener,
+    ISkeletonView,INodeBehaviourView
 {
     private GameObject skeletonGameObject = null;
     private NodeBehaviour nodeBehaviour = null;
@@ -86,7 +88,7 @@ public class PackRootView : VirtualView,IMarkDestroyListener,IPositionListener,I
         nodeBehaviour = null;
     }
 
-    public NodeBehaviour GetNodeBehaviour()
+    protected NodeBehaviour GetNodeBehaviour()
     {
         if(nodeBehaviour == null && skeletonGameObject!=null)
         {
@@ -111,6 +113,7 @@ public class PackRootView : VirtualView,IMarkDestroyListener,IPositionListener,I
         return GetNodeBehaviour().GetBindNode(nodeType)[nodeIndex];
     }
 
+    public int GetNodeBindCount(BindNodeType nodeType)=> GetNodeBehaviour() == null ? 0 : GetNodeBehaviour().GetBindNodeCount(nodeType);
     protected GameEntity ViewEntity
     {
         get

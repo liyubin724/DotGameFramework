@@ -4,7 +4,7 @@ using Dot.Core.TimeLine.Base.Item;
 namespace Game.TimeLine
 {
     [TimeLineMark("Event/Effect","Add Bind Node Effect",TimeLineExportPlatform.Client)]
-    public class AddBindNodeEffectEvent : AEventItem
+    public class AddEffectByBindNodeEvent : AEventItem
     {
         public int NodeIndex { get; set; } = 0;
         public BindNodeType NodeType { get; set; } = BindNodeType.Main;
@@ -26,6 +26,7 @@ namespace Game.TimeLine
             }
 #endif
             GameEntity effectEntity = services.entityFactroy.CreateEffectEntity(skillEntity, ConfigID);
+            effectEntity.AddTimeLineID(Index);
             effectEntity.AddBindNodeEffect(NodeIndex, NodeType);
             EffectView effectView = effectEntity.virtualView.value as EffectView;
             effectView.RootTransform.SetParent(nodeData.nodeTransform, false);

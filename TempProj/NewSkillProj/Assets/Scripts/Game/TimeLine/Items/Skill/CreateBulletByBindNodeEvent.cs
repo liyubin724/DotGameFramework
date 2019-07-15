@@ -3,8 +3,8 @@ using Dot.Core.TimeLine.Base.Item;
 
 namespace Game.TimeLine
 {
-    [TimeLineMark("Event/Skill", "Create Bullet", TimeLineExportPlatform.ALL)]
-    public class CreateBulletEvent : AEventItem
+    [TimeLineMark("Event/Skill", "Create Bullet By BindNode", TimeLineExportPlatform.ALL)]
+    public class CreateBulletByBindNodeEvent : AEventItem
     {
         public int NodeIndex { get; set; } = 0;
         public BindNodeType NodeType { get; set; } = BindNodeType.Main;
@@ -30,7 +30,7 @@ namespace Game.TimeLine
             bulletEntity.AddDirection(nodeData.nodeTransform.right);
 
 #if TIMELINE_DEBUG
-            services.logService.Log(DebugLogType.Error, $"CreateBulletEvent::Trigger->Create Bullet.configId = {ConfigID}, index = {NodeIndex},type = {NodeType}");
+            services.logService.Log(DebugLogType.Info, $"CreateBulletEvent::Trigger->Create Bullet.configId = {ConfigID}, index = {NodeIndex},type = {NodeType}");
 #endif
         }
     }

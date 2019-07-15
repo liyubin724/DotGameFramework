@@ -9,10 +9,11 @@ namespace Game.TimeLine
         public int SoundConfigID { get; set; }
         public override void Trigger()
         {
-            GameEntity soundEntity = services.entityFactroy.CreateSoundEntity((entity as GameEntity), SoundConfigID);
+            GameEntity soundEntity = services.entityFactroy.CreateSoundEntity(GetGameEntity(), SoundConfigID);
             soundEntity.AddTimeLineID(Index);
-#if DTL_DEBUG
-        services.logService.Log(DebugLogType.Info, "DTLPlaySoundEvent::DoEnter->Play Sound");
+
+#if TIMELINE_DEBUG
+        services.logService.Log(DebugLogType.Info, $"PlaySoundEvent::Trigger->Play Sound.soundID = {SoundConfigID}");
 #endif
         }
     }

@@ -15,7 +15,7 @@ namespace Dot.Core.TimeLine.Base.Item
         public Type DependOnType { get; }
         public DependOnOption DependOnOption { get; }
         
-        public ItemDependOnAttribute(Type type, DependOnOption option = DependOnOption.Group)
+        public ItemDependOnAttribute(Type type, DependOnOption option = DependOnOption.Controller)
         {
             DependOnType = type;
             DependOnOption = option;
