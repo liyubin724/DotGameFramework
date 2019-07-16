@@ -1,6 +1,0 @@
-F:\Download\npoi-master\npoi-master\solution\Lib\NPOI.OOXML.XML
-F:\Download\npoi-master\npoi-master\solution\Lib\NPOI.OOXML.dll
-F:\Download\npoi-master\npoi-master\solution\Lib\NPOI.OOXML.pdb
-F:\Download\npoi-master\npoi-master\ooxml\obj\Debug\NPOI.OOXML.csprojResolveAssemblyReference.cache
-F:\Download\npoi-master\npoi-master\ooxml\obj\Debug\NPOI.OOXML.dll
-F:\Download\npoi-master\npoi-master\ooxml\obj\Debug\NPOI.OOXML.pdb
