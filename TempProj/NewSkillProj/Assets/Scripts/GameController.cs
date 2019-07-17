@@ -29,21 +29,21 @@ public class GameController : MonoBehaviour
     }
     private void OnGUI()
     {
-        if(GUILayout.Button("Skill 1"))
+        if(GUILayout.Button("Skill 10000"))
         {
             GameEntity mainPlayer = contexts.game.mainPlayerEntity;
-            mainPlayer.ReplaceEmitSkill(1);
+            mainPlayer.ReplaceEmitSkill(10000);
         }
-        if (GUILayout.Button("Skill 2"))
-        {
-            GameEntity mainPlayer = contexts.game.mainPlayerEntity;
-            mainPlayer.ReplaceEmitSkill(2);
-        }
-        if (GUILayout.Button("Skill 3"))
-        {
-            GameEntity mainPlayer = contexts.game.mainPlayerEntity;
-            mainPlayer.ReplaceEmitSkill(3);
-        }
+        //if (GUILayout.Button("Skill 2"))
+        //{
+        //    GameEntity mainPlayer = contexts.game.mainPlayerEntity;
+        //    mainPlayer.ReplaceEmitSkill(2);
+        //}
+        //if (GUILayout.Button("Skill 3"))
+        //{
+        //    GameEntity mainPlayer = contexts.game.mainPlayerEntity;
+        //    mainPlayer.ReplaceEmitSkill(3);
+        //}
     }
 
     void Update()

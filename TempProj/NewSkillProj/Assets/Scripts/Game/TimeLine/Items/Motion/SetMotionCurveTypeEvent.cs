@@ -3,8 +3,8 @@ using Dot.Core.TimeLine.Base.Item;
 
 namespace Game.TimeLine
 {
-    [TimeLineMark("Event/Motion", "Change Motion", TimeLineExportPlatform.ALL)]
-    public class ChangeMotionCurveTypeEvent : AEventItem
+    [TimeLineMark("Event/Motion", "Set Motion Curve", TimeLineExportPlatform.ALL)]
+    public class SetMotionCurveTypeEvent : AEventItem
     {
         public MotionCurveType Motion { get; set; }
         public override void Trigger()

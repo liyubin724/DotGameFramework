@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public class PackRootView : VirtualView,
-    IMarkDestroyListener,IPositionListener,
+    IMarkDestroyListener,IPositionListener,IDirectionListener,
     ISkeletonView,INodeBehaviourView
 {
     private GameObject skeletonGameObject = null;
@@ -48,12 +48,14 @@ public class PackRootView : VirtualView,
     {
         ViewEntity.AddMarkDestroyListener(this);
         ViewEntity.AddPositionListener(this);
+        ViewEntity.AddDirectionListener(this);
     }
 
     public override void RemoveListeners()
     {
         ViewEntity.RemoveMarkDestroyListener(this);
         ViewEntity.RemovePositionListener(this);
+        ViewEntity.RemoveDirectionListener(this);
     }
 
     public void OnMarkDestroy(GameEntity entity)
@@ -114,6 +116,12 @@ public class PackRootView : VirtualView,
     }
 
     public int GetNodeBindCount(BindNodeType nodeType)=> GetNodeBehaviour() == null ? 0 : GetNodeBehaviour().GetBindNodeCount(nodeType);
+
+    public void OnDirection(GameEntity entity, Vector3 value)
+    {
+        RootTransform.forward = value;
+    }
+
     protected GameEntity ViewEntity
     {
         get

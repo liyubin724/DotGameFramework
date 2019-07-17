@@ -10,17 +10,11 @@ public class BulletConfig : BaseConfig<BulletConfigData>
     {
         AddData(new BulletConfigData()
         {
-            id = 1,
-            assetPath = "Bullet/bullet_1",
+            id = 100,
+            assetPath = "Bullet/Prefab/missile_dandao_02_fire",
             maxTime = 10.0f,
-            timeLineConfig = "Bullet/bullet_1001",
-        });
-        AddData(new BulletConfigData()
-        {
-            id = 2,
-            assetPath = "Bullet/bullet_1",
-            maxTime = 10.0f,
-            timeLineConfig = "Bullet/bullet_1002",
+            timeLineConfig = "Bullet/Data/bullet_100",
+            maxSpeed = 5,
         });
     }
 }
@@ -29,4 +23,5 @@ public class BulletConfigData : BaseConfigData
     public string assetPath;
     public float maxTime;
     public string timeLineConfig;
+    public float maxSpeed;
 }

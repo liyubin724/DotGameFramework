@@ -31,8 +31,12 @@ public class MoverSystem : IExecuteSystem
                         float curAcc = e.hasAcceleration ? e.acceleration.value : 0.0f;
 
                         float speed = curSpeed + curAcc * services.timeService.DeltaTime();
-                        Vector3 deltaPosition = (e.direction.value * curSpeed + (e.direction.value * curAcc) * services.timeService.DeltaTime()) * services.timeService.DeltaTime();
-
+                        if(e.hasMaxSpeed)
+                        {
+                            speed = Mathf.Min(speed, e.maxSpeed.value);
+                        }
+                        Vector3 deltaPosition = (e.direction.value * speed + (e.direction.value * curAcc) * services.timeService.DeltaTime()) * services.timeService.DeltaTime();
+                        
                         e.ReplaceSpeed(speed);
                         e.ReplacePosition(e.position.value + deltaPosition);
                     }

@@ -316,7 +316,7 @@ namespace DotEditor.Core.TimeLine
                 }
 
                 float totalTimeLineX = setting.pixelForSecond * SelectedGroup.Group.TotalTime - setting.scrollPos.x;
-                if(rect.Contains(new Vector2(totalTimeLineX,rect.y)))
+                //if(rect.Contains(new Vector2(totalTimeLineX,rect.y)))
                 {
                     Handles.color = Color.red;
                     Handles.DrawLine(new Vector3(totalTimeLineX, 0, 0), new Vector3(totalTimeLineX, rect.height, 0));

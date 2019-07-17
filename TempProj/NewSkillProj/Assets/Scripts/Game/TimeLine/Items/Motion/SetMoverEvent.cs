@@ -3,8 +3,8 @@ using Dot.Core.TimeLine.Base.Item;
 
 namespace Game.TimeLine
 {
-    [TimeLineMark("Event/Motion", "Mover", TimeLineExportPlatform.ALL)]
-    public class ChangeMoverEvent : AEventItem
+    [TimeLineMark("Event/Motion", "Set Mover", TimeLineExportPlatform.ALL)]
+    public class SetMoverEvent : AEventItem
     {
         public bool IsMover { get; set; } = false;
 

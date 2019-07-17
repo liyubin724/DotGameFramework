@@ -51,7 +51,7 @@ public class EntityFactroy : Service
         playerView.InitializeView(CachedContexts, services, playerEntity);
         playerEntity.AddVirtualView(playerView);
 
-        playerEntity.AddAddSkeleton("Character/PS_AR_Aurora_final");
+        playerEntity.AddAddSkeleton("Character/Prefab/PS_AR_Aurora_final");
         playerEntity.AddPosition(Vector3.zero);
 
         return playerEntity;
@@ -141,6 +141,7 @@ public class EntityFactroy : Service
 
         BulletConfigData data = services.dataService.GetBulletData(bulletConfigID);
         bulletEntity.AddAddSkeleton(data.assetPath);
+        bulletEntity.AddMaxSpeed(data.maxSpeed);
 
         JsonData jsonData = JsonMapper.ToObject(Resources.Load<TextAsset>(data.timeLineConfig).text);
         TimeLineController controller = JsonDataReader.ReadController(jsonData);

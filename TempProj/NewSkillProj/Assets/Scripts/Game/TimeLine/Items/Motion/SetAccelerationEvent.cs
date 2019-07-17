@@ -3,8 +3,8 @@ using Dot.Core.TimeLine.Base.Item;
 
 namespace Game.TimeLine
 {
-    [TimeLineMarkAttribute("Event/Motion", "Change Acceleration", TimeLineExportPlatform.ALL)]
-    public class ChangeAccelerationEvent : AEventItem
+    [TimeLineMarkAttribute("Event/Motion", "Set Acceleration", TimeLineExportPlatform.ALL)]
+    public class SetAccelerationEvent : AEventItem
     {
         public float Acceleration { get; set; }
         public override void Trigger()

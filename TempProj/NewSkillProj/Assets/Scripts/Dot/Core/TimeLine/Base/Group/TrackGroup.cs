@@ -60,20 +60,20 @@ namespace Dot.Core.TimeLine.Base.Group
 
         public void DoUpdate(float deltaTime)
         {
-            if(endCondition!=null)
+            tracks?.ForEach((track) =>
+            {
+                track?.DoUpdate(deltaTime);
+            });
+
+            if (endCondition != null)
             {
                 endCondition.DoUpdate(deltaTime);
-                if(endCondition.Evaluate())
+                if (endCondition.Evaluate())
                 {
                     Stop();
                     return;
                 }
             }
-
-            tracks?.ForEach((track) =>
-            {
-                track?.DoUpdate(deltaTime);
-            });
         }
 
         public override void DoReset()

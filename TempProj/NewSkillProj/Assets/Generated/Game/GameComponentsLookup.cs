@@ -22,24 +22,25 @@ public static class GameComponentsLookup {
     public const int MainPlayer = 11;
     public const int MarkDestroy = 12;
     public const int MarkDestroyListener = 13;
-    public const int MotionCurveType = 14;
-    public const int Mover = 15;
-    public const int Name = 16;
-    public const int NewSkill = 17;
-    public const int OwnerID = 18;
-    public const int Player = 19;
-    public const int Position = 20;
-    public const int PositionListener = 21;
-    public const int Sound = 22;
-    public const int Speed = 23;
-    public const int Time = 24;
-    public const int TimeDecrease = 25;
-    public const int TimeLineController = 26;
-    public const int TimeLineID = 27;
-    public const int UniqueID = 28;
-    public const int VirtualView = 29;
+    public const int MaxSpeed = 14;
+    public const int MotionCurveType = 15;
+    public const int Mover = 16;
+    public const int Name = 17;
+    public const int NewSkill = 18;
+    public const int OwnerID = 19;
+    public const int Player = 20;
+    public const int Position = 21;
+    public const int PositionListener = 22;
+    public const int Sound = 23;
+    public const int Speed = 24;
+    public const int Time = 25;
+    public const int TimeDecrease = 26;
+    public const int TimeLineController = 27;
+    public const int TimeLineID = 28;
+    public const int UniqueID = 29;
+    public const int VirtualView = 30;
 
-    public const int TotalComponents = 30;
+    public const int TotalComponents = 31;
 
     public static readonly string[] componentNames = {
         "Acceleration",
@@ -56,6 +57,7 @@ public static class GameComponentsLookup {
         "MainPlayer",
         "MarkDestroy",
         "MarkDestroyListener",
+        "MaxSpeed",
         "MotionCurveType",
         "Mover",
         "Name",
@@ -89,6 +91,7 @@ public static class GameComponentsLookup {
         typeof(MainPlayerComponent),
         typeof(MarkDestroyComponent),
         typeof(MarkDestroyListenerComponent),
+        typeof(MaxSpeedComponent),
         typeof(MotionCurveTypeComponent),
         typeof(MoverComponent),
         typeof(NameComponent),

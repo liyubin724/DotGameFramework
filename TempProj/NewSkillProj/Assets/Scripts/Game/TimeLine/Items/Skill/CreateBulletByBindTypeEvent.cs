@@ -27,7 +27,7 @@ namespace Game.TimeLine
 #endif
                 GameEntity bulletEntity = services.entityFactroy.CreateBulletEntity(skillEntity, ConfigID);
                 bulletEntity.AddPosition(nodeData.nodeTransform.position);
-                bulletEntity.AddDirection(nodeData.nodeTransform.right);
+                bulletEntity.AddDirection(nodeData.nodeTransform.forward);
             }
 #if TIMELINE_DEBUG
             services.logService.Log(DebugLogType.Info, $"CreateBulletEvent::Trigger->Create Bullet.configId = {ConfigID},type = {NodeType}");
