@@ -34,6 +34,11 @@ public class GameController : MonoBehaviour
             GameEntity mainPlayer = contexts.game.mainPlayerEntity;
             mainPlayer.ReplaceEmitSkill(10000);
         }
+        if (GUILayout.Button("Skill 10001"))
+        {
+            GameEntity mainPlayer = contexts.game.mainPlayerEntity;
+            mainPlayer.ReplaceEmitSkill(10001);
+        }
         //if (GUILayout.Button("Skill 2"))
         //{
         //    GameEntity mainPlayer = contexts.game.mainPlayerEntity;

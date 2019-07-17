@@ -16,6 +16,14 @@ public class BulletConfig : BaseConfig<BulletConfigData>
             timeLineConfig = "Bullet/Data/bullet_100",
             maxSpeed = 5,
         });
+        AddData(new BulletConfigData()
+        {
+            id = 200,
+            assetPath = "Bullet/Prefab/Line_01_dandao",
+            maxTime = 5.0f,
+            timeLineConfig = "Bullet/Data/bullet_200",
+            maxSpeed = -1,
+        });
     }
 }
 public class BulletConfigData : BaseConfigData

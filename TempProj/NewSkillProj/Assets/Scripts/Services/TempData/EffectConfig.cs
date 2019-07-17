@@ -5,7 +5,7 @@
         AddData(new EffectConfigData()
         {
             id = 1,
-            assetPath = "Effect/Prefab/missile_jizhong_02",
+            assetPath = "Effect/Prefab/missile_jizhong_02_fire",
             lifeTime = 5.0f,
         });
         AddData(new EffectConfigData()

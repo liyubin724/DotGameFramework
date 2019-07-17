@@ -141,7 +141,10 @@ public class EntityFactroy : Service
 
         BulletConfigData data = services.dataService.GetBulletData(bulletConfigID);
         bulletEntity.AddAddSkeleton(data.assetPath);
-        bulletEntity.AddMaxSpeed(data.maxSpeed);
+        if(data.maxSpeed>0)
+        {
+            bulletEntity.AddMaxSpeed(data.maxSpeed);
+        }
 
         JsonData jsonData = JsonMapper.ToObject(Resources.Load<TextAsset>(data.timeLineConfig).text);
         TimeLineController controller = JsonDataReader.ReadController(jsonData);
