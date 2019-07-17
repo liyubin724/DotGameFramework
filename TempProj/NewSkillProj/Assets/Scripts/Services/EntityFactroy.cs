@@ -106,7 +106,7 @@ public class EntityFactroy : Service
         effectEntity.isEffect = true;
         effectEntity.AddConfigID(effectConfigID);
         effectEntity.AddEffectBind(bindType, nodeType, nodeIndex);
-        EffectView view = new EffectView("");
+        EffectView view = new EffectView($"Effect_{effectEntity.uniqueID.value}");
         effectEntity.AddVirtualView(view);
         view.InitializeView(CachedContexts, services, effectEntity);
 

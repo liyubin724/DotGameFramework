@@ -12,7 +12,7 @@ namespace Game.TimeLine
         public override void Enter()
         {
             GameEntity entity = GetGameEntity();
-            GameEntity effectEntity = services.entityFactroy.CreateEffectEntity(GetGameEntity(), ConfigID);
+            effectEntity = services.entityFactroy.CreateEffectEntity(GetGameEntity(), ConfigID);
             effectEntity.AddPosition(entity.position.value);
         }
 

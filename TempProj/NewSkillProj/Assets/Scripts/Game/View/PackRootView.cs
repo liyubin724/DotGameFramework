@@ -62,7 +62,7 @@ public class PackRootView : VirtualView,
     {
         skeletonGameObject = null;
         if(RootGameObject!=null)
-            GameObject.Destroy(RootGameObject);
+            Object.Destroy(RootGameObject);
         RootGameObject = null;
         RootTransform = null;
 
