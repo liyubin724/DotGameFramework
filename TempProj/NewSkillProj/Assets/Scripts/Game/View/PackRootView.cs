@@ -84,7 +84,7 @@ public class PackRootView : VirtualView,
     {
         if(skeletonGameObject!=null)
         {
-            GameObject.Destroy(skeletonGameObject);
+            Object.Destroy(skeletonGameObject);
         }
         skeletonGameObject = null;
         nodeBehaviour = null;
