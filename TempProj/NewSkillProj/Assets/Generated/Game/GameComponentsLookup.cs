@@ -19,28 +19,31 @@ public static class GameComponentsLookup {
     public const int EffectBind = 8;
     public const int Effect = 9;
     public const int EmitSkill = 10;
-    public const int MainPlayer = 11;
-    public const int MarkDestroy = 12;
-    public const int MarkDestroyListener = 13;
-    public const int MaxSpeed = 14;
-    public const int MotionCurveType = 15;
-    public const int Mover = 16;
-    public const int Name = 17;
-    public const int NewSkill = 18;
-    public const int OwnerID = 19;
-    public const int Player = 20;
-    public const int Position = 21;
-    public const int PositionListener = 22;
-    public const int Sound = 23;
-    public const int Speed = 24;
-    public const int Time = 25;
-    public const int TimeDecrease = 26;
-    public const int TimeLineController = 27;
-    public const int TimeLineID = 28;
-    public const int UniqueID = 29;
-    public const int VirtualView = 30;
+    public const int EntityTarget = 11;
+    public const int MainPlayer = 12;
+    public const int MarkDestroy = 13;
+    public const int MarkDestroyListener = 14;
+    public const int MaxSpeed = 15;
+    public const int MotionCurveType = 16;
+    public const int Mover = 17;
+    public const int Name = 18;
+    public const int NewSkill = 19;
+    public const int OwnerID = 20;
+    public const int Player = 21;
+    public const int Position = 22;
+    public const int PositionListener = 23;
+    public const int PositionTarget = 24;
+    public const int SelectedTarget = 25;
+    public const int Sound = 26;
+    public const int Speed = 27;
+    public const int Time = 28;
+    public const int TimeDecrease = 29;
+    public const int TimeLineController = 30;
+    public const int TimeLineID = 31;
+    public const int UniqueID = 32;
+    public const int VirtualView = 33;
 
-    public const int TotalComponents = 31;
+    public const int TotalComponents = 34;
 
     public static readonly string[] componentNames = {
         "Acceleration",
@@ -54,6 +57,7 @@ public static class GameComponentsLookup {
         "EffectBind",
         "Effect",
         "EmitSkill",
+        "EntityTarget",
         "MainPlayer",
         "MarkDestroy",
         "MarkDestroyListener",
@@ -66,6 +70,8 @@ public static class GameComponentsLookup {
         "Player",
         "Position",
         "PositionListener",
+        "PositionTarget",
+        "SelectedTarget",
         "Sound",
         "Speed",
         "Time",
@@ -88,6 +94,7 @@ public static class GameComponentsLookup {
         typeof(EffectBindComponent),
         typeof(EffectComponent),
         typeof(EmitSkillComponent),
+        typeof(EntityTargetComponent),
         typeof(MainPlayerComponent),
         typeof(MarkDestroyComponent),
         typeof(MarkDestroyListenerComponent),
@@ -100,6 +107,8 @@ public static class GameComponentsLookup {
         typeof(PlayerComponent),
         typeof(PositionComponent),
         typeof(PositionListenerComponent),
+        typeof(PositionTargetComponent),
+        typeof(SelectedTargetComponent),
         typeof(SoundComponent),
         typeof(SpeedComponent),
         typeof(TimeComponent),

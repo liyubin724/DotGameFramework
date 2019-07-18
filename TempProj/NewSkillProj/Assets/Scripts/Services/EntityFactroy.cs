@@ -40,10 +40,13 @@ public class EntityFactroy : Service
         return childEntity;
     }
 
-    public GameEntity CreatePlayerEntity()
+    public GameEntity CreatePlayerEntity(bool isMainPlayer = false)
     {
         GameEntity playerEntity = CreateEntity();
-        playerEntity.isMainPlayer = true;
+        if(isMainPlayer)
+        {
+            playerEntity.isMainPlayer = isMainPlayer;
+        }
         playerEntity.isPlayer = true;
         playerEntity.AddConfigID(0);
 

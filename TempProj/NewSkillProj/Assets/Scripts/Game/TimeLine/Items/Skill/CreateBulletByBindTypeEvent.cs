@@ -27,7 +27,30 @@ namespace Game.TimeLine
 #endif
                 GameEntity bulletEntity = services.entityFactroy.CreateBulletEntity(skillEntity, ConfigID);
                 bulletEntity.AddPosition(nodeData.nodeTransform.position);
-                bulletEntity.AddDirection(nodeData.nodeTransform.forward);
+
+                SkillConfigData scData = services.dataService.GetSkillData(skillEntity.configID.value);
+                if (!ownerEntity.hasSelectedTarget)
+                {
+                    bulletEntity.AddDirection(nodeData.nodeTransform.forward);
+                }
+                else
+                {
+                    GameEntity targetEntity = contexts.game.GetEntityWithUniqueID(ownerEntity.selectedTarget.entityID);
+                    if (scData.targetType == SkillTargetType.Position)
+                    {
+                        bulletEntity.AddPositionTarget(targetEntity.position.value);
+                        bulletEntity.AddDirection((targetEntity.position.value - nodeData.nodeTransform.position).normalized);
+                    }
+                    else if (scData.targetType == SkillTargetType.Entity)
+                    {
+                        bulletEntity.AddEntityTarget(targetEntity.uniqueID.value);
+                        bulletEntity.AddDirection((targetEntity.position.value - nodeData.nodeTransform.position).normalized);
+                    }
+                    else
+                    {
+                        bulletEntity.AddDirection(nodeData.nodeTransform.forward);
+                    }
+                }
             }
 #if TIMELINE_DEBUG
             services.logService.Log(DebugLogType.Info, $"CreateBulletEvent::Trigger->Create Bullet.configId = {ConfigID},type = {NodeType}");
