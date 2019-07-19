@@ -58,21 +58,21 @@ public partial class Contexts : Entitas.IContexts {
 //------------------------------------------------------------------------------
 public partial class Contexts {
 
-    public const string ChildOf = "ChildOf";
     public const string OwnerID = "OwnerID";
+    public const string Parent = "Parent";
     public const string UniqueID = "UniqueID";
 
     [Entitas.CodeGeneration.Attributes.PostConstructor]
     public void InitializeEntityIndices() {
         game.AddEntityIndex(new Entitas.EntityIndex<GameEntity, int>(
-            ChildOf,
-            game.GetGroup(GameMatcher.ChildOf),
-            (e, c) => ((ChildOfComponent)c).entityID));
-
-        game.AddEntityIndex(new Entitas.EntityIndex<GameEntity, int>(
             OwnerID,
             game.GetGroup(GameMatcher.OwnerID),
             (e, c) => ((OwnerIDComponent)c).value));
+
+        game.AddEntityIndex(new Entitas.EntityIndex<GameEntity, int>(
+            Parent,
+            game.GetGroup(GameMatcher.Parent),
+            (e, c) => ((ParentComponent)c).entityID));
 
         game.AddEntityIndex(new Entitas.PrimaryEntityIndex<GameEntity, int>(
             UniqueID,
@@ -83,12 +83,12 @@ public partial class Contexts {
 
 public static class ContextsExtensions {
 
-    public static System.Collections.Generic.HashSet<GameEntity> GetEntitiesWithChildOf(this GameContext context, int entityID) {
-        return ((Entitas.EntityIndex<GameEntity, int>)context.GetEntityIndex(Contexts.ChildOf)).GetEntities(entityID);
-    }
-
     public static System.Collections.Generic.HashSet<GameEntity> GetEntitiesWithOwnerID(this GameContext context, int value) {
         return ((Entitas.EntityIndex<GameEntity, int>)context.GetEntityIndex(Contexts.OwnerID)).GetEntities(value);
+    }
+
+    public static System.Collections.Generic.HashSet<GameEntity> GetEntitiesWithParent(this GameContext context, int entityID) {
+        return ((Entitas.EntityIndex<GameEntity, int>)context.GetEntityIndex(Contexts.Parent)).GetEntities(entityID);
     }
 
     public static GameEntity GetEntityWithUniqueID(this GameContext context, int value) {

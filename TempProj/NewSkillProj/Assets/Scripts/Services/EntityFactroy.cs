@@ -27,7 +27,7 @@ public class EntityFactroy : AService
     public GameEntity CreateChildrenEntity(GameEntity entity)
     {
         GameEntity childEntity = CreateEntity();
-        childEntity.AddChildOf(entity.uniqueID.value);
+        childEntity.AddParent(entity.uniqueID.value);
 
         return childEntity;
     }
@@ -44,9 +44,9 @@ public class EntityFactroy : AService
 
         PlayerView playerView = new PlayerView($"Player_{playerEntity.uniqueID.value}",viewRootTransfrom);
         playerView.InitializeView(contexts, services, playerEntity);
-        //playerEntity.(playerView);
+        playerEntity.AddView(playerView);
 
-        playerEntity.AddAddSkeleton("Character/Prefab/PS_AR_Aurora_final");
+        playerEntity.AddSkeleton("Character/Prefab/PS_AR_Aurora_final");
         playerEntity.AddPosition(Vector3.zero);
 
         return playerEntity;
@@ -85,28 +85,12 @@ public class EntityFactroy : AService
         effectEntity.AddConfigID(effectConfigID);
         effectEntity.AddOwnerID(entity.ownerID.value);
 
-        EffectView view = new EffectView($"Effect_{effectEntity.uniqueID.value}");
-        //effectEntity.AddVirtualView(view);
+        EffectView view = new EffectView($"Effect_{effectEntity.uniqueID.value}", viewRootTransfrom);
+        effectEntity.AddView(view);
         view.InitializeView(contexts, services, effectEntity);
 
         EffectConfigData data = services.dataService.GetEffectData(effectConfigID);
-        effectEntity.AddAddSkeleton(data.assetPath);
-
-        return effectEntity;
-    }
-
-    public GameEntity CreateEffectEntity(GameEntity entity,int effectConfigID,EffectUsedEnv bindType,BindNodeType nodeType,int nodeIndex)
-    {
-        GameEntity effectEntity = CreateChildrenEntity(entity);
-        effectEntity.isEffect = true;
-        effectEntity.AddConfigID(effectConfigID);
-        effectEntity.AddEffectBind(bindType, nodeType, nodeIndex);
-        EffectView view = new EffectView($"Effect_{effectEntity.uniqueID.value}");
-        //effectEntity.AddVirtualView(view);
-        view.InitializeView(contexts, services, effectEntity);
-
-        EffectConfigData data = services.dataService.GetEffectData(effectConfigID);
-        effectEntity.AddAddSkeleton(data.assetPath);
+        effectEntity.AddSkeleton(data.assetPath);
 
         return effectEntity;
     }
@@ -117,7 +101,7 @@ public class EntityFactroy : AService
         soundEntity.isSound = true;
         soundEntity.AddConfigID(soundConfigID);
         SoundView soundView = new SoundView();
-        //soundEntity.AddVirtualView(soundView);
+        soundEntity.AddView(soundView);
         soundView.InitializeView(contexts, services, soundEntity);
 
         return soundEntity;
@@ -132,10 +116,10 @@ public class EntityFactroy : AService
 
         BulletView view = new BulletView($"Bullet_{bulletEntity.uniqueID.value}",viewRootTransfrom);
         view.InitializeView(contexts, services, bulletEntity);
-        //bulletEntity.AddVirtualView(view);
+        bulletEntity.AddView(view);
 
         BulletConfigData data = services.dataService.GetBulletData(bulletConfigID);
-        bulletEntity.AddAddSkeleton(data.assetPath);
+        bulletEntity.AddSkeleton(data.assetPath);
         if(data.maxSpeed>0)
         {
             bulletEntity.AddMaxSpeed(data.maxSpeed);

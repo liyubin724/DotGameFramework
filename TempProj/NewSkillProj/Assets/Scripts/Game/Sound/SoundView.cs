@@ -33,11 +33,12 @@ public class SoundView : ABaseView,IMarkDestroyListener
         base.DestroyView();
     }
 
-    public void SetData(SoundType soundType)
+    public void SetData(SoundType soundType,AudioClip clip)
     {
         this.soundType = soundType;
 
         AudioSource = SoundManager.GetInstance().GetAudioSource(soundType);
+        AudioSource.clip = clip;
         AudioSource.Play();
     }
 

@@ -9,34 +9,34 @@
 public static class GameComponentsLookup {
 
     public const int Acceleration = 0;
-    public const int AddSkeleton = 1;
-    public const int BindNodeEffect = 2;
-    public const int Bullet = 3;
-    public const int CapsuleCollider = 4;
-    public const int ChildOf = 5;
-    public const int Collider = 6;
-    public const int ConfigID = 7;
-    public const int Direction = 8;
-    public const int DirectionListener = 9;
-    public const int EffectBind = 10;
-    public const int Effect = 11;
-    public const int EmitSkill = 12;
-    public const int EntityTarget = 13;
-    public const int MainPlayer = 14;
-    public const int MarkDestroy = 15;
-    public const int MarkDestroyListener = 16;
-    public const int MaxSpeed = 17;
-    public const int MotionCurveType = 18;
-    public const int Mover = 19;
-    public const int Name = 20;
-    public const int NewSkill = 21;
-    public const int OwnerID = 22;
-    public const int Player = 23;
-    public const int Position = 24;
-    public const int PositionListener = 25;
-    public const int PositionTarget = 26;
-    public const int Rigidbody = 27;
-    public const int SelectedTarget = 28;
+    public const int BindNodeEffect = 1;
+    public const int Bullet = 2;
+    public const int CapsuleCollider = 3;
+    public const int Collider = 4;
+    public const int ConfigID = 5;
+    public const int Direction = 6;
+    public const int DirectionListener = 7;
+    public const int EffectBind = 8;
+    public const int Effect = 9;
+    public const int EmitSkill = 10;
+    public const int EntityTarget = 11;
+    public const int MainPlayer = 12;
+    public const int MarkDestroy = 13;
+    public const int MarkDestroyListener = 14;
+    public const int MaxSpeed = 15;
+    public const int MotionCurveType = 16;
+    public const int Mover = 17;
+    public const int Name = 18;
+    public const int NewSkill = 19;
+    public const int OwnerID = 20;
+    public const int Parent = 21;
+    public const int Player = 22;
+    public const int Position = 23;
+    public const int PositionListener = 24;
+    public const int PositionTarget = 25;
+    public const int Rigidbody = 26;
+    public const int SelectedTarget = 27;
+    public const int Skeleton = 28;
     public const int Sound = 29;
     public const int Speed = 30;
     public const int Time = 31;
@@ -50,11 +50,9 @@ public static class GameComponentsLookup {
 
     public static readonly string[] componentNames = {
         "Acceleration",
-        "AddSkeleton",
         "BindNodeEffect",
         "Bullet",
         "CapsuleCollider",
-        "ChildOf",
         "Collider",
         "ConfigID",
         "Direction",
@@ -72,12 +70,14 @@ public static class GameComponentsLookup {
         "Name",
         "NewSkill",
         "OwnerID",
+        "Parent",
         "Player",
         "Position",
         "PositionListener",
         "PositionTarget",
         "Rigidbody",
         "SelectedTarget",
+        "Skeleton",
         "Sound",
         "Speed",
         "Time",
@@ -90,11 +90,9 @@ public static class GameComponentsLookup {
 
     public static readonly System.Type[] componentTypes = {
         typeof(AccelerationComponent),
-        typeof(AddSkeletonComponent),
         typeof(BindNodeEffectComponent),
         typeof(BulletComponent),
         typeof(CapsuleColliderComponent),
-        typeof(ChildOfComponent),
         typeof(ColliderComponent),
         typeof(ConfigIDComponent),
         typeof(DirectionComponent),
@@ -112,12 +110,14 @@ public static class GameComponentsLookup {
         typeof(NameComponent),
         typeof(NewSkillComponent),
         typeof(OwnerIDComponent),
+        typeof(ParentComponent),
         typeof(PlayerComponent),
         typeof(PositionComponent),
         typeof(PositionListenerComponent),
         typeof(PositionTargetComponent),
         typeof(RigidbodyComponent),
         typeof(SelectedTargetComponent),
+        typeof(SkeletonComponent),
         typeof(SoundComponent),
         typeof(SpeedComponent),
         typeof(TimeComponent),

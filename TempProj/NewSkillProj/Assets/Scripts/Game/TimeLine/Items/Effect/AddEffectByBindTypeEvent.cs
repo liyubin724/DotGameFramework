@@ -12,8 +12,8 @@ namespace Game.TimeLine
         public override void Trigger()
         {
             GameEntity skillEntity = GetGameEntity();
-            GameEntity ownerEntity = contexts.game.GetEntityWithUniqueID(skillEntity.childOf.entityID);
-            INodeBehaviourView nbView = null;//ownerEntity.virtualView.view as INodeBehaviourView;
+            GameEntity ownerEntity = contexts.game.GetEntityWithUniqueID(skillEntity.parent.entityID);
+            INodeBehaviourView nbView = ownerEntity.view.view as INodeBehaviourView;
             int bindNodeCount = nbView.GetNodeBindCount(NodeType);
             for(var i =0;i<bindNodeCount;i++)
             {

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Entitas;
+using UnityEngine;
 
 public class VirtualView : ABaseView,IPositionListener,IDirectionListener,IMarkDestroyListener
 {
@@ -37,6 +38,14 @@ public class VirtualView : ABaseView,IPositionListener,IDirectionListener,IMarkD
 
     public VirtualView(string name) : this(name, null)
     {
+    }
+
+    public override void InitializeView(Contexts contexts, Services services, IEntity entity)
+    {
+        base.InitializeView(contexts, services, entity);
+        EntityUniqueIDBehaviour idBehaviour = RootGameObject.AddComponent<EntityUniqueIDBehaviour>();
+
+        idBehaviour.enityID = ViewEntity.uniqueID.value;
     }
 
     public override void AddListeners()

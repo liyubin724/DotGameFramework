@@ -24,11 +24,15 @@ public class TimeLineControllerSystem : IExecuteSystem
             if(controller.State == TimeLineState.Invalid)
             {
                 controller.Play();
+#if TIMELINE_DEBUG
                 services.logService.Log(DebugLogType.Info, "Start Play TimelineController");
+#endif
             }else if(controller.State == TimeLineState.Finished)
             {
                 e.isMarkDestroy = true;
+#if TIMELINE_DEBUG
                 services.logService.Log(DebugLogType.Info, "Finished TimelineController");
+#endif
                 continue;
             }
             controller.DoUpdate(services.timeService.DeltaTime());
