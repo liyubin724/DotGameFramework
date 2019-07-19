@@ -13,7 +13,7 @@ namespace Game.TimeLine
         {
             GameEntity skillEntity = GetGameEntity();
             GameEntity ownerEntity = contexts.game.GetEntityWithUniqueID(skillEntity.childOf.entityID);
-            INodeBehaviourView nbView = ownerEntity.virtualView.value as INodeBehaviourView;
+            INodeBehaviourView nbView = null;//ownerEntity.virtualView.view as INodeBehaviourView;
             int bindNodeCount = nbView.GetNodeBindCount(NodeType);
             for (var i = 0; i < bindNodeCount; i++)
             {

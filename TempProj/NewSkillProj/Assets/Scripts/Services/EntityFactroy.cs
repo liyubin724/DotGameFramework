@@ -44,7 +44,7 @@ public class EntityFactroy : AService
 
         PlayerView playerView = new PlayerView($"Player_{playerEntity.uniqueID.value}",viewRootTransfrom);
         playerView.InitializeView(contexts, services, playerEntity);
-        playerEntity.AddVirtualView(playerView);
+        //playerEntity.(playerView);
 
         playerEntity.AddAddSkeleton("Character/Prefab/PS_AR_Aurora_final");
         playerEntity.AddPosition(Vector3.zero);
@@ -86,7 +86,7 @@ public class EntityFactroy : AService
         effectEntity.AddOwnerID(entity.ownerID.value);
 
         EffectView view = new EffectView($"Effect_{effectEntity.uniqueID.value}");
-        effectEntity.AddVirtualView(view);
+        //effectEntity.AddVirtualView(view);
         view.InitializeView(contexts, services, effectEntity);
 
         EffectConfigData data = services.dataService.GetEffectData(effectConfigID);
@@ -102,7 +102,7 @@ public class EntityFactroy : AService
         effectEntity.AddConfigID(effectConfigID);
         effectEntity.AddEffectBind(bindType, nodeType, nodeIndex);
         EffectView view = new EffectView($"Effect_{effectEntity.uniqueID.value}");
-        effectEntity.AddVirtualView(view);
+        //effectEntity.AddVirtualView(view);
         view.InitializeView(contexts, services, effectEntity);
 
         EffectConfigData data = services.dataService.GetEffectData(effectConfigID);
@@ -117,7 +117,7 @@ public class EntityFactroy : AService
         soundEntity.isSound = true;
         soundEntity.AddConfigID(soundConfigID);
         SoundView soundView = new SoundView();
-        soundEntity.AddVirtualView(soundView);
+        //soundEntity.AddVirtualView(soundView);
         soundView.InitializeView(contexts, services, soundEntity);
 
         return soundEntity;
@@ -132,7 +132,7 @@ public class EntityFactroy : AService
 
         BulletView view = new BulletView($"Bullet_{bulletEntity.uniqueID.value}",viewRootTransfrom);
         view.InitializeView(contexts, services, bulletEntity);
-        bulletEntity.AddVirtualView(view);
+        //bulletEntity.AddVirtualView(view);
 
         BulletConfigData data = services.dataService.GetBulletData(bulletConfigID);
         bulletEntity.AddAddSkeleton(data.assetPath);

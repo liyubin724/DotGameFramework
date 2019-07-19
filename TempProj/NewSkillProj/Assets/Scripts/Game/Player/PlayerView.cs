@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PlayerView : PackRootView
+public class PlayerView : NodeBehaviourView
 {
     public PlayerView(string name) : base(name)
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class BulletView : PackRootView
+public class BulletView : SkeletonView
 {
     public BulletView(string name) : base(name)
     {

@@ -1,33 +1,78 @@
-﻿using Entitas;
+﻿using UnityEngine;
 
-public abstract class VirtualView : IVirtualView
+public class VirtualView : ABaseView,IPositionListener,IDirectionListener,IMarkDestroyListener
 {
-    private Contexts contexts;
-    private Services services;
-    private IEntity entity;
-    
-    public virtual void DestroyView()
+    public GameObject RootGameObject
     {
-        RemoveListeners();
-        contexts = null;
-        services = null;
-        entity = null;
+        get; private set;
     }
 
-    public IEntity GetEntity()
+    public Transform RootTransform
     {
-        return entity;
+        get; private set;
     }
 
-    public virtual void InitializeView(Contexts contexts, Services services, IEntity entity)
+    public override bool Active
     {
-        this.contexts = contexts;
-        this.services = services;
-        this.entity = entity;
-        AddListeners();
+        get
+        {
+            return RootGameObject.activeSelf;
+        }
+        set
+        {
+            RootGameObject.SetActive(value);
+        }
     }
 
-    public abstract bool Active { get; set; }
-    public abstract void AddListeners();
-    public abstract void RemoveListeners();
+    public VirtualView(string name, Transform parent)
+    {
+        RootGameObject = new GameObject(name);
+        RootTransform = RootGameObject.transform;
+
+        if (parent != null)
+        {
+            RootTransform.SetParent(parent, false);
+        }
+    }
+
+    public VirtualView(string name) : this(name, null)
+    {
+    }
+
+    public override void AddListeners()
+    {
+        ViewEntity.AddMarkDestroyListener(this);
+        ViewEntity.AddPositionListener(this);
+        ViewEntity.AddDirectionListener(this);
+    }
+
+    public override void RemoveListeners()
+    {
+        ViewEntity.RemoveMarkDestroyListener(this);
+        ViewEntity.RemovePositionListener(this);
+        ViewEntity.RemoveDirectionListener(this);
+    }
+
+    public void OnMarkDestroy(GameEntity entity)
+    {
+        if (RootGameObject != null)
+            Object.Destroy(RootGameObject);
+
+        RootGameObject = null;
+        RootTransform = null;
+
+        DestroyView();
+    }
+
+    public void OnPosition(GameEntity entity, Vector3 value)
+    {
+        RootTransform.position = value;
+    }
+
+    public void OnDirection(GameEntity entity, Vector3 value)
+    {
+        RootTransform.forward = value;
+    }
+
+    protected GameEntity ViewEntity => (GameEntity)entity;
 }

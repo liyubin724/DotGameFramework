@@ -44,7 +44,7 @@ public static class GameComponentsLookup {
     public const int TimeLineController = 33;
     public const int TimeLineID = 34;
     public const int UniqueID = 35;
-    public const int VirtualView = 36;
+    public const int View = 36;
 
     public const int TotalComponents = 37;
 
@@ -85,7 +85,7 @@ public static class GameComponentsLookup {
         "TimeLineController",
         "TimeLineID",
         "UniqueID",
-        "VirtualView"
+        "View"
     };
 
     public static readonly System.Type[] componentTypes = {
@@ -125,6 +125,6 @@ public static class GameComponentsLookup {
         typeof(TimeLineControllerComponent),
         typeof(TimeLineIDComponent),
         typeof(UniqueIDComponent),
-        typeof(VirtualViewComponent)
+        typeof(ViewComponent)
     };
 }

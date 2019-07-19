@@ -16,7 +16,9 @@ public class SoundSystem : ReactiveSystem<GameEntity>
 		
 	protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context) 
 	{
-		return context.CreateCollector(GameMatcher.AllOf(GameMatcher.Sound,GameMatcher.ConfigID,GameMatcher.VirtualView));
+        //TODO:
+        return null;
+		//return context.CreateCollector(GameMatcher.AllOf(GameMatcher.Sound,GameMatcher.ConfigID,GameMatcher.VirtualView));
 	}
 		
 	protected override bool Filter(GameEntity entity) 
@@ -28,12 +30,12 @@ public class SoundSystem : ReactiveSystem<GameEntity>
 	{
 		foreach (var e in entities) 
 		{
-            int configID = e.configID.value;
-            SoundConfigData data = services.dataService.GetSoundData(configID);
-            SoundView soundView = e.virtualView.value as SoundView;
-            soundView.SetData(data.soundType);
-            soundView.AudioSource.clip = Resources.Load<AudioClip>(data.assetPath);
-            soundView.AudioSource.Play();
+            //int configID = e.configID.value;
+            //SoundConfigData data = services.dataService.GetSoundData(configID);
+            //SoundView soundView = e.virtualView.view as SoundView;
+            //soundView.SetData(data.soundType);
+            //soundView.AudioSource.clip = Resources.Load<AudioClip>(data.assetPath);
+            //soundView.AudioSource.Play();
 		}
 	}
 }

@@ -28,7 +28,7 @@ public class EffectBindSystem : ReactiveSystem<GameEntity>
 		foreach (var e in entities) 
 		{
             GameEntity bindEntity = contexts.game.GetEntityWithUniqueID(e.childOf.entityID);
-            INodeBehaviourView bindView = bindEntity.virtualView.value as INodeBehaviourView;
+            //INodeBehaviourView bindView = bindEntity.virtualView.view as INodeBehaviourView;
             //bindView.AddNodeBind((e.virtualView.value as EffectView).EffectGameObject, e.effectBind.nodeType, e.effectBind.bindIndex);
 		}
 	}

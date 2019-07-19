@@ -14,8 +14,8 @@ namespace Game.TimeLine
         {
             GameEntity skillEntity = GetGameEntity();
             GameEntity ownerEntity = contexts.game.GetEntityWithUniqueID(skillEntity.childOf.entityID);
-            INodeBehaviourView nbView = ownerEntity.virtualView.value as INodeBehaviourView;
-
+            INodeBehaviourView nbView = null;//ownerEntity.virtualView.view as INodeBehaviourView;
+            //TODO;
             BindNodeData nodeData = nbView.GetNodeBindData(NodeType, NodeIndex);
 
 #if TIMELINE_DEBUG
@@ -28,7 +28,7 @@ namespace Game.TimeLine
             GameEntity effectEntity = services.entityFactroy.CreateEffectEntity(skillEntity, ConfigID);
             effectEntity.AddTimeLineID(Index);
             effectEntity.AddBindNodeEffect(NodeIndex, NodeType);
-            EffectView effectView = effectEntity.virtualView.value as EffectView;
+            EffectView effectView = null;//effectEntity.virtualView.view as EffectView;
             effectView.RootTransform.SetParent(nodeData.nodeTransform, false);
 
 #if TIMELINE_DEBUG

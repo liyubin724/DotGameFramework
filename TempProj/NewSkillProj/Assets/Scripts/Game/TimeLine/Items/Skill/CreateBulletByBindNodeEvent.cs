@@ -14,8 +14,8 @@ namespace Game.TimeLine
         {
             GameEntity skillEntity = GetGameEntity();
             GameEntity ownerEntity = contexts.game.GetEntityWithUniqueID(skillEntity.childOf.entityID);
-            INodeBehaviourView nbView = ownerEntity.virtualView.value as INodeBehaviourView;
-
+            INodeBehaviourView nbView = null;//ownerEntity.virtualView.view as INodeBehaviourView;
+            //TODO:
             BindNodeData nodeData = nbView.GetNodeBindData(NodeType, NodeIndex);
 
 #if TIMELINE_DEBUG

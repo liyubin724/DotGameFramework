@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EffectView : PackRootView
+public class EffectView : SkeletonView
 {
     public EffectView(string name) : base(name)
     {

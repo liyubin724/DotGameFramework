@@ -16,25 +16,28 @@ public class AddSkeletonSystem : ReactiveSystem<GameEntity>
 		
 	protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context) 
 	{
-        return context.CreateCollector(GameMatcher.AllOf(GameMatcher.AddSkeleton,GameMatcher.VirtualView));
+        return null;
+        //TODO:
+        //return context.CreateCollector(GameMatcher.AllOf(GameMatcher.AddSkeleton,GameMatcher.VirtualView));
 	}
 		
 	protected override bool Filter(GameEntity entity) 
 	{
-		return entity.hasAddSkeleton && entity.hasVirtualView;
+        return true;
+		//return entity.hasAddSkeleton && entity.hasVirtualView;
 	}
 
 	protected override void Execute(List<GameEntity> entities) 
 	{
 		foreach (var e in entities) 
 		{
-            ISkeletonView skeletonView = e.virtualView.value as ISkeletonView;
-            if(skeletonView!=null)
-            {
-                GameObject skeletonPrefab = Resources.Load<GameObject>(e.addSkeleton.skeletonPath);
-                skeletonView.AddSkeleton(Object.Instantiate(skeletonPrefab));
-            }
-            e.RemoveAddSkeleton();
+            //ISkeletonView skeletonView = e.virtualView.view as ISkeletonView;
+            //if(skeletonView!=null)
+            //{
+            //    GameObject skeletonPrefab = Resources.Load<GameObject>(e.addSkeleton.skeletonPath);
+            //    skeletonView.AddSkeleton(Object.Instantiate(skeletonPrefab));
+            //}
+            //e.RemoveAddSkeleton();
 		}
 	}
 }

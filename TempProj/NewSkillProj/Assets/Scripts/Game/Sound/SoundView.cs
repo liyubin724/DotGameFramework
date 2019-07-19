@@ -1,20 +1,15 @@
 ﻿using UnityEngine;
 
-public class SoundView : VirtualView,IMarkDestroyListener
+public class SoundView : ABaseView,IMarkDestroyListener
 {
+    private SoundType soundType;
     public AudioSource AudioSource
     {
         get;
         private set;
     }
 
-    private GameEntity ViewEntity
-    {
-        get
-        {
-            return (GameEntity)GetEntity();
-        }
-    }
+    private GameEntity ViewEntity => (GameEntity)entity;
 
     public override bool Active
     {
@@ -28,18 +23,22 @@ public class SoundView : VirtualView,IMarkDestroyListener
         }
     }
 
-    private SoundType soundType;
 
     public void OnMarkDestroy(GameEntity entity)
     {
+        AudioSource.Stop();
         SoundManager.GetInstance().ReleaseAudioSource(AudioSource, soundType);
         AudioSource = null;
+
+        base.DestroyView();
     }
 
     public void SetData(SoundType soundType)
     {
         this.soundType = soundType;
+
         AudioSource = SoundManager.GetInstance().GetAudioSource(soundType);
+        AudioSource.Play();
     }
 
     public override void AddListeners()
