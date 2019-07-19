@@ -12,45 +12,50 @@ public static class GameComponentsLookup {
     public const int AddSkeleton = 1;
     public const int BindNodeEffect = 2;
     public const int Bullet = 3;
-    public const int ChildOf = 4;
-    public const int ConfigID = 5;
-    public const int Direction = 6;
-    public const int DirectionListener = 7;
-    public const int EffectBind = 8;
-    public const int Effect = 9;
-    public const int EmitSkill = 10;
-    public const int EntityTarget = 11;
-    public const int MainPlayer = 12;
-    public const int MarkDestroy = 13;
-    public const int MarkDestroyListener = 14;
-    public const int MaxSpeed = 15;
-    public const int MotionCurveType = 16;
-    public const int Mover = 17;
-    public const int Name = 18;
-    public const int NewSkill = 19;
-    public const int OwnerID = 20;
-    public const int Player = 21;
-    public const int Position = 22;
-    public const int PositionListener = 23;
-    public const int PositionTarget = 24;
-    public const int SelectedTarget = 25;
-    public const int Sound = 26;
-    public const int Speed = 27;
-    public const int Time = 28;
-    public const int TimeDecrease = 29;
-    public const int TimeLineController = 30;
-    public const int TimeLineID = 31;
-    public const int UniqueID = 32;
-    public const int VirtualView = 33;
+    public const int CapsuleCollider = 4;
+    public const int ChildOf = 5;
+    public const int Collider = 6;
+    public const int ConfigID = 7;
+    public const int Direction = 8;
+    public const int DirectionListener = 9;
+    public const int EffectBind = 10;
+    public const int Effect = 11;
+    public const int EmitSkill = 12;
+    public const int EntityTarget = 13;
+    public const int MainPlayer = 14;
+    public const int MarkDestroy = 15;
+    public const int MarkDestroyListener = 16;
+    public const int MaxSpeed = 17;
+    public const int MotionCurveType = 18;
+    public const int Mover = 19;
+    public const int Name = 20;
+    public const int NewSkill = 21;
+    public const int OwnerID = 22;
+    public const int Player = 23;
+    public const int Position = 24;
+    public const int PositionListener = 25;
+    public const int PositionTarget = 26;
+    public const int Rigidbody = 27;
+    public const int SelectedTarget = 28;
+    public const int Sound = 29;
+    public const int Speed = 30;
+    public const int Time = 31;
+    public const int TimeDecrease = 32;
+    public const int TimeLineController = 33;
+    public const int TimeLineID = 34;
+    public const int UniqueID = 35;
+    public const int VirtualView = 36;
 
-    public const int TotalComponents = 34;
+    public const int TotalComponents = 37;
 
     public static readonly string[] componentNames = {
         "Acceleration",
         "AddSkeleton",
         "BindNodeEffect",
         "Bullet",
+        "CapsuleCollider",
         "ChildOf",
+        "Collider",
         "ConfigID",
         "Direction",
         "DirectionListener",
@@ -71,6 +76,7 @@ public static class GameComponentsLookup {
         "Position",
         "PositionListener",
         "PositionTarget",
+        "Rigidbody",
         "SelectedTarget",
         "Sound",
         "Speed",
@@ -87,7 +93,9 @@ public static class GameComponentsLookup {
         typeof(AddSkeletonComponent),
         typeof(BindNodeEffectComponent),
         typeof(BulletComponent),
+        typeof(CapsuleColliderComponent),
         typeof(ChildOfComponent),
+        typeof(ColliderComponent),
         typeof(ConfigIDComponent),
         typeof(DirectionComponent),
         typeof(DirectionListenerComponent),
@@ -108,6 +116,7 @@ public static class GameComponentsLookup {
         typeof(PositionComponent),
         typeof(PositionListenerComponent),
         typeof(PositionTargetComponent),
+        typeof(RigidbodyComponent),
         typeof(SelectedTargetComponent),
         typeof(SoundComponent),
         typeof(SpeedComponent),

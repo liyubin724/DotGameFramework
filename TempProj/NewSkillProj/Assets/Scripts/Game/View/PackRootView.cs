@@ -6,6 +6,7 @@ public class PackRootView : VirtualView,
 {
     private GameObject skeletonGameObject = null;
     private NodeBehaviour nodeBehaviour = null;
+    
 
     public GameObject RootGameObject
     {
