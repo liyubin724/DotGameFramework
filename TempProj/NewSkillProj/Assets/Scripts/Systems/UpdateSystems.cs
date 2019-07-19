@@ -1,4 +1,4 @@
-﻿public class UpdateSystems : ServiceFeature
+﻿public class UpdateSystems : AServiceFeature
 {
     public UpdateSystems(Contexts contexts, Services services) : base("Update Systems", contexts, services)
     {
@@ -10,6 +10,5 @@
         Add(new MoverSystem(contexts, services));
         Add(new GameEventSystems(contexts));
         Add(new MarkDestroySystem(contexts, services));
-
     }
 }

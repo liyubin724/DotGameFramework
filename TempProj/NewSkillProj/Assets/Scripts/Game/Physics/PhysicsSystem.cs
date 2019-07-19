@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PhysicsSystem : GameEntityReactiveSystem
+public class PhysicsSystem : AGameEntityReactiveSystem
 {
     public PhysicsSystem(Contexts contexts, Services services) : base(contexts, services)
     {

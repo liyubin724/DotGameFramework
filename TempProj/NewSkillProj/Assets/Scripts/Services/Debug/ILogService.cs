@@ -7,7 +7,7 @@ public enum DebugLogType
     Exception,
 }
 
-public interface ILogService : IService
+public interface ILogService 
 {
     void Log(DebugLogType logType, string message);
 }

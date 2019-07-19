@@ -12,15 +12,7 @@ public class GameController : MonoBehaviour
     void Awake()
     {
         contexts = Contexts.sharedInstance;
-        services = new Services
-        {
-            logService = new UnityLogService(contexts),
-            timeService = new TimeService(contexts),
-            idService = new IDService(contexts),
-            dataService = new ConfigDataService(contexts),
-        };
-        services.entityFactroy = new EntityFactroy(contexts, services);
-
+        services = new Services(contexts);
         updateSystems = new UpdateSystems(contexts, services);
         lateUpdateSystems = new LateUpdateSystems(contexts, services);
 
@@ -140,7 +132,7 @@ public class GameController : MonoBehaviour
         lateUpdateSystems.TearDown();
         lateUpdateSystems = null;
 
-        services.Dispose();
+        services.DoDispose();
         services = null;
     }
 }

@@ -1,24 +1,20 @@
 ﻿using System.IO;
 using System.Text;
 
-public class FileLogService : Service, ILogService
+public class FileLogService : AService, ILogService
 {
     StreamWriter writer = null;
     public FileLogService(Contexts contexts,string filePath) : base(contexts)
     {
-        writer = new StreamWriter(filePath, true, Encoding.UTF8);
+        writer = new StreamWriter(filePath, false, Encoding.UTF8);
     }
 
-    public override void DoDestroy()
+    public override void DoDispose()
     {
-        if(writer!=null)
+        if (writer != null)
         {
             writer.Close();
         }
-    }
-
-    public override void DoReset()
-    {
     }
 
     public void Log(DebugLogType logType, string message)

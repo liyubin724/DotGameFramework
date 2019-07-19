@@ -3,30 +3,22 @@ using Dot.Core.TimeLine.Data;
 using LitJson;
 using UnityEngine;
 
-public class EntityFactroy : Service
+public class EntityFactroy : AService
 {
-    private Services services;
     private Transform viewRootTransfrom;
+    private Services services;
     public EntityFactroy(Contexts contexts,Services services):base(contexts)
     {
         this.services = services;
 
-        viewRootTransfrom = new GameObject("View Root").transform;
+        GameObject viewRootGO = new GameObject("View Root");
+        Object.DontDestroyOnLoad(viewRootGO);
+        viewRootTransfrom = viewRootGO.transform;
     }
-
-    public override void DoDestroy()
-    {
-        
-    }
-
-    public override void DoReset()
-    {
-        
-    }
-
+    
     public GameEntity CreateEntity()
     {
-        GameEntity entity = CachedContexts.game.CreateEntity();
+        GameEntity entity = contexts.game.CreateEntity();
         entity.AddUniqueID(services.idService.GetNext());
 
         return entity;
@@ -51,7 +43,7 @@ public class EntityFactroy : Service
         playerEntity.AddConfigID(0);
 
         PlayerView playerView = new PlayerView($"Player_{playerEntity.uniqueID.value}",viewRootTransfrom);
-        playerView.InitializeView(CachedContexts, services, playerEntity);
+        playerView.InitializeView(contexts, services, playerEntity);
         playerEntity.AddVirtualView(playerView);
 
         playerEntity.AddAddSkeleton("Character/Prefab/PS_AR_Aurora_final");
@@ -70,7 +62,7 @@ public class EntityFactroy : Service
         SkillConfigData data = services.dataService.GetSkillData(skillConfigID);
         JsonData jsonData = JsonMapper.ToObject(Resources.Load<TextAsset>(data.timeLineConfig).text);
         TimeLineController controller = JsonDataReader.ReadController(jsonData);
-        controller.Initialize(CachedContexts, services, skillEntity);
+        controller.Initialize(contexts, services, skillEntity);
         skillEntity.AddTimeLineController(data.timeLineConfig, controller);
 
         return skillEntity;
@@ -95,7 +87,7 @@ public class EntityFactroy : Service
 
         EffectView view = new EffectView($"Effect_{effectEntity.uniqueID.value}");
         effectEntity.AddVirtualView(view);
-        view.InitializeView(CachedContexts, services, effectEntity);
+        view.InitializeView(contexts, services, effectEntity);
 
         EffectConfigData data = services.dataService.GetEffectData(effectConfigID);
         effectEntity.AddAddSkeleton(data.assetPath);
@@ -111,7 +103,7 @@ public class EntityFactroy : Service
         effectEntity.AddEffectBind(bindType, nodeType, nodeIndex);
         EffectView view = new EffectView($"Effect_{effectEntity.uniqueID.value}");
         effectEntity.AddVirtualView(view);
-        view.InitializeView(CachedContexts, services, effectEntity);
+        view.InitializeView(contexts, services, effectEntity);
 
         EffectConfigData data = services.dataService.GetEffectData(effectConfigID);
         effectEntity.AddAddSkeleton(data.assetPath);
@@ -126,7 +118,7 @@ public class EntityFactroy : Service
         soundEntity.AddConfigID(soundConfigID);
         SoundView soundView = new SoundView();
         soundEntity.AddVirtualView(soundView);
-        soundView.InitializeView(CachedContexts, services, soundEntity);
+        soundView.InitializeView(contexts, services, soundEntity);
 
         return soundEntity;
     }
@@ -139,7 +131,7 @@ public class EntityFactroy : Service
         bulletEntity.AddOwnerID(entity.ownerID.value);
 
         BulletView view = new BulletView($"Bullet_{bulletEntity.uniqueID.value}",viewRootTransfrom);
-        view.InitializeView(CachedContexts, services, bulletEntity);
+        view.InitializeView(contexts, services, bulletEntity);
         bulletEntity.AddVirtualView(view);
 
         BulletConfigData data = services.dataService.GetBulletData(bulletConfigID);
@@ -151,7 +143,7 @@ public class EntityFactroy : Service
 
         JsonData jsonData = JsonMapper.ToObject(Resources.Load<TextAsset>(data.timeLineConfig).text);
         TimeLineController controller = JsonDataReader.ReadController(jsonData);
-        controller.Initialize(CachedContexts, services, bulletEntity);
+        controller.Initialize(contexts, services, bulletEntity);
         bulletEntity.AddTimeLineController(data.timeLineConfig, controller);
         
         return bulletEntity;

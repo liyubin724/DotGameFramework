@@ -1,19 +1,9 @@
 ﻿using UnityEngine;
 
-public class ConfigDataService : Service
+public class ConfigDataService : AService
 {
     public ConfigDataService(Contexts contexts) : base(contexts)
     {
-    }
-
-    public override void DoDestroy()
-    {
-
-    }
-
-    public override void DoReset()
-    {
-
     }
 
     public T GetData<T>(string resPath) where T : ScriptableObject => Resources.Load<T>(resPath);

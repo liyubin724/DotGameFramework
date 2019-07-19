@@ -1,24 +1,23 @@
-﻿public class Services
+﻿public partial class Services
 {
+    public TimeService timeService;
     public ILogService logService;
-    public ITimeService timeService;
-    public IIDService idService;
-
+    public UniqueIDService idService;
     public EntityFactroy entityFactroy;
     public ConfigDataService dataService;
 
-    public Services()
+    public Services(Contexts contexts)
     {
-
+        logService = new UnityLogService(contexts);
+        timeService = new TimeService(contexts);
+        entityFactroy = new EntityFactroy(contexts, this);
+        dataService = new ConfigDataService(contexts);
+        idService = new UniqueIDService(contexts);
     }
 
-    public void Reset()
+    public void DoDispose()
     {
-
+        (logService as AService).DoDispose();
     }
-
-    public void Dispose()
-    {
-
-    }
+    
 }

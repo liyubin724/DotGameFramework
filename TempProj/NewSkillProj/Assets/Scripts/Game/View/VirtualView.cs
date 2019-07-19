@@ -19,16 +19,6 @@ public abstract class VirtualView : IVirtualView
         return entity;
     }
 
-    public Contexts GetContexts()
-    {
-        return contexts;
-    }
-
-    public Services GetServices()
-    {
-        return services;
-    }
-
     public virtual void InitializeView(Contexts contexts, Services services, IEntity entity)
     {
         this.contexts = contexts;
