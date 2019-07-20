@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Entitas;
 
 namespace Dot.Core.TimeLine
 {
@@ -12,6 +13,15 @@ namespace Dot.Core.TimeLine
         private float elapsedTime = 0f;
 
         public TrackGroup Group { get; set; }
+
+        public override void Initialize(Contexts contexts, Services services, IEntity entity)
+        {
+            base.Initialize(contexts, services, entity);
+            items.ForEach((item) =>
+            {
+                item.Initialize(contexts, services, entity);
+            });
+        }
 
         public void DoUpdate(float deltaTime)
         {
@@ -38,8 +48,6 @@ namespace Dot.Core.TimeLine
                 {
                     runningItems.Add(item);
                     waitingItems.RemoveAt(0);
-
-                    item.Initialize(contexts, services, entity);
                 }
             }
             
@@ -51,9 +59,9 @@ namespace Dot.Core.TimeLine
                     if (previousTime <= eventItem.FireTime && elapsedTime > eventItem.FireTime)
                     {
                         eventItem.Trigger();
-                        if (eventItem is IRevertEventItem reItem)
+                        if (eventItem.CanRevert)
                         {
-                            Group.AddRevertItem(reItem);
+                            Group.AddRevertItem(eventItem);
                         }
                     }
                     runningItems.RemoveAt(i);

@@ -11,13 +11,14 @@ namespace Dot.Core.TimeLine
         public readonly List<TrackLine> tracks = new List<TrackLine>();
 
         public TimeLineData Data { get; set; }
-        private List<IRevertEventItem> revertEventItems = new List<IRevertEventItem>();
+        private List<AEventItem> revertEventItems = new List<AEventItem>();
         public override void Initialize(Contexts contexts, Services services, IEntity entity)
         {
             base.Initialize(contexts, services, entity);
             tracks?.ForEach((track) =>
             {
-                track?.Initialize(contexts, services, entity);
+                track.Initialize(contexts, services, entity);
+                track.Group = this;
             });
         }
 
@@ -68,7 +69,7 @@ namespace Dot.Core.TimeLine
             Data?.OnGroupFinish(this);
         }
 
-        internal void AddRevertItem(IRevertEventItem item)
+        internal void AddRevertItem(AEventItem item)
         {
             revertEventItems.Add(item);
         }

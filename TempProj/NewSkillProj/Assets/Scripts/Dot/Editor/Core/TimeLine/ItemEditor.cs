@@ -1,4 +1,5 @@
 ﻿using Dot.Core.TimeLine;
+using Dot.Core.TimeLine.Data;
 using DotEditor.Core.EGUI;
 using System.Reflection;
 using UnityEditor;
@@ -66,6 +67,10 @@ namespace DotEditor.Core.TimeLine
                             {
                                 actionItem.FireTime = Track.Group.Group.TotalTime - actionItem.Duration;
                             }
+                        }else if(Item.GetType().IsSubclassOf(typeof(AEventItem)))
+                        {
+                            var eventItem = (AEventItem)Item;
+                            eventItem.CanRevert = EditorGUILayout.Toggle(TimeLineConst.CANREVERT, eventItem.CanRevert);
                         }
 
                         PropertyInfo[] pInfos = Item.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
