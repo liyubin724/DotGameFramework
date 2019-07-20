@@ -24,13 +24,13 @@ namespace DotEditor.Core.TimeLine
     {
         private static TimeLineWindow OpenWindow(string title)
         {
-            var win = GetWindow<TimeLineWindow>();
+            var win = new TimeLineWindow();
             win.titleContent = new GUIContent(title);
             win.wantsMouseMove = true;
             return win;
         }
 
-        [MenuItem("Tools/Skill Editor %#S")]
+        [MenuItem("Tools/Skill Editor #&S")]
         private static void OpenSkillWindow()
         {
             var win = OpenWindow("Skill Editor");
@@ -41,7 +41,7 @@ namespace DotEditor.Core.TimeLine
             };
             win.Show();
         }
-        [MenuItem("Tools/Bullet Editor %#B")]
+        [MenuItem("Tools/Bullet Editor #&B")]
         private static void OpenBulletWindow()
         {
             var win = OpenWindow("Bullet Editor");

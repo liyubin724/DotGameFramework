@@ -41,12 +41,15 @@ public static class GameComponentsLookup {
     public const int Speed = 30;
     public const int Time = 31;
     public const int TimeDecrease = 32;
-    public const int TimeLineController = 33;
+    public const int TimeLine = 33;
     public const int TimeLineID = 34;
-    public const int UniqueID = 35;
-    public const int View = 36;
+    public const int TimeLinePlay = 35;
+    public const int TimeLinePlayFinish = 36;
+    public const int TimeLineStop = 37;
+    public const int UniqueID = 38;
+    public const int View = 39;
 
-    public const int TotalComponents = 37;
+    public const int TotalComponents = 40;
 
     public static readonly string[] componentNames = {
         "Acceleration",
@@ -82,8 +85,11 @@ public static class GameComponentsLookup {
         "Speed",
         "Time",
         "TimeDecrease",
-        "TimeLineController",
+        "TimeLine",
         "TimeLineID",
+        "TimeLinePlay",
+        "TimeLinePlayFinish",
+        "TimeLineStop",
         "UniqueID",
         "View"
     };
@@ -122,8 +128,11 @@ public static class GameComponentsLookup {
         typeof(SpeedComponent),
         typeof(TimeComponent),
         typeof(TimeDecreaseComponent),
-        typeof(TimeLineControllerComponent),
+        typeof(TimeLineComponent),
         typeof(TimeLineIDComponent),
+        typeof(TimeLinePlayComponent),
+        typeof(TimeLinePlayFinishComponent),
+        typeof(TimeLineStopComponent),
         typeof(UniqueIDComponent),
         typeof(ViewComponent)
     };

@@ -94,6 +94,24 @@ public class GameController : MonoBehaviour
             GameEntity mainPlayer = contexts.game.mainPlayerEntity;
             mainPlayer.ReplaceEmitSkill(10002);
         }
+        if(GUILayout.Button("add TimeLine"))
+        {
+            GameEntity mainPlayer = contexts.game.mainPlayerEntity;
+            mainPlayer.AddTimeLine(new Dot.Core.TimeLine.TimeLineData());
+        }
+        if(GUILayout.Button("Remove TImeLine"))
+        {
+            GameEntity mainPlayer = contexts.game.mainPlayerEntity;
+            if(mainPlayer.hasTimeLine)
+            {
+                mainPlayer.RemoveTimeLine();
+            }
+        }
+        if (GUILayout.Button("Change TImeLine"))
+        {
+            GameEntity mainPlayer = contexts.game.mainPlayerEntity;
+            mainPlayer.ReplaceTimeLine(new Dot.Core.TimeLine.TimeLineData());
+        }
     }
 
     void Update()

@@ -106,6 +106,22 @@ namespace Dot.Core.TimeLine
             }
         }
 
+        public override void DoReset()
+        {
+            groupList.ForEach((group) =>
+            {
+                group.DoReset();
+            });
+
+            groupStartCallback = null;
+            groupChangedCallback = null;
+            groupFinishCallback = null;
+            groupDic.Clear();
+            playingGroupName = string.Empty;
+
+            base.DoReset();
+        }
+
         internal void OnGroupFinish(TrackGroup group)
         {
             playingGroupName = string.Empty;

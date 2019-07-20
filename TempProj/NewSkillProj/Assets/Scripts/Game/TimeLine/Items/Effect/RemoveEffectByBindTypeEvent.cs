@@ -30,8 +30,8 @@ namespace Game.TimeLine
             }
 
 #if TIMELINE_DEBUG
-            GameEntity ownerEntity = contexts.game.GetEntityWithUniqueID(skillEntity.childOf.entityID);
-            INodeBehaviourView nbView = ownerEntity.virtualView.value as INodeBehaviourView;
+            GameEntity ownerEntity = contexts.game.GetEntityWithUniqueID(skillEntity.parent.entityID);
+            INodeBehaviourView nbView = ownerEntity.view.view as INodeBehaviourView;
             int bindNodeCount = nbView.GetNodeBindCount(NodeType);
             if(bindNodeCount != removeCount)
             {

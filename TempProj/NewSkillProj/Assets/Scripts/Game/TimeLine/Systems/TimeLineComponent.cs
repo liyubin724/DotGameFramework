@@ -2,7 +2,7 @@
 using Entitas;
 
 [Game]
-public class TimeLineControllerComponent : IComponent 
+public class TimeLineComponent : IComponent 
 {
     public TimeLineData data;
 }	
