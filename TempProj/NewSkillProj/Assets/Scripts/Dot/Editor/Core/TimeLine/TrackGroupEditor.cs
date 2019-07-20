@@ -1,10 +1,7 @@
-﻿using Dot.Core.TimeLine.Base;
-using Dot.Core.TimeLine.Base.Condition;
-using Dot.Core.TimeLine.Base.Group;
-using Dot.Core.TimeLine.Base.Tracks;
+﻿using Dot.Core.TimeLine;
+using Dot.Core.TimeLine.Data;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,7 +9,8 @@ namespace DotEditor.Core.TimeLine
 {
     public class TrackGroupEditor
     {
-        public ControllerEditor Controller { get; set; }
+        public DataEditor Data { get; set; }
+
         private bool isSelected = false;
         public bool IsSelected
         {
@@ -175,35 +173,12 @@ namespace DotEditor.Core.TimeLine
                 {
                     using (new EditorGUI.IndentLevelScope())
                     {
-                        Group.Name = EditorGUILayout.TextField("Name", Group.Name);
-                        Group.TotalTime = EditorGUILayout.FloatField("TotalTime", Group.TotalTime);
-                        Group.IsAwaysRun = EditorGUILayout.Toggle("IsAwaysRun", Group.IsAwaysRun);
+                        Group.Name = EditorGUILayout.TextField(TimeLineConst.NAME, Group.Name);
+                        Group.TotalTime = EditorGUILayout.FloatField(TimeLineConst.TOTALTIME, Group.TotalTime);
+                        Group.CanRevert = EditorGUILayout.Toggle(TimeLineConst.CANREVERT, Group.CanRevert);
                     }
                     if (sope.changed)
                         setting.isChanged = true;
-                }
-
-                EditorGUILayout.LabelField("Conditions:");
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    if(GUILayout.Button("Begin Condition"))
-                    {
-                        ConditionEditor.ShowWin(Group.beginCondition, setting,(condition)=>
-                        {
-                            Group.beginCondition = condition;
-                        });
-                    }
-                    if (GUILayout.Button("End Condition"))
-                    {
-                        ConditionEditor.ShowWin(Group.endCondition, setting, (condition) =>
-                        {
-                            AnyOfCondition pc = (AnyOfCondition)condition;
-                            if(pc!=null)
-                            {
-                                Group.endCondition = pc;
-                            }
-                        });
-                    }
                 }
             }
             
@@ -213,30 +188,7 @@ namespace DotEditor.Core.TimeLine
                 SelectedTrack.DrawProperty();
             }
         }
-
-        private int conditionSelectedIndex = 0;
-        private ACondition DrawConditionProperty(ACondition conditon)
-        {
-            if(conditon == null)
-            {
-                if(GUILayout.Button("Create", "DropDownButton"))
-                {
-                    
-                }
-            }else
-            {
-                if(conditon.GetType() == typeof(AComposeCondition))
-                {
-
-                }else
-                {
-
-                }
-            }
-
-            return conditon;
-        }
-
+        
         public void DrawTrack(Rect clipRect)
         {
             //GUI.Label(clipRect, "", "flow node 6 on");

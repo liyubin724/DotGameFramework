@@ -11,19 +11,19 @@ public partial class GameEntity {
     public TimeLineControllerComponent timeLineController { get { return (TimeLineControllerComponent)GetComponent(GameComponentsLookup.TimeLineController); } }
     public bool hasTimeLineController { get { return HasComponent(GameComponentsLookup.TimeLineController); } }
 
-    public void AddTimeLineController(string newAssetPath, Dot.Core.TimeLine.Base.TimeLineController newController) {
+    public void AddTimeLineController(string newAssetPath, Dot.Core.TimeLine.TimeLineData newData) {
         var index = GameComponentsLookup.TimeLineController;
         var component = (TimeLineControllerComponent)CreateComponent(index, typeof(TimeLineControllerComponent));
-        component.assetPath = newAssetPath;
-        component.controller = newController;
+        //component.assetPath = newAssetPath;
+        component.data = newData;
         AddComponent(index, component);
     }
 
-    public void ReplaceTimeLineController(string newAssetPath, Dot.Core.TimeLine.Base.TimeLineController newController) {
+    public void ReplaceTimeLineController(string newAssetPath, Dot.Core.TimeLine.TimeLineData newData) {
         var index = GameComponentsLookup.TimeLineController;
         var component = (TimeLineControllerComponent)CreateComponent(index, typeof(TimeLineControllerComponent));
-        component.assetPath = newAssetPath;
-        component.controller = newController;
+        //component.assetPath = newAssetPath;
+        component.data = newData;
         ReplaceComponent(index, component);
     }
 

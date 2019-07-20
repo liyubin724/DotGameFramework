@@ -1,4 +1,4 @@
-﻿using Dot.Core.TimeLine.Base;
+﻿using Dot.Core.TimeLine;
 using Dot.Core.TimeLine.Data;
 using LitJson;
 using UnityEngine;
@@ -59,11 +59,11 @@ public class EntityFactroy : AService
         skillEntity.AddConfigID(skillConfigID);
         skillEntity.AddOwnerID(playerEntity.uniqueID.value);
 
-        SkillConfigData data = services.dataService.GetSkillData(skillConfigID);
-        JsonData jsonData = JsonMapper.ToObject(Resources.Load<TextAsset>(data.timeLineConfig).text);
-        TimeLineController controller = JsonDataReader.ReadController(jsonData);
-        controller.Initialize(contexts, services, skillEntity);
-        skillEntity.AddTimeLineController(data.timeLineConfig, controller);
+        SkillConfigData configData = services.dataService.GetSkillData(skillConfigID);
+        JsonData jsonData = JsonMapper.ToObject(Resources.Load<TextAsset>(configData.timeLineConfig).text);
+        TimeLineData tlData = JsonDataReader.ReadData(jsonData);
+        tlData.Initialize(contexts, services, skillEntity);
+        skillEntity.AddTimeLineController(configData.timeLineConfig, tlData);
 
         return skillEntity;
     }
@@ -126,7 +126,7 @@ public class EntityFactroy : AService
         }
 
         JsonData jsonData = JsonMapper.ToObject(Resources.Load<TextAsset>(data.timeLineConfig).text);
-        TimeLineController controller = JsonDataReader.ReadController(jsonData);
+        TimeLineData controller = JsonDataReader.ReadData(jsonData);
         controller.Initialize(contexts, services, bulletEntity);
         bulletEntity.AddTimeLineController(data.timeLineConfig, controller);
         

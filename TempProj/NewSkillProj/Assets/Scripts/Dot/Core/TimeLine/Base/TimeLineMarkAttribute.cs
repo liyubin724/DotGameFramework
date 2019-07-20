@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dot.Core.TimeLine.Base
+namespace Dot.Core.TimeLine
 {
     public enum TimeLineExportPlatform
     {

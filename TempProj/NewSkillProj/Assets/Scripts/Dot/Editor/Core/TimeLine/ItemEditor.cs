@@ -1,5 +1,4 @@
-﻿using Dot.Core.TimeLine.Base;
-using Dot.Core.TimeLine.Base.Item;
+﻿using Dot.Core.TimeLine;
 using DotEditor.Core.EGUI;
 using System.Reflection;
 using UnityEditor;
@@ -84,7 +83,7 @@ namespace DotEditor.Core.TimeLine
                                     dependItems = Track.Group.GetDependOnItem(dependOn.DependOnType);
                                 }else if(dependOn.DependOnOption == DependOnOption.Controller)
                                 {
-                                    dependItems = Track.Group.Controller.GetDependOnItem(dependOn.DependOnType);
+                                    dependItems = Track.Group.Data.GetDependOnItem(dependOn.DependOnType);
                                 }
                                 EditorGUIPropertyInfoLayout.PropertyInfoIntPopField(Item, pi, dependItems);
                             }else

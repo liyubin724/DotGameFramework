@@ -1,5 +1,4 @@
-﻿using Dot.Core.TimeLine.Base;
-using Dot.Core.TimeLine.Base.Item;
+﻿using Dot.Core.TimeLine;
 using Entitas;
 
 namespace Game.TimeLine

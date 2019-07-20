@@ -1,4 +1,4 @@
-﻿using Dot.Core.TimeLine.Base;
+﻿using Dot.Core.TimeLine;
 using Dot.Core.TimeLine.Data;
 using LitJson;
 using System.IO;
@@ -8,16 +8,54 @@ using UnityEngine;
 
 namespace DotEditor.Core.TimeLine
 {
+    public enum TimeLineEditorOwner
+    {
+        Skill,
+        Bullet,
+    }
+    
+    public class TimeLineEditorConfig
+    {
+        public TimeLineEditorOwner owner = TimeLineEditorOwner.Skill;
+        public string dataSaveDir = "Assets/Resources";
+    }
+
     public class TimeLineWindow : EditorWindow
     {
-        [MenuItem("Tools/TimeLine Window %#T")]
-        private static void OpenWindow()
+        private static TimeLineWindow OpenWindow(string title)
         {
             var win = GetWindow<TimeLineWindow>();
-            win.titleContent = new GUIContent("Time Line");
+            win.titleContent = new GUIContent(title);
             win.wantsMouseMove = true;
+            return win;
         }
-        private ControllerEditor editorController;
+
+        [MenuItem("Tools/Skill Editor %#S")]
+        private static void OpenSkillWindow()
+        {
+            var win = OpenWindow("Skill Editor");
+            win.editorConfig = new TimeLineEditorConfig()
+            {
+                owner = TimeLineEditorOwner.Skill,
+                dataSaveDir = "ECSResources/Resources/Skill/Data"
+            };
+            win.Show();
+        }
+        [MenuItem("Tools/Bullet Editor %#B")]
+        private static void OpenBulletWindow()
+        {
+            var win = OpenWindow("Bullet Editor");
+            win.editorConfig = new TimeLineEditorConfig()
+            {
+                owner = TimeLineEditorOwner.Bullet,
+                dataSaveDir = "ECSResources/Resources/Bullet/Data"
+            };
+            win.Show();
+        }
+
+        private TimeLineEditorConfig editorConfig = null;
+
+        private DataEditor dataEditor;
         private EditorSetting editorSetting;
         private string configPath = "";
 
@@ -45,9 +83,9 @@ namespace DotEditor.Core.TimeLine
 
             Rect rect = new Rect(2, toolbarHeight + contentHeight + 2, position.width - 4, position.height - toolbarHeight - contentHeight - 4);
 
-            if (editorController != null)
+            if (dataEditor != null)
             {
-                editorController.OnGUI(rect);
+                dataEditor.OnGUI(rect);
 
                 if (editorSetting.isChanged)
                 {
@@ -63,17 +101,17 @@ namespace DotEditor.Core.TimeLine
             {
                 if (GUILayout.Button("Load", "toolbarbutton", GUILayout.Width(60)))
                 {
-                    string filePath = EditorUtility.OpenFilePanel("Load Config", Application.dataPath + "/Resources", "txt");
+                    string filePath = EditorUtility.OpenFilePanel("Load Config", Application.dataPath + editorConfig.dataSaveDir, "txt");
                     if (!string.IsNullOrEmpty(filePath))
                     {
                         string assetPath = "Assets" + filePath.Replace(Application.dataPath, "");
                         TextAsset textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(assetPath);
                         if (textAsset != null)
                         {
-                            TimeLineController controller = JsonDataReader.ReadController(JsonMapper.ToObject(textAsset.text));
-                            if (controller != null)
+                            TimeLineData data = JsonDataReader.ReadData(JsonMapper.ToObject(textAsset.text));
+                            if (data != null)
                             {
-                                editorController = new ControllerEditor(controller, editorSetting);
+                                dataEditor = new DataEditor(data, editorSetting);
                             }
                             configPath = filePath;
                         }
@@ -81,23 +119,23 @@ namespace DotEditor.Core.TimeLine
                 }
                 if (GUILayout.Button("Create", "toolbarbutton", GUILayout.Width(60)))
                 {
-                    string filePath = EditorUtility.SaveFilePanel("Save Config", Application.dataPath + "/Resources", "tl_config", "txt");
+                    string filePath = EditorUtility.SaveFilePanel("Save Config", Application.dataPath + editorConfig.dataSaveDir, "tl_config", "txt");
                     if (!string.IsNullOrEmpty(filePath))
                     {
-                        TimeLineController controller = new TimeLineController();
-                        editorController = new ControllerEditor(controller, editorSetting);
+                        TimeLineData data = new TimeLineData();
+                        dataEditor = new DataEditor(data, editorSetting);
                         editorSetting.isChanged = true;
                         configPath = filePath;
                     }
                 }
 
-                if (editorController != null)
+                if (dataEditor != null)
                 {
                     if (GUILayout.Button("Save", "toolbarbutton", GUILayout.Width(120)))
                     {
-                        editorController.FillController();
+                        dataEditor.FillData();
 
-                        string config = JsonDataWriter.WriteController(editorController.Controller).ToJson();
+                        string config = JsonDataWriter.WriteData(dataEditor.Data).ToJson();
                         File.WriteAllText(configPath, config, new UTF8Encoding(false));
 
                         string assetPath = "Assets" + configPath.Replace(Application.dataPath, "");

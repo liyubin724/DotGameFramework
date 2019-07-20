@@ -1,10 +1,9 @@
-﻿using Dot.Core.TimeLine.Base;
+﻿using Dot.Core.TimeLine;
 using Entitas;
 
 [Game]
 public class TimeLineControllerComponent : IComponent 
 {
-    public string assetPath = "";
-    public TimeLineController controller;
+    public TimeLineData data;
 }	
 

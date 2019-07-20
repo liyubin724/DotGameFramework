@@ -1,52 +1,17 @@
-﻿using Dot.Core.TimeLine.Base.Condition;
-using Dot.Core.TimeLine.Base.Tracks;
-using Entitas;
+﻿using Entitas;
 using System.Collections.Generic;
 
-namespace Dot.Core.TimeLine.Base.Group
+namespace Dot.Core.TimeLine
 {
-    public delegate void OnGroupFinished(TrackGroup group);
-
     public class TrackGroup : AEntitasEnv
     {
         public string Name { get; set; } = "Time Line Group";
-        private float totalTime = 10.0f;
-        public float TotalTime
-        {
-            get
-            {
-                return totalTime;
-            }
-            set
-            {
-                totalTime = value;
-                if(endCondition == null)
-                {
-                    endCondition = new AnyOfCondition();
-                    endCondition.IsReadonly = true;
-                    TimeOverCondition toCondition = new TimeOverCondition();
-                    toCondition.IsReadonly = true;
-                    toCondition.TotalTime = TotalTime;
-                    endCondition.conditions.Add(toCondition);
-                }
-                foreach(var c in endCondition.conditions)
-                {
-                    if(c.GetType() == typeof(TimeOverCondition))
-                    {
-                        ((TimeOverCondition)c).TotalTime = totalTime;
-                        break;
-                    }
-                }
-            }
-        }
-        public bool IsAwaysRun { get; set; } = false;
-
-        public ACondition beginCondition = null;
-        public AnyOfCondition endCondition = null;
-
+        public float TotalTime { get; set; }
+        public bool CanRevert { get; set; } = true;
         public readonly List<TrackLine> tracks = new List<TrackLine>();
-        public OnGroupFinished onFinished = null;
-        
+
+        public TimeLineData Data { get; set; }
+        private List<IRevertEventItem> revertEventItems = new List<IRevertEventItem>();
         public override void Initialize(Contexts contexts, Services services, IEntity entity)
         {
             base.Initialize(contexts, services, entity);
@@ -54,35 +19,35 @@ namespace Dot.Core.TimeLine.Base.Group
             {
                 track?.Initialize(contexts, services, entity);
             });
-            beginCondition?.Initialize(contexts, services, entity);
-            endCondition?.Initialize(contexts, services, entity);
         }
 
+        private float elapsedTime = 0.0f;
         public void DoUpdate(float deltaTime)
         {
-            tracks?.ForEach((track) =>
+            if(isInit)
             {
-                track?.DoUpdate(deltaTime);
-            });
+                if(elapsedTime == 0)
+                {
+                    Data?.OnGroupStart(this);
+                }
 
-            if (endCondition != null)
-            {
-                endCondition.DoUpdate(deltaTime);
-                if (endCondition.Evaluate())
+                tracks?.ForEach((track) =>
+                {
+                    track?.DoUpdate(deltaTime);
+                });
+
+                elapsedTime += deltaTime;
+                if(elapsedTime >= TotalTime)
                 {
                     Stop();
-                    return;
                 }
             }
         }
 
         public override void DoReset()
         {
-            onFinished = null;
-
-            beginCondition?.DoReset();
-            endCondition?.DoReset();
-
+            elapsedTime = 0.0f;
+            revertEventItems.Clear();
             base.DoReset();
         }
 
@@ -92,36 +57,20 @@ namespace Dot.Core.TimeLine.Base.Group
             {
                 track?.Stop();
             });
-            onFinished?.Invoke(this);
+
+            if(CanRevert)
+            {
+                for(int i = revertEventItems.Count-1;i>=0;--i)
+                {
+                    revertEventItems[i].DoRevert();
+                }
+            }
+            Data?.OnGroupFinish(this);
         }
 
-
-        public static TrackGroup CreateNew()
+        internal void AddRevertItem(IRevertEventItem item)
         {
-            TrackGroup group = new TrackGroup();
-            group.endCondition = new AnyOfCondition();
-            group.endCondition.IsReadonly = true;
-            TimeOverCondition toCondition = new TimeOverCondition();
-            toCondition.IsReadonly = true;
-            toCondition.TotalTime = group.TotalTime;
-            group.endCondition.conditions.Add(toCondition);
-            return group;
+            revertEventItems.Add(item);
         }
-
-        //public void Pause()
-        //{
-        //    tracks?.ForEach((track) =>
-        //    {
-        //        track?.Pause();
-        //    });
-        //}
-
-        //public void Resume()
-        //{
-        //    tracks?.ForEach((track) =>
-        //    {
-        //        track?.Resume();
-        //    });
-        //}
     }
 }

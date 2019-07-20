@@ -1,9 +1,4 @@
-﻿using Dot.Core.TimeLine.Base;
-using Dot.Core.TimeLine.Base.Condition;
-using Dot.Core.TimeLine.Base.Group;
-using Dot.Core.TimeLine.Base.Item;
-using Dot.Core.TimeLine.Base.Tracks;
-using LitJson;
+﻿using LitJson;
 using System;
 using System.Reflection;
 using UnityEngine;
@@ -12,65 +7,36 @@ namespace Dot.Core.TimeLine.Data
 {
     public static class JsonDataReader
     {
-        public static TimeLineController ReadController(JsonData jsonData)
+        public static TimeLineData ReadData(JsonData jsonData)
         {
             if (jsonData == null) return null;
 
-            TimeLineController controller = new TimeLineController();
-
-            if(jsonData.ContainsKey(DataConst.TIME_LINE_GROUPS))
+            TimeLineData data = new TimeLineData();
+            if(jsonData.ContainsKey(TimeLineConst.GROUPS))
             {
-                JsonData groupsJsonData = jsonData[DataConst.TIME_LINE_GROUPS];
+                JsonData groupsJsonData = jsonData[TimeLineConst.GROUPS];
                 for (var i = 0; i < groupsJsonData.Count; ++i)
                 {
-                    TrackGroup group = ReadGroup(groupsJsonData[i]);
-                    if (group != null)
-                    {
-                        controller.groups.Add(group);
-                    }
+                    data.groupList.Add(ReadGroup(groupsJsonData[i]));
                 }
             }
 
-            return controller;
+            return data;
         }
 
         public static TrackGroup ReadGroup(JsonData jsonData)
         {
             if (jsonData == null) return null;
-            if (!jsonData.ContainsKey(DataConst.TIME_LINE_NAME)) return null;
+            if (!jsonData.ContainsKey(TimeLineConst.NAME)) return null;
 
             TrackGroup group = new TrackGroup
             {
-                Name = (string)jsonData[DataConst.TIME_LINE_NAME],
-                TotalTime = (float)jsonData[DataConst.TIME_LINE_GROUP_TOTALTIME],
+                Name = (string)jsonData[TimeLineConst.NAME],
+                TotalTime = (float)jsonData[TimeLineConst.TOTALTIME],
+                CanRevert = (bool)jsonData[TimeLineConst.CANREVERT],
             };
-            if (jsonData.ContainsKey(DataConst.TIME_LINE_GROUP_ISAWAYSRUN))
-            {
-                group.IsAwaysRun = (bool)jsonData[DataConst.TIME_LINE_GROUP_ISAWAYSRUN];
-            }
 
-            if (jsonData.ContainsKey(DataConst.TIME_LINE_GROUP_BEGIN_CONDITION))
-            {
-                group.beginCondition = ReadCondition(jsonData[DataConst.TIME_LINE_GROUP_BEGIN_CONDITION]);
-            }
-            if(jsonData.ContainsKey(DataConst.TIME_LINE_GROUP_END_CONDITION))
-            {
-                group.endCondition = (AnyOfCondition)ReadCondition(jsonData[DataConst.TIME_LINE_GROUP_END_CONDITION]);
-            }
-
-            if(group.endCondition == null)
-            {
-                Debug.LogError("ERROR");
-            }
-
-            //group.endCondition = new ParallelCondition();
-            //group.endCondition.IsReadonly = true;
-            //TimeOverCondition toCondition = new TimeOverCondition();
-            //toCondition.IsReadonly = true;
-            //toCondition.TotalTime = group.TotalTime;
-            //group.endCondition.conditions.Add(toCondition);
-
-            JsonData tracksJsonData = jsonData[DataConst.TIME_LINE_TRACKS];
+            JsonData tracksJsonData = jsonData[TimeLineConst.TRACKS];
             if(tracksJsonData != null && tracksJsonData.Count>0)
             {
                 for(int i =0;i< tracksJsonData.Count;++i)
@@ -86,35 +52,18 @@ namespace Dot.Core.TimeLine.Data
             return group;
         }
 
-        public static AComposeCondition ReadConditionCompose(JsonData jsonData)
-        {
-            AComposeCondition result = null;//new ATimeLineComposeCondition();
-            if(jsonData!=null && jsonData.Count>0)
-            {
-                for(int i =0;i<jsonData.Count;++i)
-                {
-                    ACondition condition = ReadCondition(jsonData[i]);
-                    if(condition!=null)
-                    {
-                        result.conditions.Add(condition);
-                    }
-                }
-            }
-            return result;
-        }
-
         public static TrackLine ReadTrack(JsonData jsonData)
         {
             if (jsonData == null) return null;
-            if(!jsonData.ContainsKey(DataConst.TIME_LINE_NAME))
+            if(!jsonData.ContainsKey(TimeLineConst.NAME))
             {
                 return null;
             }
 
             TrackLine track = new TrackLine();
-            track.Name = (string)jsonData[DataConst.TIME_LINE_NAME];
+            track.Name = (string)jsonData[TimeLineConst.NAME];
 
-            JsonData itemsJsonData = jsonData[DataConst.TIME_LINE_ITEMS];
+            JsonData itemsJsonData = jsonData[TimeLineConst.ITEMS];
             for (int i = 0; i < itemsJsonData.Count; ++i)
             {
                 AItem item = ReadItem(itemsJsonData[i]);
@@ -133,29 +82,11 @@ namespace Dot.Core.TimeLine.Data
             return ReadFromJson<AItem>(jsonData);
         }
 
-        public static ACondition ReadCondition(JsonData jsonData)
-        {
-            if (jsonData == null)
-                return null;
-            var condition = ReadFromJson<ACondition>(jsonData);
-            if (jsonData.ContainsKey(DataConst.TIME_LINE_Child_CONDITION))
-            {
-                AComposeCondition composeCondition = (AComposeCondition)condition;
-                JsonData childrenJsonData = jsonData[DataConst.TIME_LINE_Child_CONDITION];
-                for(int i =0;i<childrenJsonData.Count;++i)
-                {
-                    composeCondition.conditions.Add(ReadCondition(childrenJsonData[i]));
-                }
-            }
-
-            return condition;
-        }
-
         private static T ReadFromJson<T>(JsonData jsonData) where T:class
         {
             if (jsonData == null)
                 return null;
-            if(!jsonData.ContainsKey(DataConst.TIME_LINE_NAME))
+            if(!jsonData.ContainsKey(TimeLineConst.NAME))
             {
                 return null;
             }

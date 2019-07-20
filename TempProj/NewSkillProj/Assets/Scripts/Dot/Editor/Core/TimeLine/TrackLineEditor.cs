@@ -1,6 +1,4 @@
-﻿using Dot.Core.TimeLine.Base;
-using Dot.Core.TimeLine.Base.Item;
-using Dot.Core.TimeLine.Base.Tracks;
+﻿using Dot.Core.TimeLine;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,4 @@
-﻿using Dot.Core.TimeLine.Base;
-using Dot.Core.TimeLine.Base.Group;
+﻿using Dot.Core.TimeLine;
 using DotEditor.Core.EGUI;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using UnityEngine;
 
 namespace DotEditor.Core.TimeLine
 {
-    public class ControllerEditor
+    public class DataEditor
     {
         public float TimeLength
         {
@@ -34,7 +33,7 @@ namespace DotEditor.Core.TimeLine
             }
         }
         public Rect ItemClipRect { get; private set; }
-        public TimeLineController Controller { get ; private set; }
+        public TimeLineData Data { get ; private set; }
         
         private EditorSetting setting = null;
         private List<TrackGroupEditor> groups = new List<TrackGroupEditor>();
@@ -57,17 +56,17 @@ namespace DotEditor.Core.TimeLine
             }
         }
 
-        public ControllerEditor(TimeLineController tlController,EditorSetting setting)
+        public DataEditor(TimeLineData data,EditorSetting setting)
         {
-            Controller = tlController;
+            Data = data;
             this.setting = setting;
-            tlController.groups.ForEach((group) =>
+
+            data.groupList.ForEach((group) =>
             {
                 var tleGroup = new TrackGroupEditor(group,setting);
-                tleGroup.Controller = this;
+                tleGroup.Data = this;
                 groups.Add(tleGroup);
             });
-            tlController.groups.Clear();
         }
         
         public void OnGUI(Rect rect)
@@ -214,9 +213,9 @@ namespace DotEditor.Core.TimeLine
             {
                 if (GUILayout.Button("+", "ButtonLeft"))
                 {
-                    TrackGroup tlGroup = TrackGroup.CreateNew();
+                    TrackGroup tlGroup = new TrackGroup();
                     TrackGroupEditor tleGroup = new TrackGroupEditor(tlGroup,setting);
-                    tleGroup.Controller = this;
+                    tleGroup.Data = this;
                     groups.Add(tleGroup);
                     
                     SelectedGroup = tleGroup;
@@ -324,12 +323,12 @@ namespace DotEditor.Core.TimeLine
             }
         }
 
-        public void FillController()
+        public void FillData()
         {
-            Controller.groups.Clear();
+            Data.groupList.Clear();
             foreach(var g in groups)
             {
-                Controller.groups.Add(g.Group);
+                Data.groupList.Add(g.Group);
                 g.FillGroup();
             }
         }

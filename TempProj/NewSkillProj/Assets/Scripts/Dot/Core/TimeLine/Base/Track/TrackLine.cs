@@ -1,16 +1,17 @@
-﻿using Dot.Core.TimeLine.Base.Item;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Dot.Core.TimeLine.Base.Tracks
+namespace Dot.Core.TimeLine
 {
     public class TrackLine : AEntitasEnv
     {
         public string Name { get; set; } = "Time Line Track";
         public List<AItem> items = new List<AItem>();
 
-        private readonly List<AItem> waitingItems = new List<AItem>();
-        private readonly List<AItem> runningItems = new List<AItem>();
+        private List<AItem> waitingItems = new List<AItem>();
+        private List<AItem> runningItems = new List<AItem>();
         private float elapsedTime = 0f;
+
+        public TrackGroup Group { get; set; }
 
         public void DoUpdate(float deltaTime)
         {
@@ -50,9 +51,12 @@ namespace Dot.Core.TimeLine.Base.Tracks
                     if (previousTime <= eventItem.FireTime && elapsedTime > eventItem.FireTime)
                     {
                         eventItem.Trigger();
+                        if (eventItem is IRevertEventItem reItem)
+                        {
+                            Group.AddRevertItem(reItem);
+                        }
                     }
                     runningItems.RemoveAt(i);
-                    item.DoReset();
                 }else if(item is AActionItem actionItem)
                 {
                     if (previousTime <= actionItem.FireTime && elapsedTime > actionItem.FireTime)
@@ -63,7 +67,6 @@ namespace Dot.Core.TimeLine.Base.Tracks
                     {
                         actionItem.Exit();
                         runningItems.RemoveAt(i);
-                        item.DoReset();
                     }
                     else if (previousTime >= actionItem.FireTime && elapsedTime <= actionItem.EndTime)
                     {
@@ -71,7 +74,6 @@ namespace Dot.Core.TimeLine.Base.Tracks
                     }else
                     {
                         runningItems.RemoveAt(i);
-                        item.DoReset();
                     }
                 }
             }
@@ -86,7 +88,6 @@ namespace Dot.Core.TimeLine.Base.Tracks
                     actionItem.Stop();
                 }
             });
-            DoReset();
         }
 
         public void Pause()
@@ -113,11 +114,11 @@ namespace Dot.Core.TimeLine.Base.Tracks
 
         public override void DoReset()
         {
-            base.DoReset();
             runningItems.ForEach((item) =>
             {
                 item.DoReset();
             });
+            base.DoReset();
             runningItems.Clear();
             waitingItems.Clear();
             elapsedTime = 0f;

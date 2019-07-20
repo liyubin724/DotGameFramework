@@ -1,4 +1,4 @@
-﻿using Dot.Core.TimeLine.Base;
+﻿using Dot.Core.TimeLine;
 using Entitas;
 
 public class TimeLineControllerSystem : IExecuteSystem
@@ -11,31 +11,30 @@ public class TimeLineControllerSystem : IExecuteSystem
         this.contexts = contexts;
         this.services = services;
         gameEntityGroup = contexts.game.GetGroup(GameMatcher.TimeLineController);
-
     }
 
     public void Execute()
     {
-        foreach (var e in gameEntityGroup.GetEntities())
-        {
-            if (e.timeLineController.controller == null)
-                continue;
-            TimeLineController controller = e.timeLineController.controller;
-            if(controller.State == TimeLineState.Invalid)
-            {
-                controller.Play();
-#if TIMELINE_DEBUG
-                services.logService.Log(DebugLogType.Info, "Start Play TimelineController");
-#endif
-            }else if(controller.State == TimeLineState.Finished)
-            {
-                e.isMarkDestroy = true;
-#if TIMELINE_DEBUG
-                services.logService.Log(DebugLogType.Info, "Finished TimelineController");
-#endif
-                continue;
-            }
-            controller.DoUpdate(services.timeService.DeltaTime());
-        }
+//        foreach (var e in gameEntityGroup.GetEntities())
+//        {
+//            if (e.timeLineController.data == null)
+//                continue;
+//            TimeLineData controller = e.timeLineController.data;
+//            if(controller.State == TimeLineState.Invalid)
+//            {
+//                controller.Play();
+//#if TIMELINE_DEBUG
+//                services.logService.Log(DebugLogType.Info, "Start Play TimelineController");
+//#endif
+//            }else if(controller.State == TimeLineState.Finished)
+//            {
+//                e.isMarkDestroy = true;
+//#if TIMELINE_DEBUG
+//                services.logService.Log(DebugLogType.Info, "Finished TimelineController");
+//#endif
+//                continue;
+//            }
+//            controller.DoUpdate(services.timeService.DeltaTime());
+//        }
     }
 }

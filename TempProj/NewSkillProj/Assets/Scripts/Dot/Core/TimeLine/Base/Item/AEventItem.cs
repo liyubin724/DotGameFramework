@@ -1,4 +1,4 @@
-﻿namespace Dot.Core.TimeLine.Base.Item
+﻿namespace Dot.Core.TimeLine
 {
     public abstract class AEventItem : AItem
     {

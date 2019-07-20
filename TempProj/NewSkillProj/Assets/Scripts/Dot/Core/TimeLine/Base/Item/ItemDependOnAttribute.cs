@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dot.Core.TimeLine.Base.Item
+namespace Dot.Core.TimeLine
 {
     public enum DependOnOption
     {
