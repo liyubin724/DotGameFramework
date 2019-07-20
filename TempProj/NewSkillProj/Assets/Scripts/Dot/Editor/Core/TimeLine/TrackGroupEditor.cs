@@ -197,7 +197,7 @@ namespace DotEditor.Core.TimeLine
                     {
                         ConditionEditor.ShowWin(Group.endCondition, setting, (condition) =>
                         {
-                            ParallelCondition pc = (ParallelCondition)condition;
+                            AnyOfCondition pc = (AnyOfCondition)condition;
                             if(pc!=null)
                             {
                                 Group.endCondition = pc;

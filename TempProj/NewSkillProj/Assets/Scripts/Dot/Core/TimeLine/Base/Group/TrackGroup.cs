@@ -22,7 +22,7 @@ namespace Dot.Core.TimeLine.Base.Group
                 totalTime = value;
                 if(endCondition == null)
                 {
-                    endCondition = new ParallelCondition();
+                    endCondition = new AnyOfCondition();
                     endCondition.IsReadonly = true;
                     TimeOverCondition toCondition = new TimeOverCondition();
                     toCondition.IsReadonly = true;
@@ -42,7 +42,7 @@ namespace Dot.Core.TimeLine.Base.Group
         public bool IsAwaysRun { get; set; } = false;
 
         public ACondition beginCondition = null;
-        public ParallelCondition endCondition = null;
+        public AnyOfCondition endCondition = null;
 
         public readonly List<TrackLine> tracks = new List<TrackLine>();
         public OnGroupFinished onFinished = null;
@@ -99,7 +99,7 @@ namespace Dot.Core.TimeLine.Base.Group
         public static TrackGroup CreateNew()
         {
             TrackGroup group = new TrackGroup();
-            group.endCondition = new ParallelCondition();
+            group.endCondition = new AnyOfCondition();
             group.endCondition.IsReadonly = true;
             TimeOverCondition toCondition = new TimeOverCondition();
             toCondition.IsReadonly = true;

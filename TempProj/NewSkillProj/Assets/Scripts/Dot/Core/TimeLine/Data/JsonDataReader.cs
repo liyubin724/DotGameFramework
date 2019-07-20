@@ -55,7 +55,7 @@ namespace Dot.Core.TimeLine.Data
             }
             if(jsonData.ContainsKey(DataConst.TIME_LINE_GROUP_END_CONDITION))
             {
-                group.endCondition = (ParallelCondition)ReadCondition(jsonData[DataConst.TIME_LINE_GROUP_END_CONDITION]);
+                group.endCondition = (AnyOfCondition)ReadCondition(jsonData[DataConst.TIME_LINE_GROUP_END_CONDITION]);
             }
 
             if(group.endCondition == null)
