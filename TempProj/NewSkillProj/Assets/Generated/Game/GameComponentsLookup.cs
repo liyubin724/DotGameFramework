@@ -34,22 +34,24 @@ public static class GameComponentsLookup {
     public const int Position = 23;
     public const int PositionListener = 24;
     public const int PositionTarget = 25;
-    public const int Rigidbody = 26;
-    public const int SelectedTarget = 27;
-    public const int Skeleton = 28;
-    public const int Sound = 29;
-    public const int Speed = 30;
-    public const int Time = 31;
-    public const int TimeDecrease = 32;
-    public const int TimeLine = 33;
-    public const int TimeLineID = 34;
-    public const int TimeLinePlay = 35;
-    public const int TimeLinePlayFinish = 36;
-    public const int TimeLineStop = 37;
-    public const int UniqueID = 38;
-    public const int View = 39;
+    public const int PrePosition = 26;
+    public const int RaycatHit = 27;
+    public const int Rigidbody = 28;
+    public const int SelectedTarget = 29;
+    public const int Skeleton = 30;
+    public const int Sound = 31;
+    public const int Speed = 32;
+    public const int Time = 33;
+    public const int TimeDecrease = 34;
+    public const int TimeLine = 35;
+    public const int TimeLineID = 36;
+    public const int TimeLinePlay = 37;
+    public const int TimeLinePlayFinish = 38;
+    public const int TimeLineStop = 39;
+    public const int UniqueID = 40;
+    public const int View = 41;
 
-    public const int TotalComponents = 40;
+    public const int TotalComponents = 42;
 
     public static readonly string[] componentNames = {
         "Acceleration",
@@ -78,6 +80,8 @@ public static class GameComponentsLookup {
         "Position",
         "PositionListener",
         "PositionTarget",
+        "PrePosition",
+        "RaycatHit",
         "Rigidbody",
         "SelectedTarget",
         "Skeleton",
@@ -121,6 +125,8 @@ public static class GameComponentsLookup {
         typeof(PositionComponent),
         typeof(PositionListenerComponent),
         typeof(PositionTargetComponent),
+        typeof(PrePositionComponent),
+        typeof(RaycatHitComponent),
         typeof(RigidbodyComponent),
         typeof(SelectedTargetComponent),
         typeof(SkeletonComponent),

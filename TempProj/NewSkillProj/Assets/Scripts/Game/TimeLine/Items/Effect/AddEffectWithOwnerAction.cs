@@ -19,5 +19,10 @@ namespace Game.TimeLine
         {
             effectEntity.isMarkDestroy = true;
         }
+
+        public override void Stop()
+        {
+            effectEntity.isMarkDestroy = true;
+        }
     }
 }

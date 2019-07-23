@@ -40,7 +40,7 @@ namespace Dot.Core.TimeLine
                 elapsedTime += deltaTime;
                 if(elapsedTime >= TotalTime)
                 {
-                    Stop();
+                    Stop(false);
                 }
             }
         }
@@ -52,7 +52,7 @@ namespace Dot.Core.TimeLine
             base.DoReset();
         }
 
-        public void Stop()
+        public void Stop(bool isForce)
         {
             tracks?.ForEach((track) =>
             {
@@ -66,7 +66,8 @@ namespace Dot.Core.TimeLine
                     revertEventItems[i].DoRevert();
                 }
             }
-            Data?.OnGroupFinish(this);
+            if(!isForce)
+                Data?.OnGroupFinish(this);
         }
 
         internal void AddRevertItem(AEventItem item)

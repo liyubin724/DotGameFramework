@@ -83,17 +83,17 @@ namespace Dot.Core.TimeLine
             groupChangedCallback?.Invoke(entity,playingGroupName, groupName);
             if(IsPlaying())
             {
-                Stop();
+                Stop(true);
             }
             playingGroupName = groupName;
         }
 
-        public void Stop()
+        public void Stop(bool isForce = false)
         {
             if(IsPlaying())
             {
                 TrackGroup group = groupDic[playingGroupName];
-                group.Stop();
+                group.Stop(isForce);
                 playingGroupName = string.Empty;
             }
         }

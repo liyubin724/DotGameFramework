@@ -21,13 +21,13 @@ public class GameController : MonoBehaviour
 
         services.entityFactroy.CreatePlayerEntity(true);
         GameEntity entity = services.entityFactroy.CreatePlayerEntity(false);
-        entity.ReplacePosition(new Vector3(10, 0, 0));
+        entity.ReplacePosition(new Vector3(5, 0, 0));
         entity = services.entityFactroy.CreatePlayerEntity(false);
-        entity.ReplacePosition(new Vector3(-10, 0, 0));
+        entity.ReplacePosition(new Vector3(-5, 0, 0));
         entity = services.entityFactroy.CreatePlayerEntity(false);
-        entity.ReplacePosition(new Vector3(6, 0, 8));
+        entity.ReplacePosition(new Vector3(3, 0, 4));
         entity = services.entityFactroy.CreatePlayerEntity(false);
-        entity.ReplacePosition(new Vector3(-6, 0, 8));
+        entity.ReplacePosition(new Vector3(-3, 0, 4));
     }
     private void OnGUI()
     {
@@ -121,7 +121,7 @@ public class GameController : MonoBehaviour
         
     }
 
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         lateUpdateSystems.Execute();
         lateUpdateSystems.Cleanup();

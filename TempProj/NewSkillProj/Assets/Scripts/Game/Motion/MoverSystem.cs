@@ -37,11 +37,15 @@ public class MoverSystem : IExecuteSystem
                     Vector3 direction = (targetPos - e.position.value).normalized;
                     if (Vector3.Dot(e.direction.value, direction) < 0)
                     {
+                        e.ReplacePrePosition(e.position.value);
+                        e.ReplacePosition(targetPos);
                         e.isMover = false;
                         continue;
                     }
                     if ((targetPos - e.position.value).magnitude <= 0.01f)
                     {
+                        e.ReplacePrePosition(e.position.value);
+                        e.ReplacePosition(targetPos);
                         e.isMover = false;
                         continue;
                     }
@@ -68,6 +72,7 @@ public class MoverSystem : IExecuteSystem
                         Vector3 deltaPosition = (e.direction.value * speed + (e.direction.value * curAcc) * services.timeService.DeltaTime()) * services.timeService.DeltaTime();
 
                         e.ReplaceSpeed(speed);
+                        e.ReplacePrePosition(e.position.value);
                         e.ReplacePosition(e.position.value + deltaPosition);
                     }
                 }

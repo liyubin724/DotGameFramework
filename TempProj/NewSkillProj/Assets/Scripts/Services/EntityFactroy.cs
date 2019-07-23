@@ -44,11 +44,17 @@ public class EntityFactroy : AService
         playerEntity.AddConfigID(0);
 
         PlayerView playerView = new PlayerView($"Player_{playerEntity.uniqueID.value}",viewRootTransfrom);
+        playerView.SetLayer(LayerMask.NameToLayer("SpacecraftOtherPlayer"));
+                                                                                
         playerView.InitializeView(contexts, services, playerEntity);
         playerEntity.AddView(playerView);
 
         playerEntity.AddSkeleton("Character/Prefab/PS_AR_Aurora_final");
         playerEntity.AddPosition(Vector3.zero);
+
+        playerEntity.AddCollider(ColliderType.Capsule);
+        playerEntity.AddCapsuleCollider(Vector3.zero, 0.035f, 0.22f, 2, false);
+        playerEntity.AddRigidbody(false, 0, 0, CollisionDetectionMode.ContinuousDynamic, false, Vector3.zero);
 
         return playerEntity;
     }
@@ -65,6 +71,8 @@ public class EntityFactroy : AService
         TimeLineData tlData = JsonDataReader.ReadData(jsonData);
         skillEntity.AddTimeLine(tlData);
         skillEntity.AddTimeLinePlay(SkillTimeLineConst.TIMELINE_BEGIN);
+
+
 
         return skillEntity;
     }
@@ -116,6 +124,7 @@ public class EntityFactroy : AService
         bulletEntity.AddOwnerID(entity.ownerID.value);
 
         BulletView view = new BulletView($"Bullet_{bulletEntity.uniqueID.value}",viewRootTransfrom);
+        view.SetLayer(LayerMask.NameToLayer("SkillProjectile"));
         view.InitializeView(contexts, services, bulletEntity);
         bulletEntity.AddView(view);
 
@@ -130,6 +139,10 @@ public class EntityFactroy : AService
         TimeLineData controller = JsonDataReader.ReadData(jsonData);
         bulletEntity.AddTimeLine(controller);
         bulletEntity.AddTimeLinePlay(BulletTimeLineConst.TIMELINE_BEGIN);
+
+        bulletEntity.AddCollider(ColliderType.Capsule);
+        bulletEntity.AddCapsuleCollider(Vector3.zero, 0.001f, 0.1f, 2, true);
+        bulletEntity.AddRigidbody(false, 0, 0, CollisionDetectionMode.ContinuousDynamic, true, Vector3.zero);
         
         return bulletEntity;
     }
