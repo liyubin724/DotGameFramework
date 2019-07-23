@@ -17,7 +17,7 @@
         AddData(new EffectConfigData()
         {
             id = 3,
-            assetPath = "Effect/Prefab/missile_kaipao_02_fire",
+            assetPath = "Effect/Prefab/missile_kaipao_02",
             lifeTime = 5.0f,
         });
         AddData(new EffectConfigData()

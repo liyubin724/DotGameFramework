@@ -20,9 +20,11 @@ public class UpdateSystems : AServiceFeature
 
         Add(new ColliderSystem(contexts, services));
         Add(new RigibodySystem(contexts, services));
-        Add(new PhysicsSystem(contexts, services));
+        Add(new TriggerEnterSystem(contexts, services));
+        //Add(new PhysicsSystem(contexts, services));
         Add(new RaycastHitSystem(contexts, services));
 
+        Add(new LifeTimeSystem(contexts, services));
         Add(new GameEventSystems(contexts));
 
 

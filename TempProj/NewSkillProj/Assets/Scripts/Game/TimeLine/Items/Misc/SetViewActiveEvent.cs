@@ -9,11 +9,11 @@ namespace Game.TimeLine
 
         public override void Trigger()
         {
-            //GameEntity entity = GetGameEntity();
-            //if(entity.hasVirtualView)
-            //{
-            //    entity.virtualView.view.Active = IsActive;
-            //}
+            GameEntity entity = GetGameEntity();
+            if (entity.hasView)
+            {
+                entity.view.view.Active = IsActive;
+            }
         }
     }
 }

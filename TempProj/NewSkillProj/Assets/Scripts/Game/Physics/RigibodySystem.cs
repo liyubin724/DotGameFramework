@@ -26,8 +26,9 @@ namespace Game.Physics
                     rigidbody.drag = entity.rigidbody.drag;
                     rigidbody.angularDrag = entity.rigidbody.angularDrag;
                     rigidbody.collisionDetectionMode = entity.rigidbody.mode;
-                    rigidbody.freezeRotation = entity.rigidbody.freezeRotation;
+                    rigidbody.constraints = entity.rigidbody.constraints;
                     rigidbody.velocity = entity.rigidbody.velocity;
+                    rigidbody.isKinematic = entity.rigidbody.isKinematic;
                 }
             }
         }

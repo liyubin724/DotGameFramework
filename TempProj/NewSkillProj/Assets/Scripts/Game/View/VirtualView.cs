@@ -82,9 +82,8 @@ public class VirtualView : ABaseView, IPositionListener, IDirectionListener, IMa
     public override void InitializeView(Contexts contexts, Services services, IEntity entity)
     {
         base.InitializeView(contexts, services, entity);
-        EntityUniqueIDBehaviour idBehaviour = RootGameObject.AddComponent<EntityUniqueIDBehaviour>();
-
-        idBehaviour.enityID = ViewEntity.uniqueID.value;
+        EntityBehaviour idBehaviour = RootGameObject.AddComponent<EntityBehaviour>();
+        idBehaviour.entity = entity;
     }
 
     public override void AddListeners()

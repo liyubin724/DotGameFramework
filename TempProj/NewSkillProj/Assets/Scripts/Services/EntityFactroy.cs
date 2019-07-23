@@ -44,7 +44,7 @@ public class EntityFactroy : AService
         playerEntity.AddConfigID(0);
 
         PlayerView playerView = new PlayerView($"Player_{playerEntity.uniqueID.value}",viewRootTransfrom);
-        playerView.SetLayer(LayerMask.NameToLayer("SpacecraftOtherPlayer"));
+        playerView.SetLayer(LayerMask.NameToLayer(isMainPlayer? "MainPlayer":"SpacecraftOtherPlayer"));
                                                                                 
         playerView.InitializeView(contexts, services, playerEntity);
         playerEntity.AddView(playerView);
@@ -54,7 +54,7 @@ public class EntityFactroy : AService
 
         playerEntity.AddCollider(ColliderType.Capsule);
         playerEntity.AddCapsuleCollider(Vector3.zero, 0.035f, 0.22f, 2, false);
-        playerEntity.AddRigidbody(false, 0, 0, CollisionDetectionMode.ContinuousDynamic, false, Vector3.zero);
+        playerEntity.AddRigidbody(false, 0, 0, false,CollisionDetectionMode.ContinuousDynamic, RigidbodyConstraints.None, Vector3.zero);
 
         return playerEntity;
     }
@@ -77,16 +77,6 @@ public class EntityFactroy : AService
         return skillEntity;
     }
 
-    public GameEntity CreateTimeEntity(GameEntity entity,float leftTime)
-    {
-        GameEntity timeEntity = CreateChildrenEntity(entity);
-
-        timeEntity.isTime = true;
-        timeEntity.AddTimeDecrease(leftTime);
-
-        return timeEntity;
-    }
-
     public GameEntity CreateEffectEntity(GameEntity entity, int effectConfigID)
     {
         GameEntity effectEntity = CreateChildrenEntity(entity);
@@ -100,6 +90,7 @@ public class EntityFactroy : AService
 
         EffectConfigData data = services.dataService.GetEffectData(effectConfigID);
         effectEntity.AddSkeleton(data.assetPath);
+        effectEntity.AddLifeTime(data.lifeTime);
 
         return effectEntity;
     }
@@ -142,7 +133,7 @@ public class EntityFactroy : AService
 
         bulletEntity.AddCollider(ColliderType.Capsule);
         bulletEntity.AddCapsuleCollider(Vector3.zero, 0.001f, 0.1f, 2, true);
-        bulletEntity.AddRigidbody(false, 0, 0, CollisionDetectionMode.ContinuousDynamic, true, Vector3.zero);
+        bulletEntity.AddRigidbody(false, 0, 0, true,CollisionDetectionMode.ContinuousDynamic,RigidbodyConstraints.None, Vector3.zero);
         
         return bulletEntity;
     }
