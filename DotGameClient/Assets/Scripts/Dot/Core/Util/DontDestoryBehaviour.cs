@@ -6,7 +6,7 @@ namespace Dot.Core.Util
     {
         void Awake()
         {
-            DontDestoryHandler.AddTransform(transform);
+            DontDestroyHandler.AddTransform(transform);
             Destroy(this);
         }
     }

@@ -1,33 +1,27 @@
 ﻿using Dot.Core.Logger;
 using System.Collections.Generic;
-using UnityEngine.Events;
 
 namespace Dot.Core.Pool
 {
-    public class ObjectPool<T> where T : class,new()
+    public class ObjectPool<T> where T : class,IObjectPoolItem,new()
     {
         private Stack<T> m_Stack = new Stack<T>();
-        private UnityAction<T> m_ActionOnNew;   
-        private UnityAction<T> m_ActionOnRealse;
 
         public int Count { get; private set; }
         public int ActiveCount { get { return Count - InactiveCount; } }
         public int InactiveCount { get { return m_Stack.Count; } }
 
-        public ObjectPool(UnityAction<T> onNewAction,UnityAction<T> onReleaseAction,int preloadCount=0)
+        public ObjectPool(int preloadCount=0)
         {
-            m_ActionOnNew = onNewAction;
-            m_ActionOnRealse = onReleaseAction;
             if(preloadCount>0)
             {
                 for (int i = 0; i < preloadCount; i++)
                 {
                     T element = new T();
+                    element.OnNew();
                     m_Stack.Push(element);
 
                     ++Count;
-
-                    m_ActionOnNew?.Invoke(element);
                 }
             }
         }
@@ -39,7 +33,7 @@ namespace Dot.Core.Pool
             {
                 element = new T();
                 ++Count;
-                m_ActionOnNew?.Invoke(element);
+                element.OnNew();
             }
             else
             {
@@ -53,7 +47,8 @@ namespace Dot.Core.Pool
             if (m_Stack.Count > 0 && ReferenceEquals(m_Stack.Peek(), element))
                 DebugLogger.LogError("Internal error. Trying to destroy object that is already released to pool.");
 
-            m_ActionOnRealse?.Invoke(element);
+            element.OnRelease();
+
             m_Stack.Push(element);
         }
 
@@ -61,8 +56,6 @@ namespace Dot.Core.Pool
         {
             m_Stack.Clear();
             m_Stack = null;
-            m_ActionOnNew = null;
-            m_ActionOnRealse = null;
         }
     }
 }

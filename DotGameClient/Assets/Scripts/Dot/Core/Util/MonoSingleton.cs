@@ -13,10 +13,10 @@ namespace Dot.Core.Util
                 instance = UnityObject.FindObjectOfType<T>();
                 if(instance == null)
                 {
-                    instance = DontDestoryHandler.CreateComponent<T>();
+                    instance = DontDestroyHandler.CreateComponent<T>();
                 }else
                 {
-                    DontDestoryHandler.AddTransform(instance.transform);
+                    DontDestroyHandler.AddTransform(instance.transform);
                 }
             }
             return instance;

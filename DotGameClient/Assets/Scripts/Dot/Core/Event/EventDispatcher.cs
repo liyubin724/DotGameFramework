@@ -16,10 +16,7 @@ namespace Dot.Core.Event
         {
             if(eventDataPool == null)
             {
-                eventDataPool = new ObjectPool<EventData>(null, (eventData) =>
-                {
-                    eventData.SetData(-1, 0f, null);
-                }, 10);
+                eventDataPool = new ObjectPool<EventData>(10);
             }
             
             eventHandlerDic = new Dictionary<int, List<EventHandler>>();
@@ -138,7 +135,7 @@ namespace Dot.Core.Event
         }
     }
 
-    public class EventData
+    public class EventData : IObjectPoolItem
     {
         private int eventID = -1;
         private float eventDelayTime = 0.0f;
@@ -179,6 +176,18 @@ namespace Dot.Core.Event
             }
 
             return eventParams[index];
+        }
+
+        public void OnNew()
+        {
+            
+        }
+
+        public void OnRelease()
+        {
+            eventID = -1;
+            eventDelayTime = 0.0f;
+            eventParams = null;
         }
     }
 }

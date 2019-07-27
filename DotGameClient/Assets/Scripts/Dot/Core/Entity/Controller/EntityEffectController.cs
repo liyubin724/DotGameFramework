@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dot.Core.Entity.Controller
 {
-    public class EntityEffectController : EntityController
+    public class EntityEffectController : AEntityController
     {
-        public EntityEffectController(EntityObject entityObj) : base(entityObj)
+        public EntityEffectController(EntityObject entity) : base(entity)
         {
         }
 

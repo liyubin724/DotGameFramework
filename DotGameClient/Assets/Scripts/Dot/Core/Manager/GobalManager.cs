@@ -54,15 +54,6 @@ namespace Dot.Core.Manager
             }
         }
 
-        private FightObjectManager fightObjMgr = null;
-        public FightObjectManager FightObjectMgr
-        {
-            get
-            {
-                return fightObjMgr;
-            }
-        }
-
         protected override void DoInit()
         {
             globalMgrs = new Dictionary<string, IGlobalManager>();
@@ -87,16 +78,11 @@ namespace Dot.Core.Manager
             poolMgr.Priority = 4;
             AddGlobalManager("PoolManager", poolMgr);
 
-            fightObjMgr = new FightObjectManager();
-            fightObjMgr.DoInit();
-            fightObjMgr.Priority = 5;
-            AddGlobalUpdateManager("FightObjectManager", fightObjMgr);
-
         }
 
         public override void DoDispose()
         {
-            DontDestoryHandler.Destroy();
+            DontDestroyHandler.Destroy();
 
             List<IGlobalManager> mgrList = new List<IGlobalManager>();
             mgrList.AddRange(globalMgrs.Values);

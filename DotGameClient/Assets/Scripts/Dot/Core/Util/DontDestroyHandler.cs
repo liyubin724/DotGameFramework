@@ -2,7 +2,7 @@
 
 namespace Dot.Core.Util
 {
-    public static class DontDestoryHandler
+    public static class DontDestroyHandler
     {
         private static readonly string RootName = "Singleton Root";
         private static Transform rootTran = null;

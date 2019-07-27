@@ -1,28 +1,96 @@
-﻿using System;
+﻿using Dot.Core.Event;
+using Dot.Core.Logger;
+using Dot.Core.Util;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
+using SystemObject = System.Object;
 
 namespace Dot.Core.Entity
 {
-    public class EntityContext
+    public class EntityContext : Singleton<EntityContext>
     {
         private Transform entityRootTran = null;
-        public EntityContext()
+        private EventDispatcher eventDispatcher = null;
+        public Transform EntityRootTransfrom { get => entityRootTran; }
+
+        private Dictionary<int, EntityObject> entityDic = new Dictionary<int, EntityObject>();
+        private Dictionary<int, List<EntityObject>> entityCategroyDic = new Dictionary<int, List<EntityObject>>();
+
+        private Dictionary<int, IEntityBuilder> entityCreatorDic = new Dictionary<int, IEntityBuilder>();
+        protected override void DoInit()
         {
-            entityRootTran = new GameObject("Entity Root").transform;
+            entityRootTran = DontDestroyHandler.CreateTransform("Entity Root");
+            eventDispatcher = new EventDispatcher();
         }
 
-        public EntityObject CreateEntity()
+        public void DoUpdate(float deltaTime)
         {
-            EntityObject e = new EntityObject(0);
-            e.CreateVirtualRoot();
+            foreach(var kvp in entityDic)
+            {
+                kvp.Value.DoUpdate(deltaTime);
+            }
+        }
 
-            e.GetTransform().SetParent(entityRootTran, false);
+        public void RegisterEntityCreator(int entityType, IEntityBuilder builder)
+        {
+            if(!entityCreatorDic.ContainsKey(entityType))
+            {
+                entityCreatorDic.Add(entityType, builder);
+            }
+        }
 
+        public EntityObject CreateEntity(int entityType)
+        {
+            if(entityCreatorDic.TryGetValue(entityType,out IEntityBuilder builder))
+            {
+                EntityObject entity = builder.CreateEntityObject(entityType);
+                AddEntity(entity);
+                return entity;
+            }
             return null;
         }
+
+        public void AddEntity(EntityObject entity)
+        {
+            if(entityDic.ContainsKey(entity.UniqueID))
+            {
+                DebugLogger.LogError("");
+                return;
+            }
+
+            entityDic.Add(entity.UniqueID, entity);
+            if(!entityCategroyDic.TryGetValue(entity.Category,out List<EntityObject> entities))
+            {
+                entities = new List<EntityObject>();
+                entityCategroyDic.Add(entity.Category, entities);
+            }
+            entities.Add(entity);
+        }
+
+        public void DeleteEntity(EntityObject entity)
+        {
+            if(entityDic.ContainsKey(entity.UniqueID))
+            {
+                entityDic.Remove(entity.UniqueID);
+            }
+            if (entityCategroyDic.TryGetValue(entity.Category, out List<EntityObject> entities))
+            {
+                entities.Remove(entity);
+            }
+
+            if (entityCreatorDic.TryGetValue(entity.Category, out IEntityBuilder builder))
+            {
+                builder.DestroyEntityObject(entity);
+            }
+        }
+
+        public void SendEvent(int receiverIndex,int eventID,params SystemObject[] datas)
+        {
+            if(entityDic.TryGetValue(receiverIndex,out EntityObject entityObject))
+            {
+                entityObject.SendEvent(eventID, datas);
+            }
+        }
+        
     }
 }

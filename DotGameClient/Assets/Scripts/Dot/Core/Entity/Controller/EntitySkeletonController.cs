@@ -5,12 +5,12 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Dot.Core.Entity.Controller
 {
-    public class EntitySkeletonController : EntityController
+    public class EntitySkeletonController : AEntityController
     {
         private string skeletonPath = "";
         private GameObject skeletonGO = null;
 
-        public EntitySkeletonController(EntityObject entityObj) : base(entityObj)
+        public EntitySkeletonController(EntityObject entity) : base(entity)
         {
         }
 
@@ -25,12 +25,7 @@ namespace Dot.Core.Entity.Controller
 
         }
 
-        public override void OnDispose()
-        {
-            
-        }
-
-        public override void OnReset()
+        public override void DoReset()
         {
             
         }
@@ -39,7 +34,7 @@ namespace Dot.Core.Entity.Controller
         {
             GameObject gObj = obj.Result as GameObject;
             skeletonGO = GameObject.Instantiate<GameObject>(gObj);
-            skeletonGO.transform.SetParent(Entity.GetTransform(), false);
+            //skeletonGO.transform.SetParent(Entity.GetTransform(), false);
 
             Addressables.Release(obj.Result);
         }

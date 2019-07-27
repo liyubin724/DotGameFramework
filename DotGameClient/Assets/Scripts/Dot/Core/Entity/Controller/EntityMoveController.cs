@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dot.Core.Entity.Controller
 {
-    public class EntityMoveController : EntityController
+    public class EntityMoveController : AEntityController
     {
-        public EntityMoveController(EntityObject entityObj) : base(entityObj)
+        public EntityMoveController(EntityObject entity) : base(entity)
         {
         }
 

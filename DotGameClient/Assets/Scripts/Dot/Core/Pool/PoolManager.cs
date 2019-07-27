@@ -21,7 +21,7 @@ namespace Dot.Core.Pool
 
         public void DoInit()
         {
-            cachedTransform = DontDestoryHandler.CreateTransform("PoolManager");
+            cachedTransform = DontDestroyHandler.CreateTransform("PoolManager");
             cullTimerTask = GlobalManager.GetInstance().TimerMgr.AddTimerTask(cullTimeInterval, 0, null, OnCullTimerUpdate, null, null);
         }
 

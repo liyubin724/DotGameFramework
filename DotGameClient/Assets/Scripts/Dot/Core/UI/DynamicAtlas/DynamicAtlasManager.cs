@@ -123,12 +123,23 @@ namespace Dot.Core.UI.Atlas
 
     public class DynamicAtlasManager : Singleton<DynamicAtlasManager>
     {
-        class RawImageLoadingData 
+        class RawImageLoadingData  : IObjectPoolItem
         {
             public string atlasName = null;
             public int loadingIndex = -1;
             public OnLoadSpriteFromDynamicAtlasFinish callback;
 
+            public void OnNew()
+            {
+                
+            }
+
+            public void OnRelease()
+            {
+                atlasName = null;
+                loadingIndex = -1;
+                callback = null;
+            }
         }
 
         private Dictionary<string, DynamicAtlasInfo> atlasInfoDic = new Dictionary<string, DynamicAtlasInfo>();
@@ -136,12 +147,7 @@ namespace Dot.Core.UI.Atlas
         private Dictionary<int, RawImageLoadingData> loadingDataDic = new Dictionary<int, RawImageLoadingData>();
         public DynamicAtlasManager()
         {
-            loadingDataPool = new ObjectPool<RawImageLoadingData>(null, (d) =>
-            {
-                d.loadingIndex = -1;
-                d.callback = null;
-                d.atlasName = null;
-            }, 5);
+            loadingDataPool = new ObjectPool<RawImageLoadingData>(5);
         }
 
         public bool Contains(string atlasName)
