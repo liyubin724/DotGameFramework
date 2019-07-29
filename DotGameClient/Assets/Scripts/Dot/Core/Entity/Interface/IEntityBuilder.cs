@@ -2,7 +2,7 @@
 {
     public interface IEntityBuilder
     {
-        EntityObject CreateEntityObject(int entityType);
+        EntityObject CreateEntityObject(long uniqueID,int entityType);
         void DestroyEntityObject(EntityObject entity);
     }
 }

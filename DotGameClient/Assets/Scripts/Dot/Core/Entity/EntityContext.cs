@@ -1,4 +1,5 @@
 ﻿using Dot.Core.Event;
+using Dot.Core.Generic;
 using Dot.Core.Logger;
 using Dot.Core.Util;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace Dot.Core.Entity
         private EventDispatcher eventDispatcher = null;
         public Transform EntityRootTransfrom { get => entityRootTran; }
 
-        private Dictionary<int, EntityObject> entityDic = new Dictionary<int, EntityObject>();
+        private UniqueIDCreator idCreator = new UniqueIDCreator();
+
+        private Dictionary<long, EntityObject> entityDic = new Dictionary<long, EntityObject>();
         private Dictionary<int, List<EntityObject>> entityCategroyDic = new Dictionary<int, List<EntityObject>>();
 
         private Dictionary<int, IEntityBuilder> entityCreatorDic = new Dictionary<int, IEntityBuilder>();
@@ -43,7 +46,7 @@ namespace Dot.Core.Entity
         {
             if(entityCreatorDic.TryGetValue(entityType,out IEntityBuilder builder))
             {
-                EntityObject entity = builder.CreateEntityObject(entityType);
+                EntityObject entity = builder.CreateEntityObject(idCreator.Next(),entityType);
                 AddEntity(entity);
                 return entity;
             }
@@ -84,7 +87,7 @@ namespace Dot.Core.Entity
             }
         }
 
-        public void SendEvent(int receiverIndex,int eventID,params SystemObject[] datas)
+        public void SendEvent(long receiverIndex,int eventID,params SystemObject[] datas)
         {
             if(entityDic.TryGetValue(receiverIndex,out EntityObject entityObject))
             {

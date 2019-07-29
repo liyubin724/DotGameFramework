@@ -6,7 +6,7 @@ namespace Dot.Core.Entity
 {
     public class EntityObject
     {
-        public int UniqueID { get; set; }
+        public long UniqueID { get; set; }
         public int Category { get; set; }
         public string Name { get; set; }
         public AEntityView View{get; set;}
