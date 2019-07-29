@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Dot.Core.Entity.Controller
 {
@@ -21,6 +16,14 @@ namespace Dot.Core.Entity.Controller
         protected override void RemoveEventListeners()
         {
             
+        }
+
+        public override void DoUpdate(float deltaTime)
+        {
+            if(!Enable)
+            {
+                return;
+            }
         }
 
         public void MoveTo(Vector3 position)

@@ -56,7 +56,7 @@ public class TestAssetLoader : MonoBehaviour
 
         if(GUILayout.Button("Load Prefab"))
         {
-            loader.InstanceAssetAsync("prefab", OnPrefabLoadFinish, OnPrefabLoadProgress);
+            prefabAssetHandle = loader.InstanceAssetAsync("prefab", OnPrefabLoadFinish, OnPrefabLoadProgress);
         }
 
         if(GUILayout.Button("Release Prefab"))
@@ -65,6 +65,8 @@ public class TestAssetLoader : MonoBehaviour
             objs.Clear();
         }
     }
+
+    private AssetHandle prefabAssetHandle = null;
 
     private void OnPrefabLoadFinish(string address,UnityObject uObj)
     {
@@ -76,5 +78,6 @@ public class TestAssetLoader : MonoBehaviour
     private void OnPrefabLoadProgress(string address,float progress)
     {
         Debug.Log("Progress = " + progress);
+        prefabAssetHandle.Release();
     }
 }

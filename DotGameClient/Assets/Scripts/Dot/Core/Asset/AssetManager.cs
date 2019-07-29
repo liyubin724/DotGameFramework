@@ -177,20 +177,20 @@ namespace Dot.Core.Asset
             return LoadAsync(addresses, false, singleFinish, singleProgress, allFinish, allProgress);
         }
         
-        public void InstanceAssetAsync(string address,
+        public AssetHandle InstanceAssetAsync(string address,
             OnAssetLoadFinishCallback finish,
             OnAssetLoadProgressCallback progress) 
         {
-            InstanceAssetsAsync(new string[] { address }, finish, progress, null, null);
+            return InstanceAssetsAsync(new string[] { address }, finish, progress, null, null);
         }
 
-        public void InstanceAssetsAsync(string[] addresses,
+        public AssetHandle InstanceAssetsAsync(string[] addresses,
              OnAssetLoadFinishCallback singleFinish,
             OnAssetLoadProgressCallback singleProgress,
             OnAssetsLoadFinishCallback allFinish,
             OnAssetsLoadProgressCallback allProgress)
         {
-            LoadAsync(addresses, true, singleFinish, singleProgress, allFinish, allProgress);
+            return LoadAsync(addresses, true, singleFinish, singleProgress, allFinish, allProgress);
         }
 
         private AssetHandle LoadAsync(string[] addresses,bool isInstance,
@@ -220,13 +220,8 @@ namespace Dot.Core.Asset
                 }
             }
             loadDataList.Add(loadData);
-            if(!isInstance)
-            {
-                AssetHandle assetHandle = new AssetHandle() { uniqueID = loadData.uniqueID, addresses = addresses, };
-                assetHandle.releaseAction = ReleaseAsset;
-                return assetHandle;
-            }
-            return null;
+
+            return new AssetHandle() { uniqueID = loadData.uniqueID, addresses = addresses, releaseAction = ReleaseAsset };
         }
 
         public void ReleaseAsset(AssetHandle assetHandle)
@@ -249,13 +244,19 @@ namespace Dot.Core.Asset
             if(loadData!=null)
             {
                 ReleaseAssetByLoadData(loadData);
-            }else
+                loadDataList.Remove(loadData);
+            }
+            else
             {
-                foreach(var address in assetHandle.addresses)
+                if(!assetHandle.isInstance)
                 {
-                    AssetData assetData = assetDataDic[address];
-                    assetData.ReleaseRefCount();
+                    foreach (var address in assetHandle.addresses)
+                    {
+                        AssetData assetData = assetDataDic[address];
+                        assetData.ReleaseRefCount();
+                    }
                 }
+                
                 assetHandle.IsValid = false;
             }
         }

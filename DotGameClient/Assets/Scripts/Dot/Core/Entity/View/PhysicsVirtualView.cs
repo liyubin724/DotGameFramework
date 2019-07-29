@@ -8,6 +8,12 @@ namespace Dot.Core.Entity
         Capsule,
     }
 
+    public enum MoveControlType
+    {
+        Normal,
+        Rigidbody,
+    }
+
     public class PhysicsVirtualView : VirtualView
     {
         private PhysicsBehaviour phyBehaviour = null;
@@ -63,6 +69,30 @@ namespace Dot.Core.Entity
             }
 
             return collider;
+        }
+
+        private MoveControlType ControlType { get; set; } = MoveControlType.Normal;
+
+        protected override void OnPosition(EventData eventData)
+        {
+            if(ControlType == MoveControlType.Normal)
+            {
+                base.OnPosition(eventData);
+            }else if(ControlType == MoveControlType.Rigidbody)
+            {
+                GetOrCreateRigidbody().MovePosition(eventData.GetValue<Vector3>());
+            }
+        }
+
+        protected override void OnDirection(EventData eventData)
+        {
+            if(ControlType == MoveControlType.Normal)
+            {
+                base.OnDirection(eventData);
+            }else if(ControlType == MoveControlType.Rigidbody)
+            {
+                GetOrCreateRigidbody().MoveRotation(Quaternion.Euler(eventData.GetValue<Vector3>()));
+            }
         }
     }
 }

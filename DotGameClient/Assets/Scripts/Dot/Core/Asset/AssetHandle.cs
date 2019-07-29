@@ -6,8 +6,22 @@ namespace Dot.Core.Asset
     {
         internal long uniqueID;
         internal string[] addresses;
-
+        internal bool isInstance = false;
         internal Action<AssetHandle> releaseAction = null;
+
+        public string Address
+        {
+            get
+            {
+                if(addresses!=null && addresses.Length>0)
+                {
+                    return addresses[0];
+                }
+                return null;
+            }
+        }
+
+        public string[] Addresses => addresses;
 
         private bool isValid = true;
         public bool IsValid

@@ -1,28 +1,51 @@
-﻿using System;
+﻿using Dot.Core.Asset;
+using Dot.Core.Event;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Entity.Controller
 {
     public class EntitySkeletonController : AEntityController
     {
-        private string skeletonPath = "";
+        private string skeletonAddress = null;
         private GameObject skeletonGO = null;
-
+        private AssetHandle skeletonAssetHandle = null;
+        private EntityNodeBehaviour nodeBehaviour = null;
+        
         public EntitySkeletonController(EntityObject entity) : base(entity)
         {
         }
 
-        public void LoadSkeleton(string skeleton)
+        public bool HasSkeleton() => skeletonGO == null;
+
+        public void AddSkeleton(string skeletonAddress)
         {
-            skeletonPath = skeleton;
-            Addressables.LoadAssetAsync<GameObject>(skeleton).Completed += LoadSkeletonCompleted;
+            if(this.skeletonAddress == skeletonAddress)
+            {
+                return;
+            }
+            this.skeletonAddress = skeletonAddress;
+            if(skeletonAssetHandle!=null)
+            {
+                skeletonAssetHandle.Release();
+                skeletonAssetHandle = null;
+            }
+            skeletonAssetHandle = AssetManager.GetInstance().InstanceAssetAsync(skeletonAddress, OnSkeletonLoadFinish, null);
         }
 
-        public void UnloadSkeleton()
+        public void RemoveSkeleton()
         {
-
+            if(skeletonGO!=null)
+            {
+                UnityObject.Destroy(skeletonGO);
+                skeletonGO = null;
+            }else if(skeletonAssetHandle!=null)
+            {
+                skeletonAssetHandle.Release();
+                skeletonAssetHandle = null;
+            }
+            skeletonAddress = null;
+            nodeBehaviour = null;
         }
 
         public override void DoReset()
@@ -30,23 +53,61 @@ namespace Dot.Core.Entity.Controller
             
         }
 
-        private void LoadSkeletonCompleted(AsyncOperationHandle<GameObject> obj)
+        private void OnSkeletonLoadFinish(string address,UnityObject uObj)
         {
-            GameObject gObj = obj.Result as GameObject;
-            skeletonGO = GameObject.Instantiate<GameObject>(gObj);
-            //skeletonGO.transform.SetParent(Entity.GetTransform(), false);
+            skeletonAssetHandle = null;
+            skeletonGO = uObj as GameObject;
 
-            Addressables.Release(obj.Result);
+            if(Entity.View!=null)
+            {
+                VirtualView vView = Entity.View as VirtualView; 
+                if(vView!=null)
+                {
+                    skeletonGO.transform.SetParent(vView.RootTransform, false);
+                }
+            }
         }
 
         protected override void AddEventListeners()
         {
-            
+            Dispatcher.RegisterEvent(EntityEventConst.SKELETON_ADD_ID, OnSkeletonAdd);
+            Dispatcher.RegisterEvent(EntityEventConst.SKELETON_REMOVE_ID, OnSkeletonRemove);
         }
 
         protected override void RemoveEventListeners()
         {
-            
+            Dispatcher.UnregisterEvent(EntityEventConst.SKELETON_ADD_ID, OnSkeletonAdd);
+            Dispatcher.UnregisterEvent(EntityEventConst.SKELETON_REMOVE_ID, OnSkeletonRemove);
+        }
+
+        private void OnSkeletonAdd(EventData eventData)
+        {
+            string address = eventData.GetValue<string>();
+            AddSkeleton(address);
+        }
+
+        private void OnSkeletonRemove(EventData eventData)
+        {
+            RemoveSkeleton();
+        }
+
+        public EntityBindNodeData GetBindNodeData(string nodeName)
+        {
+            EntityNodeBehaviour nodeBeh = GetNodeBehaviour();
+            if(nodeBeh!=null)
+            {
+                return nodeBeh.GetBindNode(nodeName);
+            }
+            return null;
+        }
+
+        private EntityNodeBehaviour GetNodeBehaviour()
+        {
+            if(nodeBehaviour == null && skeletonGO!=null)
+            {
+                nodeBehaviour = skeletonGO.GetComponent<EntityNodeBehaviour>();
+            }
+            return nodeBehaviour;
         }
     }
 }

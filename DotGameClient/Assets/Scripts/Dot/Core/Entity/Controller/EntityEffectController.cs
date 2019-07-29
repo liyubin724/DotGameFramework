@@ -14,12 +14,19 @@ namespace Dot.Core.Entity.Controller
 
         protected override void AddEventListeners()
         {
-            throw new NotImplementedException();
+            
         }
 
         protected override void RemoveEventListeners()
         {
-            throw new NotImplementedException();
+            
         }
+
+        public void AddBindEffect()
+        {
+
+        }
+
+
     }
 }

@@ -2,11 +2,14 @@
 {
     public static class EntityEventConst
     {
-        public static readonly int POSITION_ID = 1001;
-        public static readonly int DIRECTION_ID = 1002;
+        public static readonly int POSITION_ID = 101;
+        public static readonly int DIRECTION_ID = 102;
 
-        public static readonly int TRIGGER_ENTER_SENDER_ID = 2001;
-        public static readonly int TRIGGER_ENTER_RECEIVER_ID = 2002;
+        public static readonly int TRIGGER_ENTER_SENDER_ID = 201;
+        public static readonly int TRIGGER_ENTER_RECEIVER_ID = 202;
+
+        public static readonly int SKELETON_ADD_ID = 301;
+        public static readonly int SKELETON_REMOVE_ID = 302;
 
     }
 
