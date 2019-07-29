@@ -7,8 +7,8 @@ namespace Dot.Core.Entity
     {
         public GameObject RootGameObject{get; private set;}
         public Transform RootTransform{get; private set;}
-        public Vector3 Position { get => RootTransform.position; set => RootTransform.position = value; }
-        public Vector3 Direction { get => RootTransform.forward; set => RootTransform.forward = value; }
+        public Vector3 Position { get => RootTransform.position; }
+        public Vector3 Direction { get => RootTransform.forward; }
 
         public override bool Active
         {
@@ -66,7 +66,14 @@ namespace Dot.Core.Entity
             Dispatcher?.UnregisterEvent(EntityEventConst.DIRECTION_ID, OnDirection);
         }
 
-        protected void OnPosition(EventData eventData) => Position = eventData.GetValue<Vector3>(0);
-        protected void OnDirection(EventData eventData)=>Direction = eventData.GetValue<Vector3>(0);
+        protected virtual void OnPosition(EventData eventData)
+        {
+            RootTransform.position = eventData.GetValue<Vector3>(0);
+        }
+
+        protected virtual void OnDirection(EventData eventData)
+        {
+            RootTransform.forward = eventData.GetValue<Vector3>(0);
+        }
     }
 }
