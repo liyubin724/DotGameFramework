@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Dot.Core.Pool;
+using System;
 using System.Collections.Generic;
 
 namespace Dot.Core.Entity
 {
     public abstract class AEntityBuilder : IDisposable
     {
-        private Dictionary<int, EntityControllerPool> controllerPoolDic = new Dictionary<int, EntityControllerPool>();
-
+        private Dictionary<int, ObjectPool> controllerPoolDic = new Dictionary<int, ObjectPool>();
         public EntityContext Context { get; set; }
 
         public abstract EntityObject CreateEntityObject(long uniqueID,int entityType);
@@ -28,17 +28,17 @@ namespace Dot.Core.Entity
 
         protected T GetOrCreateController<T>(int index) where T : AEntityController,new()
         {
-            if(!controllerPoolDic.TryGetValue(index,out EntityControllerPool pool))
+            if (!controllerPoolDic.TryGetValue(index, out ObjectPool pool))
             {
-                pool = new EntityControllerPool(10);
-                controllerPoolDic.Add(index,pool);
+                pool = new ObjectPool();
+                controllerPoolDic.Add(index, pool);
             }
-            return (T)pool.Get();
+            return pool.Get<T>();
         }
 
         protected void ReleaseController(int index,AEntityController controller)
         {
-            if (controllerPoolDic.TryGetValue(index, out EntityControllerPool pool))
+            if (controllerPoolDic.TryGetValue(index, out ObjectPool pool))
             {
                 pool.Release(controller);
             }

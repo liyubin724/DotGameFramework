@@ -19,7 +19,6 @@ namespace Game.Battle.Entity
             AddControllerToEntity<EntitySkeletonController>(bulletEntity, EntityControllerConst.SKELETON_INDEX);
             AddControllerToEntity<EntityMoveController>(bulletEntity, EntityControllerConst.MOVE_INDEX);
             AddControllerToEntity<BulletPhysicsController>(bulletEntity, EntityControllerConst.PHYSICS_INDEX);
-            AddControllerToEntity<EntityViewController>(bulletEntity, EntityControllerConst.VIEW_INDEX);
 
             return bulletEntity;
         }
