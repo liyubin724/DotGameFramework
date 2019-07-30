@@ -19,7 +19,7 @@ namespace Dot.Core.Entity
         private Dictionary<long, EntityObject> entityDic = new Dictionary<long, EntityObject>();
         private Dictionary<int, List<EntityObject>> entityCategroyDic = new Dictionary<int, List<EntityObject>>();
 
-        private Dictionary<int, IEntityBuilder> entityCreatorDic = new Dictionary<int, IEntityBuilder>();
+        private Dictionary<int, AEntityBuilder> entityCreatorDic = new Dictionary<int, AEntityBuilder>();
         public EntityContext()
         {
             entityRootTran = DontDestroyHandler.CreateTransform("Entity Root");
@@ -34,7 +34,7 @@ namespace Dot.Core.Entity
             }
         }
 
-        public void RegisterEntityCreator(int entityType, IEntityBuilder builder)
+        public void RegisterEntityCreator(int entityType, AEntityBuilder builder)
         {
             if(!entityCreatorDic.ContainsKey(entityType))
             {
@@ -44,7 +44,7 @@ namespace Dot.Core.Entity
 
         public EntityObject CreateEntity(int entityType)
         {
-            if(entityCreatorDic.TryGetValue(entityType,out IEntityBuilder builder))
+            if(entityCreatorDic.TryGetValue(entityType,out AEntityBuilder builder))
             {
                 EntityObject entity = builder.CreateEntityObject(idCreator.Next(),entityType);
                 AddEntity(entity);
@@ -81,7 +81,7 @@ namespace Dot.Core.Entity
                 entities.Remove(entity);
             }
 
-            if (entityCreatorDic.TryGetValue(entity.Category, out IEntityBuilder builder))
+            if (entityCreatorDic.TryGetValue(entity.Category, out AEntityBuilder builder))
             {
                 builder.DestroyEntityObject(entity);
             }
@@ -94,6 +94,5 @@ namespace Dot.Core.Entity
                 entityObject.SendEvent(eventID, datas);
             }
         }
-        
     }
 }

@@ -1,8 +1,11 @@
-﻿namespace Dot.Core.Entity
+﻿using Dot.Core.Event;
+
+namespace Dot.Core.Entity
 {
     public abstract class AEntityView
     {
         protected EntityObject entity = null;
+        protected EventDispatcher Dispatcher { get => entity.Dispatcher; }
 
         public void InitializeView(EntityObject entityObj)
         {

@@ -1,4 +1,4 @@
-﻿namespace Dot.Core.Entity
+﻿namespace Dot.Core.Entity.Controller
 {
     public class EntityViewController : AEntityController
     {
@@ -31,6 +31,8 @@
 
         public override void DoReset()
         {
+            entityView?.DoDestroy();
+            entityView = null;
             base.DoReset();
         }
     }

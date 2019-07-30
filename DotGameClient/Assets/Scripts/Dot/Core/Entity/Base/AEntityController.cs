@@ -1,14 +1,15 @@
 ﻿using Dot.Core.Event;
+using Dot.Core.Pool;
 
 namespace Dot.Core.Entity
 {
-    public abstract class AEntityController
+    public class AEntityController : IObjectPoolItem
     {
+        public bool Enable { get; set; }
+
         protected EntityObject entity;
         protected EntityContext context;
-
-        public EventDispatcher Dispatcher { get; set; }
-        public bool Enable { get; set; }
+        protected EventDispatcher Dispatcher { get => entity.Dispatcher; }
 
         public void InitializeController(EntityContext context, EntityObject entityObj)
         {
@@ -24,20 +25,22 @@ namespace Dot.Core.Entity
         }
 
         public virtual void DoUpdate(float deltaTime) { }
-
-        protected abstract void AddEventListeners();
-        protected abstract void RemoveEventListeners();
+        protected virtual void AddEventListeners() { }
+        protected virtual void RemoveEventListeners() { }
 
         public virtual void DoReset()
         {
             RemoveEventListeners();
             context = null;
             entity = null;
-            Dispatcher = null;
             Enable = true;
         }
 
-        public virtual void DoDestroy()
+        public void OnNew()
+        {
+        }
+
+        public void OnRelease()
         {
             DoReset();
         }

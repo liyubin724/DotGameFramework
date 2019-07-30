@@ -17,11 +17,11 @@ namespace Dot.Core.Entity
     public class PhysicsVirtualView : VirtualView
     {
         private PhysicsBehaviour phyBehaviour = null;
-        public PhysicsVirtualView(string name, EventDispatcher dispatcher) : base(name, dispatcher)
+        public PhysicsVirtualView(string name) : base(name)
         {
         }
 
-        public PhysicsVirtualView(string name, Transform parent, EventDispatcher dispatcher) : base(name, parent, dispatcher)
+        public PhysicsVirtualView(string name, Transform parent) : base(name, parent)
         {
             phyBehaviour = RootGameObject.GetComponent<PhysicsBehaviour>();
             if(phyBehaviour == null)
@@ -93,6 +93,20 @@ namespace Dot.Core.Entity
             {
                 GetOrCreateRigidbody().MoveRotation(Quaternion.Euler(eventData.GetValue<Vector3>()));
             }
+        }
+
+        public override void DoReset()
+        {
+            if (rigidbody != null) Object.Destroy(rigidbody);
+            rigidbody = null;
+            if(collider!=null) Object.Destroy(collider);
+            collider = null;
+            Object.Destroy(phyBehaviour);
+            phyBehaviour = null;
+
+            ControlType = MoveControlType.Normal;
+
+            base.DoReset();
         }
     }
 }

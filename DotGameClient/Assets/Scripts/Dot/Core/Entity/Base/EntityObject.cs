@@ -1,6 +1,6 @@
 ﻿using Dot.Core.Event;
 using Dot.Core.Logger;
-using System;
+using System.Collections.Generic;
 
 namespace Dot.Core.Entity
 {
@@ -10,41 +10,20 @@ namespace Dot.Core.Entity
         public int Category { get; set; }
         public string Name { get; set; }
 
-        private AEntityController[] controllers = new AEntityController[0];
+        private Dictionary<int, AEntityController> controllerDic = new Dictionary<int, AEntityController>();
         private EventDispatcher entityDispatcher = new EventDispatcher();
+        public EventDispatcher Dispatcher { get => entityDispatcher;}
 
         public EntityObject()
         {
-            controllers = new AEntityController[EntityControllerConst.MAX_INDEX];
-        }
-
-        public AEntityController this[int controllerIndex]
-        {
-            get
-            {
-                return controllers[controllerIndex];
-            }
-            set
-            {
-                if (controllers[controllerIndex] == null)
-                {
-                    DebugLogger.LogError("");
-                    return;
-                }
-                controllers[controllerIndex] = value;
-                if(value !=null)
-                {
-                    value.Dispatcher = entityDispatcher;
-                }
-            }
         }
 
         public void DoUpdate(float deltaTime)
         {
-            Array.ForEach(controllers, (controller) =>
+            foreach(var kvp in controllerDic)
             {
-                controller?.DoUpdate(deltaTime);
-            });
+                kvp.Value?.DoUpdate(deltaTime);
+            }
         }
 
         public void SendEvent(int eventID, params object[] values)
@@ -52,17 +31,71 @@ namespace Dot.Core.Entity
             entityDispatcher.TriggerEvent(eventID, 0, values);
         }
 
-        public void AddController(int index, AEntityController controller)
+        public T GetController<T>(int index) where T : AEntityController
         {
-            if(this[index] == null)
+            if (controllerDic.TryGetValue(index, out AEntityController controller))
             {
-                this[index] = controller;
+                return (T)controller;
+            }
+
+            return null;
+        }
+
+        public bool HasController(int index) => controllerDic.ContainsKey(index);
+        
+        public void AddController(int index,AEntityController controller)
+        {
+            if (controller == null)
+            {
+                DebugLogger.LogError("EntityObject::this[index]-> value is null");
+                return;
+            }
+            if (!controllerDic.ContainsKey(index))
+            {
+                controllerDic.Add(index, controller);
+            }else
+            {
+                DebugLogger.LogError("EntityObject::this[index]->controller has been added.if you want to replace it,please use ReplaceController instead");
             }
         }
 
-        public T GetController<T>(int index) where T:AEntityController => (T)this[index];
+        public AEntityController ReplaceController(int index,AEntityController controller)
+        {
+            AEntityController replacedController = RemoveController(index);
+            AddController(index, controller);
+            return replacedController;
+        }
 
-        public void DoReset()
+        public AEntityController RemoveController(int index)
+        {
+            if (controllerDic.TryGetValue(index, out AEntityController controller))
+            {
+                controllerDic.Remove(index);
+            }
+            return controller;
+        }
+
+        public void RemoveAllController(out int[] indexes,out AEntityController[] controllers)
+        {
+            indexes = new int[controllerDic.Count];
+            controllers = new AEntityController[controllerDic.Count];
+            int index = 0;
+            foreach(var kvp in controllerDic)
+            {
+                indexes[index] = kvp.Key;
+                controllers[index] = kvp.Value;
+                ++index;
+            }
+
+            controllerDic.Clear();
+        }
+
+        public virtual void DoReset()
+        {
+
+        }
+
+        public virtual void DoDestroy()
         {
 
         }

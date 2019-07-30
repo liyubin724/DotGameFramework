@@ -10,8 +10,9 @@ namespace Dot.Core.Entity.Controller
     {
         private string skeletonAddress = null;
         private GameObject skeletonGO = null;
-        private AssetHandle skeletonAssetHandle = null;
         private NodeBehaviour nodeBehaviour = null;
+
+        private AssetHandle skeletonAssetHandle = null;
         
         public bool HasSkeleton() => skeletonGO == null;
 
@@ -21,12 +22,10 @@ namespace Dot.Core.Entity.Controller
             {
                 return;
             }
+
             this.skeletonAddress = skeletonAddress;
-            if(skeletonAssetHandle!=null)
-            {
-                skeletonAssetHandle.Release();
-                skeletonAssetHandle = null;
-            }
+
+            skeletonAssetHandle?.Release();
             skeletonAssetHandle = AssetManager.GetInstance().InstanceAssetAsync(skeletonAddress, OnSkeletonLoadFinish, null);
         }
 
@@ -36,11 +35,9 @@ namespace Dot.Core.Entity.Controller
             {
                 UnityObject.Destroy(skeletonGO);
                 skeletonGO = null;
-            }else if(skeletonAssetHandle!=null)
-            {
-                skeletonAssetHandle.Release();
-                skeletonAssetHandle = null;
             }
+            skeletonAssetHandle?.Release();
+            skeletonAssetHandle = null;
             skeletonAddress = null;
             nodeBehaviour = null;
         }
@@ -79,6 +76,13 @@ namespace Dot.Core.Entity.Controller
         {
             Dispatcher.UnregisterEvent(EntityInnerEventConst.SKELETON_ADD_ID, OnSkeletonAdd);
             Dispatcher.UnregisterEvent(EntityInnerEventConst.SKELETON_REMOVE_ID, OnSkeletonRemove);
+        }
+
+        public override void DoReset()
+        {
+            RemoveSkeleton();
+
+            base.DoReset();
         }
 
         private void OnSkeletonAdd(EventData eventData)

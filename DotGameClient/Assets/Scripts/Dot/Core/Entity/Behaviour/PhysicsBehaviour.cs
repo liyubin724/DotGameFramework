@@ -15,13 +15,7 @@ namespace Dot.Core.Entity
             {
                 targetEntityObj = targetPhyBeh.Entity;
             }
-            if(targetEntityObj == null)
-            {
-                Entity.SendEvent(EntityInnerEventConst.TRIGGER_ENTER_SENDER_ID, targetGO);
-            }else
-            {
-                Entity.SendEvent(EntityInnerEventConst.TRIGGER_ENTER_SENDER_ID, targetGO, targetEntityObj);
-            }
+            Entity.SendEvent(EntityInnerEventConst.TRIGGER_ENTER_ID, targetGO, targetEntityObj);
         }
 
         private void OnTriggerStay(Collider other)

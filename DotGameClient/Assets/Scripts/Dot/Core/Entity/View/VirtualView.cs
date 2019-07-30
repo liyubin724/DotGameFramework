@@ -1,5 +1,6 @@
 ﻿using Dot.Core.Event;
 using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Entity
 {
@@ -22,18 +23,14 @@ namespace Dot.Core.Entity
             }
         }
 
-        public EventDispatcher Dispatcher { get; private set; }
-
-        public VirtualView(string name, EventDispatcher dispatcher) : this(name, null, dispatcher)
+        public VirtualView(string name) : this(name, null)
         {
         }
 
-        public VirtualView(string name, Transform parent, EventDispatcher dispatcher)
+        public VirtualView(string name, Transform parent)
         {
             RootGameObject = new GameObject(name);
             RootTransform = RootGameObject.transform;
-
-            Dispatcher = dispatcher;
 
             if (parent != null)
             {
@@ -64,6 +61,13 @@ namespace Dot.Core.Entity
         {
             Dispatcher?.UnregisterEvent(EntityInnerEventConst.POSITION_ID, OnPosition);
             Dispatcher?.UnregisterEvent(EntityInnerEventConst.DIRECTION_ID, OnDirection);
+        }
+
+        public override void DoDestroy()
+        {
+            UnityObject.Destroy(RootGameObject);
+
+            base.DoDestroy();
         }
 
         protected virtual void OnPosition(EventData eventData)
