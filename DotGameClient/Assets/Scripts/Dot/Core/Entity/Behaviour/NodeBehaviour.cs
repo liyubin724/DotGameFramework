@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Dot.Core.Entity
 {
     [Serializable]
-    public class EntityBindNodeData
+    public class BindNodeData
     {
         public string atlasName = "";
         public Transform transform = null;
@@ -15,76 +15,76 @@ namespace Dot.Core.Entity
     }
 
     [Serializable]
-    public class EntityMeshRendererNodeData
+    public class MeshRendererNodeData
     {
         public string name = "";
         public SkinnedMeshRenderer renderer = null;
     }
 
     [Serializable]
-    public class EntityBoneNodeData
+    public class BoneNodeData
     {
         public string name = null;
         public Transform transform = null;
     }
 
-    public class EntityNodeBehaviour : MonoBehaviour
+    public class NodeBehaviour : MonoBehaviour
     {
         [ReadOnly]
-        public EntityBoneNodeData[] boneNodes = new EntityBoneNodeData[0];
+        public BoneNodeData[] boneNodes = new BoneNodeData[0];
         [ReadOnly]
-        public EntityMeshRendererNodeData[] rendererNodes = new EntityMeshRendererNodeData[0];
-        public EntityBindNodeData[] bindNodes = new EntityBindNodeData[0];
+        public MeshRendererNodeData[] rendererNodes = new MeshRendererNodeData[0];
+        public BindNodeData[] bindNodes = new BindNodeData[0];
 
-        private Dictionary<string, EntityBoneNodeData> boneNodeDic = null;
-        public EntityBoneNodeData GetBoneNode(string name)
+        private Dictionary<string, BoneNodeData> boneNodeDic = null;
+        public BoneNodeData GetBoneNode(string name)
         {
             if(boneNodeDic == null)
             {
-                boneNodeDic = new Dictionary<string, EntityBoneNodeData>();
+                boneNodeDic = new Dictionary<string, BoneNodeData>();
                 foreach(var node in boneNodes)
                 {
                     boneNodeDic.Add(node.name, node);
                 }
             }
 
-            if(boneNodeDic.TryGetValue(name,out EntityBoneNodeData bNode))
+            if(boneNodeDic.TryGetValue(name,out BoneNodeData bNode))
             {
                 return bNode;
             }
             return null;
         }
 
-        private Dictionary<string, EntityMeshRendererNodeData> rendererNodeDic = null;
-        public EntityMeshRendererNodeData GetRendererNode(string name)
+        private Dictionary<string, MeshRendererNodeData> rendererNodeDic = null;
+        public MeshRendererNodeData GetRendererNode(string name)
         {
             if(rendererNodeDic == null)
             {
-                rendererNodeDic = new Dictionary<string, EntityMeshRendererNodeData>();
+                rendererNodeDic = new Dictionary<string, MeshRendererNodeData>();
                 foreach(var n in rendererNodes)
                 {
                     rendererNodeDic.Add(n.name, n);
                 }
             }
-            if(rendererNodeDic.TryGetValue(name,out EntityMeshRendererNodeData node))
+            if(rendererNodeDic.TryGetValue(name,out MeshRendererNodeData node))
             {
                 return node;
             }
             return null;
         }
 
-        private Dictionary<string, EntityBindNodeData> bindNodeDic = null;
-        public EntityBindNodeData GetBindNode(string name)
+        private Dictionary<string, BindNodeData> bindNodeDic = null;
+        public BindNodeData GetBindNode(string name)
         {
             if (bindNodeDic == null)
             {
-                bindNodeDic = new Dictionary<string, EntityBindNodeData>();
+                bindNodeDic = new Dictionary<string, BindNodeData>();
                 foreach (var n in bindNodes)
                 {
                     bindNodeDic.Add(n.atlasName, n);
                 }
             }
-            if (bindNodeDic.TryGetValue(name, out EntityBindNodeData node))
+            if (bindNodeDic.TryGetValue(name, out BindNodeData node))
             {
                 return node;
             }

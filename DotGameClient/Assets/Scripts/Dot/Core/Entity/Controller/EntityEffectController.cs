@@ -8,10 +8,6 @@ namespace Dot.Core.Entity.Controller
 {
     public class EntityEffectController : AEntityController
     {
-        public EntityEffectController(EntityObject entity) : base(entity)
-        {
-        }
-
         protected override void AddEventListeners()
         {
             
@@ -21,12 +17,5 @@ namespace Dot.Core.Entity.Controller
         {
             
         }
-
-        public void AddBindEffect()
-        {
-
-        }
-
-
     }
 }

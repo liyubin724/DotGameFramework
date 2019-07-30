@@ -80,17 +80,17 @@ namespace DotEditor.Core.Avatar
             UnityObject fbxObject = AssetDatabase.LoadAssetAtPath(fbxAssetPath,typeof(GameObject));
             GameObject instanceGO = GameObject.Instantiate<GameObject>(fbxObject as GameObject);
 
-            EntityNodeBehaviour foNode = instanceGO.AddComponent<EntityNodeBehaviour>();
+            NodeBehaviour foNode = instanceGO.AddComponent<NodeBehaviour>();
 
-            List<EntityBoneNodeData> boneNodeList = new List<EntityBoneNodeData>();
-            List<EntityMeshRendererNodeData> rendererNodeList = new List<EntityMeshRendererNodeData>();
+            List<BoneNodeData> boneNodeList = new List<BoneNodeData>();
+            List<MeshRendererNodeData> rendererNodeList = new List<MeshRendererNodeData>();
 
             Transform[] transforms = instanceGO.GetComponentsInChildren<Transform>(true);
             foreach(var t in transforms)
             {
                 if(t == instanceGO.transform)
                 {
-                    EntityBoneNodeData boneNode = new EntityBoneNodeData();
+                    BoneNodeData boneNode = new BoneNodeData();
                     boneNodeList.Add(boneNode);
                     boneNode.name = "Root";
                     boneNode.transform = t;
@@ -99,13 +99,13 @@ namespace DotEditor.Core.Avatar
                 SkinnedMeshRenderer smr = t.GetComponent<SkinnedMeshRenderer>();
                 if(smr == null)
                 {
-                    EntityBoneNodeData boneNode = new EntityBoneNodeData();
+                    BoneNodeData boneNode = new BoneNodeData();
                     boneNodeList.Add(boneNode);
                     boneNode.name = t.name;
                     boneNode.transform = t;
                 }else
                 {
-                    EntityMeshRendererNodeData rendererNode = new EntityMeshRendererNodeData();
+                    MeshRendererNodeData rendererNode = new MeshRendererNodeData();
                     rendererNodeList.Add(rendererNode);
                     rendererNode.name = t.name;
                     rendererNode.renderer = smr;
@@ -122,22 +122,22 @@ namespace DotEditor.Core.Avatar
             GameObject savedGO = AssetDatabase.LoadAssetAtPath<GameObject>(skeletonPrefabAssetPath);
             if(savedGO!=null)
             {
-                EntityNodeBehaviour savedFONode = savedGO.GetComponent<EntityNodeBehaviour>();
+                NodeBehaviour savedFONode = savedGO.GetComponent<NodeBehaviour>();
                 if(savedFONode == null)
                 {
                     savedGO = null;
                     AssetDatabase.DeleteAsset(skeletonPrefabAssetPath);
                 }else
                 {
-                    List<EntityBindNodeData> bindNodeList = new List<EntityBindNodeData>();
+                    List<BindNodeData> bindNodeList = new List<BindNodeData>();
                     foreach(var bindNode in savedFONode.bindNodes)
                     {
                         if(bindNode.transform!=null)
                         {
-                            EntityBoneNodeData boneNode = foNode.GetBoneNode(bindNode.transform.name);
+                            BoneNodeData boneNode = foNode.GetBoneNode(bindNode.transform.name);
                             if(boneNode != null)
                             {
-                                EntityBindNodeData node = new EntityBindNodeData();
+                                BindNodeData node = new BindNodeData();
                                 node.atlasName = bindNode.atlasName;
                                 node.transform = boneNode.transform;
                                 node.postionOffset = bindNode.postionOffset;
@@ -145,7 +145,7 @@ namespace DotEditor.Core.Avatar
                                 bindNodeList.Add(node);
                             }else if(bindNode.transform == savedGO.transform)
                             {
-                                EntityBindNodeData node = new EntityBindNodeData();
+                                BindNodeData node = new BindNodeData();
                                 node.atlasName = bindNode.atlasName;
                                 node.transform = foNode.transform;
                                 node.postionOffset = bindNode.postionOffset;

@@ -1,6 +1,11 @@
 ﻿namespace Dot.Core.Entity
 {
-    public static class EntityEventConst
+    public static class EntityContextEventConst
+    {
+
+    }
+
+    public static class EntityInnerEventConst
     {
         public static readonly int POSITION_ID = 101;
         public static readonly int DIRECTION_ID = 102;
@@ -24,9 +29,13 @@
 
     public static class EntityControllerConst
     {
-        public static readonly int SKELETON_INDEX = 1;
-        public static readonly int AVATAR_INDEX = 2;
-
-        public static readonly int MAX_INDEX = 3;
+        public static readonly int SKELETON_INDEX = 0;
+        public static readonly int AVATAR_INDEX = 1;
+        public static readonly int MOVE_INDEX = 2;
+        public static readonly int EFFECT_INDEX = 3;
+        public static readonly int PHYSICS_INDEX = 4;
+        public static readonly int VIEW_INDEX = 5;
+        
+        public static readonly int MAX_INDEX = 6;
     }
 }

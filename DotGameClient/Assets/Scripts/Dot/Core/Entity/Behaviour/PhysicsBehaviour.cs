@@ -17,11 +17,10 @@ namespace Dot.Core.Entity
             }
             if(targetEntityObj == null)
             {
-                Entity.SendEvent(EntityEventConst.TRIGGER_ENTER_SENDER_ID, targetGO);
+                Entity.SendEvent(EntityInnerEventConst.TRIGGER_ENTER_SENDER_ID, targetGO);
             }else
             {
-                Entity.SendEvent(EntityEventConst.TRIGGER_ENTER_SENDER_ID, targetGO, targetEntityObj);
-                EntityContext.GetInstance().SendEvent(Entity.UniqueID, EntityEventConst.TRIGGER_ENTER_RECEIVER_ID,Entity);
+                Entity.SendEvent(EntityInnerEventConst.TRIGGER_ENTER_SENDER_ID, targetGO, targetEntityObj);
             }
         }
 

@@ -10,7 +10,7 @@ namespace Dot.Core.Entity
         public Vector3 Position { get => RootTransform.position; }
         public Vector3 Direction { get => RootTransform.forward; }
 
-        public override bool Active
+        public override bool Enable
         {
             get
             {
@@ -56,14 +56,14 @@ namespace Dot.Core.Entity
 
         public override void AddListener()
         {
-            Dispatcher?.RegisterEvent(EntityEventConst.POSITION_ID, OnPosition);
-            Dispatcher?.RegisterEvent(EntityEventConst.DIRECTION_ID, OnDirection);
+            Dispatcher?.RegisterEvent(EntityInnerEventConst.POSITION_ID, OnPosition);
+            Dispatcher?.RegisterEvent(EntityInnerEventConst.DIRECTION_ID, OnDirection);
         }
 
         public override void RemoveListener()
         {
-            Dispatcher?.UnregisterEvent(EntityEventConst.POSITION_ID, OnPosition);
-            Dispatcher?.UnregisterEvent(EntityEventConst.DIRECTION_ID, OnDirection);
+            Dispatcher?.UnregisterEvent(EntityInnerEventConst.POSITION_ID, OnPosition);
+            Dispatcher?.UnregisterEvent(EntityInnerEventConst.DIRECTION_ID, OnDirection);
         }
 
         protected virtual void OnPosition(EventData eventData)

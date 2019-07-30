@@ -1,51 +1,40 @@
-﻿#if UNITY_STANDALONE || UNITY_ANDROID || UNITY_IOS
-using System;
-#endif
+﻿
+using System.Diagnostics;
 
 namespace Dot.Core.Logger
 {
     public class DebugLogger
     {
-        public static void Log(string msg)
+        [Conditional("DEBUG")]
+        [Conditional("UNITY_EDITOR")]
+        public static void Log(string msg)=> UnityEngine.Debug.Log(msg);
+
+        [Conditional("DEBUG")]
+        [Conditional("UNITY_EDITOR")]
+        public static void LogError(string msg) => UnityEngine.Debug.LogError(msg);
+
+        [Conditional("DEBUG")]
+        [Conditional("UNITY_EDITOR")]
+        public static void LogWarning(string msg) => UnityEngine.Debug.LogWarning(msg);
+
+        [Conditional("DEBUG")]
+        [Conditional("UNITY_EDITOR")]
+        public static void Log(bool condition, string msg) 
         {
-#if UNITY_STANDALONE || UNITY_ANDROID || UNITY_IOS
-            UnityEngine.Debug.Log(msg);
-#else
-            ConsoleColor cc = Console.ForegroundColor;
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(msg);
-
-            Console.ForegroundColor = cc;
-#endif
+            if (condition) Log(msg);
         }
-
-        public static void LogError(string msg)
+        [Conditional("DEBUG")]
+        [Conditional("UNITY_EDITOR")]
+        public static void LogError(bool condition, string msg)
         {
-#if UNITY_STANDALONE || UNITY_ANDROID || UNITY_IOS
-            UnityEngine.Debug.LogError(msg);
-#else
-            ConsoleColor cc = Console.ForegroundColor;
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(msg);
-
-            Console.ForegroundColor = cc;
-#endif
+            if (condition) LogError(msg);
         }
-
-        public static void LogWarning(string msg)
+        
+        [Conditional("DEBUG")]
+        [Conditional("UNITY_EDITOR")]
+        public static void LogWarning(bool condition, string msg)
         {
-#if UNITY_STANDALONE || UNITY_ANDROID || UNITY_IOS
-            UnityEngine.Debug.LogWarning(msg);
-#else
-            ConsoleColor cc = Console.ForegroundColor;
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(msg);
-
-            Console.ForegroundColor = cc;
-#endif
+            if (condition) LogError(msg);
         }
     }
 }

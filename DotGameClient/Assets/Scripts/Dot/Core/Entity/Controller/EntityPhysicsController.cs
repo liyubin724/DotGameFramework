@@ -9,20 +9,17 @@ namespace Dot.Core.Entity
 {
     public class EntityPhysicsController : AEntityController
     {
-        public EntityPhysicsController(EntityObject entity) : base(entity)
-        {
-        }
 
         protected override void AddEventListeners()
         {
-            Dispatcher.RegisterEvent(EntityEventConst.TRIGGER_ENTER_SENDER_ID, OnSendTriggerEnter);
-            Dispatcher.RegisterEvent(EntityEventConst.TRIGGER_ENTER_RECEIVER_ID, OnReceiverTriggerEnter);
+            Dispatcher.RegisterEvent(EntityInnerEventConst.TRIGGER_ENTER_SENDER_ID, OnSendTriggerEnter);
+            Dispatcher.RegisterEvent(EntityInnerEventConst.TRIGGER_ENTER_RECEIVER_ID, OnReceiverTriggerEnter);
         }
 
         protected override void RemoveEventListeners()
         {
-            Dispatcher.UnregisterEvent(EntityEventConst.TRIGGER_ENTER_SENDER_ID, OnSendTriggerEnter);
-            Dispatcher.UnregisterEvent(EntityEventConst.TRIGGER_ENTER_RECEIVER_ID, OnReceiverTriggerEnter);
+            Dispatcher.UnregisterEvent(EntityInnerEventConst.TRIGGER_ENTER_SENDER_ID, OnSendTriggerEnter);
+            Dispatcher.UnregisterEvent(EntityInnerEventConst.TRIGGER_ENTER_RECEIVER_ID, OnReceiverTriggerEnter);
         }
 
         protected virtual void OnSendTriggerEnter(EventData data)

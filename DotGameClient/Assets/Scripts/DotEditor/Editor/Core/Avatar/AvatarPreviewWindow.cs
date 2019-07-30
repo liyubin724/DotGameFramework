@@ -12,7 +12,7 @@ namespace DotEditor.Core.Avatar
             GetWindow<AvatarPreviewWindow>().Show();
         }
 
-        public EntityNodeBehaviour skeletonNode = null;
+        public NodeBehaviour skeletonNode = null;
         public AvatarPart[] aParts = new AvatarPart[0];
 
         private void OnGUI()

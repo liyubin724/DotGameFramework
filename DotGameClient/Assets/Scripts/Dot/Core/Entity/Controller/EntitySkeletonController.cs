@@ -1,5 +1,6 @@
 ﻿using Dot.Core.Asset;
 using Dot.Core.Event;
+using Dot.Core.Logger;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
@@ -10,12 +11,8 @@ namespace Dot.Core.Entity.Controller
         private string skeletonAddress = null;
         private GameObject skeletonGO = null;
         private AssetHandle skeletonAssetHandle = null;
-        private EntityNodeBehaviour nodeBehaviour = null;
+        private NodeBehaviour nodeBehaviour = null;
         
-        public EntitySkeletonController(EntityObject entity) : base(entity)
-        {
-        }
-
         public bool HasSkeleton() => skeletonGO == null;
 
         public void AddSkeleton(string skeletonAddress)
@@ -48,36 +45,40 @@ namespace Dot.Core.Entity.Controller
             nodeBehaviour = null;
         }
 
-        public override void DoReset()
-        {
-            
-        }
-
         private void OnSkeletonLoadFinish(string address,UnityObject uObj)
         {
             skeletonAssetHandle = null;
             skeletonGO = uObj as GameObject;
-
-            if(Entity.View!=null)
+            if(skeletonGO == null)
             {
-                VirtualView vView = Entity.View as VirtualView; 
-                if(vView!=null)
+                DebugLogger.LogError("EntitySkeletonController::OnSkeletonLoadFinish->skeleton is null");
+                return;
+            }
+
+            EntityViewController viewController = entity.GetController<EntityViewController>(EntityControllerConst.VIEW_INDEX);
+            if (viewController != null)
+            {
+                VirtualView view = viewController.GetView<VirtualView>();
+                if(view!=null)
                 {
-                    skeletonGO.transform.SetParent(vView.RootTransform, false);
+                    skeletonGO.transform.SetParent(view.RootTransform, false);
+                    return;
                 }
             }
+
+            skeletonGO.transform.SetParent(context.EntityRootTransfrom, false);
         }
 
         protected override void AddEventListeners()
         {
-            Dispatcher.RegisterEvent(EntityEventConst.SKELETON_ADD_ID, OnSkeletonAdd);
-            Dispatcher.RegisterEvent(EntityEventConst.SKELETON_REMOVE_ID, OnSkeletonRemove);
+            Dispatcher.RegisterEvent(EntityInnerEventConst.SKELETON_ADD_ID, OnSkeletonAdd);
+            Dispatcher.RegisterEvent(EntityInnerEventConst.SKELETON_REMOVE_ID, OnSkeletonRemove);
         }
 
         protected override void RemoveEventListeners()
         {
-            Dispatcher.UnregisterEvent(EntityEventConst.SKELETON_ADD_ID, OnSkeletonAdd);
-            Dispatcher.UnregisterEvent(EntityEventConst.SKELETON_REMOVE_ID, OnSkeletonRemove);
+            Dispatcher.UnregisterEvent(EntityInnerEventConst.SKELETON_ADD_ID, OnSkeletonAdd);
+            Dispatcher.UnregisterEvent(EntityInnerEventConst.SKELETON_REMOVE_ID, OnSkeletonRemove);
         }
 
         private void OnSkeletonAdd(EventData eventData)
@@ -91,9 +92,9 @@ namespace Dot.Core.Entity.Controller
             RemoveSkeleton();
         }
 
-        public EntityBindNodeData GetBindNodeData(string nodeName)
+        public BindNodeData GetBindNodeData(string nodeName)
         {
-            EntityNodeBehaviour nodeBeh = GetNodeBehaviour();
+            NodeBehaviour nodeBeh = GetNodeBehaviour();
             if(nodeBeh!=null)
             {
                 return nodeBeh.GetBindNode(nodeName);
@@ -101,11 +102,11 @@ namespace Dot.Core.Entity.Controller
             return null;
         }
 
-        private EntityNodeBehaviour GetNodeBehaviour()
+        private NodeBehaviour GetNodeBehaviour()
         {
             if(nodeBehaviour == null && skeletonGO!=null)
             {
-                nodeBehaviour = skeletonGO.GetComponent<EntityNodeBehaviour>();
+                nodeBehaviour = skeletonGO.GetComponent<NodeBehaviour>();
             }
             return nodeBehaviour;
         }

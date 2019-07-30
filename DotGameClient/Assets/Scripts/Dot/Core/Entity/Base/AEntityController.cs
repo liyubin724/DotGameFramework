@@ -4,13 +4,17 @@ namespace Dot.Core.Entity
 {
     public abstract class AEntityController
     {
-        protected EntityObject Entity { get; }
+        protected EntityObject entity;
+        protected EntityContext context;
+
         public EventDispatcher Dispatcher { get; set; }
         public bool Enable { get; set; }
 
-        public AEntityController(EntityObject entity)
+        public void InitializeController(EntityContext context, EntityObject entityObj)
         {
-            Entity = entity;
+            this.context = context;
+            entity = entityObj;
+
             DoInit();
         }
 
@@ -18,12 +22,24 @@ namespace Dot.Core.Entity
         {
             AddEventListeners();
         }
+
         public virtual void DoUpdate(float deltaTime) { }
+
         protected abstract void AddEventListeners();
         protected abstract void RemoveEventListeners();
+
         public virtual void DoReset()
         {
             RemoveEventListeners();
+            context = null;
+            entity = null;
+            Dispatcher = null;
+            Enable = true;
+        }
+
+        public virtual void DoDestroy()
+        {
+            DoReset();
         }
     }
 }

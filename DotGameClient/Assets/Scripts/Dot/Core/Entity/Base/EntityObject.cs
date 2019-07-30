@@ -9,7 +9,6 @@ namespace Dot.Core.Entity
         public long UniqueID { get; set; }
         public int Category { get; set; }
         public string Name { get; set; }
-        public AEntityView View{get; set;}
 
         private AEntityController[] controllers = new AEntityController[0];
         private EventDispatcher entityDispatcher = new EventDispatcher();
@@ -53,10 +52,15 @@ namespace Dot.Core.Entity
             entityDispatcher.TriggerEvent(eventID, 0, values);
         }
 
-        public void AddController(int index,AEntityController controller)
+        public void AddController(int index, AEntityController controller)
         {
-            
+            if(this[index] == null)
+            {
+                this[index] = controller;
+            }
         }
+
+        public T GetController<T>(int index) where T:AEntityController => (T)this[index];
 
         public void DoReset()
         {

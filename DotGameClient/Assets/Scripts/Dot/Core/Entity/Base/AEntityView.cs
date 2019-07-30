@@ -3,18 +3,29 @@
     public abstract class AEntityView
     {
         protected EntityObject entity = null;
-        public virtual void InitializeView(EntityObject entityObj)
+
+        public void InitializeView(EntityObject entityObj)
         {
             entity = entityObj;
-            AddListener();
+            DoInit();
         }
 
-        public virtual void DestroyView()
+        protected virtual void DoInit()
+        {
+            AddListener();
+        }
+        
+        public virtual void DoReset()
         {
             RemoveListener();
         }
 
-       public abstract bool Active { get; set; }
+        public virtual void DoDestroy()
+        {
+            DoReset();
+        }
+
+        public abstract bool Enable { get; set; }
         public abstract void AddListener();
         public abstract void RemoveListener();
 

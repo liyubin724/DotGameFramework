@@ -8,7 +8,7 @@ using SystemObject = System.Object;
 
 namespace Dot.Core.Entity
 {
-    public class EntityContext : Singleton<EntityContext>
+    public class EntityContext
     {
         private Transform entityRootTran = null;
         private EventDispatcher eventDispatcher = null;
@@ -20,7 +20,7 @@ namespace Dot.Core.Entity
         private Dictionary<int, List<EntityObject>> entityCategroyDic = new Dictionary<int, List<EntityObject>>();
 
         private Dictionary<int, IEntityBuilder> entityCreatorDic = new Dictionary<int, IEntityBuilder>();
-        protected override void DoInit()
+        public EntityContext()
         {
             entityRootTran = DontDestroyHandler.CreateTransform("Entity Root");
             eventDispatcher = new EventDispatcher();

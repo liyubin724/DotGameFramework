@@ -8,18 +8,14 @@ namespace Dot.Core.Entity.Controller
 {
     public class EntityAvatarController : AEntityController
     {
-        public EntityAvatarController(EntityObject entity) : base(entity)
-        {
-        }
-
         protected override void AddEventListeners()
         {
-            throw new NotImplementedException();
+            
         }
 
         protected override void RemoveEventListeners()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }
