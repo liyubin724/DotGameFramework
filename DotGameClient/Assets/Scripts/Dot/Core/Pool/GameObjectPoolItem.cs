@@ -41,5 +41,28 @@ namespace Dot.Core.Pool
         {
 
         }
+
+        public void ReleaseItem()
+        {
+            if(string.IsNullOrEmpty(AssetPath) || string.IsNullOrEmpty(PoolName))
+            {
+                Destroy(CachedGameObject);
+            }
+            SpawnPool spawnPool = PoolManager.GetInstance().GetSpawnPool(PoolName, false);
+            if(spawnPool == null)
+            {
+                Destroy(CachedGameObject);
+            }else
+            {
+                GameObjectPool gObjPool = spawnPool.GetGameObjectPool(AssetPath);
+                if(gObjPool == null)
+                {
+                    Destroy(CachedGameObject);
+                }else
+                {
+                    gObjPool.ReleasePoolItem(this);
+                }
+            }
+        }
     }
 }

@@ -27,24 +27,6 @@ namespace Dot.Core.Manager
             }
         }
 
-        //private EventManager eventMgr = null;
-        //public EventManager EventMgr
-        //{
-        //    get
-        //    {
-        //        return eventMgr;
-        //    }
-        //}
-
-        private PoolManager poolMgr = null;
-        public PoolManager PoolMgr
-        {
-            get
-            {
-                return poolMgr;
-            }
-        }
-
         private AssetManager assetMgr = null;
         public AssetManager AssetMgr
         {
@@ -73,10 +55,10 @@ namespace Dot.Core.Manager
             assetMgr.DoInit();
             assetMgr.Priority = 3;
 
-            poolMgr = new PoolManager();
-            poolMgr.DoInit();
-            poolMgr.Priority = 4;
-            AddGlobalManager("PoolManager", poolMgr);
+            //poolMgr = new PoolManager();
+            //poolMgr.DoInit();
+            //poolMgr.Priority = 4;
+            //AddGlobalManager("PoolManager", poolMgr);
 
         }
 

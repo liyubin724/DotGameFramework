@@ -7,34 +7,22 @@ namespace Dot.Core.Pool
     public class SpawnPool
     {
         private Dictionary<string, GameObjectPool> goPools = new Dictionary<string, GameObjectPool>();
+        internal Transform CachedTransform { get; private set; } = null;
+        internal string PoolName { get; private set; } = string.Empty;
 
-        public Transform CachedTransform { get; private set; } = null;
-        public string PoolName { get; private set; } = string.Empty;
+        internal SpawnPool()
+        {
+        }
 
-        internal SpawnPool(string pName,Transform parentTran)
+        internal void InitSpawn(string pName, Transform parentTran)
         {
             PoolName = pName;
-            GameObject go = new GameObject("SP_" + PoolName);
-            CachedTransform = go.transform;
+
+            CachedTransform = new GameObject($"Spawn_{PoolName}").transform;
             CachedTransform.SetParent(parentTran, false);
         }
-
-#if UNITY_EDITOR
-        public string[] GetAssetPaths()
-        {
-            string[] result = new string[goPools.Count];
-            int i = 0;
-            foreach(var key in goPools.Keys)
-            {
-                result[i] = key;
-                ++i;
-            }
-            System.Array.Sort(result);
-            return result;
-        }
-#endif
-
-        internal GameObjectPool GetGameObjectPool(string assetPath)
+        
+        public GameObjectPool GetGameObjectPool(string assetPath)
         {
             if(goPools.TryGetValue(assetPath,out GameObjectPool goPool))
             {
@@ -43,7 +31,7 @@ namespace Dot.Core.Pool
             return null;
         }
 
-        internal GameObjectPool CreateGameObjectPool(string assetPath,GameObjectPoolItem tempItem)
+        public GameObjectPool CreateGameObjectPool(string assetPath,GameObjectPoolItem tempItem)
         {
             if(tempItem == null)
             {
@@ -56,13 +44,15 @@ namespace Dot.Core.Pool
             }
             else
             {
-                goPool = new GameObjectPool(this,assetPath, tempItem);
+                goPool = new GameObjectPool();
+                goPool.InitPool(this, assetPath, tempItem);
+
                 goPools.Add(assetPath, goPool);
             }
            return goPool;
         }
 
-        internal void CullPool(float deltaTime)
+        internal void CullSpawn(float deltaTime)
         {
             foreach(var kvp in goPools)
             {
@@ -102,5 +92,21 @@ namespace Dot.Core.Pool
                 goPools.Remove(name);
             }
         }
+
+
+#if UNITY_EDITOR
+        public string[] GetAssetPaths()
+        {
+            string[] result = new string[goPools.Count];
+            int i = 0;
+            foreach (var key in goPools.Keys)
+            {
+                result[i] = key;
+                ++i;
+            }
+            System.Array.Sort(result);
+            return result;
+        }
+#endif
     }
 }

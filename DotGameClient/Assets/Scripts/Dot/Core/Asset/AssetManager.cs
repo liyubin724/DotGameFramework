@@ -1,6 +1,7 @@
 ﻿using Dot.Core.Generic;
 using Dot.Core.Util;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityObject = UnityEngine.Object;
@@ -73,7 +74,6 @@ namespace Dot.Core.Asset
                 }
             }
         }
-
         
         private UnityObject GetObjectInstance(string address,AssetData assetData)
         {
@@ -285,8 +285,7 @@ namespace Dot.Core.Asset
                 }
             }
         }
-
-
+        
         private void OnAssetLoadComplete(AsyncOperationHandle handle)
         {
             foreach(var assetData in loadingAssetDataList)
@@ -299,7 +298,15 @@ namespace Dot.Core.Asset
             }
         }
 
+        public T Instantiate<T>(string address) where T : UnityObject
+        {
+            if(instanceAssetDataDic.TryGetValue(address,out InstanceAssetData instanceAssetData))
+            {
+                return (T)instanceAssetData.GetInstance();
+            }
 
+            return null;
+        }
     }
     
     
