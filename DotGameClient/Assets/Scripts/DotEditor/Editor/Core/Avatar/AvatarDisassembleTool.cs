@@ -138,7 +138,7 @@ namespace DotEditor.Core.Avatar
                             if(boneNode != null)
                             {
                                 BindNodeData node = new BindNodeData();
-                                node.atlasName = bindNode.atlasName;
+                                //node.atlasName = bindNode.atlasName;
                                 node.transform = boneNode.transform;
                                 node.postionOffset = bindNode.postionOffset;
                                 node.rotationOffset = bindNode.rotationOffset;
@@ -146,7 +146,7 @@ namespace DotEditor.Core.Avatar
                             }else if(bindNode.transform == savedGO.transform)
                             {
                                 BindNodeData node = new BindNodeData();
-                                node.atlasName = bindNode.atlasName;
+                                //node.atlasName = bindNode.atlasName;
                                 node.transform = foNode.transform;
                                 node.postionOffset = bindNode.postionOffset;
                                 node.rotationOffset = bindNode.rotationOffset;

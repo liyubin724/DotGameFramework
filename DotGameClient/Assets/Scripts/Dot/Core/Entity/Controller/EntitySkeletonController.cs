@@ -96,12 +96,22 @@ namespace Dot.Core.Entity.Controller
             RemoveSkeleton();
         }
 
-        public BindNodeData GetBindNodeData(string nodeName)
+        public BindNodeData GetBindNodeData(BindNodeType nodeType,int nodeIndex)
+        {
+            BindNodeData[] nodes = GetBindNodes(nodeType);
+            if (nodes != null && nodeIndex >= 0 && nodeIndex < nodes.Length)
+            {
+                return nodes[nodeIndex];
+            }
+            return null;
+        }
+
+        public BindNodeData[] GetBindNodes(BindNodeType nodeType)
         {
             NodeBehaviour nodeBeh = GetNodeBehaviour();
-            if(nodeBeh!=null)
+            if (nodeBeh != null)
             {
-                return nodeBeh.GetBindNode(nodeName);
+                return nodeBeh.GetBindNodes(nodeType);
             }
             return null;
         }

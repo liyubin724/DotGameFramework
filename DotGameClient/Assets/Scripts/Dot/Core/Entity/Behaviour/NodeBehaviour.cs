@@ -3,12 +3,22 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 
+
 namespace Dot.Core.Entity
 {
+    public enum BindNodeType
+    {
+        Main,
+        Sub,
+        Super,
+        Furnace,
+    }
+
+
     [Serializable]
     public class BindNodeData
     {
-        public string atlasName = "";
+        public BindNodeType nodeType = BindNodeType.Main;
         public Transform transform = null;
         public Vector3 postionOffset = Vector3.zero;
         public Vector3 rotationOffset = Vector3.zero;
@@ -73,25 +83,32 @@ namespace Dot.Core.Entity
             return null;
         }
 
-        private Dictionary<string, BindNodeData> bindNodeDic = null;
-        public BindNodeData GetBindNode(string name)
+        private Dictionary<BindNodeType, List<BindNodeData>> bindNodeDic = null;
+
+        public BindNodeData[] GetBindNodes(BindNodeType nodeType)
         {
             if (bindNodeDic == null)
             {
-                bindNodeDic = new Dictionary<string, BindNodeData>();
+                bindNodeDic = new Dictionary<BindNodeType, List<BindNodeData>>();
+
                 foreach (var n in bindNodes)
                 {
-                    bindNodeDic.Add(n.atlasName, n);
+                    if(!bindNodeDic.TryGetValue(n.nodeType,out List<BindNodeData> dataList))
+                    {
+                        dataList = new List<BindNodeData>();
+                        bindNodeDic.Add(n.nodeType, dataList);
+                    }
+                    dataList.Add(n);
                 }
             }
-            if (bindNodeDic.TryGetValue(name, out BindNodeData node))
+            if (bindNodeDic.TryGetValue(nodeType, out List<BindNodeData> nodeDataList))
             {
-                return node;
+                return nodeDataList.ToArray();
             }
             return null;
         }
 
-        public Transform[] GetTransformByNames(string[] names)
+        public Transform[] GetBoneTransformByNames(string[] names)
         {
             if (names == null || names.Length == 0)
                 return new Transform[0];
