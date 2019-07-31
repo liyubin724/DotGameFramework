@@ -5,12 +5,9 @@ namespace Game.Battle.Entity
 {
     public class BulletEntityBuilder : AEntityBuilder
     {
-        public override EntityObject CreateEntityObject(long uniqueID, int entityType)
+        public override EntityObject CreateEntityObject(long uniqueID, int category)
         {
-            EntityObject bulletEntity = new EntityObject();
-            bulletEntity.Category = entityType;
-            bulletEntity.UniqueID = uniqueID;
-            bulletEntity.Name = $"Bullet_{entityType}_{uniqueID}";
+            EntityObject bulletEntity = CreateEntity(uniqueID, category);
 
             EntityViewController viewController = AddControllerToEntity<EntityViewController>(bulletEntity,EntityControllerConst.VIEW_INDEX);
             VirtualView view = new VirtualView(bulletEntity.Name, Context.EntityRootTransfrom);
@@ -21,23 +18,6 @@ namespace Game.Battle.Entity
             AddControllerToEntity<BulletPhysicsController>(bulletEntity, EntityControllerConst.PHYSICS_INDEX);
 
             return bulletEntity;
-        }
-
-        public override void DestroyEntityObject(EntityObject entity)
-        {
-            if (entity == null) return;
-
-            int[] indexes = null;
-            AEntityController[] controllers = null;
-            entity.RemoveAllController(out indexes, out controllers);
-
-            if(indexes!=null && indexes.Length>0)
-            {
-                for(int i =0;i<indexes.Length;++i)
-                {
-                    ReleaseController(indexes[i], controllers[i]);
-                }
-            }
         }
     }
 }

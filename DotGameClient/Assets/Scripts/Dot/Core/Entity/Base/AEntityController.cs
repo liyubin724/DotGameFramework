@@ -23,7 +23,7 @@ namespace Dot.Core.Entity
         {
             AddEventListeners();
         }
-
+        
         public virtual void DoUpdate(float deltaTime) { }
         protected virtual void AddEventListeners() { }
         protected virtual void RemoveEventListeners() { }

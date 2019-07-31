@@ -24,6 +24,20 @@
         public static readonly int BUFF = 2;
         public static readonly int EFFECT = 3;
         public static readonly int SOUND = 4;
+        public static readonly int Ship = 5;
+
+        private static string[] names = new string[]
+        {
+            "Player","Bullet","Buff","Effect","Sound","Ship",
+        };
+
+        public static string GetCategroyName(int categroy)
+        {
+            if (categroy >= 0 && categroy < names.Length)
+                return names[categroy];
+
+            return string.Empty;
+        }
     }
 
     public static class EntityControllerConst
