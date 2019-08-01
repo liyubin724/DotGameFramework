@@ -4,7 +4,6 @@ using Dot.Core.Timer;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using SystemObject = System.Object;
 using UnityObject = UnityEngine.Object;
 
@@ -16,14 +15,14 @@ namespace Dot.Core.Pool
         private string assetPath = null;
         private GameObjectPoolItem templateItem = null;
 
-        private List<WeakReference<GameObjectPoolItem>> usedItemList = new List<WeakReference<GameObjectPoolItem>>();
+        private List<WeakReference> usedItemList = new List<WeakReference>();
         private Queue<GameObjectPoolItem> unusedItemQueue = new Queue<GameObjectPoolItem>();
 
-        public bool isNeverClear = false;
+        public bool isAutoClean = false;
 
         public int preloadTotalAmount = 0;
         public int preloadOnceAmout = 1;
-        public UnityAction<string, string> preloadCompleteCallback = null; 
+        public OnPoolPreloadComplete preloadCompleteCallback = null; 
 
         public bool isCull = false;
         public int cullOnceAmout = 0;
@@ -42,12 +41,24 @@ namespace Dot.Core.Pool
 
         }
 
-        internal void InitPool(SpawnPool pool, string aPath, GameObjectPoolItem item)
+        internal void InitPool(SpawnPool pool, string aPath, GameObject templateGObj)
         {
             spawnPool = pool;
             assetPath = aPath;
-            templateItem = item;
+
+            GameObjectPoolItem poolItem = templateGObj.GetComponent<GameObjectPoolItem>();
+            if(poolItem == null)
+            {
+                poolItem = templateGObj.AddComponent<GameObjectPoolItem>();
+            }
+
+            templateItem = poolItem;
             templateItem.gameObject.SetActive(false);
+            templateItem.transform.SetParent(pool.CachedTransform, false);
+
+#if UNITY_EDITOR
+            templateItem.gameObject.name = $"Template_{aPath}";
+#endif
 
             preloadTimerTask = GameApplication.GTimer.AddTimerTask(0.05f, 0, null, OnPreloadTimerUpdate, null, null);
         }
@@ -139,7 +150,7 @@ namespace Dot.Core.Pool
             {
                 item.CachedGameObject.SetActive(true);
             }
-            usedItemList.Add(new WeakReference<GameObjectPoolItem>(item));
+            usedItemList.Add(new WeakReference(item));
             return item;
         }
 
@@ -175,15 +186,14 @@ namespace Dot.Core.Pool
             unusedItemQueue.Enqueue(item);
             for (int i = usedItemList.Count - 1; i >= 0; i--)
             {
-                if (usedItemList[i].TryGetTarget(out GameObjectPoolItem usedItem))
+                if(usedItemList[i].IsAlive && usedItemList[i].Target !=null)
                 {
-                    if(usedItem == item)
+                    if ((GameObjectPoolItem)usedItemList[i].Target == item)
                     {
                         usedItemList.RemoveAt(i);
                         break;
                     }
-                }
-                else
+                }else
                 {
                     usedItemList.RemoveAt(i);
                 }
@@ -196,7 +206,7 @@ namespace Dot.Core.Pool
         {
             for (int i = usedItemList.Count - 1; i >= 0; i--)
             {
-                if (!usedItemList[i].TryGetTarget(out GameObjectPoolItem usedItem))
+                if (!usedItemList[i].IsAlive || usedItemList[i].Target == null)
                 {
                     usedItemList.RemoveAt(i);
                 }
@@ -242,7 +252,7 @@ namespace Dot.Core.Pool
         
         internal bool ClearPool(bool isForce = false)
         {
-            if(!isForce && isNeverClear)
+            if(!isForce && isAutoClean)
             {
                 return false;
             }
@@ -267,7 +277,7 @@ namespace Dot.Core.Pool
             assetPath = null;
             spawnPool = null;
             templateItem = null;
-            isNeverClear = false;
+            isAutoClean = false;
 
             return true;
         }
@@ -278,6 +288,10 @@ namespace Dot.Core.Pool
             if(gObj!=null)
             {
                 GameObjectPoolItem item = gObj.GetComponent<GameObjectPoolItem>();
+                if (item == null)
+                {
+                    item = gObj.AddComponent<GameObjectPoolItem>();
+                }
                 item.AssetPath = assetPath;
                 item.PoolName = spawnPool.PoolName;
 
@@ -295,9 +309,9 @@ namespace Dot.Core.Pool
 
             for (int i = usedItemList.Count - 1; i >= 0; i--)
             {
-                if (usedItemList[i].TryGetTarget(out GameObjectPoolItem item))
+                if (usedItemList[i].IsAlive && usedItemList[i].Target != null)
                 {
-                    items.Add(item);
+                    items.Add((GameObjectPoolItem)usedItemList[i].Target);
                 }
                 else
                 {

@@ -1,4 +1,6 @@
-﻿using Dot.Core.Event;
+﻿using Dot.Core.Asset;
+using Dot.Core.Effect;
+using Dot.Core.Event;
 using Dot.Core.Timer;
 using Dot.XLuaEx;
 using UnityEngine;
@@ -25,6 +27,8 @@ namespace Dot.Core
             {
                 timer.DoUpdate(Time.deltaTime);
             }
+
+            AssetManager.GetInstance().DoUpdate();
         }
 
         internal void DoDispose()

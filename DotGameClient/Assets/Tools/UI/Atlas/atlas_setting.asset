@@ -15,7 +15,7 @@ MonoBehaviour:
   atlasDirPath: Assets/ArtRes/UI/Atlas
   atlasType: 0
   isRotation: 0
-  maxSize: 2048
+  maxSize: 256
   PixelsPerUnit: 100
   padding: 4
   isSRGB: 1

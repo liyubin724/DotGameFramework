@@ -48,7 +48,7 @@ namespace Dot.Core.Pool
             {
                 Destroy(CachedGameObject);
             }
-            SpawnPool spawnPool = PoolManager.GetInstance().GetSpawnPool(PoolName, false);
+            SpawnPool spawnPool = PoolManager.GetInstance().GetOrCreateSpawnPool(PoolName);
             if(spawnPool == null)
             {
                 Destroy(CachedGameObject);

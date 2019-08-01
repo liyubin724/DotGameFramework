@@ -31,9 +31,9 @@ namespace Dot.Core.Pool
             return null;
         }
 
-        public GameObjectPool CreateGameObjectPool(string assetPath,GameObjectPoolItem tempItem)
+        public GameObjectPool CreateGameObjectPool(string assetPath,GameObject template)
         {
-            if(tempItem == null)
+            if(template == null)
             {
                 DebugLogger.LogError("SpawnPool::CreateGameObjectPool->Template Item is Null");
                 return null;
@@ -45,11 +45,20 @@ namespace Dot.Core.Pool
             else
             {
                 goPool = new GameObjectPool();
-                goPool.InitPool(this, assetPath, tempItem);
+                goPool.InitPool(this, assetPath, template);
 
                 goPools.Add(assetPath, goPool);
             }
            return goPool;
+        }
+
+        public void DeleteGameObjectPool(string assetPath)
+        {
+            GameObjectPool gObjPool = GetGameObjectPool(assetPath);
+            if(gObjPool!=null)
+            {
+                gObjPool.ClearPool(true);
+            }
         }
 
         internal void CullSpawn(float deltaTime)
