@@ -5,7 +5,7 @@ namespace Dot.Core.Pool
     public class GameObjectPoolItem : MonoBehaviour
     {
         public string AssetPath { get; set; } = string.Empty;
-        public string PoolName { get; set; } = string.Empty;
+        public string SpawnName { get; set; } = string.Empty;
 
         private Transform cachedTransform = null;
         public Transform CachedTransform
@@ -44,11 +44,12 @@ namespace Dot.Core.Pool
 
         public void ReleaseItem()
         {
-            if(string.IsNullOrEmpty(AssetPath) || string.IsNullOrEmpty(PoolName))
+            if(string.IsNullOrEmpty(AssetPath) || string.IsNullOrEmpty(SpawnName))
             {
                 Destroy(CachedGameObject);
+                return;
             }
-            SpawnPool spawnPool = PoolManager.GetInstance().GetOrCreateSpawnPool(PoolName);
+            SpawnPool spawnPool = PoolManager.GetInstance().GetOrCreateSpawnPool(SpawnName);
             if(spawnPool == null)
             {
                 Destroy(CachedGameObject);

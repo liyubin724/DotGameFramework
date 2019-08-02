@@ -18,6 +18,8 @@ namespace Dot.Core.Pool
         private List<WeakReference> usedItemList = new List<WeakReference>();
         private Queue<GameObjectPoolItem> unusedItemQueue = new Queue<GameObjectPoolItem>();
 
+        public bool isUsedTemplateForNewItem = false;
+
         public bool isAutoClean = false;
 
         public int preloadTotalAmount = 0;
@@ -284,16 +286,28 @@ namespace Dot.Core.Pool
 
         private GameObjectPoolItem CreateNewItem()
         {
-            GameObject gObj = AssetManager.GetInstance().Instantiate<GameObject>(assetPath);
-            if(gObj!=null)
+            GameObjectPoolItem item = null;
+            if (isUsedTemplateForNewItem)
             {
-                GameObjectPoolItem item = gObj.GetComponent<GameObjectPoolItem>();
-                if (item == null)
+                item = GameObject.Instantiate(templateItem);
+            }
+            else
+            {
+                GameObject gObj = AssetManager.GetInstance().Instantiate<GameObject>(assetPath);
+                if(gObj!=null)
                 {
-                    item = gObj.AddComponent<GameObjectPoolItem>();
+                    item = gObj.GetComponent<GameObjectPoolItem>();
+                    if (item == null)
+                    {
+                        item = gObj.AddComponent<GameObjectPoolItem>();
+                    }
                 }
+            }
+
+            if(item != null)
+            {
                 item.AssetPath = assetPath;
-                item.PoolName = spawnPool.PoolName;
+                item.SpawnName = spawnPool.PoolName;
 
                 item.CachedTransform.SetParent(spawnPool.CachedTransform, false);
                 return item;

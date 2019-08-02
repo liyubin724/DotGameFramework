@@ -1,14 +1,32 @@
 ﻿using Dot.Core.Pool;
 using Dot.Core.Util;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Dot.Core.Effect
 {
     public class EffectManager : Singleton<EffectManager>
     {
-        private Dictionary<string, string> assetSpawnCached = new Dictionary<string, string>();
-        private List<EffectBehaviour> effectList = new List<EffectBehaviour>();
+        private readonly static string EFFECT_CONTROLLER_SPAWN_NAME = "EffectControllerSpawn";
+        private readonly static string EFFECT_CONTROLLER_POOL_PATH = "effect_controller_virtual_path";
 
+        private GameObjectPool effectControllerPool = null;
+
+        public Action initFinishCallback;
+
+        protected override void DoInit()
+        {
+            SpawnPool spawnPool = PoolManager.GetInstance().GetOrCreateSpawnPool(EFFECT_CONTROLLER_SPAWN_NAME);
+
+            effectControllerPool = spawnPool.CreateGameObjectPool(EFFECT_CONTROLLER_POOL_PATH, GetEffectControllerTemplate());
+            effectControllerPool.isUsedTemplateForNewItem = true;
+            effectControllerPool.isAutoClean = false;
+            effectControllerPool.preloadTotalAmount = 20;
+            effectControllerPool.preloadOnceAmout = 2;
+            effectControllerPool.preloadCompleteCallback = OnInitComplete;
+        }
+        
         public void PreloadEffect(string spawnName, string assetPath, int preloadCount, OnPoolPreloadComplete callback)
         {
             PoolData poolData = new PoolData()
@@ -18,83 +36,98 @@ namespace Dot.Core.Effect
                 preloadTotalAmount = preloadCount,
                 preloadCompleteCallback = callback,
             };
-            assetSpawnCached.Add(assetPath, spawnName);
             PoolManager.GetInstance().CreateGameObjectPool(poolData);
         }
 
-        public EffectBehaviour GetEffect(string assetPath)
+        public EffectController GetEffect(string assetPath)
         {
-            EffectBehaviour effect = null;
-            if (assetSpawnCached.TryGetValue(assetPath,out string spawnName))
+            EffectController effectController = effectControllerPool.GetComponentItem<EffectController>(false);
+            effectController.SetEffect(assetPath);
+
+            return effectController;
+        }
+
+        public EffectController GetEffect(string spawnName, string assetPath)
+        {
+            EffectController effectController = effectControllerPool.GetComponentItem<EffectController>(false);
+            
+            SpawnPool spawnPool = PoolManager.GetInstance().GetOrCreateSpawnPool(spawnName);
+            GameObjectPool objPool = spawnPool.GetGameObjectPool(assetPath);
+            if(objPool != null)
             {
-                if(PoolManager.GetInstance().HasSpawnPool(spawnName))
+                EffectBehaviour effectItem = objPool.GetComponentItem<EffectBehaviour>(false);
+                if (effectItem == null)
                 {
-                    SpawnPool spawnPool = PoolManager.GetInstance().GetOrCreateSpawnPool(spawnName);
-                    GameObjectPool objPool = spawnPool.GetGameObjectPool(assetPath);
-                    if(objPool!=null)
+                    Debug.LogError("EffectManager::GetEffect->effectItem is Null,it should be EffectBehaviour");
+                    objPool.ReleasePoolItem(effectItem);
+
+                    effectController.ReleaseItem();
+                    return null;
+                }
+                else
+                {
+                    effectController.SetEffect(effectItem);
+                }
+            }else
+            {
+                effectController.SetEffect(assetPath, spawnName);
+            }
+
+            effectController.effectFinished += OnEffectComplete;
+            return effectController;
+        }
+        
+        public void ReleaseEffect(EffectController effect)
+        {
+            effect.Stop();
+            EffectBehaviour effectBehaviour = effect.GetEffect();
+            if (effectBehaviour != null)
+            {
+                if(!string.IsNullOrEmpty(effectBehaviour.SpawnName) && !string.IsNullOrEmpty(effectBehaviour.AssetPath))
+                {
+                    SpawnPool spawnPool = PoolManager.GetInstance().GetOrCreateSpawnPool(effectBehaviour.SpawnName);
+                    GameObjectPool goPool = spawnPool.GetGameObjectPool(effectBehaviour.AssetPath);
+                    if (goPool == null)
                     {
-                        GameObjectPoolItem effectItem = objPool.GetPoolItem();
-                        effect = effectItem as EffectBehaviour;
-                        if(effect == null)
-                        {
-                            objPool.ReleasePoolItem(effectItem);
-                        }
+                        effectBehaviour.DoDespawned();
+                        goPool = spawnPool.CreateGameObjectPool(effectBehaviour.AssetPath, effectBehaviour.gameObject);
+                    }
+                    else
+                    {
+                        goPool.ReleasePoolItem(effectBehaviour);
                     }
                 }
                 else
                 {
-                    assetSpawnCached.Remove(assetPath);
+                    effectBehaviour.ReleaseItem();
                 }
             }
 
-            if(effect!=null)
-            {
-                effectList.Add(effect);
-                effect.effectDeadCallback += OnEffectDead;
-            }
-
-            return effect;
-        }
-
-        public void ReleaseEffect(EffectBehaviour effect)
-        {
-            effectList.Remove(effect);
             effect.ReleaseItem();
         }
 
         public void CleanSpawnPool(string spawnName)
         {
-            List<string> assetPaths = new List<string>();
-            foreach(var kvp in assetSpawnCached)
-            {
-                if(kvp.Value == spawnName)
-                {
-                    assetPaths.Add(kvp.Key);
-                }
-            }
-
-            assetPaths.ForEach((assetPath) =>
-            {
-                assetSpawnCached.Remove(assetPath);
-            });
             PoolManager.GetInstance().DeleteSpawnPool(spawnName);
         }
-
-        public void CleanObjectPool(string assetPath)
-        {
-            if (assetSpawnCached.TryGetValue(assetPath, out string spawnName))
-            {
-                PoolManager.GetInstance().DeleteGameObjectPool(spawnName, assetPath);
-            }
-            
-            assetSpawnCached.Remove(assetPath);
-        }
-
-        private void OnEffectDead(EffectBehaviour effect)
-        {
-            ReleaseEffect(effect);
-        }
-
         
+        private void OnEffectComplete(EffectController effect)
+        {
+            effect.effectFinished -= OnEffectComplete;
+        }
+
+        private void OnInitComplete(string spawnName, string assetPath)
+        {
+            initFinishCallback?.Invoke();
+            initFinishCallback = null;
+        }
+
+        private GameObject GetEffectControllerTemplate()
+        {
+            GameObject templateGO = new GameObject("Effect Controller");
+            templateGO.AddComponent<EffectController>();
+
+            return templateGO;
+        }
     }
 }
