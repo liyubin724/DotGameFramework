@@ -274,7 +274,7 @@ namespace Dot.Core.Pool
             }
             unusedItemQueue.Clear();
 
-            UnityObject.Destroy(templateItem);
+            UnityObject.Destroy(templateItem.CachedGameObject);
 
             assetPath = null;
             spawnPool = null;

@@ -100,6 +100,10 @@ namespace Dot.Core.Pool
             {
                 goPools.Remove(name);
             }
+            if(goPools.Count == 0)
+            {
+                UnityEngine.Object.Destroy(CachedTransform.gameObject);
+            }
         }
 
 

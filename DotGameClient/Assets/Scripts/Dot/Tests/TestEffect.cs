@@ -59,6 +59,11 @@ namespace Dot.Tests
                 };
                 effect.Play();
             }
+
+            if(GUILayout.Button("Clear Pool"))
+            {
+                EffectManager.GetInstance().CleanSpawnPool("ShipEffect2");
+            }
         }
     }
 }
