@@ -9,13 +9,44 @@ namespace Dot.Core.Entity
         public long UniqueID { get; set; }
         public int Category { get; set; }
         public string Name { get; set; }
+        public long ParentUniqueID { get; set; } = 0;
 
         private Dictionary<int, AEntityController> controllerDic = new Dictionary<int, AEntityController>();
         private EventDispatcher entityDispatcher = new EventDispatcher();
         public EventDispatcher Dispatcher { get => entityDispatcher;}
 
-        public EntityObject()
+        private EntityObject parentEntity = null;
+        public void SetParent(EntityObject parent)
         {
+            parentEntity = parent;
+        }
+
+        private Dictionary<int, List<EntityObject>> categroyChildrenDic = new Dictionary<int, List<EntityObject>>();
+        public void AddChild(EntityObject child)
+        {
+            if(!categroyChildrenDic.TryGetValue(child.Category,out List<EntityObject> children))
+            {
+                children = new List<EntityObject>();
+                categroyChildrenDic.Add(child.Category, children);
+            }
+            children.Add(child);
+        }
+
+        public EntityObject[] GetChildren(int category)
+        {
+            if (categroyChildrenDic.TryGetValue(category, out List<EntityObject> children))
+            {
+                return children.ToArray();
+            }
+            return null;
+        }
+
+        public void RemoveChild(EntityObject entity)
+        {
+            if (categroyChildrenDic.TryGetValue(entity.Category, out List<EntityObject> children))
+            {
+                children.Remove(entity);
+            }
         }
 
         public void DoUpdate(float deltaTime)
@@ -98,6 +129,14 @@ namespace Dot.Core.Entity
         public virtual void DoDestroy()
         {
 
+        }
+
+        private void RemoveFromParent()
+        {
+            if(parentEntity!=null)
+            {
+                parentEntity.RemoveChild(this);
+            }
         }
     }
 }

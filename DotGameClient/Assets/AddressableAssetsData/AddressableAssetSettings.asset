@@ -65,6 +65,8 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - texture
+    - test_prefab
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 62f193d7be1f69446a6af9fcd8ab5950, type: 2}

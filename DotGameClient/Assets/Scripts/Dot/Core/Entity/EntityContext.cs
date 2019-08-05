@@ -11,7 +11,7 @@ namespace Dot.Core.Entity
     public class EntityContext
     {
         private Transform entityRootTran = null;
-        private EventDispatcher eventDispatcher = null;
+        private EventDispatcher eventDispatcher = new EventDispatcher();
         public Transform EntityRootTransfrom { get => entityRootTran; }
 
         private UniqueIDCreator idCreator = new UniqueIDCreator();
@@ -23,7 +23,6 @@ namespace Dot.Core.Entity
         public EntityContext()
         {
             entityRootTran = DontDestroyHandler.CreateTransform("Entity Root");
-            eventDispatcher = new EventDispatcher();
         }
 
         public void DoUpdate(float deltaTime)
@@ -95,4 +94,6 @@ namespace Dot.Core.Entity
             }
         }
     }
+
+
 }

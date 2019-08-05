@@ -64,6 +64,20 @@ public class TestAssetLoader : MonoBehaviour
             objs.ForEach((gObj) => GameObject.Destroy(gObj));
             objs.Clear();
         }
+
+        if(GUILayout.Button("Load prefab By label"))
+        {
+            loader.InstanceAssetsByLabelAsync("test_prefab", (address, uObj) =>
+            {
+                Debug.Log("FFFFFFFFFFFF+" + address);
+            }, null, (addresses, uObjs) =>
+            {
+                foreach(var obj in uObjs)
+                {
+                    (obj as GameObject).transform.localScale = new Vector3(2, 2, 2);
+                }
+            }, null);
+        }
     }
 
     private AssetHandle prefabAssetHandle = null;

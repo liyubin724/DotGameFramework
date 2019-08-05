@@ -20,7 +20,8 @@ MonoBehaviour:
   - m_GUID: 3e608296d27384b05ae576fbf75e8505
     m_Address: mat_texture
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - texture
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 06eec6064b406674b939390599c0e67a, type: 2}
   m_SchemaSet:

@@ -11,43 +11,27 @@ namespace Dot.Core.Generic
     {
         private List<D> dataList = new List<D>();
         private Dictionary<K, D> dataDic = new Dictionary<K, D>();
-
-        public D this[int index]
-        {
-            get
-            {
-                if (index >= 0 && index < dataList.Count)
-                {
-                    return dataList[index];
-                }
-                return default;
-            }
-        }
-
-        public D this[K key]
-        {
-            get
-            {
-                if (dataDic.TryGetValue(key, out D data))
-                {
-                    return data;
-                }
-                return default;
-            }
-        }
-
+        
         public int Count { get => dataList.Count; }
 
         public bool Contain(K key) => dataDic.ContainsKey(key);
 
-        public bool TryGet(K key,out D data)
+        public D GetDataByIndex(int index)
         {
-            data = this[key];
-            if(data == default(D))
+            if (index >= 0 && index < dataList.Count)
             {
-                return false;
+                return dataList[index];
             }
-            return true;
+            return default;
+        }
+
+        public D GetDataByKey(K key)
+        {
+            if (dataDic.TryGetValue(key, out D data))
+            {
+                return data;
+            }
+            return default;
         }
 
         public void PushData(D data)
@@ -70,21 +54,30 @@ namespace Dot.Core.Generic
             return data;
         }
 
-        public void DeleteData(D data)
+        public void DeleteByData(D data)
         {
             dataList.Remove(data);
             dataDic.Remove(data.GetKey());
         }
 
-        public void DeleteData(K key)
+        public void DeleteByKey(K key)
         {
             if(dataDic.TryGetValue(key,out D data))
             {
-                DeleteData(data);
+                DeleteByData(data);
             }
         }
 
-        public void Clear()
+        public void DeleteByIndex(int index)
+        {
+            if (index >= 0 && index < dataList.Count)
+            {
+                D data = dataList[index];
+                DeleteByData(data);
+            }
+        }
+
+        public void Clear() 
         {
             dataList.Clear();
             dataDic.Clear();

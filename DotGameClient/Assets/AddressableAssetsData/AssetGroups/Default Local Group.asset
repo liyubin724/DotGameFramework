@@ -20,15 +20,20 @@ MonoBehaviour:
   - m_GUID: 0bc6e086ecd471545a7bdea601f96715
     m_Address: effect
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - prefab
+    - test_prefab
   - m_GUID: 1b1077ece09cc0040833765b69e12d3b
-    m_Address: prefab
+    m_Address: cubePrefab
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - prefab
+    - test_prefab
   - m_GUID: 7bee9133cbda31d44b4421bb1cdce62e
     m_Address: effect2
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - test_prefab
   - m_GUID: d1ed9539d2b19f84db7413d8d13bc2af
     m_Address: text
     m_ReadOnly: 0
