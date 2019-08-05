@@ -1,20 +1,24 @@
 ﻿using Dot.Core.Generic;
-using Dot.Core.Util;
+using System;
 using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
+using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityObject = UnityEngine.Object;
+using SystemObject = System.Object;
+using Dot.Core.Util;
 
 namespace Dot.Core.Asset
 {
-    public delegate void OnAssetLoadFinishCallback(string assetPath, UnityObject uObj);
-    public delegate void OnAssetLoadProgressCallback(string assetPath, float progress);
-    public delegate void OnAssetsLoadFinishCallback(string[] assetPaths, UnityObject[] uObj);
-    public delegate void OnAssetsLoadProgressCallback(string[] assetPaths, float[] progresses);
+    public delegate void OnAssetLoadFinishCallback(string assetPath, UnityObject uObj,SystemObject userData);
+    public delegate void OnAssetLoadProgressCallback(string assetPath, float progress,SystemObject userData);
+    public delegate void OnAssetsLoadFinishCallback(string[] assetPaths, UnityObject[] uObj, SystemObject userData);
+    public delegate void OnAssetsLoadProgressCallback(string[] assetPaths, float[] progresses,SystemObject userData);
 
-    public class AssetManager : Singleton<AssetManager>
+    public class AssetLoader:Singleton<AssetLoader>
     {
         private UniqueIDCreator idCreator = new UniqueIDCreator();
+        private AsyncOperationHandle<IResourceLocator> initHandle;
 
         private IndexMapORM<long, LoadData> loadDataORM = new IndexMapORM<long, LoadData>();
         private Dictionary<string, AssetData> assetDataDic = new Dictionary<string, AssetData>();
@@ -23,6 +27,21 @@ namespace Dot.Core.Asset
 
 
         public int MaxLoadingCount { get; set; } = 5;
+
+        public void Initialize(Action<bool> initCallback)
+        {
+            initHandle = Addressables.InitializeAsync();
+            initHandle.Completed += (handle) =>
+            {
+                if(handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    initCallback?.Invoke(true);
+                }else
+                {
+                    initCallback?.Invoke(false);
+                }
+            };
+        }
 
         public void DoUpdate()
         {
@@ -171,59 +190,59 @@ namespace Dot.Core.Asset
 
         public AssetHandle LoadAssetAsync(string address,
             OnAssetLoadFinishCallback finish,
-            OnAssetLoadProgressCallback progress)
+            OnAssetLoadProgressCallback progress, SystemObject userData)
         {
-            return LoadAssetsAsync(new string[] { address }, finish, progress, null, null);
+            return LoadAssetsAsync(new string[] { address }, finish, progress, null, null,userData);
         }
 
         public AssetHandle LoadAssetsAsync(string[] addresses,
             OnAssetLoadFinishCallback singleFinish,
             OnAssetLoadProgressCallback singleProgress,
             OnAssetsLoadFinishCallback allFinish,
-            OnAssetsLoadProgressCallback allProgress)
+            OnAssetsLoadProgressCallback allProgress, SystemObject userData)
         {
-            return LoadAsync(addresses, false, singleFinish, singleProgress, allFinish, allProgress);
+            return LoadAsync(addresses, false, singleFinish, singleProgress, allFinish, allProgress, userData);
         }
 
         public AssetHandle LoadAssetsByLabeAsync(string label, 
             OnAssetLoadFinishCallback singleFinish,
             OnAssetLoadProgressCallback singleProgress,
             OnAssetsLoadFinishCallback allFinish,
-            OnAssetsLoadProgressCallback allProgress)
+            OnAssetsLoadProgressCallback allProgress, SystemObject userData)
         {
-            return LoadByLabelAsync(label, false, singleFinish, singleProgress, allFinish, allProgress);
+            return LoadByLabelAsync(label, false, singleFinish, singleProgress, allFinish, allProgress, userData);
         }
 
         public AssetHandle InstanceAssetAsync(string address,
             OnAssetLoadFinishCallback finish,
-            OnAssetLoadProgressCallback progress)
+            OnAssetLoadProgressCallback progress, SystemObject userData)
         {
-            return InstanceAssetsAsync(new string[] { address }, finish, progress, null, null);
+            return InstanceAssetsAsync(new string[] { address }, finish, progress, null, null, userData);
         }
 
         public AssetHandle InstanceAssetsAsync(string[] addresses,
              OnAssetLoadFinishCallback singleFinish,
             OnAssetLoadProgressCallback singleProgress,
             OnAssetsLoadFinishCallback allFinish,
-            OnAssetsLoadProgressCallback allProgress)
+            OnAssetsLoadProgressCallback allProgress, SystemObject userData)
         {
-            return LoadAsync(addresses, true, singleFinish, singleProgress, allFinish, allProgress);
+            return LoadAsync(addresses, true, singleFinish, singleProgress, allFinish, allProgress, userData);
         }
 
         public AssetHandle InstanceAssetsByLabelAsync(string label,
             OnAssetLoadFinishCallback singleFinish,
             OnAssetLoadProgressCallback singleProgress,
             OnAssetsLoadFinishCallback allFinish,
-            OnAssetsLoadProgressCallback allProgress)
+            OnAssetsLoadProgressCallback allProgress, SystemObject userData)
         {
-            return LoadByLabelAsync(label, true,singleFinish, singleProgress, allFinish, allProgress);
+            return LoadByLabelAsync(label, true,singleFinish, singleProgress, allFinish, allProgress, userData);
         }
 
         private AssetHandle LoadAsync(string[] addresses, bool isInstance,
             OnAssetLoadFinishCallback singleFinish,
             OnAssetLoadProgressCallback singleProgress,
             OnAssetsLoadFinishCallback allFinish,
-            OnAssetsLoadProgressCallback allProgress)
+            OnAssetsLoadProgressCallback allProgress, SystemObject userData)
         {
             LoadData loadData = new LoadData();
             loadData.uniqueID = idCreator.Next();
@@ -234,6 +253,8 @@ namespace Dot.Core.Asset
             loadData.singleProgress = singleProgress;
             loadData.allFinish = allFinish;
             loadData.allProgress = allProgress;
+
+            loadData.userData = userData;
 
             loadDataORM.PushData(loadData);
 
@@ -249,7 +270,7 @@ namespace Dot.Core.Asset
             OnAssetLoadFinishCallback singleFinish,
             OnAssetLoadProgressCallback singleProgress,
             OnAssetsLoadFinishCallback allFinish,
-            OnAssetsLoadProgressCallback allProgress)
+            OnAssetsLoadProgressCallback allProgress,SystemObject userData)
         {
             LoadData loadData = new LoadData();
             loadData.uniqueID = idCreator.Next();
@@ -259,6 +280,8 @@ namespace Dot.Core.Asset
             loadData.singleProgress = singleProgress;
             loadData.allFinish = allFinish;
             loadData.allProgress = allProgress;
+
+            loadData.userData = userData;
 
             loadDataORM.PushData(loadData);
 
@@ -283,7 +306,7 @@ namespace Dot.Core.Asset
                     {
                         RemoveLoadData(loadData.uniqueID);
                         assetHandle.IsValid = false;
-                        allFinish?.Invoke(null, null);
+                        allFinish?.Invoke(null, null,userData);
                     }
                 }
 

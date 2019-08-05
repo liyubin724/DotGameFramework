@@ -3,6 +3,7 @@ using Dot.Core.Event;
 using Dot.Core.Logger;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
+using SystemObject = System.Object;
 
 namespace Dot.Core.Entity.Controller
 {
@@ -26,7 +27,7 @@ namespace Dot.Core.Entity.Controller
             this.skeletonAddress = skeletonAddress;
 
             skeletonAssetHandle?.Release();
-            skeletonAssetHandle = AssetManager.GetInstance().InstanceAssetAsync(skeletonAddress, OnSkeletonLoadFinish, null);
+            skeletonAssetHandle = AssetLoader.GetInstance().InstanceAssetAsync(skeletonAddress, OnSkeletonLoadFinish, null,null);
         }
 
         public void RemoveSkeleton()
@@ -42,7 +43,7 @@ namespace Dot.Core.Entity.Controller
             nodeBehaviour = null;
         }
 
-        private void OnSkeletonLoadFinish(string address,UnityObject uObj)
+        private void OnSkeletonLoadFinish(string address,UnityObject uObj,SystemObject userData)
         {
             skeletonAssetHandle = null;
             skeletonGO = uObj as GameObject;

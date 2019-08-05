@@ -64,10 +64,10 @@ namespace Dot.Core.Effect
         public void SetEffect(string effectPath, string spawnName=null)
         {
             effectSpawnName = spawnName;
-            effectAssetHandle = AssetManager.GetInstance().InstanceAssetAsync(effectPath, OnEffectLoadComplete, null);
+            effectAssetHandle = AssetLoader.GetInstance().InstanceAssetAsync(effectPath, OnEffectLoadComplete, null,null);
         }
 
-        private void OnEffectLoadComplete(string effectPath,UnityObject uObj)
+        private void OnEffectLoadComplete(string effectPath,UnityObject uObj,SystemObject userData)
         {
             effectAssetHandle = null;
             GameObject effectGO = (GameObject)uObj;

@@ -28,7 +28,7 @@ namespace Dot.Core
                 timer.DoUpdate(Time.deltaTime);
             }
 
-            AssetManager.GetInstance().DoUpdate();
+            AssetLoader.GetInstance().DoUpdate();
         }
 
         internal void DoDispose()

@@ -113,11 +113,11 @@ namespace Dot.Core.Pool
                 }
             }
 
-            AssetHandle assetHandle = AssetManager.GetInstance().InstanceAssetAsync(poolData.assetPath, OnLoadComplete, null);
+            AssetHandle assetHandle = AssetLoader.GetInstance().InstanceAssetAsync(poolData.assetPath, OnLoadComplete, null,null);
             poolDataDic.Add(assetHandle, poolData);
         }
 
-        private void OnLoadComplete(string assetPath,UnityObject uObj)
+        private void OnLoadComplete(string assetPath,UnityObject uObj,System.Object userData)
         {
             if (uObj == null)
             {

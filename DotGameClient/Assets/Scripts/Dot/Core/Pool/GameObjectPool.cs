@@ -293,7 +293,7 @@ namespace Dot.Core.Pool
             }
             else
             {
-                GameObject gObj = AssetManager.GetInstance().Instantiate<GameObject>(assetPath);
+                GameObject gObj = AssetLoader.GetInstance().Instantiate<GameObject>(assetPath);
                 if(gObj!=null)
                 {
                     item = gObj.GetComponent<GameObjectPoolItem>();

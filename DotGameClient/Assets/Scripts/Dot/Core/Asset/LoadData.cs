@@ -1,6 +1,7 @@
 ﻿using Dot.Core.Generic;
 using System;
 using UnityObject = UnityEngine.Object;
+using SystemObject = System.Object;
 
 namespace Dot.Core.Asset
 {
@@ -12,6 +13,8 @@ namespace Dot.Core.Asset
         public OnAssetsLoadFinishCallback allFinish = null;
         public OnAssetsLoadProgressCallback allProgress = null;
         public bool isInstance = false;
+
+        public SystemObject userData;
 
         private string[] addresses = null;
         public string[] Addresses {
@@ -43,29 +46,6 @@ namespace Dot.Core.Asset
 
         }
 
-        public void SetData(string[] addresses,bool isInstance,
-            OnAssetLoadFinishCallback singleFinish,
-            OnAssetsLoadFinishCallback allFinish,
-            OnAssetLoadProgressCallback singleProgress,
-            OnAssetsLoadProgressCallback allProgress)
-        {
-            this.Addresses = addresses;
-            this.isInstance = isInstance;
-
-            objects = new UnityObject[addresses.Length];
-            isSingleFinishCalled = new bool[addresses.Length];
-            for(int i =0;i<addresses.Length;++i)
-            {
-                isSingleFinishCalled[i] = false;
-            }
-
-            this.singleFinish = singleFinish;
-            this.allFinish = allFinish;
-            this.singleProgress = singleProgress;
-            this.allProgress = allProgress;
-        }
-
-
         public UnityObject[] Objects => objects;
 
        
@@ -75,10 +55,10 @@ namespace Dot.Core.Asset
         public void SetIsSingleFinishCalled(int index, bool isCalled) => isSingleFinishCalled[index] = isCalled;
         public bool GetIsSingleFinishCalled(int index) => isSingleFinishCalled[index];
 
-        public void InvokeAssetLoadFinish(string address, UnityObject uObj) => singleFinish?.Invoke(address, uObj);
-        public void InvokeAssetLoadProgress(string address, float progress) => singleProgress?.Invoke(address, progress);
-        public void InvokeAssetsLoadFinish(UnityObject[] uObjs) => allFinish?.Invoke(Addresses, uObjs);
-        public void InvokeAssetsLoadProgress(float[] progresses) => allProgress?.Invoke(Addresses, progresses);
+        public void InvokeAssetLoadFinish(string address, UnityObject uObj) => singleFinish?.Invoke(address, uObj,userData);
+        public void InvokeAssetLoadProgress(string address, float progress) => singleProgress?.Invoke(address, progress, userData);
+        public void InvokeAssetsLoadFinish(UnityObject[] uObjs) => allFinish?.Invoke(Addresses, uObjs,userData);
+        public void InvokeAssetsLoadProgress(float[] progresses) => allProgress?.Invoke(Addresses, progresses, userData);
 
         public long GetKey()
         {
