@@ -5,7 +5,6 @@ namespace Dot.Core.Entity
     public abstract class AEntityView
     {
         protected EntityObject entity = null;
-        protected EventDispatcher Dispatcher { get => entity.Dispatcher; }
 
         public void InitializeView(EntityObject entityObj)
         {

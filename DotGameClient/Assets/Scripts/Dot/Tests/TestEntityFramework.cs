@@ -15,16 +15,11 @@ public class TestEntityFramework : MonoBehaviour
     private void Awake()
     {
         entityContext = new EntityContext();
-
-        BulletEntityBuilder bulletBuilder = new BulletEntityBuilder();
-        bulletBuilder.Context = entityContext;
-        entityContext.RegisterEntityCreator(EntityCategroyConst.BULLET, bulletBuilder);
-
     }
 
     private void Update()
     {
-        AssetManager.GetInstance().DoUpdate();
+        AssetLoader.GetInstance().DoUpdate();
         entityContext.DoUpdate(Time.deltaTime);
     }
 
@@ -32,7 +27,7 @@ public class TestEntityFramework : MonoBehaviour
     {
         if(GUILayout.Button("CreateBullet"))
         {
-            EntityObject entity = entityContext.CreateEntity(EntityCategroyConst.BULLET);
+            EntityObject entity = entityContext.CreateEntity(EntityCategroyConst.BULLET,new int[] { EntityControllerConst.SKELETON_INDEX,EntityControllerConst.VIEW_INDEX });
             entity.GetController<EntitySkeletonController>(EntityControllerConst.SKELETON_INDEX).AddSkeleton("prefab");
         }
     }

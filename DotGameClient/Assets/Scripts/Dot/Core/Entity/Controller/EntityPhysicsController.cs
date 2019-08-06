@@ -6,12 +6,12 @@ namespace Dot.Core.Entity
     {
         protected override void AddEventListeners()
         {
-            Dispatcher.RegisterEvent(EntityInnerEventConst.TRIGGER_ENTER_ID, OnSendTriggerEnter);
+            entity.RegisterEvent(EntityInnerEventConst.TRIGGER_ENTER_ID, OnSendTriggerEnter);
         }
 
         protected override void RemoveEventListeners()
         {
-            Dispatcher.UnregisterEvent(EntityInnerEventConst.TRIGGER_ENTER_ID, OnSendTriggerEnter);
+            entity.UnregisterEvent(EntityInnerEventConst.TRIGGER_ENTER_ID, OnSendTriggerEnter);
         }
 
         protected virtual void OnSendTriggerEnter(EventData data)

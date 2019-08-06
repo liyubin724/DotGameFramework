@@ -10,10 +10,13 @@
         public static readonly int POSITION_ID = 101;
         public static readonly int DIRECTION_ID = 102;
 
+
         public static readonly int TRIGGER_ENTER_ID = 201;
 
         public static readonly int SKELETON_ADD_ID = 301;
         public static readonly int SKELETON_REMOVE_ID = 302;
+
+        public static readonly int ARRIVED_TARGET_ID = 401;
 
     }
 

@@ -1,4 +1,5 @@
-﻿using Dot.Core.Event;
+﻿using Dot.Core.Entity.Data;
+using Dot.Core.Event;
 using Dot.Core.Logger;
 using System.Collections.Generic;
 
@@ -10,10 +11,10 @@ namespace Dot.Core.Entity
         public int Category { get; set; }
         public string Name { get; set; }
         public long ParentUniqueID { get; set; } = 0;
+        public EntityData EntityData { get; set; }
 
         private Dictionary<int, AEntityController> controllerDic = new Dictionary<int, AEntityController>();
         private EventDispatcher entityDispatcher = new EventDispatcher();
-        public EventDispatcher Dispatcher { get => entityDispatcher;}
 
         private EntityObject parentEntity = null;
         public void SetParent(EntityObject parent)
@@ -57,10 +58,9 @@ namespace Dot.Core.Entity
             }
         }
 
-        public void SendEvent(int eventID, params object[] values)
-        {
-            entityDispatcher.TriggerEvent(eventID, 0, values);
-        }
+        public void SendEvent(int eventID, params object[] values)=> entityDispatcher.TriggerEvent(eventID, 0, values);
+        public void RegisterEvent(int eventID,EventHandler handler)=> entityDispatcher.RegisterEvent(eventID, handler);
+        public void UnregisterEvent(int eventID, EventHandler handler) => entityDispatcher.UnregisterEvent(eventID, handler);
 
         public T GetController<T>(int index) where T : AEntityController
         {

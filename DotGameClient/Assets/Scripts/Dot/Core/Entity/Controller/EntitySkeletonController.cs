@@ -69,14 +69,14 @@ namespace Dot.Core.Entity.Controller
 
         protected override void AddEventListeners()
         {
-            Dispatcher.RegisterEvent(EntityInnerEventConst.SKELETON_ADD_ID, OnSkeletonAdd);
-            Dispatcher.RegisterEvent(EntityInnerEventConst.SKELETON_REMOVE_ID, OnSkeletonRemove);
+            entity.RegisterEvent(EntityInnerEventConst.SKELETON_ADD_ID, OnSkeletonAdd);
+            entity.RegisterEvent(EntityInnerEventConst.SKELETON_REMOVE_ID, OnSkeletonRemove);
         }
 
         protected override void RemoveEventListeners()
         {
-            Dispatcher.UnregisterEvent(EntityInnerEventConst.SKELETON_ADD_ID, OnSkeletonAdd);
-            Dispatcher.UnregisterEvent(EntityInnerEventConst.SKELETON_REMOVE_ID, OnSkeletonRemove);
+            entity.UnregisterEvent(EntityInnerEventConst.SKELETON_ADD_ID, OnSkeletonAdd);
+            entity.UnregisterEvent(EntityInnerEventConst.SKELETON_REMOVE_ID, OnSkeletonRemove);
         }
 
         public override void DoReset()

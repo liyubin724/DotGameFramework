@@ -53,14 +53,14 @@ namespace Dot.Core.Entity
 
         public override void AddListener()
         {
-            Dispatcher?.RegisterEvent(EntityInnerEventConst.POSITION_ID, OnPosition);
-            Dispatcher?.RegisterEvent(EntityInnerEventConst.DIRECTION_ID, OnDirection);
+            entity.RegisterEvent(EntityInnerEventConst.POSITION_ID, OnPosition);
+            entity?.RegisterEvent(EntityInnerEventConst.DIRECTION_ID, OnDirection);
         }
 
         public override void RemoveListener()
         {
-            Dispatcher?.UnregisterEvent(EntityInnerEventConst.POSITION_ID, OnPosition);
-            Dispatcher?.UnregisterEvent(EntityInnerEventConst.DIRECTION_ID, OnDirection);
+            entity.UnregisterEvent(EntityInnerEventConst.POSITION_ID, OnPosition);
+            entity.UnregisterEvent(EntityInnerEventConst.DIRECTION_ID, OnDirection);
         }
 
         public override void DoDestroy()

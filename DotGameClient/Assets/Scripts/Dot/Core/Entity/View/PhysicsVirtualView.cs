@@ -71,7 +71,7 @@ namespace Dot.Core.Entity
             return collider;
         }
 
-        private MoveControlType ControlType { get; set; } = MoveControlType.Normal;
+        public MoveControlType ControlType { get; set; } = MoveControlType.Normal;
 
         protected override void OnPosition(EventData eventData)
         {
