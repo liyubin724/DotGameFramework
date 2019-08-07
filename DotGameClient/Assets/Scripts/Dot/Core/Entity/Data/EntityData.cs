@@ -6,12 +6,12 @@ namespace Dot.Core.Entity.Data
 {
     public class EntityData
     {
-        private EventData eventData = new EventData();
+        private EntityEventData eventData = new EntityEventData();
         public void SetEventDispatcher(EventDispatcher dispatcher)
         {
             eventData.Dispatcher = dispatcher;
         }
-
+        
         private Vector3 position = Vector3.zero;
         public Vector3 GetPosition() => position;
         public void SetPosition(Vector3 position)
@@ -28,8 +28,8 @@ namespace Dot.Core.Entity.Data
             eventData.SendEvent(EntityInnerEventConst.POSITION_ID);
         }
 
-        private MoveData moveData = null;
-        public MoveData MoveData
+        private EntityMoveData moveData = null;
+        public EntityMoveData MoveData
         {
             get
             {
@@ -38,18 +38,31 @@ namespace Dot.Core.Entity.Data
             set
             {
                 moveData = value;
-                if(moveData!=null)
+                if(moveData == null)
                 {
                     moveData.eventData = eventData;
                 }
             }
         }
+        
+        public EntityTargetData TargetData { get; set; }
 
-
-        public TargetData TargetData { get; set; }
-
-
-
+        private EntityTimeLineData timeLineData = null;
+        public EntityTimeLineData TimeLineData
+        {
+            get
+            {
+                return timeLineData;
+            }
+            set
+            {
+                timeLineData = value;
+                if(timeLineData!=null)
+                {
+                    timeLineData.eventData = eventData;
+                }
+            }
+        }
 
 
 

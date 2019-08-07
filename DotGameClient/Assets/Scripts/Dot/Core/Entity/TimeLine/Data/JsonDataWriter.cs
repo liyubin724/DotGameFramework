@@ -8,7 +8,7 @@ namespace Dot.Core.TimeLine.Data
 {
     public static class JsonDataWriter
     {
-        public static JsonData WriteData(TimeLineData data)
+        public static JsonData WriteData(TrackController data)
         {
             JsonData jsonData = new JsonData();
             jsonData.SetJsonType(JsonType.Object);

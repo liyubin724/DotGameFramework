@@ -7,7 +7,7 @@ namespace Dot.Core.TimeLine
     public delegate void OnTrackGroupChanged(EntityObject entity, string preGroupName, string curGroupName);
     public delegate void OnTrackGroupFinish(EntityObject entity, string groupName);
 
-    public sealed class TimeLineData : AEntityEnv
+    public sealed class TrackController : AEntityEnv
     {
         public List<TrackGroup> groupList = new List<TrackGroup>();
 

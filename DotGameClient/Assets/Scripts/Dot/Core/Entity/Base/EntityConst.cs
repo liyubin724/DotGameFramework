@@ -18,6 +18,12 @@
 
         public static readonly int ARRIVED_TARGET_ID = 401;
 
+        public static readonly int TIMELINE_ADD_ID = 501;
+        public static readonly int TIMELINE_GROUP_START_ID = 502;
+        public static readonly int TIMELINE_GROUP_CHANGED_ID = 503;
+        public static readonly int TIMELINE_GROUP_FINISH_ID = 504;
+        public static readonly int TIMELINE_END_ID = 505;
+
     }
 
     public static class EntityCategroyConst

@@ -9,9 +9,9 @@ namespace Dot.Core.Entity.Data
 
     }
 
-    public class MoveData
+    public class EntityMoveData
     {
-        internal EventData eventData = null;
+        internal EntityEventData eventData = null;
 
         private bool isMover = false;
         public bool GetIsMover() => this.isMover;

@@ -33,7 +33,7 @@ namespace DotEditor.Core.TimeLine
             }
         }
         public Rect ItemClipRect { get; private set; }
-        public TimeLineData Data { get ; private set; }
+        public TrackController Data { get ; private set; }
         
         private EditorSetting setting = null;
         private List<TrackGroupEditor> groups = new List<TrackGroupEditor>();
@@ -56,7 +56,7 @@ namespace DotEditor.Core.TimeLine
             }
         }
 
-        public DataEditor(TimeLineData data,EditorSetting setting)
+        public DataEditor(TrackController data,EditorSetting setting)
         {
             Data = data;
             this.setting = setting;

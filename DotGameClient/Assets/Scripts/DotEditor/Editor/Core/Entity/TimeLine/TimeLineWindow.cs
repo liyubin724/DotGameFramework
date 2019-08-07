@@ -78,7 +78,7 @@ namespace DotEditor.Core.TimeLine
                         TextAsset textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(assetPath);
                         if (textAsset != null)
                         {
-                            TimeLineData data = JsonDataReader.ReadData(JsonMapper.ToObject(textAsset.text));
+                            TrackController data = JsonDataReader.ReadData(JsonMapper.ToObject(textAsset.text));
                             if (data != null)
                             {
                                 dataEditor = new DataEditor(data, editorSetting);
@@ -92,7 +92,7 @@ namespace DotEditor.Core.TimeLine
                     string filePath = EditorUtility.SaveFilePanel("Save Config", Application.dataPath, "tl_config", "txt");
                     if (!string.IsNullOrEmpty(filePath))
                     {
-                        TimeLineData data = new TimeLineData();
+                        TrackController data = new TrackController();
                         dataEditor = new DataEditor(data, editorSetting);
                         editorSetting.isChanged = true;
                         configPath = filePath;

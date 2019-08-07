@@ -11,7 +11,7 @@ namespace Dot.Core.Entity.Data
         Entity,
     }
 
-    public class TargetData
+    public class EntityTargetData
     {
         private TargetType targetType = TargetType.None;
         public void SetTargetType(TargetType tt)

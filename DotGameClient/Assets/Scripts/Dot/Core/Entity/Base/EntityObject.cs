@@ -11,7 +11,19 @@ namespace Dot.Core.Entity
         public int Category { get; set; }
         public string Name { get; set; }
         public long ParentUniqueID { get; set; } = 0;
-        public EntityData EntityData { get; set; }
+        private EntityData entityData = null;
+        public EntityData EntityData
+        {
+            get
+            {
+                return entityData;
+            }
+            set
+            {
+                entityData = value;
+                entityData?.SetEventDispatcher(entityDispatcher);
+            }
+        }
 
         private Dictionary<int, AEntityController> controllerDic = new Dictionary<int, AEntityController>();
         private EventDispatcher entityDispatcher = new EventDispatcher();

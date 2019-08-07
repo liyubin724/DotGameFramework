@@ -10,7 +10,7 @@ namespace Dot.Core.TimeLine
         public bool CanRevert { get; set; } = true;
         public readonly List<TrackLine> tracks = new List<TrackLine>();
 
-        public TimeLineData Data { get; set; }
+        public TrackController Data { get; set; }
         private List<AEventItem> revertEventItems = new List<AEventItem>();
         public override void Initialize(EntityContext contexts, EntityObject entity)
         {

@@ -7,11 +7,11 @@ namespace Dot.Core.TimeLine.Data
 {
     public static class JsonDataReader
     {
-        public static TimeLineData ReadData(JsonData jsonData)
+        public static TrackController ReadData(JsonData jsonData)
         {
             if (jsonData == null) return null;
 
-            TimeLineData data = new TimeLineData();
+            TrackController data = new TrackController();
             if(jsonData.ContainsKey(TimeLineConst.GROUPS))
             {
                 JsonData groupsJsonData = jsonData[TimeLineConst.GROUPS];

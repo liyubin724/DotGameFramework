@@ -27,7 +27,10 @@ public class TestEntityFramework : MonoBehaviour
     {
         if(GUILayout.Button("CreateBullet"))
         {
-            EntityObject entity = entityContext.CreateEntity(EntityCategroyConst.BULLET,new int[] { EntityControllerConst.SKELETON_INDEX,EntityControllerConst.VIEW_INDEX });
+            EntityObject entity = entityContext.CreateEntity(EntityCategroyConst.BULLET,
+                new int[] { EntityControllerConst.SKELETON_INDEX,
+                EntityControllerConst.VIEW_INDEX,EntityControllerConst.MOVE_INDEX});
+
             entity.GetController<EntitySkeletonController>(EntityControllerConst.SKELETON_INDEX).AddSkeleton("prefab");
         }
     }

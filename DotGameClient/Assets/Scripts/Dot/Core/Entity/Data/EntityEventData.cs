@@ -8,7 +8,7 @@ using SystemObject = System.Object;
 
 namespace Dot.Core.Entity.Data
 {
-    public class EventData
+    public class EntityEventData
     {
         private EventDispatcher dispatcher;
         internal EventDispatcher Dispatcher { set => dispatcher = value; }

@@ -17,12 +17,12 @@ namespace Dot.Core.Entity.Controller
                 return;
             }
 
-            MoveData moveData = entity.EntityData.MoveData;
+            EntityMoveData moveData = entity.EntityData.MoveData;
             MotionCurveType motionType = moveData.GetMotionType();
             if (motionType == MotionCurveType.None)
                 return;
 
-            TargetData targetData = entity.EntityData.TargetData;
+            EntityTargetData targetData = entity.EntityData.TargetData;
             if(targetData!=null)
             {
                 Vector3 targetPosition = targetData.GetPosition();
@@ -48,7 +48,7 @@ namespace Dot.Core.Entity.Controller
 
         private void MoveLinear(float deltaTime)
         {
-            MoveData moveData = entity.EntityData.MoveData;
+            EntityMoveData moveData = entity.EntityData.MoveData;
             float acceleration = moveData.GetAcceleration();
             Vector3 direction = entity.EntityData.GetDirection();
             float maxSpeed = moveData.GetMaxSpeed();
