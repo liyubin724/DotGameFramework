@@ -21,16 +21,82 @@ namespace Dot.Core.Entity.Data
         public void SetMotionType(MotionCurveType mt)=> motionType = mt;
         public MotionCurveType GetMotionType() => motionType;
 
-        private float speed = 0.0f;
-        public float GetSpeed() => speed;
-        public void SetSpeed(float speed) => this.speed = speed;
+        #region Speed
+        private float originSpeed = 0.0f;
+        public float GetOriginSpeed() => originSpeed;
+        public void SetOriginSpeed(float speed) => this.originSpeed = speed;
 
-        private float acceleration = 0f;
-        public float GetAcceleration() => acceleration;
-        public float SetAcceleration(float acc) => acceleration = acc;
+        private float timeLineConstantSpeed = 0.0f;
+        public float GetTimeLineConstantSpeed() => timeLineConstantSpeed;
+        public void SetTimeLineConstantSpeed(float speed) => timeLineConstantSpeed = speed;
+        private float timeLineRateSpeed = 0.0f;
+        public float GetTimeLineRateSpeed() => timeLineRateSpeed;
+        public void SetTimeLineRateSpeed(float rate) => timeLineRateSpeed = rate;
+        private float timeLineOffsetConstantSpeed = 0.0f;
+        public float GetTimeLineOffsetConstantSpeed() => timeLineOffsetConstantSpeed;
+        public void SetTimeLineOffsetConstantSpeed(float offset) => timeLineOffsetConstantSpeed = offset;
 
-        private float maxSpeed = 0.0f;
-        public float GetMaxSpeed() => maxSpeed;
-        public void SetMaxSpeed(float maxSpeed) => this.maxSpeed = maxSpeed;
+        private float accelerationSpeed = 0.0f;
+        public float GetAccelerationSpeed() => accelerationSpeed;
+        public void SetAccelerationSpeed(float speed) => accelerationSpeed = speed;
+        
+        public float GetSpeed()
+        {
+            float speed = originSpeed;
+            if(timeLineConstantSpeed!=0)
+            {
+                speed = timeLineConstantSpeed;
+            }
+            if(timeLineRateSpeed!=0)
+            {
+                speed *= timeLineRateSpeed;
+            }
+            speed += timeLineOffsetConstantSpeed;
+
+            return speed;
+        }
+
+        #endregion
+
+        #region Acceleration
+        private float originAcceleration = 0f;
+        public float GetOriginAcceleration() => originAcceleration;
+        public float SetOriginAcceleration(float acc) => originAcceleration = acc;
+
+        private float timeLineAcceleration = 0f;
+        public float GetTimeLineAcceleration() => timeLineAcceleration;
+        public void SetTimeLineAcceleration(float acc) => timeLineAcceleration = acc;
+
+        public float GetAcceleration()
+        {
+            float acc = originAcceleration;
+            if(timeLineAcceleration!=0)
+            {
+                acc = timeLineAcceleration;
+            }
+
+            return acc;
+        }
+        #endregion
+
+        #region Max Speed
+        private float originMaxSpeed = 0.0f;
+        public float GetOriginMaxSpeed() => originMaxSpeed;
+        public void SetOriginMaxSpeed(float maxSpeed) => this.originMaxSpeed = maxSpeed;
+
+        private float timeLineMaxSpeed = 0.0f;
+        public float GetTimeLineMaxSpeed() => timeLineMaxSpeed;
+        public void SetTimeLineMaxSpeed(float speed) => timeLineMaxSpeed = speed;
+
+        public float GetMaxSpeed()
+        {
+            float maxSpeed = originMaxSpeed;
+            if(timeLineMaxSpeed!=0)
+            {
+                maxSpeed = timeLineMaxSpeed;
+            }
+            return maxSpeed;
+        }
+        #endregion
     }
 }

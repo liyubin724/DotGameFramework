@@ -1,4 +1,5 @@
-﻿using Dot.Core.Effect;
+﻿using Dot.Core.Asset;
+using Dot.Core.Effect;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,9 @@ namespace Dot.Tests
                 });
             };
 
+            //AssetLoader.GetInstance().InstanceAssetAsync("effect", (address, uObj,userData) => {
+
+            //}, null, null);
             
         }
 
@@ -27,30 +31,26 @@ namespace Dot.Tests
         {
             if(GUILayout.Button("Add Pool Effect"))
             {
-                EffectController effect = EffectManager.GetInstance().GetEffect("ShipEffect", "effect");
+                EffectController effect = EffectManager.GetInstance().GetEffect("ShipEffect", "effect",false);
                 effect.transform.SetParent(transform, false);
                 effect.lifeTime = 3;
                 effect.effectFinished += delegate (EffectController e)
                 {
-                    EffectManager.GetInstance().ReleaseEffect(effect);
+                    EffectManager.GetInstance().ReleaseEffect(e);
                 };
                 effect.Play();
             }
-            if (GUILayout.Button("Add autoPool Effect"))
+            if (GUILayout.Button("Add autoRelease Effect"))
             {
                 EffectController effect = EffectManager.GetInstance().GetEffect("ShipEffect2", "effect2");
                 effect.transform.SetParent(transform, false);
-                effect.lifeTime = 3;
-                effect.effectFinished += delegate (EffectController e)
-                {
-                    EffectManager.GetInstance().ReleaseEffect(effect);
-                };
+                effect.lifeTime = 5;
                 effect.Play();
             }
 
-            if (GUILayout.Button("Add Single Effect"))
+            if (GUILayout.Button("Add Effect with no pool"))
             {
-                EffectController effect = EffectManager.GetInstance().GetEffect("effect2");
+                EffectController effect = EffectManager.GetInstance().GetEffect("effect2",false);
                 effect.transform.SetParent(transform, false);
                 effect.lifeTime = 3;
                 effect.effectFinished += delegate (EffectController e)

@@ -45,6 +45,32 @@ namespace Dot.Core.Pool
         }
         
         public bool HasSpawnPool(string name)=> spawnDic.ContainsKey(name);
+
+        public SpawnPool GetSpawnPool(string name,bool isCreateIfNot = false)
+        {
+            if (spawnDic.TryGetValue(name, out SpawnPool pool))
+            {
+                return pool;
+            }
+
+            if(isCreateIfNot)
+            {
+                return CreateSpawnPool(name);
+            }
+            return null;
+        }
+
+        public SpawnPool CreateSpawnPool(string name)
+        {
+            if (!spawnDic.TryGetValue(name, out SpawnPool pool))
+            {
+                pool = new SpawnPool();
+                pool.InitSpawn(name, cachedTransform);
+
+                spawnDic.Add(name, pool);
+            }
+            return pool;
+        }
         
         public SpawnPool GetOrCreateSpawnPool(string name)
         {
@@ -84,7 +110,7 @@ namespace Dot.Core.Pool
 
             if(HasSpawnPool(spawnName))
             {
-                SpawnPool spawnPool = GetOrCreateSpawnPool(spawnName);
+                SpawnPool spawnPool = GetSpawnPool(spawnName);
                 spawnPool.DeleteGameObjectPool(assetPath);
             }
         }
@@ -106,59 +132,60 @@ namespace Dot.Core.Pool
         {
             foreach(var kvp in poolDataDic)
             {
-                if(kvp.Value.assetPath == poolData.assetPath)
+                if(kvp.Value.assetPath == poolData.assetPath && kvp.Value.spawnName == poolData.spawnName)
                 {
                     DebugLogger.LogError("");
                     return;
                 }
             }
 
-            AssetHandle assetHandle = AssetLoader.GetInstance().InstanceAssetAsync(poolData.assetPath, OnLoadComplete, null,null);
+            if(!HasSpawnPool(poolData.spawnName))
+            {
+                CreateSpawnPool(poolData.spawnName);
+            }
+
+            AssetHandle assetHandle = AssetLoader.GetInstance().InstanceAssetAsync(poolData.assetPath, OnLoadComplete, null, poolData);
             poolDataDic.Add(assetHandle, poolData);
         }
 
         private void OnLoadComplete(string assetPath,UnityObject uObj,System.Object userData)
         {
-            if (uObj == null)
+            PoolData poolData = userData as PoolData;
+            AssetHandle assetHandle = null;
+            foreach (var kvp in poolDataDic)
             {
-                DebugLogger.LogError("");
-                return;
-            }
-
-            PoolData poolData = null;
-            foreach(var kvp in poolDataDic)
-            {
-                if(kvp.Key.Address == assetPath)
+                if(kvp.Value == poolData)
                 {
-                    poolData = kvp.Value;
-                    poolDataDic.Remove(kvp.Key);
+                    assetHandle = kvp.Key;
                     break;
                 }
             }
-
-            if(poolData == null)
-            {
-                UnityObject.Destroy(uObj);
-                return;
-            }
-
+            poolDataDic.Remove(assetHandle);
+            
             if(uObj is GameObject templateGO)
             {
-                SpawnPool spawnPool = GetOrCreateSpawnPool(poolData.spawnName);
-                GameObjectPool objPool = spawnPool.CreateGameObjectPool(poolData.assetPath, templateGO);
-                objPool.isAutoClean = poolData.isAutoClean;
-                objPool.preloadTotalAmount = poolData.preloadTotalAmount;
-                objPool.preloadOnceAmout = poolData.preloadOnceAmout;
-                objPool.preloadCompleteCallback = poolData.preloadCompleteCallback;
-                objPool.isCull = poolData.isCull;
-                objPool.cullOnceAmout = poolData.cullOnceAmout;
-                objPool.cullDelayTime = poolData.cullDelayTime;
-                objPool.limitMaxAmount = poolData.limitMaxAmount;
-                objPool.limitMinAmount = poolData.limitMinAmount;
+                if(HasSpawnPool(poolData.spawnName))
+                {
+                    SpawnPool spawnPool = GetSpawnPool(poolData.spawnName);
+                    GameObjectPool objPool = spawnPool.CreateGameObjectPool(poolData.assetPath, templateGO);
+                    objPool.isAutoClean = poolData.isAutoClean;
+                    objPool.preloadTotalAmount = poolData.preloadTotalAmount;
+                    objPool.preloadOnceAmout = poolData.preloadOnceAmout;
+                    objPool.preloadCompleteCallback = poolData.preloadCompleteCallback;
+                    objPool.isCull = poolData.isCull;
+                    objPool.cullOnceAmout = poolData.cullOnceAmout;
+                    objPool.cullDelayTime = poolData.cullDelayTime;
+                    objPool.limitMaxAmount = poolData.limitMaxAmount;
+                    objPool.limitMinAmount = poolData.limitMinAmount;
+                }
+                else
+                {
+                    UnityObject.Destroy(uObj);
+                }
+                
             }else
             {
                 UnityObject.Destroy(uObj);
-                return;
             }
         }
 

@@ -4,9 +4,7 @@
     {
         public bool CanRevert { get; set; } = true;
 
-        public virtual void DoRevert()
-        {
-        }
+        public abstract void DoRevert();
         public abstract void Trigger();
     }
 }

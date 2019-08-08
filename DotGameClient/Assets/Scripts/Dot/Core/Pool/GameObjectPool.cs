@@ -61,7 +61,6 @@ namespace Dot.Core.Pool
 #if UNITY_EDITOR
             templateItem.gameObject.name = $"Template_{aPath}";
 #endif
-
             preloadTimerTask = GameApplication.GTimer.AddTimerTask(0.05f, 0, null, OnPreloadTimerUpdate, null, null);
         }
 

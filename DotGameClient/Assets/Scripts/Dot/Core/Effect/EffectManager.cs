@@ -1,25 +1,28 @@
 ﻿using Dot.Core.Pool;
 using Dot.Core.Util;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Dot.Core.Effect
 {
     public class EffectManager : Singleton<EffectManager>
     {
-        private readonly static string EFFECT_CONTROLLER_SPAWN_NAME = "EffectControllerSpawn";
-        private readonly static string EFFECT_CONTROLLER_POOL_PATH = "effect_controller_virtual_path";
+        private readonly static string ROOT_NAME = "Effect Root";
+        private readonly static string CONTROLLER_SPAWN_NAME = "EffectControllerSpawn";
+        private readonly static string CONTROLLER_POOL_PATH = "effect_controller_virtual_path";
 
+        private Transform rootTransform = null;
         private GameObjectPool effectControllerPool = null;
 
         public Action initFinishCallback;
 
         protected override void DoInit()
         {
-            SpawnPool spawnPool = PoolManager.GetInstance().GetOrCreateSpawnPool(EFFECT_CONTROLLER_SPAWN_NAME);
+            rootTransform = DontDestroyHandler.CreateTransform(ROOT_NAME);
 
-            effectControllerPool = spawnPool.CreateGameObjectPool(EFFECT_CONTROLLER_POOL_PATH, GetEffectControllerTemplate());
+            SpawnPool spawnPool = PoolManager.GetInstance().GetSpawnPool(CONTROLLER_SPAWN_NAME,true);
+
+            effectControllerPool = spawnPool.CreateGameObjectPool(CONTROLLER_POOL_PATH, GetEffectControllerTemplate());
             effectControllerPool.isUsedTemplateForNewItem = true;
             effectControllerPool.isAutoClean = false;
             effectControllerPool.preloadTotalAmount = 20;
@@ -39,70 +42,49 @@ namespace Dot.Core.Effect
             PoolManager.GetInstance().CreateGameObjectPool(poolData);
         }
 
-        public EffectController GetEffect(string assetPath)
+        public EffectController GetEffect(string assetPath, bool isAutoRelease = true)
         {
             EffectController effectController = effectControllerPool.GetComponentItem<EffectController>(false);
+            effectController.CachedTransform.SetParent(rootTransform, false);
+            if(isAutoRelease)
+                effectController.effectFinished += OnEffectComplete;
+
             effectController.SetEffect(assetPath);
 
             return effectController;
         }
 
-        public EffectController GetEffect(string spawnName, string assetPath)
+        public EffectController GetEffect(string spawnName, string assetPath,bool isAutoRelease = true)
         {
             EffectController effectController = effectControllerPool.GetComponentItem<EffectController>(false);
-            
-            SpawnPool spawnPool = PoolManager.GetInstance().GetOrCreateSpawnPool(spawnName);
+            effectController.CachedTransform.SetParent(rootTransform, false);
+            if (isAutoRelease)
+                effectController.effectFinished += OnEffectComplete;
+
+            SpawnPool spawnPool = PoolManager.GetInstance().GetSpawnPool(spawnName,true);
             GameObjectPool objPool = spawnPool.GetGameObjectPool(assetPath);
             if(objPool != null)
             {
                 EffectBehaviour effectItem = objPool.GetComponentItem<EffectBehaviour>(false);
-                if (effectItem == null)
-                {
-                    Debug.LogError("EffectManager::GetEffect->effectItem is Null,it should be EffectBehaviour");
-                    objPool.ReleasePoolItem(effectItem);
-
-                    effectController.ReleaseItem();
-                    return null;
-                }
-                else
+                if(effectItem!=null)
                 {
                     effectController.SetEffect(effectItem);
+                }else
+                {
+                    Debug.LogError("EffectManager::GetEffect->effectItem is Null,it should be EffectBehaviour");
                 }
             }else
             {
                 effectController.SetEffect(assetPath, spawnName);
             }
-
-            effectController.effectFinished += OnEffectComplete;
+            
             return effectController;
         }
         
         public void ReleaseEffect(EffectController effect)
         {
             effect.Stop();
-            EffectBehaviour effectBehaviour = effect.GetEffect();
-            if (effectBehaviour != null)
-            {
-                if(!string.IsNullOrEmpty(effectBehaviour.SpawnName) && !string.IsNullOrEmpty(effectBehaviour.AssetPath))
-                {
-                    SpawnPool spawnPool = PoolManager.GetInstance().GetOrCreateSpawnPool(effectBehaviour.SpawnName);
-                    GameObjectPool goPool = spawnPool.GetGameObjectPool(effectBehaviour.AssetPath);
-                    if (goPool == null)
-                    {
-                        effectBehaviour.DoDespawned();
-                        goPool = spawnPool.CreateGameObjectPool(effectBehaviour.AssetPath, effectBehaviour.gameObject);
-                    }
-                    else
-                    {
-                        goPool.ReleasePoolItem(effectBehaviour);
-                    }
-                }
-                else
-                {
-                    effectBehaviour.ReleaseItem();
-                }
-            }
-
+            effect.GetEffect()?.ReleaseItem();
             effect.ReleaseItem();
         }
 
@@ -114,6 +96,7 @@ namespace Dot.Core.Effect
         private void OnEffectComplete(EffectController effect)
         {
             effect.effectFinished -= OnEffectComplete;
+            ReleaseEffect(effect);
         }
 
         private void OnInitComplete(string spawnName, string assetPath)

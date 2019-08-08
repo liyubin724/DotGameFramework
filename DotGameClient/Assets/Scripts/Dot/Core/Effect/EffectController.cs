@@ -1,4 +1,5 @@
 ﻿using Dot.Core.Asset;
+using Dot.Core.Logger;
 using Dot.Core.Pool;
 using Dot.Core.Timer;
 using UnityEngine;
@@ -60,31 +61,53 @@ namespace Dot.Core.Effect
             }
         }
 
-        private string effectSpawnName = null;
         public void SetEffect(string effectPath, string spawnName=null)
         {
-            effectSpawnName = spawnName;
-            effectAssetHandle = AssetLoader.GetInstance().InstanceAssetAsync(effectPath, OnEffectLoadComplete, null,null);
+            effectAssetHandle?.Release();
+            effectAssetHandle = AssetLoader.GetInstance().InstanceAssetAsync(effectPath, OnEffectLoadComplete, null, spawnName);
         }
 
         private void OnEffectLoadComplete(string effectPath,UnityObject uObj,SystemObject userData)
         {
+            string spawnName = userData as string;
             effectAssetHandle = null;
             GameObject effectGO = (GameObject)uObj;
-            if(effectGO!=null)
+            if(uObj == null)
             {
-                EffectBehaviour effectBehaviour = effectGO.GetComponent<EffectBehaviour>();
-                if(effectBehaviour)
-                {
-                    effectBehaviour.AssetPath = effectPath;
-                    effectBehaviour.SpawnName = effectSpawnName;
-
-                    SetEffect(effectBehaviour);
-                }else
-                {
-                    GameObject.Destroy(effectBehaviour);
-                }
+                DebugLogger.LogError($"EffectController::OnEffectLoadComplete->uObj is Null.assetPath = {effectPath}");
+                return;
             }
+            EffectBehaviour effectBehaviour = effectGO.GetComponent<EffectBehaviour>();
+            if(effectBehaviour == null)
+            {
+                DebugLogger.LogError($"EffectController::OnEffectLoadComplete->Effect not contain EffectBehaviour.assetPath = {effectPath}");
+                UnityObject.Destroy(uObj);
+                return;
+            }
+            if(string.IsNullOrEmpty(spawnName))
+            {
+                SetEffect(effectBehaviour);
+                return;
+            }
+            if (!PoolManager.GetInstance().HasSpawnPool(spawnName))
+            {
+                UnityObject.Destroy(uObj);
+                return;
+            }
+            SpawnPool spawnPool = PoolManager.GetInstance().GetSpawnPool(spawnName);
+            GameObjectPool objPool = spawnPool.GetGameObjectPool(effectPath);
+            if(objPool == null)
+            {
+                objPool = spawnPool.CreateGameObjectPool(effectPath, effectGO);
+            }
+            effectBehaviour = objPool.GetComponentItem<EffectBehaviour>();
+            if (effectBehaviour == null)
+            {
+                DebugLogger.LogError($"EffectController::OnEffectLoadComplete->Effect not contain EffectBehaviour.assetPath = {effectPath}");
+                UnityObject.Destroy(uObj);
+                return;
+            }
+            SetEffect(effectBehaviour);
         }
 
         public void Play()
@@ -166,7 +189,6 @@ namespace Dot.Core.Effect
             status = EffectStatus.None;
             effectBehaviour = null;
             effectFinished = delegate (EffectController e) { };
-            effectSpawnName = null;
         }
 
         private void OnDestroy()

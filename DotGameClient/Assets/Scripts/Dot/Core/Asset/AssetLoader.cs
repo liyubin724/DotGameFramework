@@ -96,16 +96,13 @@ namespace Dot.Core.Asset
 
         private UnityObject GetObjectInstance(string address, AssetData assetData)
         {
-            if (instanceAssetDataDic.TryGetValue(address, out InstanceAssetData instance))
+            if (!instanceAssetDataDic.TryGetValue(address, out InstanceAssetData instance))
             {
-                return instance.GetInstance();
-            } else
-            {
-                InstanceAssetData iaData = new InstanceAssetData(assetData);
-                instanceAssetDataDic.Add(address, iaData);
+                instance = new InstanceAssetData(assetData);
+                instanceAssetDataDic.Add(address, instance);
+            } 
 
-                return iaData.GetInstance();
-            }
+            return instance.GetInstance();
         }
 
         private void UpdateLoadData()
@@ -163,9 +160,8 @@ namespace Dot.Core.Asset
                 loadData.InvokeAssetsLoadProgress(progresses);
                 if (isAllFinished)
                 {
-                    loadData.InvokeAssetsLoadFinish(loadData.Objects);
-
                     loadDataORM.DeleteByData(loadData);
+                    loadData.InvokeAssetsLoadFinish(loadData.Objects);
                 }
             }
         }
@@ -409,6 +405,7 @@ namespace Dot.Core.Asset
                 {
                     assetData.Handle.Completed -= OnAssetLoadComplete;
                     assetData.Status = AssetDataStatus.Loaded;
+                    break;
                 }
             }
         }
