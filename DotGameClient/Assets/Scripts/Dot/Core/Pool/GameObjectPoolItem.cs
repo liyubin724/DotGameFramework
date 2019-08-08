@@ -2,6 +2,9 @@
 
 namespace Dot.Core.Pool
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class GameObjectPoolItem : MonoBehaviour
     {
         public string AssetPath { get; set; } = string.Empty;
@@ -32,16 +35,25 @@ namespace Dot.Core.Pool
             }
         } 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual void DoSpawned()
         {
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual void DoDespawned()
         {
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void ReleaseItem()
         {
             if (string.IsNullOrEmpty(AssetPath) || string.IsNullOrEmpty(SpawnName))

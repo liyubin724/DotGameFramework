@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Dot.Core.Pool
 {
+    /// <summary>
+    /// 主要用于GameObjectPool的分组，可以根据使用场景进行添加和删除分组，不同的分组中可以有相同GameObject的缓存池
+    /// </summary>
     public class SpawnPool
     {
         private Dictionary<string, GameObjectPool> goPools = new Dictionary<string, GameObjectPool>();
@@ -21,7 +24,11 @@ namespace Dot.Core.Pool
             CachedTransform = new GameObject($"Spawn_{PoolName}").transform;
             CachedTransform.SetParent(parentTran, false);
         }
-        
+        /// <summary>
+        /// 缓存池中将默认以资源的路径为唯一标识，通过资源唯一标识可以获致到对应的缓存池
+        /// </summary>
+        /// <param name="assetPath"></param>
+        /// <returns></returns>
         public GameObjectPool GetGameObjectPool(string assetPath)
         {
             if(goPools.TryGetValue(assetPath,out GameObjectPool goPool))
@@ -30,7 +37,12 @@ namespace Dot.Core.Pool
             }
             return null;
         }
-
+        /// <summary>
+        /// 使用给定的GameObject创建缓存池
+        /// </summary>
+        /// <param name="assetPath">资源唯一标签，一般使用资源路径</param>
+        /// <param name="template">模板GameObject</param>
+        /// <returns></returns>
         public GameObjectPool CreateGameObjectPool(string assetPath,GameObject template)
         {
             if(template == null)
@@ -51,13 +63,18 @@ namespace Dot.Core.Pool
             }
            return goPool;
         }
-
+        /// <summary>
+        /// 删除指定的缓存池
+        /// </summary>
+        /// <param name="assetPath">资源唯一标签，一般使用资源路径</param>
         public void DeleteGameObjectPool(string assetPath)
         {
             GameObjectPool gObjPool = GetGameObjectPool(assetPath);
             if(gObjPool!=null)
             {
                 gObjPool.ClearPool(true);
+
+                goPools.Remove(assetPath);
             }
         }
 
@@ -68,20 +85,6 @@ namespace Dot.Core.Pool
                 if(kvp.Value.isCull)
                 {
                     kvp.Value.CullPool(deltaTime);
-                }
-            }
-        }
-
-        public void ClearPoolByAssetPath(string aPath,bool isForce = false)
-        {
-            if (goPools.TryGetValue(aPath, out GameObjectPool goPool))
-            {
-                if(goPool.ClearPool(isForce))
-                {
-                    goPools.Remove(aPath);
-                }else
-                {
-                    DebugLogger.LogError("SpawnPool::ClearPoolByAssetPath->the pool of assetPath can't be clear.AssetPath = " + aPath);
                 }
             }
         }

@@ -29,6 +29,14 @@ namespace Dot.Core.Effect
             effectControllerPool.preloadOnceAmout = 2;
             effectControllerPool.preloadCompleteCallback = OnInitComplete;
         }
+        /// <summary>
+        /// 进行特效的预加载，并创建缓存池
+        /// </summary>
+        /// <param name="poolData"></param>
+        public void PreloadEffect(PoolData poolData)
+        {
+            PoolManager.GetInstance().CreateGameObjectPool(poolData);
+        }
         
         public void PreloadEffect(string spawnName, string assetPath, int preloadCount, OnPoolPreloadComplete callback)
         {
@@ -39,9 +47,16 @@ namespace Dot.Core.Effect
                 preloadTotalAmount = preloadCount,
                 preloadCompleteCallback = callback,
             };
-            PoolManager.GetInstance().CreateGameObjectPool(poolData);
+            PreloadEffect(poolData);
         }
-
+        /// <summary>
+        /// 使用指定的资源的路径（地址）创建特效
+        /// 使用此接口创建的特效不会加入到缓存池中，释放时会直接删除
+        /// 可以通过指定isAutoRelease=true，来自动管理特效的生命周期
+        /// </summary>
+        /// <param name="assetPath"></param>
+        /// <param name="isAutoRelease"></param>
+        /// <returns></returns>
         public EffectController GetEffect(string assetPath, bool isAutoRelease = true)
         {
             EffectController effectController = effectControllerPool.GetComponentItem<EffectController>(false);
@@ -54,6 +69,14 @@ namespace Dot.Core.Effect
             return effectController;
         }
 
+        /// <summary>
+        /// 获取指定的特效，并创建其对应的缓存池,特效释放后会被回收到池中
+        /// 可以通过指定isAutoRelease=true，来自动管理特效的生命周期
+        /// </summary>
+        /// <param name="spawnName"></param>
+        /// <param name="assetPath"></param>
+        /// <param name="isAutoRelease"></param>
+        /// <returns></returns>
         public EffectController GetEffect(string spawnName, string assetPath,bool isAutoRelease = true)
         {
             EffectController effectController = effectControllerPool.GetComponentItem<EffectController>(false);
@@ -80,7 +103,10 @@ namespace Dot.Core.Effect
             
             return effectController;
         }
-        
+        /// <summary>
+        /// 释放指定的特效
+        /// </summary>
+        /// <param name="effect"></param>
         public void ReleaseEffect(EffectController effect)
         {
             effect.Stop();

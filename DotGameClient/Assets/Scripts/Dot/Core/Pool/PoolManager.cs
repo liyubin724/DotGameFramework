@@ -10,6 +10,9 @@ namespace Dot.Core.Pool
 {
     public delegate void OnPoolPreloadComplete(string spawnName, string assetPath);
 
+    /// <summary>
+    /// 对于需要Pool异步加载的资源，可以通过PoolData指定对应池的属性，等到资源加载完成将会使用指定的属性设置缓存池
+    /// </summary>
     public class PoolData
     {
         public string spawnName;
@@ -44,8 +47,19 @@ namespace Dot.Core.Pool
             cullTimerTask = GameApplication.GTimer.AddTimerTask(cullTimeInterval, 0, null, OnCullTimerUpdate, null, null);
         }
         
+        /// <summary>
+        /// 判断是否存在指定的分组
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public bool HasSpawnPool(string name)=> spawnDic.ContainsKey(name);
 
+        /// <summary>
+        ///获取指定的分组，如果不存在可以指定isCreateIfNot为true进行创建
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="isCreateIfNot"></param>
+        /// <returns></returns>
         public SpawnPool GetSpawnPool(string name,bool isCreateIfNot = false)
         {
             if (spawnDic.TryGetValue(name, out SpawnPool pool))
@@ -59,7 +73,11 @@ namespace Dot.Core.Pool
             }
             return null;
         }
-
+        /// <summary>
+        /// 创建指定名称的分组
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public SpawnPool CreateSpawnPool(string name)
         {
             if (!spawnDic.TryGetValue(name, out SpawnPool pool))
@@ -71,23 +89,10 @@ namespace Dot.Core.Pool
             }
             return pool;
         }
-        
-        public SpawnPool GetOrCreateSpawnPool(string name)
-        {
-            if (spawnDic.TryGetValue(name, out SpawnPool pool))
-            {
-                return pool;
-            }
-            else
-            {
-                pool = new SpawnPool();
-                pool.InitSpawn(name, cachedTransform);
-
-                spawnDic.Add(name, pool);
-            }
-            return pool;
-        }
-
+        /// <summary>
+        /// 删除指定的分组，对应分组中所有的缓存池都将被删除
+        /// </summary>
+        /// <param name="name"></param>
         public void DeleteSpawnPool(string name)
         {
             if (spawnDic.TryGetValue(name, out SpawnPool spawn))
@@ -96,7 +101,11 @@ namespace Dot.Core.Pool
                 spawnDic.Remove(name);
             }
         }
-
+        /// <summary>
+        /// 删除指定分组中的指定的缓存池
+        /// </summary>
+        /// <param name="spawnName"></param>
+        /// <param name="assetPath"></param>
         public void DeleteGameObjectPool(string spawnName,string assetPath)
         {
             foreach (var kvp in poolDataDic)
@@ -115,6 +124,10 @@ namespace Dot.Core.Pool
             }
         }
 
+        /// <summary>
+        /// 将GameObject回收到缓存池中
+        /// </summary>
+        /// <param name="go"></param>
         public void ReleaseGameObjectToPool(GameObject go)
         {
             GameObjectPoolItem pItem = go.GetComponent<GameObjectPoolItem>();
@@ -128,6 +141,10 @@ namespace Dot.Core.Pool
             pItem.ReleaseItem();
         }
 
+        /// <summary>
+        /// 使用PoolData进行资源加载，资源加载完成后创建对应的缓存池
+        /// </summary>
+        /// <param name="poolData"></param>
         public void CreateGameObjectPool(PoolData poolData)
         {
             foreach(var kvp in poolDataDic)

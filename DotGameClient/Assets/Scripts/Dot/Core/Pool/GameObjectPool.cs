@@ -65,7 +65,10 @@ namespace Dot.Core.Pool
         }
 
         #region Preload
-
+        /// <summary>
+        /// 使用Timer的Tick进行预加载
+        /// </summary>
+        /// <param name="obj"></param>
         private void OnPreloadTimerUpdate(SystemObject obj)
         {
             int curAmount = usedItemList.Count + unusedItemQueue.Count;
@@ -108,6 +111,11 @@ namespace Dot.Core.Pool
         #endregion
 
         #region GetItem
+        /// <summary>
+        /// 从缓存池中得到一个GameObject对象
+        /// </summary>
+        /// <param name="isAutoSetActive">是否激获取到的GameObject,默认为true</param>
+        /// <returns></returns>
         public GameObject GetGameObjectItem(bool isAutoSetActive = true)
         {
             GameObjectPoolItem pItem = GetPoolItem(isAutoSetActive);
@@ -118,6 +126,12 @@ namespace Dot.Core.Pool
             return null;
         }
 
+        /// <summary>
+        /// 从缓存池中得到指定类型的组件
+        /// </summary>
+        /// <typeparam name="T">继承于MonoBehaviour的组件</typeparam>
+        /// <param name="isAutoActive">是否激获取到的GameObject,默认为true</param>
+        /// <returns></returns>
         public T GetComponentItem<T>(bool isAutoActive = true) where T:MonoBehaviour
         {
             GameObject gObj = GetGameObjectItem(isAutoActive);
@@ -127,7 +141,11 @@ namespace Dot.Core.Pool
             }
             return null;
         }
-
+        /// <summary>
+        /// 池中储存的GameObject都带有一个GameObjectPoolItem或者其子类的组件，方便未来用以回收与重置状态
+        /// </summary>
+        /// <param name="isAutoSetActive">是否激获取到的GameObject,默认为true</param>
+        /// <returns></returns>
         public GameObjectPoolItem GetPoolItem(bool isAutoSetActive = true)
         {
             if (limitMaxAmount != 0 && usedItemList.Count > limitMaxAmount)
@@ -158,6 +176,10 @@ namespace Dot.Core.Pool
         #endregion
 
         #region Release Item
+        /// <summary>
+        /// 回收GameObject，如果此GameObject不带有GameObjectPoolItem组件，则无法回收到池中，将会直接删除
+        /// </summary>
+        /// <param name="item"></param>
         public void ReleaseGameObjectItem(GameObject item)
         {
             GameObjectPoolItem pItem = item.GetComponent<GameObjectPoolItem>();
@@ -171,7 +193,10 @@ namespace Dot.Core.Pool
             }
             ReleasePoolItem(pItem);
         }
-
+        /// <summary>
+        /// 回收GameObject
+        /// </summary>
+        /// <param name="item"></param>
         public void ReleasePoolItem(GameObjectPoolItem item)
         {
             if(item == null)
