@@ -1,4 +1,6 @@
-﻿using Game.Entity;
+﻿using Dot.Core.Entity.Data;
+using Game.Entity;
+using System;
 
 namespace Dot.Core.Entity
 {
@@ -6,22 +8,29 @@ namespace Dot.Core.Entity
     {
         public EntityContext Context { get; set; }
 
-        public EntityObject CreateEntity(long uniqueID, int category,int[] controllers)
+        public EntityObject CreateEntity(long uniqueID, int category,int[] controllerIndexes)
         {
             EntityObject entity = new EntityObject();
             entity.UniqueID = uniqueID;
             entity.Category = category;
             entity.Name = $"{EntityCategroyConst.GetCategroyName(category)}_{category}_{uniqueID}";
 
-            if(controllers!=null)
-            {
-                foreach(var index in controllers)
-                {
-                    AEntityController controller = EntityControllerFactory.GetController(index);
-                    controller.InitializeController(Context, entity);
+            entity.EntityData = new EntityData();
 
-                    entity.AddController(index, controller);
+            if(controllerIndexes!=null)
+            {
+                AEntityController[] controllers = new AEntityController[controllerIndexes.Length];
+                for(int i =0;i<controllerIndexes.Length;++i)
+                {
+                    AEntityController controller = EntityControllerFactory.GetController(category,controllerIndexes[i]);
+                    entity.AddController(controllerIndexes[i], controller);
+
+                    controllers[i] = controller;
                 }
+
+                Array.ForEach(controllers, (controller) => {
+                    controller.InitializeController(Context, entity);
+                });
             }
 
             OnCreate(entity);

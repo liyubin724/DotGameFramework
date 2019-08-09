@@ -34,6 +34,10 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - test_prefab
+  - m_GUID: b640acd0d5377d04d80f3272facdaf45
+    m_Address: config_data
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   - m_GUID: d1ed9539d2b19f84db7413d8d13bc2af
     m_Address: text
     m_ReadOnly: 0

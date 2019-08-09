@@ -1,5 +1,6 @@
 ﻿using Dot.Core.Entity;
 using Dot.Core.Entity.Controller;
+using UnityEngine;
 
 namespace Game.Entity
 {
@@ -11,6 +12,8 @@ namespace Game.Entity
             PhysicsVirtualView view = new PhysicsVirtualView(entity.Name, Context.EntityRootTransfrom);
             view.ControlType = MoveControlType.Normal;
             viewController.SetView(view);
+
+            
         }
 
         protected override void OnDelete(EntityObject entity)

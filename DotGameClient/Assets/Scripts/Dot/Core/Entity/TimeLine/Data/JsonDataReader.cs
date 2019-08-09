@@ -113,9 +113,10 @@ namespace Dot.Core.TimeLine.Data
                 Type pType = pi.PropertyType;
                 if (pType == typeof(Vector3))
                 {
-                    float x = (float)jsonData["x"];
-                    float y = (float)jsonData["y"];
-                    float z = (float)jsonData["z"];
+                    JsonData vector3Data = jsonData[pi.Name];
+                    float x = (float)vector3Data["x"];
+                    float y = (float)vector3Data["y"];
+                    float z = (float)vector3Data["z"];
                     pi.SetValue(resultObj, new Vector3(x, y, z));
                 }
                 else if (pType.IsEnum)

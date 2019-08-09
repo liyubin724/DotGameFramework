@@ -6,7 +6,7 @@ namespace Game.Entity
     {
         public static void RegisterEntityBuilder(EntityContext context)
         {
-            context.RegisterEntityBuilder(EntityCategroyConst.Ship, new ShipEntityBuilder());
+            context.RegisterEntityBuilder(EntityCategroyConst.SHIP, new ShipEntityBuilder());
             context.RegisterEntityBuilder(EntityCategroyConst.BULLET, new BulletEntityBuilder());
         }
     }

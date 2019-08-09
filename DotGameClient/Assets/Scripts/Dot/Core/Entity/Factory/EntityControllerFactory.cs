@@ -5,7 +5,7 @@ namespace Game.Entity
 {
     public static class EntityControllerFactory
     {
-        public static AEntityController GetController(int controllerIndex)
+        public static AEntityController GetController(int category,int controllerIndex)
         {
             if(controllerIndex == EntityControllerConst.SKELETON_INDEX)
             {
@@ -31,6 +31,14 @@ namespace Game.Entity
             {
                 return new EntityViewController();
             }
+            if(controllerIndex == EntityControllerConst.TIMELINE_INDEX)
+            {
+                if (category == EntityCategroyConst.BULLET)
+                {
+                    return new BulletTimeLineController();
+                }
+            }
+            
             return null;
         }
     }

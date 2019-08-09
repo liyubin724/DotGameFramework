@@ -6,6 +6,9 @@ namespace Dot.Core.Entity.Data
 {
     public class EntityData
     {
+        public int ConfigID { get; set; } = 0;
+        public long OwnerUniqueID { get; set; } = 0;
+
         private EntityEventData eventData = new EntityEventData();
         public void SetEventDispatcher(EventDispatcher dispatcher)
         {

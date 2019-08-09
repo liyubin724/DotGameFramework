@@ -1,10 +1,18 @@
-﻿using Dot.Core.Pool;
+﻿using Dot.Core.Logger;
+using Dot.Core.Pool;
 using Dot.Core.Util;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Dot.Core.Effect
 {
+    public enum EffectScenarioType
+    {
+        UI,
+        Timline,
+    }
+
     public class EffectManager : Singleton<EffectManager>
     {
         private readonly static string ROOT_NAME = "Effect Root";
@@ -13,6 +21,7 @@ namespace Dot.Core.Effect
 
         private Transform rootTransform = null;
         private GameObjectPool effectControllerPool = null;
+        private Dictionary<EffectScenarioType, string> scenarioSpawnDic = new Dictionary<EffectScenarioType, string>(); 
 
         public Action initFinishCallback;
 
@@ -29,6 +38,31 @@ namespace Dot.Core.Effect
             effectControllerPool.preloadOnceAmout = 2;
             effectControllerPool.preloadCompleteCallback = OnInitComplete;
         }
+
+        public void SetScenarioSpawnName(EffectScenarioType scenarioType,string spawnName)
+        {
+            if(scenarioSpawnDic.ContainsKey(scenarioType))
+            {
+                DebugLogger.LogError("");
+                return;
+            }
+            scenarioSpawnDic.Add(scenarioType, spawnName);
+        }
+
+        public void CleanSpawnPool(string spawnName)
+        {
+            var keys = scenarioSpawnDic.Keys;
+            foreach(var key in keys)
+            {
+                if(scenarioSpawnDic[key] == spawnName)
+                {
+                    scenarioSpawnDic.Remove(key);
+                }
+            }
+
+            PoolManager.GetInstance().DeleteSpawnPool(spawnName);
+        }
+
         /// <summary>
         /// 进行特效的预加载，并创建缓存池
         /// </summary>
@@ -103,6 +137,18 @@ namespace Dot.Core.Effect
             
             return effectController;
         }
+
+        public EffectController GetEffect(string assetPath,EffectScenarioType scenarioType, bool isAutoRelease = true)
+        {
+            if(scenarioSpawnDic.TryGetValue(scenarioType,out string spawnName))
+            {
+                return GetEffect(spawnName, assetPath, isAutoRelease);
+            }else
+            {
+                return GetEffect(assetPath, isAutoRelease);
+            }
+        }
+
         /// <summary>
         /// 释放指定的特效
         /// </summary>
@@ -114,10 +160,7 @@ namespace Dot.Core.Effect
             effect.ReleaseItem();
         }
 
-        public void CleanSpawnPool(string spawnName)
-        {
-            PoolManager.GetInstance().DeleteSpawnPool(spawnName);
-        }
+        
         
         private void OnEffectComplete(EffectController effect)
         {

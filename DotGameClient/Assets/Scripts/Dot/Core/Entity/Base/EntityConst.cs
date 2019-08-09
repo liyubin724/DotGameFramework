@@ -33,7 +33,7 @@
         public static readonly int BUFF = 2;
         public static readonly int EFFECT = 3;
         public static readonly int SOUND = 4;
-        public static readonly int Ship = 5;
+        public static readonly int SHIP = 5;
 
         private static string[] names = new string[]
         {
@@ -57,5 +57,6 @@
         public static readonly int EFFECT_INDEX = 3;
         public static readonly int PHYSICS_INDEX = 4;
         public static readonly int VIEW_INDEX = 5;
+        public static readonly int TIMELINE_INDEX = 6;
     }
 }

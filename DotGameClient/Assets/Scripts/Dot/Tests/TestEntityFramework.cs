@@ -1,4 +1,5 @@
-﻿using Dot.Core.Asset;
+﻿using Dot.Config;
+using Dot.Core.Asset;
 using Dot.Core.Entity;
 using Dot.Core.Entity.Controller;
 using Game.Battle.Entity;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class TestEntityFramework : MonoBehaviour
 {
@@ -15,6 +17,11 @@ public class TestEntityFramework : MonoBehaviour
     private void Awake()
     {
         entityContext = new EntityContext();
+
+        ConfigManager.GetInstance().InitConfig(() =>
+        {
+            Debug.Log("Config Data Init Finish!");
+        });
     }
 
     private void Update()

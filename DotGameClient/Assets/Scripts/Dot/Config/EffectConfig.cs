@@ -14,7 +14,8 @@ namespace Dot.Config
         public float stopDelayTime;
     }
 
-    public class EffectConfig : ScriptableObject
+    [Serializable]
+    public class EffectConfig 
     {
         public List<EffectConfigData> configs = new List<EffectConfigData>();
     }
