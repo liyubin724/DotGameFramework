@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Dot.Config
 {
-    public class ConfigManager : Singleton<ConfigManager>
+    public class ConfigManager : Core.Util.Singleton<ConfigManager>
     {
         private static readonly string CONFIG_ADDRESS_NAME = "config_data";
 

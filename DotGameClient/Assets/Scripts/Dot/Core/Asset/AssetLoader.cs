@@ -15,7 +15,7 @@ namespace Dot.Core.Asset
     public delegate void OnAssetsLoadFinishCallback(string[] assetPaths, UnityObject[] uObj, SystemObject userData);
     public delegate void OnAssetsLoadProgressCallback(string[] assetPaths, float[] progresses,SystemObject userData);
 
-    public class AssetLoader:Singleton<AssetLoader>
+    public class AssetLoader:Util.Singleton<AssetLoader>
     {
         private UniqueIDCreator idCreator = new UniqueIDCreator();
         private AsyncOperationHandle<IResourceLocator> initHandle;

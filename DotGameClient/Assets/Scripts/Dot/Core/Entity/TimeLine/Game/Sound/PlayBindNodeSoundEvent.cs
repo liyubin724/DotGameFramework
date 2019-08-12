@@ -27,7 +27,9 @@ namespace Dot.Core.Entity.TimeLine.Game
                 {
                     foreach(var nodeData in nodeDatas)
                     {
-                        //WwiseUtil.PlaySound(MusicID, false, nodeData.transform);
+#if !NOT_ETERNITY
+                        WwiseUtil.PlaySound(MusicID, false, nodeData.transform);
+#endif
                     }
                 }
             }else
@@ -35,7 +37,9 @@ namespace Dot.Core.Entity.TimeLine.Game
                 BindNodeData nodeData = skeletonController.GetBindNodeData(NodeType, NodeIndex);
                 if(nodeData!=null)
                 {
-                    //WwiseUtil.PlaySound(MusicID, false, nodeData.transform);
+#if !NOT_ETERNITY
+                    WwiseUtil.PlaySound(MusicID, false, nodeData.transform);
+#endif
                 }
             }
         }

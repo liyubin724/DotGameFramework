@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Dot.Dot.Core.Util
+namespace Dot.Core.Util
 {
     public static class EnumUtil
     {

@@ -22,7 +22,9 @@ namespace Dot.Core.Entity.TimeLine.Game
             {
                 position = entity.EntityData.GetPosition();
             }
-            //WwiseUtil.PlaySound(MusicID,false,position);
+#if !NOT_ETERNITY
+            WwiseUtil.PlaySound(MusicID,false,position);
+#endif
         }
     }
 }

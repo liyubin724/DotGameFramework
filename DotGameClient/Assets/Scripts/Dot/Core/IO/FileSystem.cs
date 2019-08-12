@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Desc = System.ComponentModel.DescriptionAttribute;
-using Dot.Dot.Core.Util;
+using Dot.Core.Util;
 
 //#if UNITY_EDITOR
 //using UnityEditor;
@@ -427,7 +427,7 @@ namespace Dot.Core.IO
 
         public string GetErrorMessage()
         {
-            return EnumUtil.GetEnumDescription(ErrorCode);
+            return Util.EnumUtil.GetEnumDescription(ErrorCode);
         }
 
         private unsafe bool ReadFileIndex()
