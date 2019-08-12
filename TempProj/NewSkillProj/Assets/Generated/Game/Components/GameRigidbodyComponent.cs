@@ -11,26 +11,28 @@ public partial class GameEntity {
     public RigidbodyComponent rigidbody { get { return (RigidbodyComponent)GetComponent(GameComponentsLookup.Rigidbody); } }
     public bool hasRigidbody { get { return HasComponent(GameComponentsLookup.Rigidbody); } }
 
-    public void AddRigidbody(bool newUseGravity, float newDrag, float newAngularDrag, UnityEngine.CollisionDetectionMode newMode, bool newFreezeRotation, UnityEngine.Vector3 newVelocity) {
+    public void AddRigidbody(bool newUseGravity, float newDrag, float newAngularDrag, bool newIsKinematic, UnityEngine.CollisionDetectionMode newMode, UnityEngine.RigidbodyConstraints newConstraints, UnityEngine.Vector3 newVelocity) {
         var index = GameComponentsLookup.Rigidbody;
         var component = (RigidbodyComponent)CreateComponent(index, typeof(RigidbodyComponent));
         component.useGravity = newUseGravity;
         component.drag = newDrag;
         component.angularDrag = newAngularDrag;
+        component.isKinematic = newIsKinematic;
         component.mode = newMode;
-        component.freezeRotation = newFreezeRotation;
+        component.constraints = newConstraints;
         component.velocity = newVelocity;
         AddComponent(index, component);
     }
 
-    public void ReplaceRigidbody(bool newUseGravity, float newDrag, float newAngularDrag, UnityEngine.CollisionDetectionMode newMode, bool newFreezeRotation, UnityEngine.Vector3 newVelocity) {
+    public void ReplaceRigidbody(bool newUseGravity, float newDrag, float newAngularDrag, bool newIsKinematic, UnityEngine.CollisionDetectionMode newMode, UnityEngine.RigidbodyConstraints newConstraints, UnityEngine.Vector3 newVelocity) {
         var index = GameComponentsLookup.Rigidbody;
         var component = (RigidbodyComponent)CreateComponent(index, typeof(RigidbodyComponent));
         component.useGravity = newUseGravity;
         component.drag = newDrag;
         component.angularDrag = newAngularDrag;
+        component.isKinematic = newIsKinematic;
         component.mode = newMode;
-        component.freezeRotation = newFreezeRotation;
+        component.constraints = newConstraints;
         component.velocity = newVelocity;
         ReplaceComponent(index, component);
     }

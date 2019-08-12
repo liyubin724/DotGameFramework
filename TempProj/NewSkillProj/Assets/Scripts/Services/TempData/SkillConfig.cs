@@ -10,7 +10,8 @@
         AddData(new SkillConfigData()
         {
             id = 10001,
-            timeLineConfig = "Skill/Data/skill_10001"
+            timeLineConfig = "Skill/Data/skill_10001",
+            targetType = SkillTargetType.Entity,
         });
 
         AddData(new SkillConfigData()

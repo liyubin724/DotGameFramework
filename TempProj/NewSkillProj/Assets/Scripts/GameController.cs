@@ -21,13 +21,13 @@ public class GameController : MonoBehaviour
 
         services.entityFactroy.CreatePlayerEntity(true);
         GameEntity entity = services.entityFactroy.CreatePlayerEntity(false);
-        entity.ReplacePosition(new Vector3(10, 0, 0));
+        entity.ReplacePosition(new Vector3(5, 0, 0));
         entity = services.entityFactroy.CreatePlayerEntity(false);
-        entity.ReplacePosition(new Vector3(-10, 0, 0));
+        entity.ReplacePosition(new Vector3(-5, 0, 0));
         entity = services.entityFactroy.CreatePlayerEntity(false);
-        entity.ReplacePosition(new Vector3(6, 0, 8));
+        entity.ReplacePosition(new Vector3(3, 0, 4));
         entity = services.entityFactroy.CreatePlayerEntity(false);
-        entity.ReplacePosition(new Vector3(-6, 0, 8));
+        entity.ReplacePosition(new Vector3(-3, 0, 4));
     }
     private void OnGUI()
     {
@@ -89,29 +89,12 @@ public class GameController : MonoBehaviour
             GameEntity mainPlayer = contexts.game.mainPlayerEntity;
             mainPlayer.ReplaceEmitSkill(10001);
         }
-        if (GUILayout.Button("Skill 10002"))
-        {
-            GameEntity mainPlayer = contexts.game.mainPlayerEntity;
-            mainPlayer.ReplaceEmitSkill(10002);
-        }
-        if(GUILayout.Button("add TimeLine"))
-        {
-            GameEntity mainPlayer = contexts.game.mainPlayerEntity;
-            mainPlayer.AddTimeLine(new Dot.Core.TimeLine.TimeLineData());
-        }
-        if(GUILayout.Button("Remove TImeLine"))
-        {
-            GameEntity mainPlayer = contexts.game.mainPlayerEntity;
-            if(mainPlayer.hasTimeLine)
-            {
-                mainPlayer.RemoveTimeLine();
-            }
-        }
-        if (GUILayout.Button("Change TImeLine"))
-        {
-            GameEntity mainPlayer = contexts.game.mainPlayerEntity;
-            mainPlayer.ReplaceTimeLine(new Dot.Core.TimeLine.TimeLineData());
-        }
+        //if (GUILayout.Button("Skill 10002"))
+        //{
+        //    GameEntity mainPlayer = contexts.game.mainPlayerEntity;
+        //    mainPlayer.ReplaceEmitSkill(10002);
+        //}
+
     }
 
     void Update()
@@ -121,7 +104,7 @@ public class GameController : MonoBehaviour
         
     }
 
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         lateUpdateSystems.Execute();
         lateUpdateSystems.Cleanup();

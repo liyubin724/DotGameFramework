@@ -8,25 +8,25 @@
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public TimeDecreaseComponent timeDecrease { get { return (TimeDecreaseComponent)GetComponent(GameComponentsLookup.TimeDecrease); } }
-    public bool hasTimeDecrease { get { return HasComponent(GameComponentsLookup.TimeDecrease); } }
+    public PrePositionComponent prePosition { get { return (PrePositionComponent)GetComponent(GameComponentsLookup.PrePosition); } }
+    public bool hasPrePosition { get { return HasComponent(GameComponentsLookup.PrePosition); } }
 
-    public void AddTimeDecrease(float newValue) {
-        var index = GameComponentsLookup.TimeDecrease;
-        var component = (TimeDecreaseComponent)CreateComponent(index, typeof(TimeDecreaseComponent));
+    public void AddPrePosition(UnityEngine.Vector3 newValue) {
+        var index = GameComponentsLookup.PrePosition;
+        var component = (PrePositionComponent)CreateComponent(index, typeof(PrePositionComponent));
         component.value = newValue;
         AddComponent(index, component);
     }
 
-    public void ReplaceTimeDecrease(float newValue) {
-        var index = GameComponentsLookup.TimeDecrease;
-        var component = (TimeDecreaseComponent)CreateComponent(index, typeof(TimeDecreaseComponent));
+    public void ReplacePrePosition(UnityEngine.Vector3 newValue) {
+        var index = GameComponentsLookup.PrePosition;
+        var component = (PrePositionComponent)CreateComponent(index, typeof(PrePositionComponent));
         component.value = newValue;
         ReplaceComponent(index, component);
     }
 
-    public void RemoveTimeDecrease() {
-        RemoveComponent(GameComponentsLookup.TimeDecrease);
+    public void RemovePrePosition() {
+        RemoveComponent(GameComponentsLookup.PrePosition);
     }
 }
 
@@ -40,17 +40,17 @@ public partial class GameEntity {
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherTimeDecrease;
+    static Entitas.IMatcher<GameEntity> _matcherPrePosition;
 
-    public static Entitas.IMatcher<GameEntity> TimeDecrease {
+    public static Entitas.IMatcher<GameEntity> PrePosition {
         get {
-            if (_matcherTimeDecrease == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.TimeDecrease);
+            if (_matcherPrePosition == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.PrePosition);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherTimeDecrease = matcher;
+                _matcherPrePosition = matcher;
             }
 
-            return _matcherTimeDecrease;
+            return _matcherPrePosition;
         }
     }
 }

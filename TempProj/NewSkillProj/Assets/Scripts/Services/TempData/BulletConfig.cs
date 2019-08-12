@@ -14,7 +14,7 @@ public class BulletConfig : BaseConfig<BulletConfigData>
             assetPath = "Bullet/Prefab/missile_dandao_02_fire",
             maxTime = 10.0f,
             timeLineConfig = "Bullet/Data/bullet_100",
-            maxSpeed = 5,
+            maxSpeed = 1,
         });
         AddData(new BulletConfigData()
         {

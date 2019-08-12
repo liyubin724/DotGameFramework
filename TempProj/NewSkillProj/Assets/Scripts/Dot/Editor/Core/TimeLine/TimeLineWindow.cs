@@ -8,18 +8,6 @@ using UnityEngine;
 
 namespace DotEditor.Core.TimeLine
 {
-    public enum TimeLineEditorOwner
-    {
-        Skill,
-        Bullet,
-    }
-    
-    public class TimeLineEditorConfig
-    {
-        public TimeLineEditorOwner owner = TimeLineEditorOwner.Skill;
-        public string dataSaveDir = "Assets/Resources";
-    }
-
     public class TimeLineWindow : EditorWindow
     {
         private static TimeLineWindow OpenWindow(string title)
@@ -30,30 +18,12 @@ namespace DotEditor.Core.TimeLine
             return win;
         }
 
-        [MenuItem("Tools/Skill Editor #&S")]
+        [MenuItem("Tools/TimeLine Editor #&T")]
         private static void OpenSkillWindow()
         {
-            var win = OpenWindow("Skill Editor");
-            win.editorConfig = new TimeLineEditorConfig()
-            {
-                owner = TimeLineEditorOwner.Skill,
-                dataSaveDir = "ECSResources/Resources/Skill/Data"
-            };
+            var win = OpenWindow("TimeLine Editor");
             win.Show();
         }
-        [MenuItem("Tools/Bullet Editor #&B")]
-        private static void OpenBulletWindow()
-        {
-            var win = OpenWindow("Bullet Editor");
-            win.editorConfig = new TimeLineEditorConfig()
-            {
-                owner = TimeLineEditorOwner.Bullet,
-                dataSaveDir = "ECSResources/Resources/Bullet/Data"
-            };
-            win.Show();
-        }
-
-        private TimeLineEditorConfig editorConfig = null;
 
         private DataEditor dataEditor;
         private EditorSetting editorSetting;
@@ -101,7 +71,7 @@ namespace DotEditor.Core.TimeLine
             {
                 if (GUILayout.Button("Load", "toolbarbutton", GUILayout.Width(60)))
                 {
-                    string filePath = EditorUtility.OpenFilePanel("Load Config", Application.dataPath + editorConfig.dataSaveDir, "txt");
+                    string filePath = EditorUtility.OpenFilePanel("Load Config", Application.dataPath, "txt");
                     if (!string.IsNullOrEmpty(filePath))
                     {
                         string assetPath = "Assets" + filePath.Replace(Application.dataPath, "");
@@ -119,7 +89,7 @@ namespace DotEditor.Core.TimeLine
                 }
                 if (GUILayout.Button("Create", "toolbarbutton", GUILayout.Width(60)))
                 {
-                    string filePath = EditorUtility.SaveFilePanel("Save Config", Application.dataPath + editorConfig.dataSaveDir, "tl_config", "txt");
+                    string filePath = EditorUtility.SaveFilePanel("Save Config", Application.dataPath, "tl_config", "txt");
                     if (!string.IsNullOrEmpty(filePath))
                     {
                         TimeLineData data = new TimeLineData();

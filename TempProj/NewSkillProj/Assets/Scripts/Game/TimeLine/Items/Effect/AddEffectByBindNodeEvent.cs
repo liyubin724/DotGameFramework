@@ -26,7 +26,7 @@ namespace Game.TimeLine
             GameEntity effectEntity = services.entityFactroy.CreateEffectEntity(skillEntity, ConfigID);
             effectEntity.AddTimeLineID(Index);
             effectEntity.AddBindNodeEffect(NodeIndex, NodeType);
-            EffectView effectView = null;//effectEntity.virtualView.view as EffectView;
+            EffectView effectView = effectEntity.view.view as EffectView;
             effectView.RootTransform.SetParent(nodeData.nodeTransform, false);
 
 #if TIMELINE_DEBUG
