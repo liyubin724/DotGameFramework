@@ -13,7 +13,7 @@ namespace Dot.Core.Effect
         Timline,
     }
 
-    public class EffectManager : Singleton<EffectManager>
+    public class EffectManager : Util.Singleton<EffectManager>
     {
         private readonly static string ROOT_NAME = "Effect Root";
         private readonly static string CONTROLLER_SPAWN_NAME = "EffectControllerSpawn";

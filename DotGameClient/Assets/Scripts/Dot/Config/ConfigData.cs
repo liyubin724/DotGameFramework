@@ -7,5 +7,6 @@ namespace Dot.Config
     {
         public BulletConfig bulletConfig;
         public EffectConfig effectConfig;
+        public SkillConfig skillConfig;
     }
 }

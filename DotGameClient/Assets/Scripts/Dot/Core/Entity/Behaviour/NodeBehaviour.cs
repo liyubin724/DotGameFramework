@@ -8,7 +8,7 @@ namespace Dot.Core.Entity
 {
     public enum BindNodeType
     {
-        Main,
+        Main = 1,
         Sub,
         Super,
         Furnace,

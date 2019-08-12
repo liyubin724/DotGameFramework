@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 
 namespace Dot.Core.Entity.Data
 {
@@ -7,7 +6,6 @@ namespace Dot.Core.Entity.Data
     {
         None,
         Position,
-        Transform,
         Entity,
     }
 
@@ -21,14 +19,6 @@ namespace Dot.Core.Entity.Data
         private TargetType targetType = TargetType.None;
         private Vector3 preTargetPosition = Vector3.zero;
 
-        private WeakReference<Transform> targetTransform = null;
-        public void SetTargetTransform(Transform transform)
-        {
-            targetTransform = new WeakReference<Transform>(transform);
-            preTargetPosition = transform.position;
-            targetType = TargetType.Transform;
-        }
-
         private Vector3 targetPosition = Vector3.zero;
         public void SetTargetPosition(Vector3 tPosition)
         {
@@ -37,6 +27,7 @@ namespace Dot.Core.Entity.Data
         }
 
         private long entityUniqueID = 0;
+        public long GetEntityUniqueID() => entityUniqueID;
         public void SetEntityUniqueID(long id)
         {
             entityUniqueID = id;
@@ -61,15 +52,6 @@ namespace Dot.Core.Entity.Data
 
             if(targetType == TargetType.Position)
                 return targetPosition;
-
-            if(targetType == TargetType.Transform)
-            {
-                if(targetTransform.TryGetTarget(out Transform target))
-                {
-                    preTargetPosition = target.position;
-                }
-                return preTargetPosition;
-            }
 
             if(targetType == TargetType.Entity)
             {

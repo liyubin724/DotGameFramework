@@ -2,14 +2,10 @@
 using Dot.Core.Util;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Dot.Config
 {
-    
     public class ConfigManager : Singleton<ConfigManager>
     {
         private static readonly string CONFIG_ADDRESS_NAME = "config_data";
@@ -43,6 +39,18 @@ namespace Dot.Config
             return timeLineConfigDic[path];
         }
 
+        public EffectConfigData GetEffectConfig(int id)
+        {
+            foreach (var config in configData.effectConfig.configs)
+            {
+                if (config.id == id)
+                {
+                    return config;
+                }
+            }
+            return null;
+        }
+
         public BulletConfigData GetBulletConfig(int id)
         {
             foreach (var config in configData.bulletConfig.configs)
@@ -55,9 +63,9 @@ namespace Dot.Config
             return null;
         }
 
-        public EffectConfigData GetEffectConfig(int id)
+        public SkillConfigData GetSkillConfig(int id)
         {
-            foreach(var config in configData.effectConfig.configs)
+            foreach(var config in configData.skillConfig.configs)
             {
                 if(config.id == id)
                 {

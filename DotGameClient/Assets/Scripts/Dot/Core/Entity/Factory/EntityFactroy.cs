@@ -7,11 +7,43 @@ namespace Dot.Core.Entity
 {
     public static class EntityFactroy
     {
-        public static EntityObject CreateBullet(int configID,Vector3 position,Vector3 direction)
+        public static EntityObject CreateBullet(EntityObject creatorEntity,BindNodeData nodeData,int bulletConfigID,bool isUsedCreatorSpeed)
+        {
+            EntityObject bulletEntity = CreateDefaultBullet(bulletConfigID);
+            bulletEntity.EntityData.OwnerUniqueID = creatorEntity.UniqueID;
+
+            bulletEntity.EntityData.SetPosition(nodeData.transform.position);
+            bulletEntity.EntityData.SetDirection(nodeData.transform.forward);
+
+            BulletConfigData bulletConfigData = ConfigManager.GetInstance().GetBulletConfig(bulletConfigID);
+            BulletEntityData bulletEntityData = bulletEntity.EntityData as BulletEntityData;
+            if(isUsedCreatorSpeed)
+            {
+                EntityMoveData creatorMoveData = (creatorEntity.EntityData as IMoveData).GetMoveData();
+
+                bulletEntityData.GetMoveData().SetOriginSpeed(creatorMoveData.GetSpeed());
+            }
+            
+            if(bulletConfigData.targetType != TargetType.None)
+            {
+                EntityTargetData creatorTargetData = (creatorEntity.EntityData as ITargetData).GetTargetData();
+                if (bulletConfigData.targetType == TargetType.Position)
+                {
+                    bulletEntityData.GetTargetData().SetTargetPosition(creatorTargetData.GetPosition());
+                }else if(bulletConfigData.targetType == TargetType.Entity)
+                {
+                    bulletEntityData.GetTargetData().SetEntityUniqueID(creatorTargetData.GetEntityUniqueID());
+                }
+            }
+
+            return bulletEntity;
+        }
+
+        public static EntityObject CreateDefaultBullet(int configID)
         {
             EntityObject bulletEntity = EntityContext.GetInstance().CreateEntity(
-                EntityCategroyConst.BULLET, 
-                new int[] 
+                EntityCategroyConst.BULLET,
+                new int[]
                 {
                     EntityControllerConst.SKELETON_INDEX,
                     EntityControllerConst.VIEW_INDEX,
@@ -19,38 +51,32 @@ namespace Dot.Core.Entity
                     EntityControllerConst.PHYSICS_INDEX,
                     EntityControllerConst.TIMELINE_INDEX,
                 });
-
-
-            bulletEntity.EntityData.SetPosition(position);
-            bulletEntity.EntityData.SetDirection(direction);
-
-            BulletConfigData bulletConfigData = ConfigManager.GetInstance().GetBulletConfig(configID);
             bulletEntity.EntityData.ConfigID = configID;
 
-            //bulletEntity.EntityData.TimeLineData = new EntityTimeLineData();
-            //if(!string.IsNullOrEmpty(bulletConfigData.timelineAddress))
-            //{
-            //    bulletEntity.EntityData.TimeLineData.SetTrackControl(ConfigManager.GetInstance().GetTimeLineConfig(bulletConfigData.timelineAddress));
-            //}
-            
-            EntityViewController viewController = bulletEntity.GetController<EntityViewController>(EntityControllerConst.VIEW_INDEX);
-            PhysicsVirtualView view = viewController.GetView<PhysicsVirtualView>();
+            BulletConfigData bulletConfigData = ConfigManager.GetInstance().GetBulletConfig(configID);
+            if(bulletConfigData.hasPhysics)
+            {
+                EntityViewController viewController = bulletEntity.GetController<EntityViewController>(EntityControllerConst.VIEW_INDEX);
+                PhysicsVirtualView view = viewController.GetView<PhysicsVirtualView>();
 
-            CapsuleCollider collider = view.GetOrCreateCollider(ColliderType.Capsule) as CapsuleCollider;
-            collider.center = Vector3.zero;
-            collider.radius = 0.001f;
-            collider.height = 0.1f;
-            collider.direction = 2;
-            collider.isTrigger = true;
+                CapsuleCollider collider = view.GetOrCreateCollider(ColliderType.Capsule) as CapsuleCollider;
+                collider.center = bulletConfigData.colliderCenter;
+                collider.radius = bulletConfigData.colliderRadius;
+                collider.height = bulletConfigData.colliderHeight;
+                collider.direction = bulletConfigData.colliderDirection;
+                collider.isTrigger = bulletConfigData.isColliderTrigger;
 
-            Rigidbody rigidbody = view.GetOrCreateRigidbody();
-            rigidbody.useGravity = false;
-            rigidbody.drag = 0;
-            rigidbody.angularDrag = 0;
-            rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            rigidbody.freezeRotation = true;
-            rigidbody.velocity = Vector3.zero;
+                Rigidbody rigidbody = view.GetOrCreateRigidbody();
+                rigidbody.useGravity = false;
+                rigidbody.drag = 0;
+                rigidbody.angularDrag = 0;
+                rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                rigidbody.freezeRotation = true;
+                rigidbody.velocity = Vector3.zero;
+            }else
+            {
 
+            }
             return bulletEntity;
         }
     }

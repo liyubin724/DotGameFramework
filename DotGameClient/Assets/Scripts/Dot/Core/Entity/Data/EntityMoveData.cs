@@ -93,10 +93,10 @@ namespace Dot.Core.Entity.Data
 
         public float GetMaxSpeed()
         {
-            float maxSpeed = originMaxSpeed;
+            float maxSpeed = originMaxSpeed==0f?float.MaxValue:originMaxSpeed;
             if(timeLineMaxSpeed!=0)
             {
-                maxSpeed = timeLineMaxSpeed;
+                maxSpeed = Mathf.Min(maxSpeed, timeLineMaxSpeed);
             }
             return maxSpeed;
         }
