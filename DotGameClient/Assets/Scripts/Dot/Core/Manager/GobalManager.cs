@@ -1,14 +1,10 @@
-﻿using Dot.Core.Event;
-using Dot.Core.Entity;
-using Dot.Core.Loader;
-using Dot.Core.Pool;
-using Dot.Core.Timer;
+﻿using Dot.Core.Timer;
 using Dot.Core.Util;
 using System.Collections.Generic;
 
 namespace Dot.Core.Manager
 {
-    public class GlobalManager : Singleton<GlobalManager>
+    public class GlobalManager : Util.Singleton<GlobalManager>
     {
         private Dictionary<string, IGlobalManager> globalMgrs;
         private Dictionary<string, IGlobalUpdateManager> globalUpdateMgrs;
@@ -27,14 +23,6 @@ namespace Dot.Core.Manager
             }
         }
 
-        private AssetManager assetMgr = null;
-        public AssetManager AssetMgr
-        {
-            get
-            {
-                return assetMgr;
-            }
-        }
 
         protected override void DoInit()
         {
@@ -51,9 +39,9 @@ namespace Dot.Core.Manager
             //eventMgr.Priority = 1;
             //AddGlobalManager("EventManager", eventMgr);
 
-            assetMgr = new AssetManager(AssetType.Resources);
-            assetMgr.DoInit();
-            assetMgr.Priority = 3;
+            //assetMgr = new AssetManager(AssetType.Resources);
+            //assetMgr.DoInit();
+            //assetMgr.Priority = 3;
 
             //poolMgr = new PoolManager();
             //poolMgr.DoInit();

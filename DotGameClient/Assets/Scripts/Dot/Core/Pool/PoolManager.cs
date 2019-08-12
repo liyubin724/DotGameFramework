@@ -31,7 +31,7 @@ namespace Dot.Core.Pool
         public int limitMinAmount = 0;
     }
     
-    public class PoolManager : Singleton<PoolManager>
+    public class PoolManager : Util.Singleton<PoolManager>
     {
         private Transform cachedTransform = null;
         private Dictionary<string, SpawnPool> spawnDic = new Dictionary<string, SpawnPool>();

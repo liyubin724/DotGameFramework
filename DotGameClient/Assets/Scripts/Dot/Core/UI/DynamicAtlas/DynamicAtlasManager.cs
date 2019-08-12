@@ -121,7 +121,7 @@ namespace Dot.Core.UI.Atlas
 
     public delegate void OnLoadSpriteFromDynamicAtlasFinish(Sprite sprite);
 
-    public class DynamicAtlasManager : Singleton<DynamicAtlasManager>
+    public class DynamicAtlasManager : Util.Singleton<DynamicAtlasManager>
     {
         class RawImageLoadingData  : IObjectPoolItem
         {
