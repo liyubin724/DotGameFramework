@@ -1,6 +1,0 @@
-require("Test/TestSound")
-
-TestSound1 = Class(TestSound,function(self)
-  self._base.init(self)
-  print("11111"..self.name)
-end)

@@ -1,4 +1,0 @@
-GlobalConfig = {}
-
-GlobalConfig.PlatformID = 221
-

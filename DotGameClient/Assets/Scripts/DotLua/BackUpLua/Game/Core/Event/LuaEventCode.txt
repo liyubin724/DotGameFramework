@@ -1,7 +1,0 @@
-LuaEventCode = {}
-
-LuaEventCode.NetErrorEvent = 1
-LuaEventCode.NetConnectEvent = 2
-LuaEventCode.NetNotifyEvent = 3
-LuaEventCode.NetRequestEvent = 4
-LuaEventCode.NetRequestResponseEvent = 5

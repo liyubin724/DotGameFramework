@@ -1,7 +1,5 @@
 ﻿using Dot.Core.Event;
 using Dot.Core.Timer;
-using Dot.XLuaEx;
-using XLua;
 
 namespace Dot.Core
 {
@@ -20,22 +18,6 @@ namespace Dot.Core
             get
             {
                 return InnerGameController.GetInstance().GEvent;
-            }
-        }
-
-        public static GameLua GLua
-        {
-            get
-            {
-                return InnerGameController.GetInstance().GLua;
-            }
-        }
-
-        public static LuaEnv GLuaEnv
-        {
-            get
-            {
-                return GLua.GameLuaEnv;
             }
         }
     }

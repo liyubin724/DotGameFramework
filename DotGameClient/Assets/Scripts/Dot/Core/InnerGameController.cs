@@ -1,13 +1,11 @@
 ﻿using Dot.Core.Asset;
-using Dot.Core.Effect;
 using Dot.Core.Event;
 using Dot.Core.Timer;
-using Dot.XLuaEx;
 using UnityEngine;
 
 namespace Dot.Core
 {
-    
+
     public class InnerGameController : MonoBehaviour
     {
         private void Awake()
@@ -71,19 +69,6 @@ namespace Dot.Core
                     eventDispatcher = new EventDispatcher();
                 }
                 return eventDispatcher;
-            }
-        }
-
-        private GameLua gameLua = null;
-        internal GameLua GLua
-        {
-            get
-            {
-                if(gameLua == null)
-                {
-                    gameLua = new GameLua();
-                }
-                return gameLua;
             }
         }
 

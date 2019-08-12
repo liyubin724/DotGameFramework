@@ -1,4 +1,0 @@
-GlobalText = {}
-
-GlobalText.ProjectName = "Dot Game"
-

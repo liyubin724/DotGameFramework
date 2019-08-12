@@ -1,8 +1,0 @@
-
-LoopScrollItem = Class(function(self)
-
-end)
-
-function LoopScrollItem:SetItemData(data)
-  error("LoopScrollItem::SetItemData->Should be override")
-end
