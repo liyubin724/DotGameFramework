@@ -7,22 +7,23 @@ namespace Dot.Core.Entity.Controller
     {
         public override void DoUpdate(float deltaTime)
         {
-            if (!Enable)
+            if (!Enable || entity.EntityData == null)
             {
                 return;
             }
 
-            if (entity.EntityData == null || entity.EntityData.MoveData == null || !entity.EntityData.MoveData.GetIsMover())
+            BulletEntityData bulletEntityData = entity.EntityData as BulletEntityData;
+            EntityMoveData moveData = bulletEntityData.GetMoveData();
+
+            if (moveData == null || !moveData.GetIsMover())
             {
                 return;
             }
-
-            EntityMoveData moveData = entity.EntityData.MoveData;
             MotionCurveType motionType = moveData.GetMotionType();
             if (motionType == MotionCurveType.None)
                 return;
 
-            EntityTargetData targetData = entity.EntityData.TargetData;
+            EntityTargetData targetData = bulletEntityData.GetTargetData();
             if (targetData != null)
             {
                 Vector3 targetPosition = targetData.GetPosition();
@@ -42,13 +43,12 @@ namespace Dot.Core.Entity.Controller
 
             if (motionType == MotionCurveType.Linear)
             {
-                MoveLinear(deltaTime);
+                MoveLinear(moveData,deltaTime);
             }
         }
         
-        private void MoveLinear(float deltaTime)
+        private void MoveLinear(EntityMoveData moveData,float deltaTime)
         {
-            EntityMoveData moveData = entity.EntityData.MoveData;
             float acceleration = moveData.GetAcceleration();
             Vector3 direction = entity.EntityData.GetDirection();
             float maxSpeed = moveData.GetMaxSpeed();

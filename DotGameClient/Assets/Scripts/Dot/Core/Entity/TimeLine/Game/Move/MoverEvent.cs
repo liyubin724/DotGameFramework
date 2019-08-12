@@ -13,7 +13,7 @@ namespace Dot.Core.TimeLine.Game
         {
             if (entity.EntityData != null && CanRevert)
             {
-                EntityMoveData moveData = entity.EntityData.MoveData;
+                EntityMoveData moveData = (entity.EntityData as IMoveData)?.GetMoveData();
                 if (moveData != null)
                 {
                     moveData.SetIsMover(cachedIsMover);
@@ -25,8 +25,8 @@ namespace Dot.Core.TimeLine.Game
         {
             if(entity.EntityData !=null)
             {
-                EntityMoveData moveData = entity.EntityData.MoveData;
-                if(moveData!=null)
+                EntityMoveData moveData = (entity.EntityData as IMoveData)?.GetMoveData();
+                if (moveData!=null)
                 {
                     cachedIsMover = moveData.GetIsMover();
                     moveData.SetIsMover(IsMover);

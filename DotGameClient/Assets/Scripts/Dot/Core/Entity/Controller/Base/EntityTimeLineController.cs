@@ -32,11 +32,11 @@ namespace Dot.Core.Entity.Controller
                 trackController.DoReset();
             }
 
-            trackController = entity.EntityData.TimeLineData.GetTrackControl();
-            trackController.Initialize(context, entity);
-            trackController.groupStartCallback += OnTrackGroupStart;
-            trackController.groupChangedCallback += OnTrackGroupChanged;
-            trackController.groupFinishCallback += OnTrackGroupFinish;
+            //trackController = entity.EntityData.TimeLineData.GetTrackControl();
+            //trackController.Initialize(context, entity);
+            //trackController.groupStartCallback += OnTrackGroupStart;
+            //trackController.groupChangedCallback += OnTrackGroupChanged;
+            //trackController.groupFinishCallback += OnTrackGroupFinish;
         }
 
         public void Play(string groupName)

@@ -20,17 +20,18 @@ namespace Dot.Core.Entity
                     EntityControllerConst.TIMELINE_INDEX,
                 });
 
+
             bulletEntity.EntityData.SetPosition(position);
             bulletEntity.EntityData.SetDirection(direction);
 
             BulletConfigData bulletConfigData = ConfigManager.GetInstance().GetBulletConfig(configID);
             bulletEntity.EntityData.ConfigID = configID;
 
-            bulletEntity.EntityData.TimeLineData = new EntityTimeLineData();
-            if(!string.IsNullOrEmpty(bulletConfigData.timelineAddress))
-            {
-                bulletEntity.EntityData.TimeLineData.SetTrackControl(ConfigManager.GetInstance().GetTimeLineConfig(bulletConfigData.timelineAddress));
-            }
+            //bulletEntity.EntityData.TimeLineData = new EntityTimeLineData();
+            //if(!string.IsNullOrEmpty(bulletConfigData.timelineAddress))
+            //{
+            //    bulletEntity.EntityData.TimeLineData.SetTrackControl(ConfigManager.GetInstance().GetTimeLineConfig(bulletConfigData.timelineAddress));
+            //}
             
             EntityViewController viewController = bulletEntity.GetController<EntityViewController>(EntityControllerConst.VIEW_INDEX);
             PhysicsVirtualView view = viewController.GetView<PhysicsVirtualView>();

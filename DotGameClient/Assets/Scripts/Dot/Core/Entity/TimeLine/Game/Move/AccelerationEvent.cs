@@ -13,7 +13,7 @@ namespace Dot.Core.Entity.TimeLine.Game
         {
             if (CanRevert&&entity.EntityData != null)
             {
-                EntityMoveData moveData = entity.EntityData.MoveData;
+                EntityMoveData moveData = (entity.EntityData as IMoveData)?.GetMoveData();
                 if (moveData != null)
                 {
                     moveData.SetTimeLineAcceleration(cachedAcc);
@@ -25,7 +25,7 @@ namespace Dot.Core.Entity.TimeLine.Game
         {
             if (entity.EntityData != null)
             {
-                EntityMoveData moveData = entity.EntityData.MoveData;
+                EntityMoveData moveData = (entity.EntityData as IMoveData)?.GetMoveData();
                 if (moveData != null)
                 {
                     cachedAcc = moveData.GetTimeLineAcceleration();

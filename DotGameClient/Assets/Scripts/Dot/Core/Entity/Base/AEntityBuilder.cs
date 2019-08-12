@@ -15,8 +15,6 @@ namespace Dot.Core.Entity
             entity.Category = category;
             entity.Name = $"{EntityCategroyConst.GetCategroyName(category)}_{category}_{uniqueID}";
 
-            entity.EntityData = new EntityData();
-
             if(controllerIndexes!=null)
             {
                 AEntityController[] controllers = new AEntityController[controllerIndexes.Length];

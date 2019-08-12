@@ -1,6 +1,6 @@
 ﻿using Dot.Core.Entity;
 using Dot.Core.Entity.Controller;
-using UnityEngine;
+using Dot.Core.Entity.Data;
 
 namespace Game.Entity
 {
@@ -13,7 +13,7 @@ namespace Game.Entity
             view.ControlType = MoveControlType.Normal;
             viewController.SetView(view);
 
-            
+            entity.EntityData = new BulletEntityData(entity.Dispatcher);
         }
 
         protected override void OnDelete(EntityObject entity)

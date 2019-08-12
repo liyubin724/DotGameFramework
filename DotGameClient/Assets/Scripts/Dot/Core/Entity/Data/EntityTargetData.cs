@@ -11,14 +11,14 @@ namespace Dot.Core.Entity.Data
         Entity,
     }
 
+    public interface ITargetData
+    {
+        EntityTargetData GetTargetData();
+    }
+
     public class EntityTargetData
     {
         private TargetType targetType = TargetType.None;
-        public void SetTargetType(TargetType tt)
-        {
-            targetType = tt;
-        }
-
         private Vector3 preTargetPosition = Vector3.zero;
 
         private WeakReference<Transform> targetTransform = null;
@@ -26,28 +26,33 @@ namespace Dot.Core.Entity.Data
         {
             targetTransform = new WeakReference<Transform>(transform);
             preTargetPosition = transform.position;
+            targetType = TargetType.Transform;
         }
 
         private Vector3 targetPosition = Vector3.zero;
         public void SetTargetPosition(Vector3 tPosition)
         {
             targetPosition = tPosition;
+            targetType = TargetType.Position;
         }
 
         private long entityUniqueID = 0;
         public void SetEntityUniqueID(long id)
         {
             entityUniqueID = id;
+            targetType = TargetType.Entity;
             EntityContext context = EntityContext.GetInstance();
             if(context!=null)
             {
                 EntityObject entity = context.GetEntity(entityUniqueID);
-                if(entity!=null && entity.EntityData!=null && entity.EntityData.MoveData!=null)
+                if(entity!=null && entity.EntityData!=null)
                 {
                     preTargetPosition = entity.EntityData.GetPosition();
                 }
             }
         }
+
+        public bool HasTarget() => targetType != TargetType.None;
 
         public Vector3 GetPosition()
         {
@@ -72,7 +77,7 @@ namespace Dot.Core.Entity.Data
                 if (context != null)
                 {
                     EntityObject entity = context.GetEntity(entityUniqueID);
-                    if (entity != null && entity.EntityData != null && entity.EntityData.MoveData != null)
+                    if (entity != null && entity.EntityData != null)
                     {
                         preTargetPosition = entity.EntityData.GetPosition();
                     }

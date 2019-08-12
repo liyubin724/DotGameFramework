@@ -9,10 +9,13 @@ namespace Dot.Core.Entity.Data
 
     }
 
+    public interface IMoveData
+    {
+        EntityMoveData GetMoveData();
+    }
+
     public class EntityMoveData
     {
-        internal EntityEventData eventData = null;
-
         private bool isMover = false;
         public bool GetIsMover() => this.isMover;
         public void SetIsMover(bool isMover) => this.isMover = isMover;

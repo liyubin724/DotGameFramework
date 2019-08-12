@@ -13,7 +13,7 @@ namespace Dot.Core.Entity.TimeLine.Game
         {
             if (entity.EntityData != null)
             {
-                EntityMoveData moveData = entity.EntityData.MoveData;
+                EntityMoveData moveData = (entity.EntityData as IMoveData)?.GetMoveData();
                 if (moveData != null)
                 {
                     moveData.SetTimeLineConstantSpeed(cachedSpeed);
@@ -25,7 +25,7 @@ namespace Dot.Core.Entity.TimeLine.Game
         {
             if (entity.EntityData != null)
             {
-                EntityMoveData moveData = entity.EntityData.MoveData;
+                EntityMoveData moveData = (entity.EntityData as IMoveData)?.GetMoveData();
                 if (moveData != null)
                 {
                     cachedSpeed = moveData.GetTimeLineConstantSpeed();

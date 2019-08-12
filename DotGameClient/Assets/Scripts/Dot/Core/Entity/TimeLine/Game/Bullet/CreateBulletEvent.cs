@@ -1,4 +1,5 @@
 ﻿using Dot.Core.Entity.Controller;
+using Dot.Core.Entity.Data;
 using Dot.Core.TimeLine;
 
 namespace Dot.Core.Entity.TimeLine.Game
@@ -30,11 +31,7 @@ namespace Dot.Core.Entity.TimeLine.Game
                 {
                     foreach (var nodeData in nodeDatas)
                     {
-                        EntityObject bulletEntity = EntityFactroy.CreateBullet(ConfigID, nodeData.transform.position, nodeData.transform.forward);
-                        if (UseEntitySpeed)
-                        {
-                            bulletEntity.EntityData.MoveData.SetOriginSpeed(entity.EntityData.MoveData.GetSpeed());
-                        }
+                        CreateBullet(nodeData);
                     }
                 }
             }
@@ -43,13 +40,26 @@ namespace Dot.Core.Entity.TimeLine.Game
                 BindNodeData nodeData = skeletonController.GetBindNodeData(NodeType, NodeIndex);
                 if (nodeData != null)
                 {
-                    EntityObject bulletEntity = EntityFactroy.CreateBullet(ConfigID, nodeData.transform.position, nodeData.transform.forward);
-                    if(UseEntitySpeed)
-                    {
-                        bulletEntity.EntityData.MoveData.SetOriginSpeed(entity.EntityData.MoveData.GetSpeed());
-                    }
+                    CreateBullet(nodeData);
                 }
             }
+        }
+        
+        private EntityObject CreateBullet(BindNodeData nodeData)
+        {
+            EntityObject bulletEntity = EntityFactroy.CreateBullet(ConfigID, nodeData.transform.position, nodeData.transform.forward);
+            if (UseEntitySpeed)
+            {
+                BulletEntityData entityData = bulletEntity.EntityData as BulletEntityData;
+                EntityMoveData moveData = entityData.GetMoveData();
+
+                EntityMoveData shipMoveData = (entity.EntityData as ShipEntityData).GetMoveData();
+
+                moveData.SetOriginSpeed(shipMoveData.GetSpeed());
+            }
+            bulletEntity.EntityData.OwnerUniqueID = entity.UniqueID;
+
+            return bulletEntity;
         }
     }
 }
