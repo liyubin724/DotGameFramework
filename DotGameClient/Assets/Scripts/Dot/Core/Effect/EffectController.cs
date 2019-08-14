@@ -24,6 +24,7 @@ namespace Dot.Core.Effect
         public float lifeTime = 0.0f;
         public float stopDelayTime = 0.0f;
 
+        public bool isMainPlayer = false;
         public event OnEffectFinish effectFinished = delegate(EffectController e) { };
 
         private EffectStatus status = EffectStatus.None;
@@ -122,7 +123,7 @@ namespace Dot.Core.Effect
                 status = EffectStatus.Playing;
                 if (lifeTime > 0)
                 {
-                    timer = GameApplication.GTimer.AddTimerTask(lifeTime, lifeTime, null, null, OnLifeTimeEnd, null);
+                    timer = TimerManager.GetInstance().AddEndTimer(lifeTime, OnLifeTimeEnd);
                 }
 
                 effectBehaviour?.Play();
@@ -135,16 +136,17 @@ namespace Dot.Core.Effect
             {
                 status = EffectStatus.Stopping;
                 effectBehaviour?.Stop();
+
                 OnLifeTimeEnd(null);
             }
         }
 
         private void OnLifeTimeEnd(SystemObject data)
         {
-            StopTimer();
+            timer = null;
             if (stopDelayTime > 0)
             {
-                timer = GameApplication.GTimer.AddTimerTask(stopDelayTime, stopDelayTime, null, null, OnStopTimeEnd, null);
+                timer = TimerManager.GetInstance().AddEndTimer(stopDelayTime, OnStopTimeEnd);
             }
             else
             {
@@ -154,7 +156,7 @@ namespace Dot.Core.Effect
 
         private void OnStopTimeEnd(SystemObject data)
         {
-            StopTimer();
+            timer = null;
             Dead();
         }
 
@@ -169,18 +171,13 @@ namespace Dot.Core.Effect
             effectBehaviour = null;
         }
 
-        private void StopTimer()
-        {
-            if (timer != null)
-            {
-                GameApplication.GTimer.RemoveTimerTask(timer);
-            }
-            timer = null;
-        }
-
         public override void DoDespawned()
         {
-            StopTimer();
+            if(timer!=null)
+            {
+                TimerManager.GetInstance().RemoveTimer(timer);
+            }
+            timer = null;
 
             isAutoPlayWhenEnable = false;
             lifeTime = 0.0f;

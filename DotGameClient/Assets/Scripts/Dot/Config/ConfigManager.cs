@@ -51,6 +51,18 @@ namespace Dot.Config
             return null;
         }
 
+        public EffectConfigData GetEffectConfig(string address)
+        {
+            foreach (var config in configData.effectConfig.configs)
+            {
+                if (config.address == address)
+                {
+                    return config;
+                }
+            }
+            return null;
+        }
+
         public BulletConfigData GetBulletConfig(int id)
         {
             foreach (var config in configData.bulletConfig.configs)

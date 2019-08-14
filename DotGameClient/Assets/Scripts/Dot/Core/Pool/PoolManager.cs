@@ -44,7 +44,7 @@ namespace Dot.Core.Pool
         protected override void DoInit()
         {
             cachedTransform = DontDestroyHandler.CreateTransform("PoolManager");
-            cullTimerTask = GameApplication.GTimer.AddTimerTask(cullTimeInterval, 0, null, OnCullTimerUpdate, null, null);
+            cullTimerTask = TimerManager.GetInstance().AddIntervalTimer(cullTimeInterval, OnCullTimerUpdate);
         }
         
         /// <summary>
@@ -97,7 +97,7 @@ namespace Dot.Core.Pool
         {
             if (spawnDic.TryGetValue(name, out SpawnPool spawn))
             {
-                spawn.ClearPool(true);
+                spawn.DestroyPool(true);
                 spawnDic.Remove(name);
             }
         }
@@ -218,7 +218,7 @@ namespace Dot.Core.Pool
         {
             foreach (var kvp in spawnDic)
             {
-                kvp.Value.ClearPool(true);
+                kvp.Value.DestroyPool(true);
             }
             spawnDic.Clear();
         }
@@ -228,7 +228,7 @@ namespace Dot.Core.Pool
             DoReset();
             if(cullTimerTask != null)
             {
-                GameApplication.GTimer.RemoveTimerTask(cullTimerTask);
+                TimerManager.GetInstance().RemoveTimer(cullTimerTask);
             }
             cullTimerTask = null;
             spawnDic = null;

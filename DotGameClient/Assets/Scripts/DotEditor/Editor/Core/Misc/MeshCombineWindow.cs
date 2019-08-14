@@ -3,7 +3,7 @@ using Sirenix.OdinInspector.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace DotEditor.Editor.Core.Misc
+namespace DotEditor.Core.Misc
 {
     public class MeshCombineWindow : OdinEditorWindow
     {

@@ -1,28 +1,22 @@
-﻿using Dot.Core.Asset;
-using System.Collections;
+﻿using Dot;
+using Dot.Core.Asset;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
-using System;
-using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 using SystemObject = System.Object;
+using UnityObject = UnityEngine.Object;
 
 public class TestAssetLoader : MonoBehaviour
 {
-    AssetLoader loader = new AssetLoader();
+    AssetLoader loader = null;
 
     public RawImage image1 = null;
     public RawImage image2 = null;
     void Start()
     {
-
-    }
- 
-    void Update()
-    {
-        System.GC.Collect();
-        loader.DoUpdate();
+        GameController.StartUp();
+        loader = AssetLoader.GetInstance();
     }
 
     private List<GameObject> objs = new List<GameObject>();

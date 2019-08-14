@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace DotEditor.Editor.Core.Misc
+namespace DotEditor.Core.Misc
 {
     public class MeshCombine
     {

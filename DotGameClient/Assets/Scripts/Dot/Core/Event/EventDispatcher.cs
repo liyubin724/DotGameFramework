@@ -12,6 +12,7 @@ namespace Dot.Core.Event
         private static ObjectPool<EventData> eventDataPool = null;
         private Dictionary<int, List<EventHandler>> eventHandlerDic = null;
         private Dictionary<EventData, TimerTaskInfo> delayEventTaskInfo = null;
+
         public EventDispatcher()
         {
             if(eventDataPool == null)
@@ -32,7 +33,7 @@ namespace Dot.Core.Event
             foreach(var kvp in delayEventTaskInfo)
             {
                 eventDataPool.Release(kvp.Key);
-                GameApplication.GTimer.RemoveTimerTask(kvp.Value);
+                TimerManager.GetInstance().RemoveTimer(kvp.Value);
             }
             delayEventTaskInfo.Clear();
         }
@@ -40,6 +41,7 @@ namespace Dot.Core.Event
         public void DoDispose()
         {
             DoReset();
+
             eventDataPool?.Clear();
             eventDataPool = null;
             eventHandlerDic = null;
@@ -74,16 +76,6 @@ namespace Dot.Core.Event
             }
         }
 
-        public void TriggerEvent(int eventID)
-        {
-            TriggerEvent(eventID, 0.0f, null);
-        }
-
-        public void TriggerEvent(int eventID, float delayTime)
-        {
-            TriggerEvent(eventID, delayTime, null);
-        }
-
         public void TriggerEvent(int eventID, float delayTime, params object[] datas)
         {
             EventData e = eventDataPool.Get();
@@ -95,10 +87,7 @@ namespace Dot.Core.Event
             }
             else
             {
-                TimerTaskInfo tti = GameApplication.GTimer.AddTimerTask(
-                    delayTime, 
-                    delayTime, null, null, 
-                    OnDelayEventTrigger, e);
+                TimerTaskInfo tti = TimerManager.GetInstance().AddEndTimer(delayTime, OnDelayEventTrigger, e);
                 delayEventTaskInfo.Add(e,tti);
             }
         }
@@ -108,6 +97,7 @@ namespace Dot.Core.Event
             if(userdata!=null && userdata is EventData eData)
             {
                 delayEventTaskInfo.Remove(eData);
+
                 TriggerEvent(eData);
             }
         }

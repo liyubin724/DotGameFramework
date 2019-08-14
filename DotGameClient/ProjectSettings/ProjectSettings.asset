@@ -527,7 +527,7 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   scriptingDefineSymbols:
-    1: ODIN_INSPECTOR
+    1: ODIN_INSPECTOR;NOT_ETERNITY
   platformArchitecture: {}
   scriptingBackend:
     Android: 1

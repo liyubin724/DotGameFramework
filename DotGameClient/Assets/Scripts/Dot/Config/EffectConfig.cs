@@ -7,11 +7,13 @@ namespace Dot.Config
     [Serializable]
     public class EffectConfigData
     {
-        public int id;
         public string address;
         public bool isAutoPlay = true;
         public float lifeTime;
         public float stopDelayTime;
+
+
+        public int id;
     }
 
     [Serializable]

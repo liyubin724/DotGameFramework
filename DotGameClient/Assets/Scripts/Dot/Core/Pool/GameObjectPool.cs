@@ -61,7 +61,7 @@ namespace Dot.Core.Pool
 #if UNITY_EDITOR
             templateItem.gameObject.name = $"Template_{aPath}";
 #endif
-            preloadTimerTask = GameApplication.GTimer.AddTimerTask(0.05f, 0, null, OnPreloadTimerUpdate, null, null);
+            preloadTimerTask = TimerManager.GetInstance().AddIntervalTimer(0.05f, OnPreloadTimerUpdate);
         }
 
         #region Preload
@@ -103,7 +103,7 @@ namespace Dot.Core.Pool
 
             if(preloadTimerTask!=null)
             {
-                GameApplication.GTimer.RemoveTimerTask(preloadTimerTask);
+                TimerManager.GetInstance().RemoveTimer(preloadTimerTask);
                 preloadTimerTask = null;
             }
         }
@@ -276,7 +276,7 @@ namespace Dot.Core.Pool
             preCullTime = curTime;
         }
         
-        internal bool ClearPool(bool isForce = false)
+        internal bool DestroyPool(bool isForce = false)
         {
             if(!isForce && isAutoClean)
             {
@@ -286,7 +286,7 @@ namespace Dot.Core.Pool
             preloadCompleteCallback = null;
             if (preloadTimerTask != null)
             {
-                GameApplication.GTimer.RemoveTimerTask(preloadTimerTask);
+                TimerManager.GetInstance().RemoveTimer(preloadTimerTask);
                 preloadTimerTask = null;
             }
 

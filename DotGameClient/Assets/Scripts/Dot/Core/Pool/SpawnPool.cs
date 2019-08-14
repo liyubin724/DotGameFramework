@@ -72,7 +72,7 @@ namespace Dot.Core.Pool
             GameObjectPool gObjPool = GetGameObjectPool(assetPath);
             if(gObjPool!=null)
             {
-                gObjPool.ClearPool(true);
+                gObjPool.DestroyPool(true);
 
                 goPools.Remove(assetPath);
             }
@@ -89,12 +89,12 @@ namespace Dot.Core.Pool
             }
         }
 
-        internal void ClearPool(bool isForce = false)
+        internal void DestroyPool(bool isForce = false)
         {
             List<string> clearPoolNames = new List<string>();
             foreach(var kvp in goPools)
             {
-                if(kvp.Value.ClearPool(isForce))
+                if(kvp.Value.DestroyPool(isForce))
                 {
                     clearPoolNames.Add(kvp.Key);
                 }
@@ -105,7 +105,7 @@ namespace Dot.Core.Pool
             }
             if(goPools.Count == 0)
             {
-                UnityEngine.Object.Destroy(CachedTransform.gameObject);
+                Object.Destroy(CachedTransform.gameObject);
             }
         }
 
