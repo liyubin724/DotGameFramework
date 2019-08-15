@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityObject = UnityEngine.Object;
 using SystemObject = System.Object;
-using Dot.Core.Util;
+using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Asset
 {
@@ -24,7 +23,6 @@ namespace Dot.Core.Asset
         private Dictionary<string, AssetData> assetDataDic = new Dictionary<string, AssetData>();
         private List<AssetData> loadingAssetDataList = new List<AssetData>();
         private Dictionary<string, InstanceAssetData> instanceAssetDataDic = new Dictionary<string, InstanceAssetData>();
-
 
         public int MaxLoadingCount { get; set; } = 5;
 
@@ -45,32 +43,13 @@ namespace Dot.Core.Asset
 
         public void DoUpdate()
         {
-            UpdateLoadingData();
+            UpdateLoadingAsset();
             UpdateLoadData();
             ClearInstanceAssetData();
             ClearAssetData();
         }
 
-        private List<string> removedInstanceAssetKeys = new List<string>();
-        private void ClearInstanceAssetData()
-        {
-            foreach (var kvp in instanceAssetDataDic)
-            {
-                if (!kvp.Value.IsInUsed())
-                {
-                    removedInstanceAssetKeys.Add(kvp.Key);
-                }
-            }
-
-            removedInstanceAssetKeys.ForEach((key) =>
-            {
-                instanceAssetDataDic[key].Release();
-                instanceAssetDataDic.Remove(key);
-            });
-            removedInstanceAssetKeys.Clear();
-        }
-
-        private void UpdateLoadingData()
+        private void UpdateLoadingAsset()
         {
             int updateIndex = 0;
             while (updateIndex < loadingAssetDataList.Count && updateIndex < MaxLoadingCount)
@@ -79,53 +58,53 @@ namespace Dot.Core.Asset
                 if (assetData.Status == AssetDataStatus.None)
                 {
                     assetData.Handle = Addressables.LoadAssetAsync<UnityObject>(assetData.Address);
-                    assetData.Handle.Completed += OnAssetLoadComplete;
                     assetData.Status = AssetDataStatus.Loading;
+                    assetData.Handle.Completed += OnAssetLoadComplete;
 
                     ++updateIndex;
                 }
                 else if (assetData.Status == AssetDataStatus.Loaded)
                 {
                     loadingAssetDataList.RemoveAt(updateIndex);
-                } else
-                {
+                }
+                else
+                { 
                     ++updateIndex;
                 }
             }
         }
 
-        private UnityObject GetObjectInstance(string address, AssetData assetData)
-        {
-            if (!instanceAssetDataDic.TryGetValue(address, out InstanceAssetData instance))
-            {
-                instance = new InstanceAssetData(assetData);
-                instanceAssetDataDic.Add(address, instance);
-            } 
-
-            return instance.GetInstance();
-        }
-
         private void UpdateLoadData()
         {
             int index = 0;
-            while(index < loadDataORM.Count)
+            while (index < loadDataORM.Count)
             {
                 LoadData loadData = loadDataORM.GetDataByIndex(index);
-                ++index;
                 if (loadData.Addresses == null)
+                {
+                    ++index;
                     continue;
+                }
 
-                bool isAllFinished = true;
-                float[] progresses = new float[loadData.Addresses.Length];
+                bool isFinished = false;
                 for (int j = 0; j < loadData.Addresses.Length; ++j)
                 {
                     string address = loadData.Addresses[j];
                     AssetData assetData = assetDataDic[address];
+
                     if (assetData.Status == AssetDataStatus.Loaded)
                     {
-                        progresses[j] = 1.0f;
-                        if(!loadData.GetIsSingleFinishCalled(j))
+                        if(!loadData.GetIsObjectLoaded(j))
                         {
+                            loadData.SetObjectLoaded(j);
+
+                            isFinished = loadData.IsFinish();
+                            if(isFinished)
+                            {
+                                loadDataORM.DeleteByData(loadData);
+                            }
+
+                            loadData.SetProgress(j, 1.0f);
                             assetData.ReleaseLoadCount();
                             if (loadData.isInstance)
                             {
@@ -133,40 +112,50 @@ namespace Dot.Core.Asset
                             }
                             else
                             {
-                                loadData.SetObject(j, assetData.GetObject());
                                 assetData.RetainRefCount();
+                                loadData.SetObject(j, assetData.GetObject());
                             }
-
-                            loadData.SetIsSingleFinishCalled(j, true);
-                            loadData.InvokeAssetLoadProgress(address, 1.0f);
-                            loadData.InvokeAssetLoadFinish(loadData.Addresses[j], loadData.GetObject(j));
                         }
                     }
                     else if (assetData.Status == AssetDataStatus.Loading)
                     {
-                        progresses[j] = assetData.Handle.PercentComplete;
-                        if (isAllFinished) isAllFinished = false;
-
-                        loadData.InvokeAssetLoadProgress(address, progresses[j]);
+                        loadData.SetProgress(j, assetData.Handle.PercentComplete);
                     }
                     else
                     {
-                        progresses[j] = 0.0f;
-                        if (isAllFinished) isAllFinished = false;
-                        loadData.InvokeAssetLoadProgress(address, 0.0f);
+                        loadData.SetProgress(j, 0.0f);
                     }
                 }
 
-                loadData.InvokeAssetsLoadProgress(progresses);
-                if (isAllFinished)
+                if(isFinished)
                 {
-                    loadDataORM.DeleteByData(loadData);
-                    loadData.InvokeAssetsLoadFinish(loadData.Objects);
+                    loadData.LoadFinish();
+                }else
+                {
+                    ++index;
                 }
             }
         }
 
         private List<string> removedAssetAdress = new List<string>();
+        private void ClearInstanceAssetData()
+        {
+            foreach (var kvp in instanceAssetDataDic)
+            {
+                if (!kvp.Value.IsInUsed())
+                {
+                    removedAssetAdress.Add(kvp.Key);
+                }
+            }
+
+            removedAssetAdress.ForEach((key) =>
+            {
+                instanceAssetDataDic[key].Release();
+                instanceAssetDataDic.Remove(key);
+            });
+            removedAssetAdress.Clear();
+        }
+        
         private void ClearAssetData()
         {
             foreach (var kvp in assetDataDic)
@@ -184,6 +173,17 @@ namespace Dot.Core.Asset
             removedAssetAdress.Clear();
         }
 
+        private UnityObject GetObjectInstance(string address, AssetData assetData)
+        {
+            if (!instanceAssetDataDic.TryGetValue(address, out InstanceAssetData instance))
+            {
+                instance = new InstanceAssetData(assetData);
+                instanceAssetDataDic.Add(address, instance);
+            } 
+
+            return instance.GetInstance();
+        }
+        
         public AssetHandle LoadAssetAsync(string address,
             OnAssetLoadFinishCallback finish,
             OnAssetLoadProgressCallback progress, SystemObject userData)
@@ -300,7 +300,7 @@ namespace Dot.Core.Asset
                     }
                     else
                     {
-                        RemoveLoadData(loadData.uniqueID);
+                        loadDataORM.DeleteByData(loadData);
                         assetHandle.IsValid = false;
                         allFinish?.Invoke(null, null,userData);
                     }
@@ -329,17 +329,6 @@ namespace Dot.Core.Asset
             }
         }
 
-        private LoadData RemoveLoadData(long uniqueID)
-        {
-            if(loadDataORM.Contain(uniqueID))
-            {
-                LoadData data = loadDataORM.GetDataByKey(uniqueID);
-                loadDataORM.DeleteByKey(uniqueID);
-                return data;
-            }
-            return null;
-        }
-
         public void ReleaseAsset(AssetHandle assetHandle)
         {
             if(!assetHandle.IsValid)
@@ -347,15 +336,16 @@ namespace Dot.Core.Asset
                 return;
             }
 
-            LoadData loadData = RemoveLoadData(assetHandle.uniqueID);
+            assetHandle.IsValid = false;
 
-            if(loadData!=null)
+            if (loadDataORM.Contain(assetHandle.uniqueID))
             {
-                ReleaseAssetByLoadData(loadData);
+                LoadData data = loadDataORM.GetDataByKey(assetHandle.uniqueID);
+                ReleaseAssetByLoadData(data);
             }
             else
             {
-                if(!assetHandle.isInstance && assetHandle.addresses!=null)
+                if (!assetHandle.isInstance && assetHandle.addresses != null)
                 {
                     foreach (var address in assetHandle.addresses)
                     {
@@ -364,12 +354,13 @@ namespace Dot.Core.Asset
                     }
                 }
             }
-            assetHandle.IsValid = false;
         }
 
         private void ReleaseAssetByLoadData(LoadData loadData)
         {
-            if(loadData.Addresses == null || loadData.Addresses.Length==0)
+            loadDataORM.DeleteByData(loadData);
+
+            if (loadData.Addresses == null || loadData.Addresses.Length==0)
             {
                 return;
             }
@@ -401,7 +392,7 @@ namespace Dot.Core.Asset
         {
             foreach(var assetData in loadingAssetDataList)
             {
-                if(handle.Equals( assetData.Handle))
+                if(handle.Equals(assetData.Handle))
                 {
                     assetData.Handle.Completed -= OnAssetLoadComplete;
                     assetData.Status = AssetDataStatus.Loaded;

@@ -1,7 +1,6 @@
 ﻿using Dot.Core.Generic;
-using System;
-using UnityObject = UnityEngine.Object;
 using SystemObject = System.Object;
+using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Asset
 {
@@ -13,8 +12,11 @@ namespace Dot.Core.Asset
         public OnAssetsLoadFinishCallback allFinish = null;
         public OnAssetsLoadProgressCallback allProgress = null;
         public bool isInstance = false;
-
         public SystemObject userData;
+
+        private float[] progresses = null;
+        private bool[] isObjectLoaded;
+        private UnityObject[] objects;
 
         private string[] addresses = null;
         public string[] Addresses {
@@ -28,38 +30,58 @@ namespace Dot.Core.Asset
                 if (addresses != null)
                 {
                     objects = new UnityObject[addresses.Length];
-                    isSingleFinishCalled = new bool[addresses.Length];
+                    isObjectLoaded = new bool[addresses.Length];
+                    progresses = new float[addresses.Length];
                     for (int i = 0; i < addresses.Length; ++i)
                     {
-                        isSingleFinishCalled[i] = false;
+                        isObjectLoaded[i] = false;
+                        progresses[i] = 0.0f;
                     }
                 }
-                
             }
         }
 
-        private bool[] isSingleFinishCalled;
-        private UnityObject[] objects;
-
-        public LoadData()
+        private UnityObject[] Objects => objects;
+        public UnityObject GetObject(int index) => objects[index];
+        public void SetObject(int index, UnityObject uObj)
         {
-
+            objects[index] = uObj;
+            singleFinish?.Invoke(Addresses[index], uObj, userData);
         }
 
-        public UnityObject[] Objects => objects;
+        public bool GetIsObjectLoaded(int index) => isObjectLoaded[index];
+        public void SetObjectLoaded(int index) => isObjectLoaded[index] = true;
+         
+        public void SetProgress(int index,float progress)
+        {
+            if(progresses[index] != progress)
+            {
+                progresses[index] = progress;
 
-       
+                singleProgress?.Invoke(Addresses[index], progress, userData);
+            }
+        }
 
-        public void SetObject(int index,UnityObject uObj)=> objects[index] = uObj;
-        public UnityObject GetObject(int index) => objects[index];
-        public void SetIsSingleFinishCalled(int index, bool isCalled) => isSingleFinishCalled[index] = isCalled;
-        public bool GetIsSingleFinishCalled(int index) => isSingleFinishCalled[index];
+        public bool IsFinish()
+        {
+            bool result = true;
+            foreach (var isLoaded in isObjectLoaded)
+            {
+                if (!isLoaded)
+                {
+                    result = false;
+                    break;
+                }
+            }
+            return result;
+        }
 
-        public void InvokeAssetLoadFinish(string address, UnityObject uObj) => singleFinish?.Invoke(address, uObj,userData);
-        public void InvokeAssetLoadProgress(string address, float progress) => singleProgress?.Invoke(address, progress, userData);
-        public void InvokeAssetsLoadFinish(UnityObject[] uObjs) => allFinish?.Invoke(Addresses, uObjs,userData);
-        public void InvokeAssetsLoadProgress(float[] progresses) => allProgress?.Invoke(Addresses, progresses, userData);
-
+        public void LoadFinish()
+        {
+            allProgress?.Invoke(Addresses, progresses, userData);
+            allFinish?.Invoke(Addresses, objects, userData);
+        }
+        
         public long GetKey()
         {
             return uniqueID;
