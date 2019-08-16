@@ -1,10 +1,4 @@
-﻿using Dot.Core.Asset;
-using Dot.Core.Effect;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Dot.Core.Effect;
 using UnityEngine;
 
 namespace Dot.Tests
@@ -13,6 +7,8 @@ namespace Dot.Tests
     {
         private void Start()
         {
+            GameController.StartUp();
+
             EffectManager.GetInstance().initFinishCallback = () =>
             {
                 EffectManager.GetInstance().PreloadEffect("ShipEffect", "effect", 10, (spawnName, address) =>
@@ -20,11 +16,6 @@ namespace Dot.Tests
                     Debug.Log("Preload Finished");
                 });
             };
-
-            //AssetLoader.GetInstance().InstanceAssetAsync("effect", (address, uObj,userData) => {
-
-            //}, null, null);
-            
         }
 
         private void OnGUI()

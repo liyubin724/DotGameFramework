@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotEditor.Config
+namespace Dot.Core.AI.AStar
 {
-    
-    public class ConfigCreator
+    public class PathSmooth
     {
-        
     }
 }
