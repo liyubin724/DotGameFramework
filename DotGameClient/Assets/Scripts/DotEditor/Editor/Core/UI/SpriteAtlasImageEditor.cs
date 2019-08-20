@@ -18,7 +18,6 @@ namespace DotEditor.Core.UI
     [CustomEditor(typeof(SpriteAtlasImage),true)]
     public class SpriteAtlasImageEditor : ImageEditor
     {
-        private GUIContent m_AtlasContent;
         private SerializedProperty m_SpriteAtlas;
         private SerializedProperty m_SpriteName;
 

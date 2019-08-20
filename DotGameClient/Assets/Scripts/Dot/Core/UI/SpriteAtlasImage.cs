@@ -20,7 +20,7 @@ namespace Dot.Core.UI
                 if(m_SpriteAtlas !=value)
                 {
                     m_SpriteAtlas = value;
-                    SetAllDirty();
+                    ChangeSprite();
                 }
             }
         }
@@ -38,23 +38,39 @@ namespace Dot.Core.UI
                 if(m_SpriteName !=value)
                 {
                     m_SpriteName = value;
-                    SetAllDirty();
+                    ChangeSprite();
                 }
             }
         }
 
-        private string m_LastSpriteName = "";
-        public override void SetMaterialDirty()
+        protected override void Awake()
         {
-            if(m_LastSpriteName != m_SpriteName)
+            base.Awake();
+            if(sprite == null)
             {
-                m_LastSpriteName = m_SpriteName;
-
-                sprite = m_SpriteAtlas ? m_SpriteAtlas.GetSprite(m_SpriteName) : null;
+                ChangeSprite();
+            }else
+            {
+                string sn = sprite.name.Replace("(Clone)", "");
+                if(sn != SpriteName)
+                {
+                    ChangeSprite();
+                }
             }
-
-            base.SetMaterialDirty();
         }
+
+        private void ChangeSprite()
+        {
+            sprite = Atlas ? Atlas.GetSprite(SpriteName) : null;
+        }
+
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            ChangeSprite();
+            base.OnValidate();
+        }
+#endif
     }
 }
 

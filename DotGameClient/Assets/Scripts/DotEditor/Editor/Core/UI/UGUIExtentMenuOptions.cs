@@ -1,10 +1,6 @@
-using Dot.Core.UI;
-using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.U2D;
 using UnityEngine.UI;
 
 namespace DotEditor.Core.UI
