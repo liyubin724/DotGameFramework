@@ -17,23 +17,6 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: f5eb7aa464644ef499159bc5cc414c99
   m_SerializeEntries:
-  - m_GUID: 0bc6e086ecd471545a7bdea601f96715
-    m_Address: effect
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - prefab
-    - test_prefab
-  - m_GUID: 1b1077ece09cc0040833765b69e12d3b
-    m_Address: cubePrefab
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - prefab
-    - test_prefab
-  - m_GUID: 7bee9133cbda31d44b4421bb1cdce62e
-    m_Address: effect2
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - test_prefab
   - m_GUID: b640acd0d5377d04d80f3272facdaf45
     m_Address: config_data
     m_ReadOnly: 0

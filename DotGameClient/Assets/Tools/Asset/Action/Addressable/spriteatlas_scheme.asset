@@ -9,10 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a86f980211dc9864386268c9614041ab, type: 3}
-  m_Name: config
+  m_Script: {fileID: 11500000, guid: 50b03675647c1534c9b8533565fb230f, type: 3}
+  m_Name: spriteatlas_scheme
   m_EditorClassIdentifier: 
-  bulletConfig:
-    configs: []
-  effectConfig:
-    configs: []
+  actionName: Action Scheme
+  isEnable: 1
+  addressType: 0
+  fileNameFormat: '{0}'
+  filterFolder: 
+  labels: []

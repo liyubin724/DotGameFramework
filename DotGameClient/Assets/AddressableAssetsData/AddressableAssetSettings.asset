@@ -69,6 +69,7 @@ MonoBehaviour:
     - test_prefab
     - test_texture
     - timeline_data
+    - spriteatlas
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 62f193d7be1f69446a6af9fcd8ab5950, type: 2}
@@ -77,7 +78,6 @@ MonoBehaviour:
     m_AssemblyName: 
     m_ClassName: 
   m_ActivePlayerDataBuilderIndex: 3
-  m_ActivePlayModeDataBuilderIndex: 1
   m_DataBuilders:
   - {fileID: 11400000, guid: 51cd9eee9afe35143bd738cb159748e9, type: 2}
   - {fileID: 11400000, guid: f7a2152d19dcba04f82bd0550796ea5a, type: 2}

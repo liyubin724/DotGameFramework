@@ -1,1 +1,0 @@
-{"groups":[{"Name":"Group","TotalTime":5.0,"CanRevert":true,"tracks":[{"Name":"Track","items":[{"Name":"Dot.Core.Entity.TimeLine.Game.EffectAtPositionEvent","ConfigID":0,"UseEntityPosition":false,"Position":{"x":0.0,"y":0.0,"z":0.0},"CanRevert":true,"Index":0,"FireTime":0.330000013113022}]}]}]}

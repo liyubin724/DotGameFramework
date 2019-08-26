@@ -15,7 +15,7 @@ namespace DotEditor.Core.Util
             {
                 for(int i =0;i<files.Length;i++)
                 {
-                    files[i] = files[i].Replace("\\", "/");
+                    files[i] = PathUtil.GetAssetPath(files[i].Replace("\\", "/"));
                 }
             }
             return files;
@@ -32,7 +32,7 @@ namespace DotEditor.Core.Util
             List<string> assetPathList = new List<string>();
             foreach(var file in files)
             {
-                string fileName = Path.GetFileNameWithoutExtension(file);
+                string fileName = Path.GetFileName(file);
                 bool isValid = true;
                 if(!string.IsNullOrEmpty(filter))
                 {
