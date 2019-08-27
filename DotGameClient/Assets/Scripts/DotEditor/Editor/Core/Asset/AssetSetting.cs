@@ -42,6 +42,8 @@ namespace DotEditor.Core.Asset
                 });
             }
 
+            AssetDatabase.SaveAssets();
+
             EditorUtility.DisplayDialog("Complete", "Set Asset Complete", "OK");
         }
 
