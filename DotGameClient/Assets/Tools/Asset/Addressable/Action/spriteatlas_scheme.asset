@@ -9,8 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5834b5087d578d24c926ce20cd31e6d6, type: 3}
-  m_Name: a34fbde36f3a044429d8cb8032b7b8e2_ContentUpdateGroupSchema
+  m_Script: {fileID: 11500000, guid: 50b03675647c1534c9b8533565fb230f, type: 3}
+  m_Name: spriteatlas_scheme
   m_EditorClassIdentifier: 
-  m_Group: {fileID: 11400000, guid: a95178eded80f8647a7048ecf5be6d71, type: 2}
-  m_StaticContent: 0
+  actionName: Action Scheme
+  isEnable: 1
+  addressType: 1
+  fileNameFormat: '{0}'
+  filterFolder: 
+  labels:
+  - sprite_atlas

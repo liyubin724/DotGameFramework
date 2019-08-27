@@ -10,21 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: TimeLine Data Assets
+  m_Name: SpriteAtlas
   m_EditorClassIdentifier: 
-  m_GroupName: TimeLine Data Assets
+  m_GroupName: SpriteAtlas
   m_Data:
     m_SerializedData: []
-  m_GUID: a34fbde36f3a044429d8cb8032b7b8e2
+  m_GUID: d94187811c8277a40aa6ef43e8b61204
   m_SerializeEntries:
-  - m_GUID: 62dca090967c1af43a467611616eb75b
-    m_Address: Assets/tl_config.txt
+  - m_GUID: 102b2171ba4567c4a82dde6f4cc11414
+    m_Address: common_atlas
     m_ReadOnly: 0
     m_SerializedLabels:
-    - timeline_data
+    - sprite_atlas
+  - m_GUID: 9232a2ccda42d6e458b9d26f25609509
+    m_Address: login_atlas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - sprite_atlas
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 06eec6064b406674b939390599c0e67a, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: af42552374acf864581a23dbc164bdb3, type: 2}
-    - {fileID: 11400000, guid: 717b0af36e9e86a4b9100d487ad37186, type: 2}
+    - {fileID: 11400000, guid: 4989664bcdb030f428f65445c668186f, type: 2}

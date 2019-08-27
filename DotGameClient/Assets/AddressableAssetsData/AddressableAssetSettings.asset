@@ -22,9 +22,7 @@ MonoBehaviour:
   m_GroupAssets:
   - {fileID: 11400000, guid: c6597e3bea581a44c9ff66d9e71c897f, type: 2}
   - {fileID: 11400000, guid: 48664aa4a44136b44b2e95f59124bdbc, type: 2}
-  - {fileID: 11400000, guid: 46eb9f8f7f58a004eaf01b7d6d9711d7, type: 2}
-  - {fileID: 11400000, guid: 92170e13450ed8d4bb8cdfca252059e7, type: 2}
-  - {fileID: 11400000, guid: a95178eded80f8647a7048ecf5be6d71, type: 2}
+  - {fileID: 11400000, guid: 514f7cb1faea24943a85e47b537b5d70, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -70,6 +68,7 @@ MonoBehaviour:
     - test_texture
     - timeline_data
     - spriteatlas
+    - sprite_atlas
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 62f193d7be1f69446a6af9fcd8ab5950, type: 2}

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1a648bd5f01a324a963fdaf8fb0e993, type: 3}
   m_Name: asset_setting
   m_EditorClassIdentifier: 
-  groups:
+  addressableGroups:
   - {fileID: 11400000, guid: 05db09bd255118c4895fb4f0ecd1d06d, type: 2}

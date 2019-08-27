@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5834b5087d578d24c926ce20cd31e6d6, type: 3}
-  m_Name: 595d9000991cd194495e146a967e4a84_ContentUpdateGroupSchema
+  m_Script: {fileID: 11500000, guid: 9a8ee39b78f00624aa76c5402180ed35, type: 3}
+  m_Name: create_group
   m_EditorClassIdentifier: 
-  m_Group: {fileID: 11400000, guid: 92170e13450ed8d4bb8cdfca252059e7, type: 2}
-  m_StaticContent: 0
+  actionName: Create Group
+  isEnable: 1
+  groupSchemaList:
+  - {fileID: 11400000, guid: 07aae200077a7884e90331b4fba26f52, type: 2}
