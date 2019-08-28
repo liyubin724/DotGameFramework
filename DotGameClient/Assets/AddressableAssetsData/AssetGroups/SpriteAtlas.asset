@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: SpriteAtlas
   m_Data:
     m_SerializedData: []
-  m_GUID: d94187811c8277a40aa6ef43e8b61204
+  m_GUID: 1751bfd36776a404f81ee1c9fb45590f
   m_SerializeEntries:
   - m_GUID: 102b2171ba4567c4a82dde6f4cc11414
     m_Address: common_atlas
@@ -31,4 +31,4 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 06eec6064b406674b939390599c0e67a, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 4989664bcdb030f428f65445c668186f, type: 2}
+    - {fileID: 11400000, guid: 6bb4eb1910168e942a0eab0fd2771018, type: 2}
