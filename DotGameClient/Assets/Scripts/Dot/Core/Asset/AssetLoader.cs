@@ -335,8 +335,7 @@ namespace Dot.Core.Asset
             {
                 return;
             }
-
-            assetHandle.IsValid = false;
+            
 
             if (loadDataORM.Contain(assetHandle.uniqueID))
             {
@@ -354,6 +353,8 @@ namespace Dot.Core.Asset
                     }
                 }
             }
+
+            assetHandle.IsValid = false;
         }
 
         private void ReleaseAssetByLoadData(LoadData loadData)

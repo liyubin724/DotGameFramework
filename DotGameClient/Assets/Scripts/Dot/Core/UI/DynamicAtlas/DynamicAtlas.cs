@@ -19,7 +19,6 @@ namespace Dot.Core.UI.Atlas
     [System.Serializable]
     public class DynamicAtlas
     {
-
         /// <summary>
         /// Gets main texture atlas.
         /// </summary>
@@ -258,7 +257,7 @@ namespace Dot.Core.UI.Atlas
             return true;
         }
 
-        #endregion
+ 
 
         [System.Serializable]
         public class FileInfo
@@ -286,6 +285,7 @@ namespace Dot.Core.UI.Atlas
                 this.path = (string.IsNullOrEmpty(path)) ? defaultPath : path;
             }
         }
+        #endregion
 
         public class SourceInfo
         {
