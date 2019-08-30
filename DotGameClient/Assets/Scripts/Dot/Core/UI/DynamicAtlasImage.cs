@@ -81,6 +81,7 @@ namespace Dot.Core.UI
             {
                 m_isLoading = true;
                 m_IsLoadFinish = false;
+
                 DynamicAtlasManager.GetInstance().LoadRawImage(AtlasName, RawImagePath, OnLoadImageComplete);
             }
         }
@@ -97,7 +98,10 @@ namespace Dot.Core.UI
 
         protected override void OnDestroy()
         {
-            ReleaseImage();
+            if (Application.isPlaying)
+            {
+                ReleaseImage();
+            }
             base.OnDestroy();
         }
 
