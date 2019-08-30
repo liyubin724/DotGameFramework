@@ -1,4 +1,5 @@
 ﻿using Dot.Core.Asset;
+using Dot.Core.Pool;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,12 +9,24 @@ using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.UI.Atlas
 {
-    public class RawImageLoaderData
+    public class RawImageLoaderData : IObjectPoolItem
     {
         public string atlasName;
         public string imagePath;
         public List<Action<Sprite>> callbacks = new List<Action<Sprite>>();
         public AssetHandle assetHandle = null;
+
+        public void OnNew()
+        {
+        }
+
+        public void OnRelease()
+        {
+            atlasName = "";
+            imagePath = "";
+            callbacks.Clear();
+            assetHandle = null;
+        }
     }
 
     public class DynamicAtlasManager : Util.Singleton<DynamicAtlasManager>
@@ -22,6 +35,7 @@ namespace Dot.Core.UI.Atlas
         private static readonly int DefaultAtlasSize = 1024;
 
         private Dictionary<string, DynamicAtlasAssembly> atlasDic = new Dictionary<string, DynamicAtlasAssembly>();
+        private ObjectPool<RawImageLoaderData> loaderDataPool = new ObjectPool<RawImageLoaderData>();
         private List<RawImageLoaderData> loaderDataList = new List<RawImageLoaderData>();
 
         public bool Contains(string atlasName, string rawImagePath)
@@ -74,14 +88,15 @@ namespace Dot.Core.UI.Atlas
 
         public DynamicAtlasAssembly GetAtlas(string atlasName, bool isCreateIfNot = true)
         {
-            if (atlasDic.TryGetValue(GetAtlasName(atlasName),out DynamicAtlasAssembly atlas))
+            atlasName = GetAtlasName(atlasName);
+            if (atlasDic.TryGetValue(atlasName,out DynamicAtlasAssembly atlas))
             {
                 return atlas;
             }else
             {
                 if(isCreateIfNot)
                 {
-                    return CreateAtlas(GetAtlasName(atlasName));
+                    return CreateAtlas(atlasName);
                 }else
                 {
                     return null;
@@ -91,6 +106,7 @@ namespace Dot.Core.UI.Atlas
 
         public void LoadRawImage(string atlasName, string rawImagePath, Action<Sprite> callback)
         {
+            atlasName = GetAtlasName(atlasName);
             Sprite sprite = GetSprite(atlasName, rawImagePath);
             if(sprite!=null)
             {
@@ -98,14 +114,14 @@ namespace Dot.Core.UI.Atlas
                 return;
             }
 
-            RawImageLoaderData loaderData = GetLoadingData(GetAtlasName(atlasName), rawImagePath);
+            RawImageLoaderData loaderData = GetLoadingData(atlasName, rawImagePath);
             if(loaderData != null)
             {
                 loaderData.callbacks.Add(callback);
                 return;
             }
-            loaderData = new RawImageLoaderData();
-            loaderData.atlasName = GetAtlasName(atlasName);
+            loaderData = loaderDataPool.Get();
+            loaderData.atlasName = atlasName;
             loaderData.imagePath = rawImagePath;
             loaderData.callbacks.Add(callback);
             
@@ -129,22 +145,20 @@ namespace Dot.Core.UI.Atlas
         private void OnRawImageLoadComplete(string address,UnityObject uObj,SystemObject userData)
         {
             RawImageLoaderData loaderData = userData as RawImageLoaderData;
-            if(loaderDataList.IndexOf(loaderData)>=0)
-            {
-                Texture2D texture = uObj as Texture2D;
-                DynamicAtlasAssembly atlas = GetAtlas(loaderData.atlasName);
-                atlas.AddRawImage(loaderData.imagePath, texture);
-                
-                loaderData.callbacks.ForEach((callback) =>
-                {
-                    Sprite sprite = atlas.GetRawImageAsSprite(loaderData.imagePath);
-                    callback?.Invoke(sprite);
-                });
+            Texture2D texture = uObj as Texture2D;
+            DynamicAtlasAssembly atlas = GetAtlas(loaderData.atlasName);
+            atlas.AddRawImage(loaderData.imagePath, texture);
 
-                loaderDataList.Remove(loaderData);
-            }
+            loaderData.callbacks.ForEach((callback) =>
+            {
+                Sprite sprite = atlas.GetRawImageAsSprite(loaderData.imagePath);
+                callback?.Invoke(sprite);
+            });
+
             loaderData.assetHandle.Release();
-         }
+            loaderDataPool.Release(loaderData);
+            loaderDataList.Remove(loaderData);
+        }
 
         public void CancelLoadRawImage(string atlasName, string rawImagePath, Action<Sprite> callback)
         {
@@ -162,6 +176,7 @@ namespace Dot.Core.UI.Atlas
                 if(loaderData.callbacks.Count == 0)
                 {
                     loaderData.assetHandle.Release();
+                    loaderDataPool.Release(loaderData);
                     loaderDataList.Remove(loaderData);
                 }
             }
