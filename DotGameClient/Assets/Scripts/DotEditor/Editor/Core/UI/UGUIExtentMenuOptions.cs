@@ -40,7 +40,13 @@ namespace DotEditor.Core.UI
             GameObject go = UGUIExtensionDefaultControls.CreateAtlasImage(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
         }
-        
+        [MenuItem("GameObject/UI/Dynamic Atlas Image", false, 1001)]
+        static public void AddDynamicAtlasImage(MenuCommand menuCommand)
+        {
+            GameObject go = UGUIExtensionDefaultControls.CreateDynamicAtlasImage(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
         private static void SetPositionVisibleinSceneView(RectTransform canvasRTransform, RectTransform itemTransform)
         {
             // Find the best scene view

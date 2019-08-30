@@ -86,6 +86,13 @@ namespace DotEditor.Core.UI
             go.AddComponent<SpriteAtlasImage>();
             return go;
         }
-        
+
+        public static GameObject CreateDynamicAtlasImage(Resources resources)
+        {
+            GameObject go = CreateUIElementRoot("DynamicAtlasImage", s_ImageElementSize);
+            go.AddComponent<DynamicAtlasImage>();
+            return go;
+        }
+
     }
 }
