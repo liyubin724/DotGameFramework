@@ -1,6 +1,7 @@
 ﻿using Dot.Core.Generic;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -47,6 +48,7 @@ namespace Dot.Core.Asset
             UpdateLoadData();
             ClearInstanceAssetData();
             ClearAssetData();
+            CheckUnloadOperation();
         }
 
         private void UpdateLoadingAsset()
@@ -399,6 +401,33 @@ namespace Dot.Core.Asset
                     assetData.Status = AssetDataStatus.Loaded;
                     break;
                 }
+            }
+        }
+
+        private void CheckUnloadOperation()
+        {
+            if (unloadAsyncOper != null)
+            {
+                if (unloadAsyncOper.isDone)
+                {
+                    unloadAsyncOper = null;
+                    GC.Collect();
+
+                    unloadCallback?.Invoke();
+                }
+            }
+        }
+
+        private AsyncOperation unloadAsyncOper = null;
+        private Action unloadCallback;
+        public void UnloadUnsedAssets(Action callback)
+        {
+            if (unloadAsyncOper == null)
+            {
+                GC.Collect();
+                unloadAsyncOper = Resources.UnloadUnusedAssets();
+
+                unloadCallback = callback;
             }
         }
 
