@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 namespace DotEditor.Core.Tools
 {
-    public static class MenuItemTool
+    public static class MissingScriptMenuItem
     {
         [MenuItem("Game/Tools/Game Object/Selected Missing Script")]
         public static void CheckSelectedGameObjectMissingScript()
