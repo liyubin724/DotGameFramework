@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Reflection;
 using UnityEditor.Experimental.SceneManagement;
+using UnityEngine;
 using SystemObject = System.Object;
 
-namespace DotEditor.Core.Prefab
+namespace DotEditor.Core.Util
 {
     public static class PrefabUtil
     {
@@ -57,6 +58,28 @@ namespace DotEditor.Core.Prefab
             //var instance = pInfo.GetValue(null);
             //MethodInfo mInfo = managerType.GetMethod("NavigateBack", BindingFlags.Instance | BindingFlags.NonPublic);
             //mInfo.Invoke(instance, new SystemObject[] { 7 });
+        }
+
+        public static bool IsMissingNestPrefab(string assetPath)
+        {
+            if(!IsPrefab(assetPath))
+            {
+                return false;
+            }
+
+            PrefabUtil.OpenPrefabStage(assetPath);
+
+            PrefabStage stage = PrefabStageUtility.GetCurrentPrefabStage();
+            GameObject rootGO = stage.prefabContentsRoot;
+            Transform[] transforms = rootGO.GetComponentsInChildren<Transform>();
+            foreach (var t in transforms)
+            {
+                if (t.name.IndexOf("Missing Prefab") >= 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
