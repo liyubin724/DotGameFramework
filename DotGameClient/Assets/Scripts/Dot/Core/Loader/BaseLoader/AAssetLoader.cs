@@ -14,12 +14,12 @@ namespace Dot.Core.Loader
     {
         private UniqueIDCreator idCreator = new UniqueIDCreator();
 
-        private Dictionary<long, AssetLoaderData> waitingLoaderDataDic = new Dictionary<long, AssetLoaderData>();
-        private Dictionary<long, AssetLoaderData> loadingLoaderDataDic = new Dictionary<long, AssetLoaderData>();
+        protected Dictionary<long, AssetLoaderData> waitingLoaderDataDic = new Dictionary<long, AssetLoaderData>();
+        protected Dictionary<long, AssetLoaderData> loadingLoaderDataDic = new Dictionary<long, AssetLoaderData>();
 
-        private Dictionary<long, AssetLoaderHandle> loaderHandleDic = new Dictionary<long, AssetLoaderHandle>();
+        protected Dictionary<long, AssetLoaderHandle> loaderHandleDic = new Dictionary<long, AssetLoaderHandle>();
 
-        private IndexMapORM<string, AAssetAsyncOperation> asyncOperations = new IndexMapORM<string, AAssetAsyncOperation>();
+        protected IndexMapORM<string, AAssetAsyncOperation> asyncOperations = new IndexMapORM<string, AAssetAsyncOperation>();
 
         public virtual int MaxLoadingCount { get; set; } = 5;
         public abstract void Initialize(Action<bool> initCallback);
@@ -51,8 +51,6 @@ namespace Dot.Core.Loader
 
             return handle;
         }
-
-
         
         public void DoUpdate(float deltaTime)
         {
@@ -60,6 +58,12 @@ namespace Dot.Core.Loader
             CheckUnloadUnusedAction();
         }
 
+        private void UpdateAsyncOperation()
+        {
+            
+        }
+
+        #region unloadUnusedAsset
         private void CheckUnloadUnusedAction()
         {
             if(unloadUnusedAssetOperation!=null)
@@ -84,6 +88,6 @@ namespace Dot.Core.Loader
                 unloadUnusedAssetCallback = callback;
             }
         }
-
+        #endregion
     }
 }

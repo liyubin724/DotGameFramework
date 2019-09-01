@@ -1,12 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
 {
-    public class AssetDatabaseAsyncOperation
+    public class AssetDatabaseAsyncOperation : AAssetAsyncOperation
     {
+        public AssetDatabaseAsyncOperation(string assetPath) : base(assetPath)
+        {
+        }
+
+        public override void CreateAsyncOperation()
+        {
+            
+        }
+
+        public override void DoUpdate()
+        {
+            if(status == AssetAsyncOperationStatus.Loading)
+            {
+                status = AssetAsyncOperationStatus.Loaded;
+            }
+        }
+
+        public override UnityObject GetAsset()
+        {
+            if(status == AssetAsyncOperationStatus.Loaded)
+            {
+#if UNITY_EDITOR
+                return UnityEditor.AssetDatabase.LoadAssetAtPath(assetPath, typeof(UnityObject));
+#endif
+            }
+            return null;
+        }
+
+        public override float Progress()
+        {
+            if(status == AssetAsyncOperationStatus.Loaded)
+            {
+                return 1.0f;
+            }
+            return 0.0f;
+        }
     }
 }
