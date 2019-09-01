@@ -1,4 +1,5 @@
 ﻿using Dot.Core.Generic;
+using Priority_Queue;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,12 @@ namespace Dot.Core.Loader
     {
         private UniqueIDCreator idCreator = new UniqueIDCreator();
 
-        protected Dictionary<long, AssetLoaderData> waitingLoaderDataDic = new Dictionary<long, AssetLoaderData>();
-        protected Dictionary<long, AssetLoaderData> loadingLoaderDataDic = new Dictionary<long, AssetLoaderData>();
-
+        protected Dictionary<long, AssetLoaderData> loaderDataDic = new Dictionary<long, AssetLoaderData>();
         protected Dictionary<long, AssetLoaderHandle> loaderHandleDic = new Dictionary<long, AssetLoaderHandle>();
 
+        protected FastPriorityQueue<AssetLoaderData> loaderDataWaitingQueue = new FastPriorityQueue<AssetLoaderData>(10);
+        protected Dictionary<long, AssetLoaderData> loaderDataLoadingDic = new Dictionary<long, AssetLoaderData>();
+        
         protected IndexMapORM<string, AAssetAsyncOperation> asyncOperations = new IndexMapORM<string, AAssetAsyncOperation>();
 
         public virtual int MaxLoadingCount { get; set; } = 5;
@@ -26,6 +28,7 @@ namespace Dot.Core.Loader
         
         private AssetLoaderHandle LoadOrInstanceBatchAssetAsync(string[] assetPaths,
             bool isInstance,
+            AssetLoaderPriority priority,
             OnAssetLoadComplete complete,
             OnAssetLoadProgress progress,
             OnBatchAssetLoadComplete batchComplete,
@@ -34,17 +37,24 @@ namespace Dot.Core.Loader
         {
             long uniqueID = idCreator.Next();
 
-            AssetLoaderData loaderData = new AssetLoaderData();
-            loaderData.uniqueID = uniqueID;
-            loaderData.assetPaths = assetPaths;
-            loaderData.isInstance = isInstance;
-            loaderData.completeCallback = complete;
-            loaderData.progressCallback = progress;
-            loaderData.batchCompleteCallback = batchComplete;
-            loaderData.batchProgressCallback = batchProgress;
-            loaderData.userData = userData;
+            AssetLoaderData loaderData = new AssetLoaderData
+            {
+                uniqueID = uniqueID,
+                assetPaths = assetPaths,
+                isInstance = isInstance,
+                completeCallback = complete,
+                progressCallback = progress,
+                batchCompleteCallback = batchComplete,
+                batchProgressCallback = batchProgress,
+                userData = userData
+            };
 
-            waitingLoaderDataDic.Add(uniqueID, loaderData);
+            loaderDataDic.Add(uniqueID, loaderData);
+            if(loaderDataWaitingQueue.Count >= loaderDataWaitingQueue.MaxSize)
+            {
+                loaderDataWaitingQueue.Resize(loaderDataWaitingQueue.MaxSize * 2);
+            }
+            loaderDataWaitingQueue.Enqueue(loaderData, (float)priority);
 
             AssetLoaderHandle handle = new AssetLoaderHandle(uniqueID, assetPaths);
             loaderHandleDic.Add(uniqueID, handle);
@@ -58,9 +68,9 @@ namespace Dot.Core.Loader
             CheckUnloadUnusedAction();
         }
 
-        private void UpdateAsyncOperation()
+        public void UnloadAsset(AssetLoaderHandle handle)
         {
-            
+
         }
 
         #region unloadUnusedAsset

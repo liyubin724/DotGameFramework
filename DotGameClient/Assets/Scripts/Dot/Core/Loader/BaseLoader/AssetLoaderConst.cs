@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SystemObject = System.Object;
 using UnityObject = UnityEngine.Object;
-using SystemObject = System.Object;
 
 namespace Dot.Core.Loader
 {
@@ -20,5 +15,14 @@ namespace Dot.Core.Loader
         Resources,
         AssetBundle,
         PackedAssetBundle,
+    }
+
+    public enum AssetLoaderPriority
+    {
+        VeryLow = 100,
+        Low = 200,
+        Default = 300,
+        High = 400,
+        VeryHigh = 500,
     }
 }
