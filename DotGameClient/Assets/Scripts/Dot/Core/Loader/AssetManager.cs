@@ -21,6 +21,9 @@ namespace Dot.Core.Loader
             }else if(loaderMode == AssetLoaderMode.AssetDatabase)
             {
                 assetLoader = new AssetDatabaseLoader();
+            }else if(loaderMode == AssetLoaderMode.AssetBundle)
+            {
+                assetLoader = new AssetBundleLoader();
             }
 
             if(assetLoader!=null)

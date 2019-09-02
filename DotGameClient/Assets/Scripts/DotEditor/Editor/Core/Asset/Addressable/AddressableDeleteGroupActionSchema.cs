@@ -6,9 +6,9 @@ using UnityEngine;
 namespace DotEditor.Core.Asset
 {
     [CreateAssetMenu(fileName = "addressable_delete_group", menuName = "Asset/Action/Addressable/Delete Group Action")]
-    public class AddressableDeleteGroupActionSchema : BaseAssetActionSchema
+    public class AddressableDeleteGroupActionSchema : BaseActionSchema
     {
-        public override void Execute(AssetGroupActionData actionData)
+        public void Execute(AssetGroupActionData actionData)
         {
             if(!isEnable)
             {

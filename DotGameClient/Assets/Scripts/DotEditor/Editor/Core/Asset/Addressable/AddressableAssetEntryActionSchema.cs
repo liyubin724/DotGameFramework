@@ -8,24 +8,18 @@ using UnityEngine;
 
 namespace DotEditor.Core.Asset
 {
-    public enum AssetAddressType
-    {
-        FullPath,
-        FileNameWithoutExtension,
-        FileName,
-        FileFormatName,
-    }
+    
 
     [CreateAssetMenu(fileName = "addressable_entry_scheme", menuName = "Asset/Action/Addressable/Entry Action Scheme")]
-    public class AddressableAssetEntryActionSchema : BaseAssetActionSchema
+    public class AddressableAssetEntryActionSchema : BaseActionSchema
     {
-        public AssetAddressType addressType = AssetAddressType.FullPath;
+        public AssetAddressMode addressType = AssetAddressMode.FullPath;
         [ShowIf("IsShowFileNameFormat")]
         public string fileNameFormat = "{0}";
         public string filterFolder = "";
         public string[] labels = new string[0];
 
-        public override void Execute(AssetGroupActionData actionData)
+        public void Execute(AssetGroupActionData actionData)
         {
             if (!isEnable) return;
 
@@ -73,20 +67,20 @@ namespace DotEditor.Core.Asset
 
         private string GetAssetAddress(string assetPath)
         {
-            if (addressType == AssetAddressType.FullPath)
+            if (addressType == AssetAddressMode.FullPath)
                 return assetPath;
-            else if (addressType == AssetAddressType.FileName)
+            else if (addressType == AssetAddressMode.FileName)
                 return Path.GetFileName(assetPath);
-            else if (addressType == AssetAddressType.FileNameWithoutExtension)
+            else if (addressType == AssetAddressMode.FileNameWithoutExtension)
                 return Path.GetFileNameWithoutExtension(assetPath);
-            else if (addressType == AssetAddressType.FileFormatName)
+            else if (addressType == AssetAddressMode.FileFormatName)
                 return string.Format(fileNameFormat, Path.GetFileNameWithoutExtension(assetPath));
             else
                 return assetPath;
         }
 
         #region odin
-        private bool IsShowFileNameFormat() => addressType == AssetAddressType.FileFormatName;
+        private bool IsShowFileNameFormat() => addressType == AssetAddressMode.FileFormatName;
 
         #endregion
     }

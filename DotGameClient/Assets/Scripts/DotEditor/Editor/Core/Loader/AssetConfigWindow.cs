@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,12 @@ namespace DotEditor.Core.Loader
         [MenuItem("Test/Build AssetBundle")]
         public static void BuildAsset()
         {
-            BuildPipeline.BuildAssetBundles("D:/assets", BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.StandaloneWindows64);
+            if (Directory.Exists("D:/assetbundles"))
+            {
+                Directory.Delete("D:/assetbundles", true);
+            }
+            Directory.CreateDirectory("D:/assetbundles");
+            BuildPipeline.BuildAssetBundles("D:/assetbundles", BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.StandaloneWindows64);
         }
     }
 }

@@ -1,76 +1,62 @@
 ﻿using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
+using SystemObject = System.Object;
 
 namespace DotEditor.Core.Asset
 {
-    public delegate void BeforeAssetGroupSchemaExecute(AssetGroupSchema group);
-    public delegate void AfterAssetGroupSchemaExecute(AssetGroupSchema group);
-
-    public enum AssetGroupType
-    {
-        Addressable,
-        AssetBundle,
-        AssetFormat,
-    }
-
     [CreateAssetMenu(fileName = "asset_group_schema", menuName = "Asset/Asset Group Schema")]
     public class AssetGroupSchema : ScriptableObject
     {
-        public string groupName = "Group";
+        public bool isEnable = true;
+
+        public string groupName = "Asset Group";
+
         [EnumToggleButtons]
         public AssetGroupType groupType = AssetGroupType.Addressable;
-        public bool isEnable = true;
-        [ListDrawerSettings(AlwaysAddDefaultValue =true)]
+
+        [ListDrawerSettings(AlwaysAddDefaultValue =true,ShowIndexLabels =true,Expanded =true)]
         public List<AssetFilterSchema> filters = new List<AssetFilterSchema>();
-        [ListDrawerSettings(AlwaysAddDefaultValue = true)]
-        public List<BaseAssetActionSchema> actions = new List<BaseAssetActionSchema>();
 
-        public BeforeAssetGroupSchemaExecute OnBeforeExecute;
-        public AfterAssetGroupSchemaExecute OnAfterExecute;
+        [ListDrawerSettings(AlwaysAddDefaultValue = true, ShowIndexLabels = true, Expanded = true)]
+        public List<BaseActionSchema> actions = new List<BaseActionSchema>();
 
+        public AssetFilterResult[] GetFilterResult()
+        {
+            List<AssetFilterResult> resultList = new List<AssetFilterResult>();
+            foreach(var filter in filters)
+            {
+                if(filter!=null && filter.isEnable)
+                {
+                    resultList.Add(filter.Execute());
+                }
+            }
+            return resultList.ToArray();
+        }
+
+        public void Execute(Dictionary<string, SystemObject> dataDic)
+        {
+            if (!isEnable) return;
+            if(dataDic == null)
+            {
+                dataDic = new Dictionary<string, SystemObject>();
+            }
+
+            dataDic[AssetSchemaConst.ASSET_GROUP_NAME] = groupName;
+            dataDic[AssetSchemaConst.ASSET_FILTER_DATA_NAME] = GetFilterResult();
+
+            foreach(var action in actions)
+            {
+                action.Execute(dataDic);
+            }
+        }
+        
         [Button(ButtonSizes.Large)]
         public void Execute()
         {
-            if (!isEnable) return;
-
-            OnBeforeExecute?.Invoke(this);
-
-            AssetGroupActionData actionData = new AssetGroupActionData();
-            actionData.groupName = groupName;
-            foreach (var filter in filters)
-            {
-                if(filter == null || !filter.isEnable)
-                {
-                    continue;
-                }
-                AssetGroupFilterData filterData = new AssetGroupFilterData();
-                filterData.filterFolder = filter.folder;
-                filter.Execute();
-                filterData.assets = filter.assets;
-                actionData.filterDatas.Add(filterData);
-            }
-            foreach(var action in actions)
-            {
-                if(action == null || action.isEnable)
-                {
-                    action.Execute(actionData);
-                }
-            }
-
-            OnBeforeExecute?.Invoke(this);
+            Execute(null);
         }
     }
 
-    public class AssetGroupActionData
-    {
-        public string groupName;
-        public List<AssetGroupFilterData> filterDatas = new List<AssetGroupFilterData>();
-    }
-
-    public class AssetGroupFilterData
-    {
-        public string filterFolder;
-        public string[] assets;
-    }
+    
 }

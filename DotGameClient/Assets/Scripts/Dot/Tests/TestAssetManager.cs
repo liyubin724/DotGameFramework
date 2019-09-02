@@ -15,10 +15,20 @@ namespace Dot.Tests
         {
             GameController.StartUp();
 
-            AssetManager.GetInstance().InitLoader(AssetLoaderMode.AssetDatabase, (isSuccess) =>
-            {
-                Debug.Log("Asset Manager init Success");
-            });
+            string manifestPath = "D:/assetbundles/assetbundles";
+            AssetBundleManifest manifest = AssetBundle.LoadFromFile(manifestPath).LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+            string[] allBundles = manifest.GetAllAssetBundles();
+            foreach (var b in allBundles) Debug.Log(b);
+
+            string assetPath = "Assets/Resources/Prefabs/Cylinder.prefab";
+            string bundlePath = "D:/assetbundles/assets/resources/prefabs";
+            UnityObject uObj = AssetBundle.LoadFromFile(bundlePath).LoadAsset(assetPath);
+            UnityObject.Instantiate(uObj);
+
+            //AssetManager.GetInstance().InitLoader(AssetLoaderMode.AssetBundle, (isSuccess) =>
+            //{
+            //    Debug.Log("Asset Manager init Success");
+            //},"D:/assetbundles");
         }
         private string[] resAssetPathArr = new string[]
         {

@@ -7,11 +7,11 @@ using UnityEngine;
 namespace DotEditor.Core.Asset
 {
     [CreateAssetMenu(fileName = "addressable_create_group", menuName = "Asset/Action/Addressable/Create Group Action")]
-    public class AddressableCreateGroupActionSchema : BaseAssetActionSchema
+    public class AddressableCreateGroupActionSchema : BaseActionSchema
     {
         //public List<AddressableAssetGroupSchema> groupSchemaList = new List<AddressableAssetGroupSchema>();
 
-        public override void Execute(AssetGroupActionData actionData)
+        public void Execute(AssetGroupActionData actionData)
         {
             if(!isEnable)
             {
