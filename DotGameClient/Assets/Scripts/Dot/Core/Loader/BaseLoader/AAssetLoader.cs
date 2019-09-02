@@ -26,7 +26,7 @@ namespace Dot.Core.Loader
 
         private bool isInit = false;
         protected Action<bool> initCallback = null;
-        public void Initialize(Action<bool> initCallback, params SystemObject[] sysObjs)
+        public virtual void Initialize(Action<bool> initCallback, params SystemObject[] sysObjs)
         {
             this.initCallback = initCallback;
         }
