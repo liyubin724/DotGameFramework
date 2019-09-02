@@ -15,7 +15,7 @@ namespace Dot.Tests
         {
             GameController.StartUp();
 
-            AssetManager.GetInstance().InitLoader(AssetLoaderMode.Resources, (isSuccess) =>
+            AssetManager.GetInstance().InitLoader(AssetLoaderMode.AssetDatabase, (isSuccess) =>
             {
                 Debug.Log("Asset Manager init Success");
             });
@@ -27,11 +27,18 @@ namespace Dot.Tests
             "Prefabs/Cylinder",
             "Prefabs/Sphere",
         };
+        private string[] assetAssetPathArr = new string[]
+        {
+            "Assets/Resources/Prefabs/Cube.prefab",
+            "Assets/Resources/Prefabs/Capsule.prefab",
+            "Assets/Resources/Prefabs/Cylinder.prefab",
+            "Assets/Resources/Prefabs/Sphere.prefab",
+        };
         private void OnGUI()
         {
             if(GUILayout.Button("Resources Load Prefab"))
             {
-                AssetManager.GetInstance().LoadAssetAsync(resAssetPathArr[0], (assetPath, uObj, userData) =>
+                AssetManager.GetInstance().LoadAssetAsync(assetAssetPathArr[0], (assetPath, uObj, userData) =>
                  {
                      GameObject.Instantiate<GameObject>(uObj as GameObject);
                  });
@@ -39,7 +46,7 @@ namespace Dot.Tests
 
             if (GUILayout.Button("Resources Load Prefab"))
             {
-                AssetManager.GetInstance().LoadBatchAssetAsync(resAssetPathArr, (assetPath, uObj, userData) =>
+                AssetManager.GetInstance().LoadBatchAssetAsync(assetAssetPathArr, (assetPath, uObj, userData) =>
                 {
                     GameObject.Instantiate<GameObject>(uObj as GameObject);
                 }, (assetPaths, uObjs, userData) =>
@@ -49,13 +56,13 @@ namespace Dot.Tests
             }
             if (GUILayout.Button("Resources Instance Prefab"))
             {
-                AssetManager.GetInstance().InstanceAssetAsync(resAssetPathArr[0], (assetPath, uObj, userData) =>
+                AssetManager.GetInstance().InstanceAssetAsync(assetAssetPathArr[0], (assetPath, uObj, userData) =>
                 {
                 });
             }
             if (GUILayout.Button("Resources Load Prefab"))
             {
-                AssetManager.GetInstance().InstanceBatchAssetAsync(resAssetPathArr, (assetPath, uObj, userData) =>
+                AssetManager.GetInstance().InstanceBatchAssetAsync(assetAssetPathArr, (assetPath, uObj, userData) =>
                 {
                 }, (assetPaths, uObjs, userData) =>
                 {

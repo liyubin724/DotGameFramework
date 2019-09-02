@@ -18,6 +18,9 @@ namespace Dot.Core.Loader
             if(loaderMode == AssetLoaderMode.Resources)
             {
                 assetLoader = new ResourceLoader();
+            }else if(loaderMode == AssetLoaderMode.AssetDatabase)
+            {
+                assetLoader = new AssetDatabaseLoader();
             }
 
             if(assetLoader!=null)
