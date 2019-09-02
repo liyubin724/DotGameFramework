@@ -35,6 +35,8 @@ namespace Dot.Core.Loader
 
         public string[] AssetPaths { get => assetPaths; }
 
+        internal UnityObject[] Objects() => uObjs;
+
         public UnityObject GetObject(int index = 0)
         {
             if(index>=0&&index<assetPaths.Length)
@@ -44,6 +46,10 @@ namespace Dot.Core.Loader
             return null;
         }
 
+        internal void SetObject(int index,UnityObject uObj)=> uObjs[index] = uObj;
+
+        internal float[] Progresses() => progresses;
+
         public float GetProgress(int index = 0)
         {
             if (index >= 0 && index < assetPaths.Length)
@@ -52,5 +58,7 @@ namespace Dot.Core.Loader
             }
             return 0;
         }
+
+        public void SetProgress(int index, float progress) => progresses[index] = progress;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Priority_Queue;
-using System.Collections.Generic;
 using SystemObject = System.Object;
 
 namespace Dot.Core.Loader
@@ -16,7 +15,17 @@ namespace Dot.Core.Loader
 
         public bool isInstance = false;
         public SystemObject userData;
-        
-        private Dictionary<string, AAssetAsyncOperation> operationDic = new Dictionary<string, AAssetAsyncOperation>();
+
+        protected void Reset()
+        {
+            uniqueID = -1;
+            assetPaths = null;
+            completeCallback = null;
+            progressCallback = null;
+            batchCompleteCallback = null;
+            batchProgressCallback = null;
+            isInstance = false;
+            userData = null;
+        }
     }
 }

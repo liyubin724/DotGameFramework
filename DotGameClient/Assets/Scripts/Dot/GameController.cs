@@ -1,4 +1,5 @@
 ﻿using Dot.Core.Asset;
+using Dot.Core.Loader;
 using Dot.Core.Timer;
 using Dot.Core.Util;
 using UnityEngine;
@@ -32,7 +33,6 @@ namespace Dot
                 return;
             }
             gameController = this;
-            DontDestroyOnLoad(gameObject);
             
             timerMgr = TimerManager.GetInstance();
             assetLoader = AssetLoader.GetInstance();
@@ -44,6 +44,7 @@ namespace Dot
 
             timerMgr.DoUpdate(deltaTime);
             assetLoader.DoUpdate();
+            AssetManager.GetInstance().DoUpdate(deltaTime);
         }
     }
 }

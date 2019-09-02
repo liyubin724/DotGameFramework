@@ -8,7 +8,7 @@ namespace Dot.Core.Loader
         {
         }
 
-        public override void CreateAsyncOperation()
+        protected override void CreateAsyncOperation()
         {
             
         }
