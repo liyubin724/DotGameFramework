@@ -3,8 +3,8 @@ using Sirenix.OdinInspector;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.AddressableAssets;
-using UnityEditor.AddressableAssets.Settings;
+//using UnityEditor.AddressableAssets;
+//using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 
 namespace DotEditor.Core.Asset
@@ -54,12 +54,12 @@ namespace DotEditor.Core.Asset
             {
                 Array.ForEach(addressableGroups, (group) =>
                 {
-                    AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
-                    AddressableAssetGroup assetGroup = settings.FindGroup(group.groupName);
-                    if(assetGroup!=null)
-                    {
-                        settings.RemoveGroup(assetGroup);
-                    }
+                    //AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+                    //AddressableAssetGroup assetGroup = settings.FindGroup(group.groupName);
+                    //if(assetGroup!=null)
+                    //{
+                    //    settings.RemoveGroup(assetGroup);
+                    //}
                 });
             }
 

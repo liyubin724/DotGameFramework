@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.AddressableAssets.ResourceLocators;
-using UnityEngine.ResourceManagement.AsyncOperations;
+//using UnityEngine.AddressableAssets;
+//using UnityEngine.AddressableAssets.ResourceLocators;
+//using UnityEngine.ResourceManagement.AsyncOperations;
 using SystemObject = System.Object;
 using UnityObject = UnityEngine.Object;
 
@@ -18,7 +18,7 @@ namespace Dot.Core.Asset
     public class AssetLoader:Util.Singleton<AssetLoader>
     {
         private UniqueIDCreator idCreator = new UniqueIDCreator();
-        private AsyncOperationHandle<IResourceLocator> initHandle;
+        //private AsyncOperationHandle<IResourceLocator> initHandle;
 
         private IndexMapORM<long, LoadData> loadDataORM = new IndexMapORM<long, LoadData>();
         private Dictionary<string, AssetData> assetDataDic = new Dictionary<string, AssetData>();
@@ -29,26 +29,26 @@ namespace Dot.Core.Asset
 
         public void Initialize(Action<bool> initCallback)
         {
-            initHandle = Addressables.InitializeAsync();
-            initHandle.Completed += (handle) =>
-            {
-                if(handle.Status == AsyncOperationStatus.Succeeded)
-                {
-                    initCallback?.Invoke(true);
-                }else
-                {
-                    initCallback?.Invoke(false);
-                }
-            };
+            //initHandle = Addressables.InitializeAsync();
+            //initHandle.Completed += (handle) =>
+            //{
+            //    if(handle.Status == AsyncOperationStatus.Succeeded)
+            //    {
+            //        initCallback?.Invoke(true);
+            //    }else
+            //    {
+            //        initCallback?.Invoke(false);
+            //    }
+            //};
         }
 
         public void DoUpdate()
         {
-            UpdateLoadingAsset();
-            UpdateLoadData();
-            ClearInstanceAssetData();
-            ClearAssetData();
-            CheckUnloadOperation();
+            //UpdateLoadingAsset();
+            //UpdateLoadData();
+            //ClearInstanceAssetData();
+            //ClearAssetData();
+            //CheckUnloadOperation();
         }
 
         private void UpdateLoadingAsset()
@@ -59,9 +59,9 @@ namespace Dot.Core.Asset
                 AssetData assetData = loadingAssetDataList[updateIndex];
                 if (assetData.Status == AssetDataStatus.None)
                 {
-                    assetData.Handle = Addressables.LoadAssetAsync<UnityObject>(assetData.Address);
-                    assetData.Status = AssetDataStatus.Loading;
-                    assetData.Handle.Completed += OnAssetLoadComplete;
+                    //assetData.Handle = Addressables.LoadAssetAsync<UnityObject>(assetData.Address);
+                    //assetData.Status = AssetDataStatus.Loading;
+                    //assetData.Handle.Completed += OnAssetLoadComplete;
 
                     ++updateIndex;
                 }
@@ -121,7 +121,7 @@ namespace Dot.Core.Asset
                     }
                     else if (assetData.Status == AssetDataStatus.Loading)
                     {
-                        loadData.SetProgress(j, assetData.Handle.PercentComplete);
+                        //loadData.SetProgress(j, assetData.Handle.PercentComplete);
                     }
                     else
                     {
@@ -285,31 +285,31 @@ namespace Dot.Core.Asset
 
             AssetHandle assetHandle = new AssetHandle() { uniqueID = loadData.uniqueID, releaseAction = ReleaseAsset };
 
-            Addressables.LoadResourceLocationsAsync(label).Completed += (locations) =>
-            {
-                if (loadDataORM.Contain(loadData.uniqueID))
-                {
-                    if (locations.Status == AsyncOperationStatus.Succeeded)
-                    {
-                        string[] addresses = new string[locations.Result.Count];
-                        for (int i = 0; i < locations.Result.Count; ++i)
-                        {
-                            addresses[i] = locations.Result[i].PrimaryKey;
-                            RetainOrCreatAssetData(addresses[i]);
-                        }
-                        loadData.Addresses = addresses;
-                        assetHandle.addresses = addresses;
-                    }
-                    else
-                    {
-                        loadDataORM.DeleteByData(loadData);
-                        assetHandle.IsValid = false;
-                        allFinish?.Invoke(null, null,userData);
-                    }
-                }
+            //Addressables.LoadResourceLocationsAsync(label).Completed += (locations) =>
+            //{
+            //    if (loadDataORM.Contain(loadData.uniqueID))
+            //    {
+            //        if (locations.Status == AsyncOperationStatus.Succeeded)
+            //        {
+            //            string[] addresses = new string[locations.Result.Count];
+            //            for (int i = 0; i < locations.Result.Count; ++i)
+            //            {
+            //                addresses[i] = locations.Result[i].PrimaryKey;
+            //                RetainOrCreatAssetData(addresses[i]);
+            //            }
+            //            loadData.Addresses = addresses;
+            //            assetHandle.addresses = addresses;
+            //        }
+            //        else
+            //        {
+            //            loadDataORM.DeleteByData(loadData);
+            //            assetHandle.IsValid = false;
+            //            allFinish?.Invoke(null, null,userData);
+            //        }
+            //    }
 
-                Addressables.Release(locations);
-            };
+            //    Addressables.Release(locations);
+            //};
 
             return assetHandle;
         }
@@ -390,19 +390,19 @@ namespace Dot.Core.Asset
                 }
             }
         }
-        
-        private void OnAssetLoadComplete(AsyncOperationHandle handle)
-        {
-            foreach(var assetData in loadingAssetDataList)
-            {
-                if(handle.Equals(assetData.Handle))
-                {
-                    assetData.Handle.Completed -= OnAssetLoadComplete;
-                    assetData.Status = AssetDataStatus.Loaded;
-                    break;
-                }
-            }
-        }
+
+        //private void OnAssetLoadComplete(AsyncOperationHandle handle)
+        //{
+        //    foreach (var assetData in loadingAssetDataList)
+        //    {
+        //        if (handle.Equals(assetData.Handle))
+        //        {
+        //            assetData.Handle.Completed -= OnAssetLoadComplete;
+        //            assetData.Status = AssetDataStatus.Loaded;
+        //            break;
+        //        }
+        //    }
+        //}
 
         private void CheckUnloadOperation()
         {

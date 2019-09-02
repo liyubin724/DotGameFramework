@@ -1,5 +1,5 @@
-﻿using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
+﻿//using UnityEngine.AddressableAssets;
+//using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Asset
@@ -12,7 +12,7 @@ namespace Dot.Core.Asset
     }
     public class AssetData
     {
-        public AsyncOperationHandle Handle { get; set; }
+        //public AsyncOperationHandle Handle { get; set; }
 
         public string Address { get; set; }
         public AssetDataStatus Status { get; set; } = AssetDataStatus.None;
@@ -36,16 +36,16 @@ namespace Dot.Core.Asset
 
         public UnityObject GetObject()
         {
-            if(Status == AssetDataStatus.Loaded && Handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                return (UnityObject)Handle.Result;
-            }
+            //if(Status == AssetDataStatus.Loaded && Handle.Status == AsyncOperationStatus.Succeeded)
+            //{
+            //    return (UnityObject)Handle.Result;
+            //}
             return null;
         }
 
         public void Unload()
         {
-            Addressables.Release(Handle);
+            //Addressables.Release(Handle);
         }
     }
 }

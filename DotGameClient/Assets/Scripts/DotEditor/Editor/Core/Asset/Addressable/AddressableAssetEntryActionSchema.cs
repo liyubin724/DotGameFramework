@@ -2,8 +2,8 @@
 using Sirenix.OdinInspector;
 using System.IO;
 using UnityEditor;
-using UnityEditor.AddressableAssets;
-using UnityEditor.AddressableAssets.Settings;
+//using UnityEditor.AddressableAssets;
+//using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 
 namespace DotEditor.Core.Asset
@@ -29,46 +29,46 @@ namespace DotEditor.Core.Asset
         {
             if (!isEnable) return;
 
-            AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
-            AddressableAssetGroup assetGroup = settings.FindGroup(actionData.groupName);
-            if(assetGroup == null)
-            {
-                Debug.LogError("AddressableAssetEntryActionSchema::Execute->Group Not Found");
-                return;
-            }
-            if (actionData.filterDatas != null && actionData.filterDatas.Count > 0)
-            {
+            //AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+            //AddressableAssetGroup assetGroup = settings.FindGroup(actionData.groupName);
+            //if(assetGroup == null)
+            //{
+            //    Debug.LogError("AddressableAssetEntryActionSchema::Execute->Group Not Found");
+            //    return;
+            //}
+            //if (actionData.filterDatas != null && actionData.filterDatas.Count > 0)
+            //{
                 
-                foreach (var filterData in actionData.filterDatas)
-                {
-                    if (!string.IsNullOrEmpty(filterFolder) && filterFolder != filterData.filterFolder)
-                    {
-                        continue;
-                    }
-                    foreach (var asset in filterData.assets)
-                    {
-                        if (asset != null)
-                        {
-                            string guid = AssetDatabase.AssetPathToGUID(asset);
-                            AddressableAssetEntry assetEntry = assetGroup.GetAssetEntry(guid);
-                            if (assetEntry == null)
-                            {
-                                assetEntry = settings.CreateOrMoveEntry(guid, assetGroup,false,false);
-                            }
-                            assetEntry.SetAddress(GetAssetAddress(asset),false);
-                            if(labels!=null && labels.Length>0)
-                            {
-                                foreach(var label in labels)
-                                {
-                                    assetEntry.SetLabel(label, true,true,false);
-                                }
-                            }
-                        }
-                    }
-                }
+            //    foreach (var filterData in actionData.filterDatas)
+            //    {
+            //        if (!string.IsNullOrEmpty(filterFolder) && filterFolder != filterData.filterFolder)
+            //        {
+            //            continue;
+            //        }
+            //        foreach (var asset in filterData.assets)
+            //        {
+            //            if (asset != null)
+            //            {
+            //                string guid = AssetDatabase.AssetPathToGUID(asset);
+            //                AddressableAssetEntry assetEntry = assetGroup.GetAssetEntry(guid);
+            //                if (assetEntry == null)
+            //                {
+            //                    assetEntry = settings.CreateOrMoveEntry(guid, assetGroup,false,false);
+            //                }
+            //                assetEntry.SetAddress(GetAssetAddress(asset),false);
+            //                if(labels!=null && labels.Length>0)
+            //                {
+            //                    foreach(var label in labels)
+            //                    {
+            //                        assetEntry.SetLabel(label, true,true,false);
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
 
                 
-            }
+            //}
         }
 
         private string GetAssetAddress(string assetPath)

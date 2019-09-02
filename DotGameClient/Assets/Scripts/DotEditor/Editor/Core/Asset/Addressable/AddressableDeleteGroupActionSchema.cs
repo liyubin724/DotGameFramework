@@ -1,6 +1,6 @@
 ﻿using Dot.Core.Util;
-using UnityEditor.AddressableAssets;
-using UnityEditor.AddressableAssets.Settings;
+//using UnityEditor.AddressableAssets;
+//using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 
 namespace DotEditor.Core.Asset
@@ -14,12 +14,12 @@ namespace DotEditor.Core.Asset
             {
                 return;
             }
-            AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
-            AddressableAssetGroup assetGroup = settings.FindGroup(actionData.groupName);
-            if(assetGroup!=null)
-            {
-                settings.RemoveGroup(assetGroup);
-            }
+            //AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
+            //AddressableAssetGroup assetGroup = settings.FindGroup(actionData.groupName);
+            //if(assetGroup!=null)
+            //{
+            //    settings.RemoveGroup(assetGroup);
+            //}
         }
     }
 }
