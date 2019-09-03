@@ -10,7 +10,6 @@ namespace DotEditor.Core.Asset
     [CreateAssetMenu(fileName = "addressable_asset_setting", menuName = "Asset/Asset Setting/Addressable")]
     public class AddressableSchemaSetting : BaseAssetSchemaSetting
     {
-
         [PropertyOrder(300)]
         [Button("Execute Addressable", ButtonSizes.Large)]
         public void ExecuteAddressable()
@@ -19,7 +18,7 @@ namespace DotEditor.Core.Asset
             {
                 Array.ForEach(groupSchemas, (group) =>
                 {
-                    group.Execute();
+                   // group.Execute();
                 });
             }
 

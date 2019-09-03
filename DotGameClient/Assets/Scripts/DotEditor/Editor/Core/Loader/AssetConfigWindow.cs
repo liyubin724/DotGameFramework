@@ -18,6 +18,7 @@ namespace DotEditor.Core.Loader
                 Directory.Delete("D:/assetbundles", true);
             }
             Directory.CreateDirectory("D:/assetbundles");
+            
             BuildPipeline.BuildAssetBundles("D:/assetbundles", BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.StandaloneWindows64);
         }
     }

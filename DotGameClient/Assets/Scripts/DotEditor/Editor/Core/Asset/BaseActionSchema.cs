@@ -1,7 +1,5 @@
-﻿using UnityEngine;
-using SystemObject = System.Object;
-using Sirenix.OdinInspector;
-using System.Collections.Generic;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace DotEditor.Core.Asset
 {
@@ -12,9 +10,9 @@ namespace DotEditor.Core.Asset
         [PropertyOrder(100)]
         public string actionName = "Group Name";
 
-        public virtual void Execute(Dictionary<string,SystemObject> dataDic)
+        public virtual AssetExecuteResult Execute(AssetExecuteInput inputData)
         {
-            
+            return null;
         }
     }
 }

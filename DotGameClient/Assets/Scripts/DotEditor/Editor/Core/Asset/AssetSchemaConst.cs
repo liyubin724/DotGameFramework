@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dot.Core.Loader.Config;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,18 +7,42 @@ using System.Threading.Tasks;
 
 namespace DotEditor.Core.Asset
 {
-    public static class AssetSchemaConst
+    public class AssetExecuteInput
     {
-        public static readonly string ASSET_GROUP_NAME = "groupName";
-        public static readonly string ASSET_FILTER_DATA_NAME = "filterResult";
     }
 
-    public class AssetFilterResult
+    public class AssetExecuteResult
+    {
+    }
+
+    public class AssetFilterResult : AssetExecuteResult
     {
         public string filterFolder;
         public string[] assets;
     }
+    
+    public class AssetBundleGroupInput : AssetExecuteInput
+    {
+        public AssetDetailConfig detailConfig;
+    }
 
+    public class AssetBundleActionInput :AssetExecuteInput
+    {
+        public string groupName;
+        public AssetFilterResult[] filterResults;
+    }
+
+    public class AssetBundleActionResult : AssetExecuteResult
+    {
+        public AssetDetailGroupData groupData;
+    }
+    
+    
+
+
+
+    //------------------------
+    
     public enum AssetGroupType
     {
         Addressable,
@@ -35,6 +60,7 @@ namespace DotEditor.Core.Asset
     {
         Together,
         Separate,
+        GroupByCount,
     }
 
     public enum AssetAddressMode

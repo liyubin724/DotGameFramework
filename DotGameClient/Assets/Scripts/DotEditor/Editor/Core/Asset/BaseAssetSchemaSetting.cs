@@ -11,11 +11,11 @@ namespace DotEditor.Core.Asset
         [PropertyOrder(100)]
         public string settingName = "Asset Schema Setting";
 
-        [PropertyOrder(101)]
+        [PropertyOrder(100)]
         [EnumToggleButtons]
         public AssetGroupType groupType = AssetGroupType.Addressable;
 
-        [PropertyOrder(102)]
+        [PropertyOrder(100)]
         [ListDrawerSettings(Expanded =true,IsReadOnly =true)]
         public AssetGroupSchema[] groupSchemas = new AssetGroupSchema[0];
 

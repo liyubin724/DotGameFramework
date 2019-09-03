@@ -21,7 +21,7 @@ namespace Dot.Core.Loader
         private string assetBundleRootPath = "";
         private AssetBundleManifest assetBundleManifest = null;
         private AssetBundleCreateRequest manifestRequest = null;
-        private AssetBundleDetailData assetBundleDetailData = null;
+        //private AssetBundleDetailData assetBundleDetailData = null;
 
         private readonly ObjectPool<AssetBundleLoaderData> loaderDataPool = new ObjectPool<AssetBundleLoaderData>(4);
 

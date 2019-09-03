@@ -34,28 +34,38 @@ namespace DotEditor.Core.Asset
             return resultList.ToArray();
         }
 
-        public void Execute(Dictionary<string, SystemObject> dataDic)
+        private AssetExecuteResult ExecuteAssetBundle(AssetBundleGroupInput groupInput)
         {
-            if (!isEnable) return;
-            if(dataDic == null)
+            AssetBundleActionInput actionInput = new AssetBundleActionInput()
             {
-                dataDic = new Dictionary<string, SystemObject>();
-            }
-
-            dataDic[AssetSchemaConst.ASSET_GROUP_NAME] = groupName;
-            dataDic[AssetSchemaConst.ASSET_FILTER_DATA_NAME] = GetFilterResult();
-
-            foreach(var action in actions)
+                groupName = groupName,
+                filterResults = GetFilterResult()
+            };
+            foreach (var action in actions)
             {
-                action.Execute(dataDic);
+                AssetBundleActionResult result = action.Execute(actionInput) as AssetBundleActionResult;
+                groupInput.detailConfig.assetGroupDatas.Add(result.groupData);
             }
+            return null;
+        }
+
+        public AssetExecuteResult Execute(AssetExecuteInput inputData)
+        {
+            if (!isEnable) return null;
+
+            if(groupType == AssetGroupType.AssetBundle)
+            {
+                return ExecuteAssetBundle(inputData as AssetBundleGroupInput);
+            }
+            
+            return null;
         }
         
-        [Button(ButtonSizes.Large)]
-        public void Execute()
-        {
-            Execute(null);
-        }
+        //[Button(ButtonSizes.Large)]
+        //public void Execute()
+        //{
+        //    Execute(null);
+        //}
     }
 
     
