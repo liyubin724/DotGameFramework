@@ -13,9 +13,115 @@ MonoBehaviour:
   m_Name: spriteatlas_filter
   m_EditorClassIdentifier: 
   isEnable: 1
-  folder: Assets/ArtRes/UI/Atlas
+  folder: Assets/ArtRes
   includeSubfolder: 1
-  fileNameFilterRegex: ^\w*.spriteatlas
+  fileNameFilterRegex: 
   assets:
+  - Assets/ArtRes/Character/Player/Test01/AvatarPart/ch_pc_hou_006_jiao_part.asset
+  - Assets/ArtRes/Character/Player/Test01/AvatarPart/ch_pc_hou_006_shen_part.asset
+  - Assets/ArtRes/Character/Player/Test01/AvatarPart/ch_pc_hou_006_shou_part.asset
+  - Assets/ArtRes/Character/Player/Test01/AvatarPart/ch_pc_hou_006_tou_part.asset
+  - Assets/ArtRes/Character/Player/Test01/AvatarPart/ch_pc_hou_008_jiao_part.asset
+  - Assets/ArtRes/Character/Player/Test01/AvatarPart/ch_pc_hou_008_shen_part.asset
+  - Assets/ArtRes/Character/Player/Test01/AvatarPart/ch_pc_hou_008_shou_part.asset
+  - Assets/ArtRes/Character/Player/Test01/AvatarPart/ch_pc_hou_008_tou_part.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_006_jiao_mesh.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_006_jiao_renderer.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_006_shen_mesh.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_006_shen_renderer.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_006_shou_mesh.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_006_shou_renderer.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_006_tou_mesh.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_006_tou_renderer.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_008_jiao_mesh.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_008_jiao_renderer.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_008_shen_mesh.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_008_shen_renderer.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_008_shou_mesh.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_008_shou_renderer.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_008_tou_mesh.asset
+  - Assets/ArtRes/Character/Player/Test01/Data/ch_pc_hou_008_tou_renderer.asset
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_pc_hou_006.fbx
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_pc_hou_006_jiao.FBX
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_pc_hou_006_shen.FBX
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_pc_hou_006_shou.FBX
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_pc_hou_006_tou.FBX
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_pc_hou_008.fbx
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_pc_hou_008_jiao.FBX
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_pc_hou_008_shen.FBX
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_pc_hou_008_shou.FBX
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_pc_hou_008_tou.FBX
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_we_one_hou_004.fbx
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_we_one_hou_006.fbx
+  - Assets/ArtRes/Character/Player/Test01/Fbx/ch_we_one_hou_008.fbx
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_004_jiao_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_004_shen_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_004_shou_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_004_tou_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_006_jiao_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_006_shen_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_006_shou_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_006_tou_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_008_jiao_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_008_shen_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_008_shou_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_008_tou_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_we_one_hou_004_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_we_one_hou_006_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Materials/ch_we_one_hou_008_d.mat
+  - Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_004_skeleton.prefab
+  - Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_006.prefab
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_004_jiao_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_004_shen_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_004_shou_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_004_tou_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_006_jiao_d.TGA
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_006_shen_d.TGA
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_006_shou_d.TGA
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_006_tou_d.TGA
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_008_jiao_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_008_shen_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_008_shou_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_008_tou_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_we_one_hou_004_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_we_one_hou_006_d.TGA
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_we_one_hou_008_d.tga
+  - Assets/ArtRes/Effect/effect 1.prefab
+  - Assets/ArtRes/Effect/effect.prefab
+  - Assets/ArtRes/Shaders/RoundRectMat.mat
+  - Assets/ArtRes/Shaders/RoundRectShader.shader
+  - Assets/ArtRes/Shaders/RoundRS.cginc
+  - Assets/ArtRes/UI/New Material.mat
+  - Assets/ArtRes/UI/NewUnlitShader.shader
   - Assets/ArtRes/UI/Atlas/common_atlas.spriteatlas
   - Assets/ArtRes/UI/Atlas/login_atlas.spriteatlas
+  - Assets/ArtRes/UI/Common/btn_common_002.png
+  - Assets/ArtRes/UI/Common/btn_common_003.png
+  - Assets/ArtRes/UI/Common/btn_common_01.png
+  - Assets/ArtRes/UI/Common/btn_common_02.png
+  - Assets/ArtRes/UI/Common/btn_common_03.png
+  - Assets/ArtRes/UI/Common/btn_common_04.png
+  - Assets/ArtRes/UI/Common/btn_common_05.png
+  - Assets/ArtRes/UI/Common/btn_common_06.png
+  - Assets/ArtRes/UI/Common/btn_common_07.png
+  - Assets/ArtRes/UI/Common/btn_common_098.png
+  - Assets/ArtRes/UI/Common/btn_common_099.png
+  - Assets/ArtRes/UI/Common/btn_common_small_01.png
+  - Assets/ArtRes/UI/Common/btn_common_small_02.png
+  - Assets/ArtRes/UI/Login/btn_login_001.png
+  - Assets/ArtRes/UI/Login/btn_login_004.png
+  - Assets/ArtRes/UI/Login/btn_login_005.png
+  - Assets/ArtRes/UI/Login/btn_login_006.png
+  - Assets/ArtRes/UI/Login/pic_charactor_001.png
+  - Assets/ArtRes/UI/Login/pic_charactor_002.png
+  - Assets/ArtRes/UI/Login/pic_charactor_003.png
+  - Assets/ArtRes/UI/Login/pic_login_005.png
+  - Assets/ArtRes/UI/Login/pic_login_007.png
+  - Assets/ArtRes/UI/Login/pic_login_008.png
+  - Assets/ArtRes/UI/Login/pic_login_009.png
+  - Assets/ArtRes/UI/Login/pic_login_010.png
+  - Assets/ArtRes/UI/Login/pic_login_011.png
+  - Assets/ArtRes/UI/Login/pic_login_012.png
+  - Assets/ArtRes/UI/Login/pic_login_013.png
+  - Assets/ArtRes/UI/Login/pic_login_014.png
+  - Assets/ArtRes/UI/Login/pic_login_015.png

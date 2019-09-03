@@ -28,6 +28,7 @@ namespace DotEditor.Core.Packer
         {
             showBorder = true;
             showAlternatingRowBackgrounds = true;
+            rowHeight = EditorGUIUtility.singleLineHeight * 2+8;
             Reload();
         }
 
@@ -62,10 +63,14 @@ namespace DotEditor.Core.Packer
                         EditorGUIUtil.BeginSetLabelWidth(60);
                         {
                             EditorGUILayout.LabelField(new GUIContent("" + element.Data.detailDataIndex), GUILayout.Width(20));
-                            EditorGUILayout.TextField("address:",element.Data.detailData.address,GUILayout.MaxWidth(200));
-                            EditorGUILayout.TextField("path:",element.Data.detailData.path);
-                            EditorGUILayout.TextField("bundle:",element.Data.detailData.bundle);
-                            EditorGUILayout.TextField("labels:",string.Join(",", element.Data.detailData.labels),GUILayout.MaxWidth(180));
+                            EditorGUILayout.TextField("address:",element.Data.detailData.address);
+                            GUILayout.BeginVertical();
+                            {
+                                EditorGUILayout.TextField("path:",element.Data.detailData.path);
+                                EditorGUILayout.TextField("bundle:",element.Data.detailData.bundle);
+                            }
+                            GUILayout.EndVertical();
+                            EditorGUILayout.TextField("labels:",string.Join(",", element.Data.detailData.labels));
                         }
                         EditorGUIUtil.EndSetLableWidth();
 

@@ -13,9 +13,41 @@ MonoBehaviour:
   m_Name: asset_filter_schema
   m_EditorClassIdentifier: 
   isEnable: 1
-  folder: Assets/ArtRes/UI/Atlas
+  folder: Assets/ArtRes/UI
   includeSubfolder: 1
-  fileNameFilterRegex: ^\w*.spriteatlas$
+  fileNameFilterRegex: 
   assets:
+  - Assets/ArtRes/UI/New Material.mat
+  - Assets/ArtRes/UI/NewUnlitShader.shader
   - Assets/ArtRes/UI/Atlas/common_atlas.spriteatlas
   - Assets/ArtRes/UI/Atlas/login_atlas.spriteatlas
+  - Assets/ArtRes/UI/Common/btn_common_002.png
+  - Assets/ArtRes/UI/Common/btn_common_003.png
+  - Assets/ArtRes/UI/Common/btn_common_01.png
+  - Assets/ArtRes/UI/Common/btn_common_02.png
+  - Assets/ArtRes/UI/Common/btn_common_03.png
+  - Assets/ArtRes/UI/Common/btn_common_04.png
+  - Assets/ArtRes/UI/Common/btn_common_05.png
+  - Assets/ArtRes/UI/Common/btn_common_06.png
+  - Assets/ArtRes/UI/Common/btn_common_07.png
+  - Assets/ArtRes/UI/Common/btn_common_098.png
+  - Assets/ArtRes/UI/Common/btn_common_099.png
+  - Assets/ArtRes/UI/Common/btn_common_small_01.png
+  - Assets/ArtRes/UI/Common/btn_common_small_02.png
+  - Assets/ArtRes/UI/Login/btn_login_001.png
+  - Assets/ArtRes/UI/Login/btn_login_004.png
+  - Assets/ArtRes/UI/Login/btn_login_005.png
+  - Assets/ArtRes/UI/Login/btn_login_006.png
+  - Assets/ArtRes/UI/Login/pic_charactor_001.png
+  - Assets/ArtRes/UI/Login/pic_charactor_002.png
+  - Assets/ArtRes/UI/Login/pic_charactor_003.png
+  - Assets/ArtRes/UI/Login/pic_login_005.png
+  - Assets/ArtRes/UI/Login/pic_login_007.png
+  - Assets/ArtRes/UI/Login/pic_login_008.png
+  - Assets/ArtRes/UI/Login/pic_login_009.png
+  - Assets/ArtRes/UI/Login/pic_login_010.png
+  - Assets/ArtRes/UI/Login/pic_login_011.png
+  - Assets/ArtRes/UI/Login/pic_login_012.png
+  - Assets/ArtRes/UI/Login/pic_login_013.png
+  - Assets/ArtRes/UI/Login/pic_login_014.png
+  - Assets/ArtRes/UI/Login/pic_login_015.png
