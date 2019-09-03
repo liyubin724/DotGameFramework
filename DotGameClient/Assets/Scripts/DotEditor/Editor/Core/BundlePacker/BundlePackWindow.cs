@@ -2,9 +2,6 @@
 using DotEditor.Core.EGUI.TreeGUI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -25,27 +22,28 @@ namespace DotEditor.Core.Packer
         private TreeViewState detailGroupTreeViewState;
 
         private AssetDetailConfig detailConfig = null;
-        private void OnEnable()
-        {
-            detailConfig = BundlePackUtil.FindOrCreateConfig();
-            InitDetailGroupTreeView();
-        }
 
         private void InitDetailGroupTreeView()
         {
             detailGroupTreeViewState = new TreeViewState();
-            detailGroupTreeView = new AssetDetailGroupTreeView(detailGroupTreeViewState, GetDetailGroupTreeModel());
-        }
-
-        private TreeModel<TreeElementWithData<AssetDetailGroupTreeData>> GetDetailGroupTreeModel()
-        {
             TreeModel<TreeElementWithData<AssetDetailGroupTreeData>> data = new TreeModel<TreeElementWithData<AssetDetailGroupTreeData>>(
                new List<TreeElementWithData<AssetDetailGroupTreeData>>()
                {
                     new TreeElementWithData<AssetDetailGroupTreeData>(AssetDetailGroupTreeData.Root,"",-1,-1),
                });
 
-            for(int i =0;i<detailConfig.assetGroupDatas.Count;i++)
+            detailGroupTreeView = new AssetDetailGroupTreeView(detailGroupTreeViewState, data);
+            FilterTreeModel();
+            detailGroupTreeView.Reload();
+        }
+
+        private void FilterTreeModel()
+        {
+            TreeModel<TreeElementWithData<AssetDetailGroupTreeData>> treeModel = detailGroupTreeView.treeModel;
+            TreeElementWithData<AssetDetailGroupTreeData> treeModelRoot = treeModel.root;
+            treeModelRoot.children?.Clear();
+
+            for (int i = 0; i < detailConfig.assetGroupDatas.Count; i++)
             {
                 AssetDetailGroupData groupData = detailConfig.assetGroupDatas[i];
                 TreeElementWithData<AssetDetailGroupTreeData> groupElementData = new TreeElementWithData<AssetDetailGroupTreeData>(
@@ -53,31 +51,93 @@ namespace DotEditor.Core.Packer
                     {
                         isGroup = true,
                         groupName = groupData.groupName,
-                    },"",0,(i+1)*100);
+                    }, "", 0, (i + 1) * 100);
 
-                data.AddElement(groupElementData,data.root, data.root.hasChildren ? data.root.children.Count : 0);
+                treeModel.AddElement(groupElementData, treeModelRoot, treeModelRoot.hasChildren ? treeModelRoot.children.Count : 0);
 
-                for (int j = 0;j<groupData.assetDetailDatas.Length;++j)
+                for (int j = 0; j < groupData.assetDetailDatas.Length; ++j)
                 {
-                    TreeElementWithData<AssetDetailGroupTreeData> detailElementData = new TreeElementWithData<AssetDetailGroupTreeData>(
-                    new AssetDetailGroupTreeData()
+                    AssetDetailData detailData = groupData.assetDetailDatas[j];
+                    if(FilterAssetDetailData(detailData))
                     {
-                        isGroup = false,
-                        detailDataIndex = j,
-                        detailData = groupData.assetDetailDatas[j],
-                    }, "", 1, (i + 1) * 100 + (j+1));
+                        TreeElementWithData<AssetDetailGroupTreeData> elementData = new TreeElementWithData<AssetDetailGroupTreeData>(
+                                new AssetDetailGroupTreeData()
+                                {
+                                    isGroup = false,
+                                    detailDataIndex = j,
+                                    detailData = groupData.assetDetailDatas[j],
+                                }, "", 1, (i + 1) * 100 + (j + 1));
 
-                    data.AddElement(detailElementData, groupElementData, groupElementData.hasChildren ? groupElementData.children.Count : 0);
+                        treeModel.AddElement(elementData, groupElementData, groupElementData.hasChildren ? groupElementData.children.Count : 0);
+                    }
                 }
 
             }
+            detailGroupTreeView.Reload();
+        }
 
-            return data;
+        private bool FilterAssetDetailData(AssetDetailData detailData)
+        {
+            if(string.IsNullOrEmpty(searchText))
+            {
+                return true;
+            }
+
+            bool isValid = false;
+            if(selecteddSearchParamIndex == 0 || selecteddSearchParamIndex == 1)
+            {
+                if(!string.IsNullOrEmpty(detailData.address))
+                {
+                    isValid = detailData.address.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                }
+            }
+            if(!isValid)
+            {
+                if(selecteddSearchParamIndex == 0 || selecteddSearchParamIndex == 2)
+                {
+                    if (!string.IsNullOrEmpty(detailData.path))
+                    {
+                        isValid = detailData.path.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                    }
+                }
+            }
+            if (!isValid)
+            {
+                if (selecteddSearchParamIndex == 0 || selecteddSearchParamIndex == 3)
+                {
+                    if (!string.IsNullOrEmpty(detailData.bundle))
+                    {
+                        isValid = detailData.bundle.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                    }
+                }
+            }
+            if(!isValid)
+            {
+                string label = string.Join(",", detailData.labels);
+                if (selecteddSearchParamIndex == 0 || selecteddSearchParamIndex == 4)
+                {
+                    if (!string.IsNullOrEmpty(label))
+                    {
+                        isValid = label.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                    }
+                }
+            }
+            return isValid;
         }
 
         private void OnGUI()
         {
+            if(detailConfig == null)
+            {
+                detailConfig = BundlePackUtil.FindOrCreateConfig();
+            }
+            if (detailGroupTreeView == null)
+            {
+                InitDetailGroupTreeView();
+            }
+
             DrawToolbar();
+
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             {
                 GUIStyle lableStyle = new GUIStyle(EditorStyles.label);
@@ -90,31 +150,26 @@ namespace DotEditor.Core.Packer
             }
             EditorGUILayout.EndVertical();
 
-            EditorGUILayout.BeginVertical();
+
+
+            EditorGUILayout.BeginHorizontal(GUILayout.ExpandHeight(true));
             {
-                
-                EditorGUILayout.BeginHorizontal(GUILayout.Height(40),GUILayout.ExpandHeight(true));
+                if (GUILayout.Button("Update Asset Detail"))
                 {
-                    if(GUILayout.Button("Update Asset Detail"))
-                    {
-                        BundlePackUtil.UpdateAssetDetailConfigBySchema();
-                        InitDetailGroupTreeView();
-                    }
-                    if(GUILayout.Button("Set Asset Bundle Names"))
-                    {
-                        BundlePackUtil.SetAssetBundleNames();
-                    }
-                    if(GUILayout.Button("Clear Asset Bundle Names"))
-                    {
-                        BundlePackUtil.ClearAssetBundleNames();
-                    }
+                    BundlePackUtil.UpdateAssetDetailConfigBySchema();
+                    detailConfig = BundlePackUtil.FindOrCreateConfig();
+                    FilterTreeModel();
                 }
-                EditorGUILayout.EndHorizontal();
-
-                
-
+                if (GUILayout.Button("Set Asset Bundle Names"))
+                {
+                    BundlePackUtil.SetAssetBundleNames();
+                }
+                if (GUILayout.Button("Clear Asset Bundle Names"))
+                {
+                    BundlePackUtil.ClearAssetBundleNames();
+                }
             }
-            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndHorizontal();
         }
 
         public string[] SearchParams = new string[]
@@ -129,30 +184,30 @@ namespace DotEditor.Core.Packer
         private string searchText = "";
         private bool isExpandAll = false;
         
-        private void ExpandOrCollapseTreeView(bool isExpand)
-        {
-            isExpandAll = isExpand;
-            if (isExpandAll)
-            {
-                detailGroupTreeView.ExpandAll();
-            }
-            else
-            {
-                detailGroupTreeView.CollapseAll();
-            }
-        }
-
         private void DrawToolbar()
         {
             EditorGUILayout.BeginHorizontal("toolbar", GUILayout.ExpandWidth(true));
             {
                 if(GUILayout.Button(isExpandAll? "\u25BC" : "\u25BA", "toolbarbutton",GUILayout.Width(60)))
                 {
-                    ExpandOrCollapseTreeView(!isExpandAll);
+                    isExpandAll = !isExpandAll;
+                    if (isExpandAll)
+                    {
+                        detailGroupTreeView.ExpandAll();
+                    }
+                    else
+                    {
+                        detailGroupTreeView.CollapseAll();
+                    }
                 }
                 GUILayout.FlexibleSpace();
 
-                selecteddSearchParamIndex = EditorGUILayout.Popup(selecteddSearchParamIndex, SearchParams, "ToolbarDropDown", GUILayout.Width(80));
+                int newSelectedIndex = EditorGUILayout.Popup(selecteddSearchParamIndex, SearchParams, "ToolbarDropDown", GUILayout.Width(80));
+                if(newSelectedIndex != selecteddSearchParamIndex)
+                {
+                    selecteddSearchParamIndex = newSelectedIndex;
+                    FilterTreeModel();
+                }
 
                 EditorGUILayout.LabelField("", GUILayout.Width(200));
                 Rect lastRect = GUILayoutUtility.GetLastRect();
@@ -162,17 +217,15 @@ namespace DotEditor.Core.Packer
                 if (GUI.Button(searchCancelRect, "", "ToolbarSeachCancelButton"))
                 {
                     newSearchText = "";
-                    Repaint();
+                    GUI.FocusControl("");
                 }
-                if (searchText != newSearchText)
+                if(newSearchText != searchText)
                 {
                     searchText = newSearchText;
-                    InitDetailGroupTreeView();
+                    FilterTreeModel();
 
-                    //if (!string.IsNullOrEmpty(searchText))
-                    //{
-                    //    ExpandOrCollapseTreeView(true);
-                    //}
+                    isExpandAll = true;
+                    detailGroupTreeView.ExpandAll();
                 }
             }
             EditorGUILayout.EndHorizontal();

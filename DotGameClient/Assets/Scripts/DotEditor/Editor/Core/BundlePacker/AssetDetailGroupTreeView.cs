@@ -36,6 +36,11 @@ namespace DotEditor.Core.Packer
             return false;
         }
 
+        protected override bool CanStartDrag(CanStartDragArgs args)
+        {
+            return false;
+        }
+
         protected override void RowGUI(RowGUIArgs args)
         {
             var item = (TreeViewItem<TreeElementWithData<AssetDetailGroupTreeData>>)args.item;
@@ -57,7 +62,7 @@ namespace DotEditor.Core.Packer
                         EditorGUIUtil.BeginSetLabelWidth(60);
                         {
                             EditorGUILayout.LabelField(new GUIContent("" + element.Data.detailDataIndex), GUILayout.Width(20));
-                            EditorGUILayout.TextField("address:",element.Data.detailData.address);
+                            EditorGUILayout.TextField("address:",element.Data.detailData.address,GUILayout.MaxWidth(200));
                             EditorGUILayout.TextField("path:",element.Data.detailData.path);
                             EditorGUILayout.TextField("bundle:",element.Data.detailData.bundle);
                             EditorGUILayout.TextField("labels:",string.Join(",", element.Data.detailData.labels),GUILayout.MaxWidth(180));
