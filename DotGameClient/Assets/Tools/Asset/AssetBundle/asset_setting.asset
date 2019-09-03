@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469705af7191c824281a306a804e43fc, type: 3}
+  m_Name: asset_setting
+  m_EditorClassIdentifier: 
+  settingName: Asset Schema Setting
+  groupType: 1
+  groupSchemas:
+  - {fileID: 11400000, guid: 1b918e46eca59a148b73ac43ecb766cb, type: 2}
+  - {fileID: 11400000, guid: 5de6405ebc808984e8d93fb877cf0a7a, type: 2}
+  assetDetailConfig: {fileID: 11400000, guid: 0df9bf25b4e1d4c43bff074252e4b4b9, type: 2}

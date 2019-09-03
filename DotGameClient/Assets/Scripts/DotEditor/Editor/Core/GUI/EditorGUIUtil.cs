@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DotEditor.Core.Util;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -186,6 +188,7 @@ namespace DotEditor.Core.EGUI
 
     public static class EditorGUILayoutUtil
     {
+        
         public static void PropertyInfoField(SystemObject target,PropertyInfo pInfo)
         {
             Type type = pInfo.PropertyType;
@@ -218,10 +221,49 @@ namespace DotEditor.Core.EGUI
                 UnityEditor.EditorGUILayout.LabelField(pInfo.Name, "Unrecognized type!!");
             }
         }
+
+        public static void DrawFolderSelection(SerializedProperty property,bool isReadonly = true)
+        {
+            EditorGUILayout.BeginHorizontal();
+            {
+                EditorGUI.BeginDisabledGroup(isReadonly);
+                {
+                    EditorGUILayout.PropertyField(property);
+                }
+                EditorGUI.EndDisabledGroup();
+                
+                if(GUILayout.Button(new GUIContent(EditorGUIUtil.FolderIcon),GUILayout.Width(20),GUILayout.Height(20)))
+                {
+                    string folderPath = EditorUtility.OpenFolderPanel("folder", property.stringValue, "");
+                    if (!string.IsNullOrEmpty(folderPath))
+                    {
+                        property.stringValue = PathUtil.GetAssetPath(folderPath);
+                    }
+                }
+                if (GUILayout.Button("\u2716", GUILayout.Width(20), GUILayout.Height(20)))
+                {
+                    property.stringValue = "";
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+        }
     }
 
     public static class EditorGUIUtil
     {
+        private static Texture2D folderIcon = null;
+        public static Texture2D FolderIcon
+        {
+            get
+            {
+                if (folderIcon == null)
+                {
+                    folderIcon = EditorGUIUtility.FindTexture("Folder Icon");
+                }
+                return folderIcon;
+            }
+        }
+
         public static void DrawAreaLine(Rect rect, Color color)
         {
             Handles.color = color;
@@ -239,5 +281,20 @@ namespace DotEditor.Core.EGUI
 
             Handles.DrawLines(points, indexies);
         }
+
+        private static Stack<float> labelWidthStack = new Stack<float>();
+        public static void BeginSetLabelWidth(float labelWidth)
+        {
+            labelWidthStack.Push(EditorGUIUtility.labelWidth);
+            EditorGUIUtility.labelWidth = labelWidth;
+        }
+
+        public static void EndSetLableWidth()
+        {
+            if (labelWidthStack.Count > 0)
+                EditorGUIUtility.labelWidth = labelWidthStack.Pop();
+        }
     }
+
+
 }

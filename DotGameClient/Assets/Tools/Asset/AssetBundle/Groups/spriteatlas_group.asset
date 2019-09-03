@@ -9,13 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93ca4e1ef2200a845b97610392cdf9b7, type: 3}
+  m_Script: {fileID: 11500000, guid: 4586566993746044d8627ebfe5b14f7a, type: 3}
   m_Name: spriteatlas_group
   m_EditorClassIdentifier: 
   isEnable: 1
   groupName: SpriteAtlas
   groupType: 1
   filters:
-  - {fileID: 11400000, guid: 8a832a8cf4064b8439544dcfe7b9a8b5, type: 2}
+  - {fileID: 11400000, guid: 7650f5746a65b774bb33f0d6966d3ad5, type: 2}
   actions:
-  - {fileID: 11400000, guid: d41694c253d9b614897654383e91c6c8, type: 2}
+  - {fileID: 11400000, guid: 5f555ee2b59a11f43a99257df7ae7196, type: 2}

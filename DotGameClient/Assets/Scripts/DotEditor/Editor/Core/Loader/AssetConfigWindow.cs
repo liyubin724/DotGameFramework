@@ -13,13 +13,13 @@ namespace DotEditor.Core.Loader
         [MenuItem("Test/Build AssetBundle")]
         public static void BuildAsset()
         {
-            if (Directory.Exists("D:/assetbundles"))
+            if (!Directory.Exists("D:/assetbundles"))
             {
-                Directory.Delete("D:/assetbundles", true);
+                Directory.CreateDirectory("D:/assetbundles");
+                //Directory.Delete("D:/assetbundles", true);
             }
-            Directory.CreateDirectory("D:/assetbundles");
             
-            BuildPipeline.BuildAssetBundles("D:/assetbundles", BuildAssetBundleOptions.DeterministicAssetBundle, BuildTarget.StandaloneWindows64);
+            BuildPipeline.BuildAssetBundles("D:/assetbundles", BuildAssetBundleOptions.DeterministicAssetBundle|BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneWindows64);
         }
     }
 }
