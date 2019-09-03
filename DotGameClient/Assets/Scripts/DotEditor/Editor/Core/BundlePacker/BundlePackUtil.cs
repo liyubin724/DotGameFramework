@@ -8,6 +8,27 @@ namespace DotEditor.Core.Packer
 {
     public class BundlePackUtil
     {
+        public static AssetDetailConfig FindOrCreateConfig()
+        {
+            AssetDetailConfig config = AssetDatabase.LoadAssetAtPath<AssetDetailConfig>(AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
+
+            bool isNewCreate = false;
+            if (config == null)
+            {
+                isNewCreate = true;
+                config = ScriptableObject.CreateInstance<AssetDetailConfig>();
+                AssetDatabase.CreateAsset(config, AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
+
+                AssetDatabase.ImportAsset(AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
+            }
+
+            if (isNewCreate)
+            {
+                AssetDatabase.SaveAssets();
+            }
+            return config;
+        }
+
         public static void UpdateAssetDetailConfigBySchema()
         {
             AssetDetailConfig config = AssetDatabase.LoadAssetAtPath<AssetDetailConfig>(AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
@@ -59,7 +80,6 @@ namespace DotEditor.Core.Packer
                 {
                     AssetImporter assetImporter = AssetImporter.GetAtPath(assetPath);
                     assetImporter.assetBundleName = "";
-                    assetImporter.assetBundleVariant = "";
                 }
             }
 

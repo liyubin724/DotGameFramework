@@ -8,6 +8,8 @@ namespace DotEditor.Core.Asset
     {
         public static void UpdateAssetDetailConfigBySchema(AssetDetailConfig config, AssetBundleSchemaSetting setting)
         {
+            config.assetGroupDatas.Clear();
+
             AssetBundleGroupInput groupInput = new AssetBundleGroupInput() { detailConfig = config };
             foreach (var group in setting.groupSchemas)
             {

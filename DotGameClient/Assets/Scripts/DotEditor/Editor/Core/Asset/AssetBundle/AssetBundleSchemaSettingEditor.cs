@@ -69,22 +69,7 @@ namespace DotEditor.Core.Asset
         {
             if(assetDetailConfig.objectReferenceValue == null)
             {
-                AssetDetailConfig config = AssetDatabase.LoadAssetAtPath<AssetDetailConfig>(AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
-
-                bool isNewCreate = false;
-                if (config == null)
-                {
-                    isNewCreate = true;
-                    config = ScriptableObject.CreateInstance<AssetDetailConfig>();
-                    AssetDatabase.CreateAsset(config, AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
-                }
-
-                assetDetailConfig.objectReferenceValue = config;
-
-                if (isNewCreate)
-                {
-                    AssetDatabase.SaveAssets();
-                }
+                assetDetailConfig.objectReferenceValue = BundlePackUtil.FindOrCreateConfig();
             }
         }
 
