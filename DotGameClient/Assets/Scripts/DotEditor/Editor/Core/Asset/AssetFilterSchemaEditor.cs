@@ -65,9 +65,15 @@ namespace DotEditor.Core.Asset
             EditorGUILayout.Space();
             EditorGUILayout.HelpBox("为了方便查看，临时保存着筛选后的结果。为了保证正确，请在使用前点击下方按钮或者调用Execute方法重新筛选", MessageType.Warning);
 
-            assetList.DoLayoutList();
-            
+            assetListScrollPos = EditorGUILayout.BeginScrollView(assetListScrollPos);
+            {
+                assetList.DoLayoutList();
+            }
+            EditorGUILayout.EndScrollView();
+
             serializedObject.ApplyModifiedProperties();
         }
+
+        private Vector2 assetListScrollPos = Vector2.zero;
     }
 }
