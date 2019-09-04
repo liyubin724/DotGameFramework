@@ -283,16 +283,52 @@ namespace DotEditor.Core.EGUI
         }
 
         private static Stack<float> labelWidthStack = new Stack<float>();
-        public static void BeginSetLabelWidth(float labelWidth)
+        public static void BeginLabelWidth(float labelWidth)
         {
             labelWidthStack.Push(EditorGUIUtility.labelWidth);
             EditorGUIUtility.labelWidth = labelWidth;
         }
 
-        public static void EndSetLableWidth()
+        public static void EndLableWidth()
         {
             if (labelWidthStack.Count > 0)
                 EditorGUIUtility.labelWidth = labelWidthStack.Pop();
+        }
+
+        private static Stack<Color> guiColorStack = new Stack<Color>();
+        public static void BeginGUIColor(Color color)
+        {
+            guiColorStack.Push(GUI.color);
+            GUI.color = color;
+        }
+        public static void EndGUIColor()
+        {
+            if (guiColorStack.Count > 0)
+                GUI.color = guiColorStack.Pop();
+        }
+
+        private static Stack<Color> guiBgColorStack = new Stack<Color>();
+        public static void BeginGUIBackgroundColor(Color color)
+        {
+            guiBgColorStack.Push(GUI.backgroundColor);
+            GUI.backgroundColor= color;
+        }
+        public static void EndGUIBackgroundColor()
+        {
+            if (guiBgColorStack.Count > 0)
+                GUI.backgroundColor = guiBgColorStack.Pop();
+        }
+
+        private static Stack<Color> guiContentColorStack = new Stack<Color>();
+        public static void BeginGUIContentColor(Color color)
+        {
+            guiContentColorStack.Push(GUI.contentColor);
+            GUI.contentColor = color;
+        }
+        public static void EndGUIContentColor()
+        {
+            if (guiContentColorStack.Count > 0)
+                GUI.contentColor = guiContentColorStack.Pop();
         }
     }
 

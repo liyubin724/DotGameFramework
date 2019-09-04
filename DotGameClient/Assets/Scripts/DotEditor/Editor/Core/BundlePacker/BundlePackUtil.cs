@@ -55,7 +55,7 @@ namespace DotEditor.Core.Packer
             AssetBundleSchemaUtil.UpdateAssetDetailConfigBySchema(config, setting);
         }
 
-        public static void SetAssetBundleNames()
+        public static void SetAssetBundleNames(bool isShowProgressBar = false)
         {
             AssetDetailConfig config = AssetDatabase.LoadAssetAtPath<AssetDetailConfig>(AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
             if (config == null)
@@ -67,20 +67,23 @@ namespace DotEditor.Core.Packer
             AssetImporter assetImporter = AssetImporter.GetAtPath(AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
             assetImporter.assetBundleName = typeof(AssetDetailConfig).Name.ToLower();
 
-            AssetBundleSchemaUtil.SetAssetBundleNames(config);
+            AssetBundleSchemaUtil.SetAssetBundleNames(config, isShowProgressBar);
 
         }
 
-        public static void ClearAssetBundleNames()
+        public static void ClearAssetBundleNames(bool isShowProgressBar = false)
         {
             string[] assetPaths = AssetDatabaseUtil.FindAssetWithBundleName();
             if (assetPaths != null && assetPaths.Length > 0)
             {
-                foreach (var assetPath in assetPaths)
+                EditorUtility.DisplayProgressBar("Clear Asset Bundle Names", "", 0.0f);
+                for(int i =0;i<assetPaths.Length;i++)
                 {
-                    AssetImporter assetImporter = AssetImporter.GetAtPath(assetPath);
+                    EditorUtility.DisplayProgressBar("Clear Asset Bundle Names", assetPaths[i], i/(float)assetPaths.Length);
+                    AssetImporter assetImporter = AssetImporter.GetAtPath(assetPaths[i]);
                     assetImporter.assetBundleName = "";
                 }
+                EditorUtility.ClearProgressBar();
             }
 
             AssetDatabase.RemoveUnusedAssetBundleNames();

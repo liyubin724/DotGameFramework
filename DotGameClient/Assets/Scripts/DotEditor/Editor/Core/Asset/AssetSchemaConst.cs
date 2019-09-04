@@ -28,15 +28,9 @@ namespace DotEditor.Core.Asset
 
     public class AssetBundleActionInput :AssetExecuteInput
     {
-        public string groupName;
+        public AssetDetailGroupData detailGroupData;
         public AssetFilterResult[] filterResults;
     }
-
-    public class AssetBundleActionResult : AssetExecuteResult
-    {
-        public AssetDetailGroupData groupData;
-    }
-    
     
 
 

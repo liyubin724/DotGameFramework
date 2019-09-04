@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace Dot.Core.Loader.Config
 {
     public class AssetDetailConst
@@ -19,6 +21,7 @@ namespace Dot.Core.Loader.Config
     public class AssetDetailGroupData
     {
         public string groupName;
-        public AssetDetailData[] assetDetailDatas;
+        public bool isMain = true;
+        public List<AssetDetailData> assetDetailDatas = new List<AssetDetailData>();
     }
 }

@@ -20,10 +20,7 @@ namespace DotEditor.Core.Asset
         public override AssetExecuteResult Execute(AssetExecuteInput inputData)
         {
             AssetBundleActionInput actionInputData = inputData as AssetBundleActionInput;
-            
-            AssetDetailGroupData groupData = new AssetDetailGroupData();
-            groupData.groupName = actionInputData.groupName;
-            List<AssetDetailData> assetDetailDatas = new List<AssetDetailData>();
+            AssetDetailGroupData detailGroupData = actionInputData.detailGroupData;
 
             string[] assetPaths = (from filterResult in actionInputData.filterResults
                              where string.IsNullOrEmpty(filterFolder) || filterFolder == filterResult.filterFolder let assets = filterResult.assets
@@ -51,16 +48,13 @@ namespace DotEditor.Core.Asset
                 AssetDetailData assetDetailData = new AssetDetailData();
                 assetDetailData.address = GetAssetAddress(assetPaths[i]);
                 assetDetailData.path = assetPaths[i];
+                assetDetailData.bundle = GetAssetBundle(rootFolder,assetPaths[i]).ToLower();
                 assetDetailData.labels = new string[labels.Length];
                 Array.Copy(labels, assetDetailData.labels, labels.Length);
-                assetDetailData.bundle = GetAssetBundle(rootFolder,assetPaths[i]).ToLower();
-                assetDetailDatas.Add(assetDetailData);
-            }
-            groupData.assetDetailDatas = assetDetailDatas.ToArray();
 
-            AssetBundleActionResult result = new AssetBundleActionResult();
-            result.groupData = groupData;
-            return result;
+                detailGroupData.assetDetailDatas.Add(assetDetailData);
+            }
+            return null;
         }
         private int groupCount = 0;
         private int groupIndex = 0;

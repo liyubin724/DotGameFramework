@@ -9,11 +9,9 @@ namespace DotEditor.Core.Packer
 {
     public class AssetDetailGroupTreeData
     {
+        public AssetDetailGroupData detailGroupData;
         public bool isGroup;
-        public string groupName;
-
-        public int detailDataIndex = 0;
-        public AssetDetailData detailData;
+        public int detailDataIndex = -1;
 
         public static AssetDetailGroupTreeData Root
         {
@@ -45,40 +43,49 @@ namespace DotEditor.Core.Packer
         protected override void RowGUI(RowGUIArgs args)
         {
             var item = (TreeViewItem<TreeElementWithData<AssetDetailGroupTreeData>>)args.item;
-            TreeElementWithData<AssetDetailGroupTreeData> element = item.data;
+            AssetDetailGroupTreeData groupTreeData = item.data.Data;
 
             Rect contentRect = args.rowRect;
             contentRect.x += GetContentIndent(item);
             contentRect.width -= GetContentIndent(item);
 
-            if (element.Data.isGroup)
+            GUILayout.BeginArea(contentRect);
             {
-                EditorGUI.LabelField(contentRect, new GUIContent(element.Data.groupName));
-            }else
-            {
-                GUILayout.BeginArea(contentRect);
+                AssetDetailGroupData detailGroupData = groupTreeData.detailGroupData;
+                if(groupTreeData.isGroup)
+                {
+                    string groupName = detailGroupData.groupName;
+
+                    if (detailGroupData.isMain)
+                    {
+                        groupName += "(Main)";
+                    }
+                    EditorGUILayout.LabelField(new GUIContent(groupName));
+                }
+                else
                 {
                     GUILayout.BeginHorizontal();
                     {
-                        EditorGUIUtil.BeginSetLabelWidth(60);
+                        EditorGUIUtil.BeginLabelWidth(60);
                         {
-                            EditorGUILayout.LabelField(new GUIContent("" + element.Data.detailDataIndex), GUILayout.Width(20));
-                            EditorGUILayout.TextField("address:",element.Data.detailData.address);
+                            AssetDetailData detailData = detailGroupData.assetDetailDatas[groupTreeData.detailDataIndex];
+                            EditorGUILayout.LabelField(new GUIContent("" + groupTreeData.detailDataIndex), GUILayout.Width(20));
+                            EditorGUILayout.TextField("address:", detailData.address);
                             GUILayout.BeginVertical();
                             {
-                                EditorGUILayout.TextField("path:",element.Data.detailData.path);
-                                EditorGUILayout.TextField("bundle:",element.Data.detailData.bundle);
+                                EditorGUILayout.TextField("path:", detailData.path);
+                                EditorGUILayout.TextField("bundle:", detailData.bundle);
                             }
                             GUILayout.EndVertical();
-                            EditorGUILayout.TextField("labels:",string.Join(",", element.Data.detailData.labels));
+                            EditorGUILayout.TextField("labels:", string.Join(",", detailData.labels));
                         }
-                        EditorGUIUtil.EndSetLableWidth();
-
+                        EditorGUIUtil.EndLableWidth();
                     }
                     GUILayout.EndHorizontal();
                 }
-                GUILayout.EndArea();
             }
+            GUILayout.EndArea();
+            
         }
     }
 }

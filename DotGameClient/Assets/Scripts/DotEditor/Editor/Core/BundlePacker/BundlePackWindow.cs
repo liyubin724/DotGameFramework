@@ -50,12 +50,12 @@ namespace DotEditor.Core.Packer
                     new AssetDetailGroupTreeData()
                     {
                         isGroup = true,
-                        groupName = groupData.groupName,
+                        detailGroupData = groupData,
                     }, "", 0, (i + 1) * 100);
 
                 treeModel.AddElement(groupElementData, treeModelRoot, treeModelRoot.hasChildren ? treeModelRoot.children.Count : 0);
 
-                for (int j = 0; j < groupData.assetDetailDatas.Length; ++j)
+                for (int j = 0; j < groupData.assetDetailDatas.Count; ++j)
                 {
                     AssetDetailData detailData = groupData.assetDetailDatas[j];
                     if(FilterAssetDetailData(detailData))
@@ -65,7 +65,7 @@ namespace DotEditor.Core.Packer
                                 {
                                     isGroup = false,
                                     detailDataIndex = j,
-                                    detailData = groupData.assetDetailDatas[j],
+                                    detailGroupData = groupData,
                                 }, "", 1, (i + 1) * 100 + (j + 1));
 
                         treeModel.AddElement(elementData, groupElementData, groupElementData.hasChildren ? groupElementData.children.Count : 0);
@@ -162,11 +162,11 @@ namespace DotEditor.Core.Packer
                 }
                 if (GUILayout.Button("Set Asset Bundle Names"))
                 {
-                    BundlePackUtil.SetAssetBundleNames();
+                    BundlePackUtil.SetAssetBundleNames(true);
                 }
                 if (GUILayout.Button("Clear Asset Bundle Names"))
                 {
-                    BundlePackUtil.ClearAssetBundleNames();
+                    BundlePackUtil.ClearAssetBundleNames(true);
                 }
             }
             EditorGUILayout.EndHorizontal();

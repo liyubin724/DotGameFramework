@@ -30,11 +30,11 @@ namespace DotEditor.Core.Asset
             };
             filterList.drawElementCallback += (rect, index, isActive, isFocused) =>
             {
-                EditorGUIUtil.BeginSetLabelWidth(40);
+                EditorGUIUtil.BeginLabelWidth(40);
                 {
                     EditorGUI.PropertyField(rect, filters.GetArrayElementAtIndex(index), new GUIContent("" + index));
                 }
-                EditorGUIUtil.EndSetLableWidth();
+                EditorGUIUtil.EndLableWidth();
             };
             filterList.onAddCallback += (list) =>
             {
@@ -48,11 +48,11 @@ namespace DotEditor.Core.Asset
             };
             actionList.drawElementCallback += (rect, index, isActive, isFocused) =>
             {
-                EditorGUIUtil.BeginSetLabelWidth(40);
+                EditorGUIUtil.BeginLabelWidth(40);
                 {
                     EditorGUI.PropertyField(rect, actions.GetArrayElementAtIndex(index),new GUIContent(""+index));
                 }
-                EditorGUIUtil.EndSetLableWidth();
+                EditorGUIUtil.EndLableWidth();
             };
             actionList.onAddCallback += (list) =>
             {

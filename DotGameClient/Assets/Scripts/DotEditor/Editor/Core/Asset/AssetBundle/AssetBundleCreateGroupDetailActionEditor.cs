@@ -35,12 +35,12 @@ namespace DotEditor.Core.Asset
             };
             labelList.drawElementCallback += (rect, index, isActive, isFocused) =>
             {
-                EditorGUIUtil.BeginSetLabelWidth(40);
+                EditorGUIUtil.BeginLabelWidth(40);
                 {
                     SerializedProperty serializedProperty = labels.GetArrayElementAtIndex(index);
                     EditorGUI.PropertyField(rect, serializedProperty, new GUIContent("" + index));
                 }
-                EditorGUIUtil.EndSetLableWidth();
+                EditorGUIUtil.EndLableWidth();
             };
         }
 

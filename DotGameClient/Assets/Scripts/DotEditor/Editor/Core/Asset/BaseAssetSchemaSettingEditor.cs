@@ -28,7 +28,7 @@ namespace DotEditor.Core.Asset
             };
             groupList.drawElementCallback += (rect, index, isActive, isFocused) =>
             {
-                EditorGUIUtil.BeginSetLabelWidth(40);
+                EditorGUIUtil.BeginLabelWidth(40);
                 {
                     EditorGUI.BeginDisabledGroup(true);
                     {
@@ -37,7 +37,7 @@ namespace DotEditor.Core.Asset
                     }
                     EditorGUI.EndDisabledGroup();
                 }
-                EditorGUIUtil.EndSetLableWidth();
+                EditorGUIUtil.EndLableWidth();
             };
         }
 
