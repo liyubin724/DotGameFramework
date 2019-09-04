@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEnable: 1
   actionName: Prefabs
-  packMode: 0
+  packMode: 1
   packCount: 0
   addressMode: 1
   fileNameFormat: '{0}'

@@ -1,4 +1,4 @@
-﻿using Dot.Core.Loader.Config;
+﻿using DotEditor.Core.Packer;
 using UnityEngine;
 
 namespace DotEditor.Core.Asset
@@ -12,14 +12,14 @@ namespace DotEditor.Core.Asset
         {
             if (!isEnable) return null;
             AssetBundleGroupInput groupInput = input as AssetBundleGroupInput;
-            AssetDetailGroupData detailGroupData = new AssetDetailGroupData();
-            detailGroupData.groupName = groupName;
-            detailGroupData.isMain = isMain;
-            groupInput.detailConfig.assetGroupDatas.Add(detailGroupData);
+            AssetBundleGroupData abGroupData = new AssetBundleGroupData();
+            abGroupData.groupName = groupName;
+            abGroupData.isMain = isMain;
+            groupInput.packConfig.groupDatas.Add(abGroupData);
 
             AssetBundleActionInput actionInput = new AssetBundleActionInput()
             {
-                detailGroupData = detailGroupData,
+                groupData = abGroupData,
                 filterResults = GetFilterResult(),
             };
             foreach (var action in actions)

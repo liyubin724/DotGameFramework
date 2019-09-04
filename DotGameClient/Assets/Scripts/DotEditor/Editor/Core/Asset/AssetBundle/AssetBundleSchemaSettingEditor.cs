@@ -1,20 +1,18 @@
-﻿using Dot.Core.Loader.Config;
+﻿using DotEditor.Core.Packer;
 using UnityEditor;
 using UnityEngine;
-using System.Linq;
-using DotEditor.Core.Packer;
 
 namespace DotEditor.Core.Asset
 {
     [CustomEditor(typeof(AssetBundleSchemaSetting))]
     public class AssetBundleSchemaSettingEditor : BaseAssetSchemaSettingEditor
     {
-        private SerializedProperty assetDetailConfig;
+        private SerializedProperty packConfig;
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            assetDetailConfig = serializedObject.FindProperty("assetDetailConfig");
+            packConfig = serializedObject.FindProperty("packConfig");
         }
 
         public override void OnInspectorGUI()
@@ -23,7 +21,7 @@ namespace DotEditor.Core.Asset
 
             EditorGUILayout.BeginHorizontal();
             {
-                EditorGUILayout.PropertyField(assetDetailConfig);
+                EditorGUILayout.PropertyField(packConfig);
                 if(GUILayout.Button("find or create",GUILayout.Width(100)))
                 {
                     FindOrCreateConfig();
@@ -41,16 +39,6 @@ namespace DotEditor.Core.Asset
                 Execute();
             }
 
-            if (GUILayout.Button("Set Asset Bundle Names", GUILayout.Height(40)))
-            {
-                SetAssetBundleNames();
-            }
-
-            if (GUILayout.Button("Clear Asset Bundle Names", GUILayout.Height(40)))
-            {
-                BundlePackUtil.ClearAssetBundleNames();
-            }
-
             serializedObject.ApplyModifiedProperties();
         }
 
@@ -59,17 +47,17 @@ namespace DotEditor.Core.Asset
             FindOrCreateConfig();
 
             AssetBundleSchemaSetting setting = target as AssetBundleSchemaSetting;
-            AssetDetailConfig config = setting.assetDetailConfig;
-            config.assetGroupDatas.Clear();
+            AssetBundlePackConfig config = setting.packConfig;
+            config.groupDatas.Clear();
 
-            AssetBundleSchemaUtil.UpdateAssetDetailConfigBySchema(config, setting);
+            AssetBundleSchemaUtil.UpdatePackConfigBySchema(config, setting);
         }
 
         private void FindOrCreateConfig()
         {
-            if(assetDetailConfig.objectReferenceValue == null)
+            if(packConfig.objectReferenceValue == null)
             {
-                assetDetailConfig.objectReferenceValue = BundlePackUtil.FindOrCreateConfig();
+                packConfig.objectReferenceValue = BundlePackUtil.FindOrCreateConfig();
             }
         }
 
@@ -78,7 +66,7 @@ namespace DotEditor.Core.Asset
             FindOrCreateConfig();
 
             AssetBundleSchemaSetting setting = target as AssetBundleSchemaSetting;
-            AssetDetailConfig config = setting.assetDetailConfig;
+            AssetBundlePackConfig config = setting.packConfig;
 
             AssetBundleSchemaUtil.SetAssetBundleNames(config, true);
         }

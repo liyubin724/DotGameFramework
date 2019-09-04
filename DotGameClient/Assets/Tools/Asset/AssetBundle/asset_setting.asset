@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 469705af7191c824281a306a804e43fc, type: 3}
   m_Name: asset_setting
   m_EditorClassIdentifier: 
-  settingName: Asset Schema Setting
+  settingName: Asset Bundle Schema Setting
   groupType: 1
   groupSchemas:
   - {fileID: 11400000, guid: 1b918e46eca59a148b73ac43ecb766cb, type: 2}
   - {fileID: 11400000, guid: 5de6405ebc808984e8d93fb877cf0a7a, type: 2}
-  assetDetailConfig: {fileID: 11400000, guid: 0df9bf25b4e1d4c43bff074252e4b4b9, type: 2}
+  packConfig: {fileID: 11400000, guid: 5fa12c701a60205438d07c4cf09a775a, type: 2}

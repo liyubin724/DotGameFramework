@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEnable: 1
   actionName: SpriteAtlasCreate
-  packMode: 1
-  packCount: 0
+  packMode: 2
+  packCount: 10
   addressMode: 1
   fileNameFormat: '{0}'
   filterFolder: 

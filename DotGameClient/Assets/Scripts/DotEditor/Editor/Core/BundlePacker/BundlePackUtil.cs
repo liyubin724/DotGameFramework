@@ -8,18 +8,18 @@ namespace DotEditor.Core.Packer
 {
     public class BundlePackUtil
     {
-        public static AssetDetailConfig FindOrCreateConfig()
+        public static AssetBundlePackConfig FindOrCreateConfig()
         {
-            AssetDetailConfig config = AssetDatabase.LoadAssetAtPath<AssetDetailConfig>(AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
+            AssetBundlePackConfig config = AssetDatabase.LoadAssetAtPath<AssetBundlePackConfig>(AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
 
             bool isNewCreate = false;
             if (config == null)
             {
                 isNewCreate = true;
-                config = ScriptableObject.CreateInstance<AssetDetailConfig>();
-                AssetDatabase.CreateAsset(config, AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
+                config = ScriptableObject.CreateInstance<AssetBundlePackConfig>();
+                AssetDatabase.CreateAsset(config, AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
 
-                AssetDatabase.ImportAsset(AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
+                AssetDatabase.ImportAsset(AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
             }
 
             if (isNewCreate)
@@ -29,43 +29,43 @@ namespace DotEditor.Core.Packer
             return config;
         }
 
-        public static void UpdateAssetDetailConfigBySchema()
+        public static void UpdatePackConfigBySchema()
         {
-            AssetDetailConfig config = AssetDatabase.LoadAssetAtPath<AssetDetailConfig>(AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
+            AssetBundlePackConfig config = AssetDatabase.LoadAssetAtPath<AssetBundlePackConfig>(AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
             if (config == null)
             {
-                Debug.LogError("AssetBundleSchemaUtil::UpdateAssetDetailConfigBySchema->config is null;");
+                Debug.LogError("AssetBundleSchemaUtil::UpdatePackConfigBySchema->config is null;");
                 return;
             }
 
             string[] settingPaths = AssetDatabaseUtil.FindAssets<AssetBundleSchemaSetting>();
             if (settingPaths == null || settingPaths.Length == 0)
             {
-                Debug.LogError("AssetBundleSchemaUtil::UpdateAssetDetailConfigBySchema->Not found schema Setting;");
+                Debug.LogError("AssetBundleSchemaUtil::UpdatePackConfigBySchema->Not found schema Setting;");
                 return;
             }
 
             AssetBundleSchemaSetting setting = AssetDatabase.LoadAssetAtPath<AssetBundleSchemaSetting>(settingPaths[0]);
             if (setting == null)
             {
-                Debug.LogError("AssetBundleSchemaUtil::UpdateAssetDetailConfigBySchema->Schema Setting is Null.");
+                Debug.LogError("AssetBundleSchemaUtil::UpdatePackConfigBySchema->Schema Setting is Null.");
                 return;
             }
 
-            AssetBundleSchemaUtil.UpdateAssetDetailConfigBySchema(config, setting);
+            AssetBundleSchemaUtil.UpdatePackConfigBySchema(config, setting);
         }
 
         public static void SetAssetBundleNames(bool isShowProgressBar = false)
         {
-            AssetDetailConfig config = AssetDatabase.LoadAssetAtPath<AssetDetailConfig>(AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
+            AssetBundlePackConfig config = AssetDatabase.LoadAssetAtPath<AssetBundlePackConfig>(AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
             if (config == null)
             {
                 Debug.LogError("AssetBundleSchemaUtil::SetAssetBundleNames->config is null;");
                 return;
             }
 
-            AssetImporter assetImporter = AssetImporter.GetAtPath(AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
-            assetImporter.assetBundleName = typeof(AssetDetailConfig).Name.ToLower();
+            AssetImporter assetImporter = AssetImporter.GetAtPath(AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
+            assetImporter.assetBundleName = typeof(AssetBundlePackConfig).Name.ToLower();
 
             AssetBundleSchemaUtil.SetAssetBundleNames(config, isShowProgressBar);
 

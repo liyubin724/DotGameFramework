@@ -1,4 +1,4 @@
-﻿using Dot.Core.Loader.Config;
+﻿using DotEditor.Core.Packer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +20,7 @@ namespace DotEditor.Core.Asset
         public override AssetExecuteResult Execute(AssetExecuteInput inputData)
         {
             AssetBundleActionInput actionInputData = inputData as AssetBundleActionInput;
-            AssetDetailGroupData detailGroupData = actionInputData.detailGroupData;
+            AssetBundleGroupData groupData = actionInputData.groupData;
 
             string[] assetPaths = (from filterResult in actionInputData.filterResults
                              where string.IsNullOrEmpty(filterFolder) || filterFolder == filterResult.filterFolder let assets = filterResult.assets
@@ -45,14 +45,14 @@ namespace DotEditor.Core.Asset
 
             for(int i =0;i<assetPaths.Length;++i)
             {
-                AssetDetailData assetDetailData = new AssetDetailData();
-                assetDetailData.address = GetAssetAddress(assetPaths[i]);
-                assetDetailData.path = assetPaths[i];
-                assetDetailData.bundle = GetAssetBundle(rootFolder,assetPaths[i]).ToLower();
-                assetDetailData.labels = new string[labels.Length];
-                Array.Copy(labels, assetDetailData.labels, labels.Length);
+                AssetBundleAssetData assetData = new AssetBundleAssetData();
+                assetData.address = GetAssetAddress(assetPaths[i]);
+                assetData.path = assetPaths[i];
+                assetData.bundle = GetAssetBundle(rootFolder,assetPaths[i]).ToLower();
+                assetData.labels = new string[labels.Length];
+                Array.Copy(labels, assetData.labels, labels.Length);
 
-                detailGroupData.assetDetailDatas.Add(assetDetailData);
+                groupData.assetDatas.Add(assetData);
             }
             return null;
         }

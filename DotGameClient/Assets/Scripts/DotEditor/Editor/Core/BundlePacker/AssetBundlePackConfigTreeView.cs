@@ -1,5 +1,4 @@
-﻿using Dot.Core.Loader.Config;
-using DotEditor.Core.EGUI;
+﻿using DotEditor.Core.EGUI;
 using DotEditor.Core.EGUI.TreeGUI;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
@@ -7,27 +6,26 @@ using UnityEngine;
 
 namespace DotEditor.Core.Packer
 {
-    public class AssetDetailGroupTreeData
+    public class AssetBundleGroupTreeData
     {
-        public AssetDetailGroupData detailGroupData;
+        public AssetBundleGroupData groupData;
         public bool isGroup;
-        public int detailDataIndex = -1;
+        public int dataIndex = -1;
 
-        public static AssetDetailGroupTreeData Root
+        public static AssetBundleGroupTreeData Root
         {
-            get { return new AssetDetailGroupTreeData(); }
+            get { return new AssetBundleGroupTreeData(); }
         }
     }
 
-    public class AssetDetailGroupTreeView : TreeViewWithTreeModel<TreeElementWithData<AssetDetailGroupTreeData>>
+    public class AssetBundlePackConfigTreeView : TreeViewWithTreeModel<TreeElementWithData<AssetBundleGroupTreeData>>
     {
-        public AssetDetailGroupTreeView(TreeViewState state, TreeModel<TreeElementWithData<AssetDetailGroupTreeData>> model) : 
+        public AssetBundlePackConfigTreeView(TreeViewState state, TreeModel<TreeElementWithData<AssetBundleGroupTreeData>> model) : 
             base(state, model)
         {
             showBorder = true;
             showAlternatingRowBackgrounds = true;
             rowHeight = EditorGUIUtility.singleLineHeight * 2+8;
-            Reload();
         }
 
         protected override bool CanMultiSelect(TreeViewItem item)
@@ -42,8 +40,8 @@ namespace DotEditor.Core.Packer
 
         protected override void RowGUI(RowGUIArgs args)
         {
-            var item = (TreeViewItem<TreeElementWithData<AssetDetailGroupTreeData>>)args.item;
-            AssetDetailGroupTreeData groupTreeData = item.data.Data;
+            var item = (TreeViewItem<TreeElementWithData<AssetBundleGroupTreeData>>)args.item;
+            AssetBundleGroupTreeData groupTreeData = item.data.Data;
 
             Rect contentRect = args.rowRect;
             contentRect.x += GetContentIndent(item);
@@ -51,12 +49,12 @@ namespace DotEditor.Core.Packer
 
             GUILayout.BeginArea(contentRect);
             {
-                AssetDetailGroupData detailGroupData = groupTreeData.detailGroupData;
+                AssetBundleGroupData groupData = groupTreeData.groupData;
                 if(groupTreeData.isGroup)
                 {
-                    string groupName = detailGroupData.groupName;
+                    string groupName = groupData.groupName;
 
-                    if (detailGroupData.isMain)
+                    if (groupData.isMain)
                     {
                         groupName += "(Main)";
                     }
@@ -68,16 +66,16 @@ namespace DotEditor.Core.Packer
                     {
                         EditorGUIUtil.BeginLabelWidth(60);
                         {
-                            AssetDetailData detailData = detailGroupData.assetDetailDatas[groupTreeData.detailDataIndex];
-                            EditorGUILayout.LabelField(new GUIContent("" + groupTreeData.detailDataIndex), GUILayout.Width(20));
-                            EditorGUILayout.TextField("address:", detailData.address);
+                            AssetBundleAssetData assetData = groupData.assetDatas[groupTreeData.dataIndex];
+                            EditorGUILayout.LabelField(new GUIContent("" + groupTreeData.dataIndex), GUILayout.Width(20));
+                            EditorGUILayout.TextField("address:", assetData.address);
                             GUILayout.BeginVertical();
                             {
-                                EditorGUILayout.TextField("path:", detailData.path);
-                                EditorGUILayout.TextField("bundle:", detailData.bundle);
+                                EditorGUILayout.TextField("path:", assetData.path);
+                                EditorGUILayout.TextField("bundle:", assetData.bundle);
                             }
                             GUILayout.EndVertical();
-                            EditorGUILayout.TextField("labels:", string.Join(",", detailData.labels));
+                            EditorGUILayout.TextField("labels:", string.Join(",", assetData.labels));
                         }
                         EditorGUIUtil.EndLableWidth();
                     }

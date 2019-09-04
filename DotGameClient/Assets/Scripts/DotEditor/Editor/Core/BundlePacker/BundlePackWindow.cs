@@ -1,5 +1,4 @@
-﻿using Dot.Core.Loader.Config;
-using DotEditor.Core.EGUI.TreeGUI;
+﻿using DotEditor.Core.EGUI.TreeGUI;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -18,54 +17,58 @@ namespace DotEditor.Core.Packer
             win.Show();
         }
 
-        private AssetDetailGroupTreeView detailGroupTreeView;
+        private AssetBundlePackConfigTreeView detailGroupTreeView;
         private TreeViewState detailGroupTreeViewState;
 
-        private AssetDetailConfig detailConfig = null;
+        private AssetBundlePackConfig detailConfig = null;
+
+        private void OnEnable()
+        {
+            detailConfig = BundlePackUtil.FindOrCreateConfig();
+        }
 
         private void InitDetailGroupTreeView()
         {
             detailGroupTreeViewState = new TreeViewState();
-            TreeModel<TreeElementWithData<AssetDetailGroupTreeData>> data = new TreeModel<TreeElementWithData<AssetDetailGroupTreeData>>(
-               new List<TreeElementWithData<AssetDetailGroupTreeData>>()
+            TreeModel<TreeElementWithData<AssetBundleGroupTreeData>> data = new TreeModel<TreeElementWithData<AssetBundleGroupTreeData>>(
+               new List<TreeElementWithData<AssetBundleGroupTreeData>>()
                {
-                    new TreeElementWithData<AssetDetailGroupTreeData>(AssetDetailGroupTreeData.Root,"",-1,-1),
+                    new TreeElementWithData<AssetBundleGroupTreeData>(AssetBundleGroupTreeData.Root,"",-1,-1),
                });
 
-            detailGroupTreeView = new AssetDetailGroupTreeView(detailGroupTreeViewState, data);
-            FilterTreeModel();
-            detailGroupTreeView.Reload();
+            detailGroupTreeView = new AssetBundlePackConfigTreeView(detailGroupTreeViewState, data);
+            
         }
 
         private void FilterTreeModel()
         {
-            TreeModel<TreeElementWithData<AssetDetailGroupTreeData>> treeModel = detailGroupTreeView.treeModel;
-            TreeElementWithData<AssetDetailGroupTreeData> treeModelRoot = treeModel.root;
+            TreeModel<TreeElementWithData<AssetBundleGroupTreeData>> treeModel = detailGroupTreeView.treeModel;
+            TreeElementWithData<AssetBundleGroupTreeData> treeModelRoot = treeModel.root;
             treeModelRoot.children?.Clear();
 
-            for (int i = 0; i < detailConfig.assetGroupDatas.Count; i++)
+            for (int i = 0; i < detailConfig.groupDatas.Count; i++)
             {
-                AssetDetailGroupData groupData = detailConfig.assetGroupDatas[i];
-                TreeElementWithData<AssetDetailGroupTreeData> groupElementData = new TreeElementWithData<AssetDetailGroupTreeData>(
-                    new AssetDetailGroupTreeData()
+                AssetBundleGroupData groupData = detailConfig.groupDatas[i];
+                TreeElementWithData<AssetBundleGroupTreeData> groupElementData = new TreeElementWithData<AssetBundleGroupTreeData>(
+                    new AssetBundleGroupTreeData()
                     {
                         isGroup = true,
-                        detailGroupData = groupData,
+                        groupData = groupData,
                     }, "", 0, (i + 1) * 100);
 
                 treeModel.AddElement(groupElementData, treeModelRoot, treeModelRoot.hasChildren ? treeModelRoot.children.Count : 0);
 
-                for (int j = 0; j < groupData.assetDetailDatas.Count; ++j)
+                for (int j = 0; j < groupData.assetDatas.Count; ++j)
                 {
-                    AssetDetailData detailData = groupData.assetDetailDatas[j];
+                    AssetBundleAssetData detailData = groupData.assetDatas[j];
                     if(FilterAssetDetailData(detailData))
                     {
-                        TreeElementWithData<AssetDetailGroupTreeData> elementData = new TreeElementWithData<AssetDetailGroupTreeData>(
-                                new AssetDetailGroupTreeData()
+                        TreeElementWithData<AssetBundleGroupTreeData> elementData = new TreeElementWithData<AssetBundleGroupTreeData>(
+                                new AssetBundleGroupTreeData()
                                 {
                                     isGroup = false,
-                                    detailDataIndex = j,
-                                    detailGroupData = groupData,
+                                    dataIndex = j,
+                                    groupData = groupData,
                                 }, "", 1, (i + 1) * 100 + (j + 1));
 
                         treeModel.AddElement(elementData, groupElementData, groupElementData.hasChildren ? groupElementData.children.Count : 0);
@@ -73,10 +76,9 @@ namespace DotEditor.Core.Packer
                 }
 
             }
-            detailGroupTreeView.Reload();
         }
 
-        private bool FilterAssetDetailData(AssetDetailData detailData)
+        private bool FilterAssetDetailData(AssetBundleAssetData detailData)
         {
             if(string.IsNullOrEmpty(searchText))
             {
@@ -127,36 +129,25 @@ namespace DotEditor.Core.Packer
 
         private void OnGUI()
         {
-            if(detailConfig == null)
-            {
-                detailConfig = BundlePackUtil.FindOrCreateConfig();
-            }
+            DrawToolbar();
+
+            GUIStyle lableStyle = new GUIStyle(EditorStyles.label);
+            lableStyle.alignment = TextAnchor.MiddleCenter;
+            EditorGUILayout.LabelField("Asset Detail Group List", lableStyle, GUILayout.ExpandWidth(true));
+
+            Rect lastRect = EditorGUILayout.GetControlRect(GUILayout.Height(400));
             if (detailGroupTreeView == null)
             {
                 InitDetailGroupTreeView();
+                FilterTreeModel();
             }
-
-            DrawToolbar();
-
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            {
-                GUIStyle lableStyle = new GUIStyle(EditorStyles.label);
-                lableStyle.alignment = TextAnchor.MiddleCenter;
-                EditorGUILayout.LabelField("Asset Detail Group List", lableStyle, GUILayout.ExpandWidth(true));
-
-                Rect lastRect = EditorGUILayout.GetControlRect(GUILayout.Height(400));
-
-                detailGroupTreeView.OnGUI(lastRect);
-            }
-            EditorGUILayout.EndVertical();
-
-
-
+            detailGroupTreeView?.OnGUI(lastRect);
+            
             EditorGUILayout.BeginHorizontal(GUILayout.ExpandHeight(true));
             {
                 if (GUILayout.Button("Update Asset Detail"))
                 {
-                    BundlePackUtil.UpdateAssetDetailConfigBySchema();
+                    BundlePackUtil.UpdatePackConfigBySchema();
                     detailConfig = BundlePackUtil.FindOrCreateConfig();
                     FilterTreeModel();
                 }

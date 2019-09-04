@@ -1,4 +1,4 @@
-﻿using Dot.Core.Loader.Config;
+﻿using DotEditor.Core.Packer;
 using System.Linq;
 using UnityEditor;
 
@@ -6,23 +6,23 @@ namespace DotEditor.Core.Asset
 {
     public static class AssetBundleSchemaUtil
     {
-        public static void UpdateAssetDetailConfigBySchema(AssetDetailConfig config, AssetBundleSchemaSetting setting)
+        public static void UpdatePackConfigBySchema(AssetBundlePackConfig config, AssetBundleSchemaSetting setting)
         {
-            config.assetGroupDatas.Clear();
+            config.groupDatas.Clear();
 
-            AssetBundleGroupInput groupInput = new AssetBundleGroupInput() { detailConfig = config };
+            AssetBundleGroupInput groupInput = new AssetBundleGroupInput() { packConfig = config };
             foreach (var group in setting.groupSchemas)
             {
                 group?.Execute(groupInput);
             }
             AssetDatabase.SaveAssets();
-            AssetDatabase.ImportAsset(AssetDetailConst.ASSET_DETAIL_CONFIG_PATH);
+            AssetDatabase.ImportAsset(AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
         }
 
-        public static void SetAssetBundleNames(AssetDetailConfig config, bool isShowProgressBar = false)
+        public static void SetAssetBundleNames(AssetBundlePackConfig config, bool isShowProgressBar = false)
         {
-            AssetDetailData[] datas = (from groupData in config.assetGroupDatas
-                                       from detailData in groupData.assetDetailDatas
+            AssetBundleAssetData[] datas = (from groupData in config.groupDatas
+                                       from detailData in groupData.assetDatas
                                        select detailData).ToArray();
             if (isShowProgressBar)
             {

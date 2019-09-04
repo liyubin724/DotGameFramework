@@ -1,9 +1,4 @@
-﻿using Dot.Core.Loader.Config;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DotEditor.Core.Packer;
 
 namespace DotEditor.Core.Asset
 {
@@ -23,12 +18,12 @@ namespace DotEditor.Core.Asset
     
     public class AssetBundleGroupInput : AssetExecuteInput
     {
-        public AssetDetailConfig detailConfig;
+        public AssetBundlePackConfig packConfig;
     }
 
     public class AssetBundleActionInput :AssetExecuteInput
     {
-        public AssetDetailGroupData detailGroupData;
+        public AssetBundleGroupData groupData;
         public AssetFilterResult[] filterResults;
     }
     
