@@ -17,7 +17,7 @@ namespace Dot.Core.Loader
             for (int i = 0; i < rLoaderData.assetPaths.Length; ++i)
             {
                 AssetDatabaseAsyncOperation operation = new AssetDatabaseAsyncOperation(rLoaderData.assetPaths[i]);
-                asyncOperations.Add(operation);
+                asyncOperationORM.PushData(operation);
 
                 rLoaderData.asyncOperations[i] = operation;
             }

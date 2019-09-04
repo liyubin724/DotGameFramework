@@ -11,7 +11,7 @@ namespace Dot.Core.Loader
         Error,
     }
 
-    public abstract class AAssetAsyncOperation
+    public abstract class AAssetAsyncOperation : IORMData<string>
     {
         protected string assetPath;
         protected AssetAsyncOperationStatus status = AssetAsyncOperationStatus.None;
@@ -37,5 +37,10 @@ namespace Dot.Core.Loader
         public abstract void DoUpdate();
         public abstract UnityObject GetAsset();
         public abstract float Progress();
+
+        public string GetKey()
+        {
+            return assetPath;
+        }
     }
 }

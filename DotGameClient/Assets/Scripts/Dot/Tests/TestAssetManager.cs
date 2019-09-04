@@ -15,28 +15,12 @@ namespace Dot.Tests
         {
             GameController.StartUp();
 
-            string manifestPath = "D:/assetbundles/assetbundles";
-            AssetBundleManifest manifest = AssetBundle.LoadFromFile(manifestPath).LoadAsset<AssetBundleManifest>("AssetBundleManifest");
-            string[] allBundles = manifest.GetAllAssetBundles();
-            foreach (var b in allBundles) Debug.Log(b);
+            AssetManager.GetInstance().InitLoader(AssetLoaderMode.AssetBundle, (isSuccess) =>
+            {
+                Debug.Log("Asset Manager init Success");
 
-            string assetPath = "Assets/Resources/Prefabs/Cylinder.prefab";
-            string bundlePath = "D:/assetbundles/assets/resources/prefabs";
-            UnityObject uObj = AssetBundle.LoadFromFile(bundlePath).LoadAsset(assetPath);
-            UnityObject.Instantiate(uObj);
-
-            //AssetManager.GetInstance().InitLoader(AssetLoaderMode.AssetBundle, (isSuccess) =>
-            //{
-            //    Debug.Log("Asset Manager init Success");
-            //},"D:/assetbundles");
+            }, "D:/assetbundles/StandaloneWindows64/assetbundles");
         }
-        private string[] resAssetPathArr = new string[]
-        {
-            "Prefabs/Cube",
-            "Prefabs/Capsule",
-            "Prefabs/Cylinder",
-            "Prefabs/Sphere",
-        };
         private string[] assetAssetPathArr = new string[]
         {
             "Assets/Resources/Prefabs/Cube.prefab",

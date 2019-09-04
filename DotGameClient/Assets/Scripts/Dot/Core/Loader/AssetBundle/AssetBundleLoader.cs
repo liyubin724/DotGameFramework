@@ -13,17 +13,17 @@ namespace Dot.Core.Loader
     public static class AssetBundleConst
     {
         public static readonly string ASSETBUNDLE_MAINFEST_NAME = "assetbundles";
-        public static readonly string ASSET_DETAIL_NAME = "assetdetail.txt";
     }
 
     public class AssetBundleLoader : AAssetLoader
     {
         private string assetBundleRootPath = "";
         private AssetBundleManifest assetBundleManifest = null;
-        private AssetBundleCreateRequest manifestRequest = null;
-        //private AssetBundleDetailData assetBundleDetailData = null;
+        private AssetInBundleConfig assetInBundleConfig = null;
 
         private readonly ObjectPool<AssetBundleLoaderData> loaderDataPool = new ObjectPool<AssetBundleLoaderData>(4);
+        private Dictionary<string, AssetNode> assetNodeDic = new Dictionary<string, AssetNode>();
+        private Dictionary<string, BundleNode> bundleNodeDic = new Dictionary<string, BundleNode>();
 
         protected override AssetLoaderData GetLoaderData() => loaderDataPool.Get();
 
@@ -31,38 +31,53 @@ namespace Dot.Core.Loader
 
         protected override void StartLoaderDataLoading(AssetLoaderData loaderData)
         {
-            
+            AssetBundleLoaderData abLoaderData = loaderData as AssetBundleLoaderData;
+            AssetLoaderHandle handle = loaderHandleDic[abLoaderData.uniqueID];
+
+            for (int i =0;i<abLoaderData.assetPaths.Length;++i)
+            {
+                string assetPath = abLoaderData.assetPaths[i];
+                if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
+                {
+                    if(assetNode.IsAlive())
+                    {
+
+                    }
+                }
+            }
         }
         
         public override void Initialize(Action<bool> initCallback, params object[] sysObjs)
         {
             base.Initialize(initCallback, sysObjs);
             assetBundleRootPath = sysObjs[0] as string;
-            string manifestPath = Path.Combine(assetBundleRootPath, AssetBundleConst.ASSETBUNDLE_MAINFEST_NAME);
-            manifestRequest = AssetBundle.LoadFromFileAsync(manifestPath);
+
+            string manifestPath = $"{assetBundleRootPath}/{AssetBundleConst.ASSETBUNDLE_MAINFEST_NAME}";
+            AssetBundle manifestAB = AssetBundle.LoadFromFile(manifestPath);
+            assetBundleManifest = manifestAB.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+            manifestAB.Unload(false);
+            
+            string assetInBundlePath = $"{assetBundleRootPath}/{AssetInBundleConfig.CONFIG_ASSET_BUNDLE_NAME}";
+            AssetBundle assetInBundleAB = AssetBundle.LoadFromFile(assetInBundlePath);
+            assetInBundleConfig = assetInBundleAB.LoadAsset<AssetInBundleConfig>(AssetInBundleConfig.CONFIG_PATH);
+            assetInBundleAB.Unload(false);
         }
 
         protected override bool UpdateInitialize(out bool isSuccess)
         {
-            isSuccess = false;
-            if(manifestRequest!=null && manifestRequest.isDone)
-            {
-                if(manifestRequest.assetBundle!=null)
-                {
-                    assetBundleManifest = manifestRequest.assetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
-                    if(assetBundleManifest!=null)
-                    {
-                        isSuccess = true;
-                    }
-                }
-                return true;
-            }
-            return false;
+            isSuccess = assetBundleManifest != null && assetInBundleConfig != null;
+            return true;
         }
 
         protected override bool UpdateLoadingLoaderData(AssetLoaderData loaderData, AssetLoaderHandle loaderHandle)
         {
             return true;
+        }
+
+        private string[] GetAssetBundleDepend(string assetPath)
+        {
+            string bundlePath = assetInBundleConfig.GetBundlePathByPath(assetPath);
+            return assetBundleManifest.GetAllDependencies(bundlePath);
         }
     }
 }

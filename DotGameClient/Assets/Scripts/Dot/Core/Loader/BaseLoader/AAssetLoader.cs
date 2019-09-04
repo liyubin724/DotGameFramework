@@ -21,7 +21,7 @@ namespace Dot.Core.Loader
         protected FastPriorityQueue<AssetLoaderData> loaderDataWaitingQueue = new FastPriorityQueue<AssetLoaderData>(10);
         protected Dictionary<long, AssetLoaderData> loaderDataLoadingDic = new Dictionary<long, AssetLoaderData>();
 
-        protected List<AAssetAsyncOperation> asyncOperations = new List<AAssetAsyncOperation>();
+        protected IndexMapORM<string, AAssetAsyncOperation> asyncOperationORM = new IndexMapORM<string, AAssetAsyncOperation>();
         public virtual int MaxLoadingCount { get; set; } = 5;
 
         private bool isInit = false;
@@ -76,14 +76,14 @@ namespace Dot.Core.Loader
                 return;
             }
 
-            if(loaderDataWaitingQueue.Count>0 && asyncOperations.Count<MaxLoadingCount)
+            if(loaderDataWaitingQueue.Count>0 && asyncOperationORM.Count<MaxLoadingCount)
             {
                 AssetLoaderData loaderData = loaderDataWaitingQueue.Dequeue();
                 loaderDataLoadingDic.Add(loaderData.uniqueID, loaderData);
                 StartLoaderDataLoading(loaderData);
             }
 
-            if(asyncOperations.Count>0)
+            if(asyncOperationORM.Count>0)
             {
                 UpdateAsyncOperation();
             }
@@ -119,16 +119,16 @@ namespace Dot.Core.Loader
         private void UpdateAsyncOperation()
         {
             int index = 0;
-            while(index<asyncOperations.Count && index<MaxLoadingCount)
+            while(index< asyncOperationORM.Count && index<MaxLoadingCount)
             {
-                AAssetAsyncOperation operation = asyncOperations[index];
+                AAssetAsyncOperation operation = asyncOperationORM.GetDataByIndex(index);
                 operation.DoUpdate();
                 if (operation.Status == AssetAsyncOperationStatus.None)
                 {
                     operation.StartAsync();
                 }else if(operation.Status == AssetAsyncOperationStatus.Loaded)
                 {
-                    asyncOperations.RemoveAt(index);
+                    asyncOperationORM.DeleteByIndex(index);
                     continue;
                 }
 

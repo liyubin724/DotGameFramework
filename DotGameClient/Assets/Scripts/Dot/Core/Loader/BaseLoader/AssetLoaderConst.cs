@@ -17,6 +17,12 @@ namespace Dot.Core.Loader
         PackedAssetBundle,
     }
 
+    public enum AssetPathMode
+    {
+        Address,
+        Path,
+    }
+
     public enum AssetLoaderPriority
     {
         VeryLow = 100,

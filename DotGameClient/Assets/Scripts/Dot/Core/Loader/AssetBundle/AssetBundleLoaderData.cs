@@ -9,6 +9,7 @@ namespace Dot.Core.Loader
 {
     public class AssetBundleLoaderData : AssetLoaderData, IObjectPoolItem
     {
+        
         public void OnNew()
         {
         }

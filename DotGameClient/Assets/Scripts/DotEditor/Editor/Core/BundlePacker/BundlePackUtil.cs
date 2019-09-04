@@ -1,4 +1,5 @@
-﻿using Dot.Core.Loader.Config;
+﻿using Dot.Core.Loader;
+using Dot.Core.Loader.Config;
 using DotEditor.Core.Asset;
 using DotEditor.Core.Util;
 using System;
@@ -147,7 +148,7 @@ namespace DotEditor.Core.Packer
         public static void PackAssetBundle(AssetBundlePackConfig packConfig)
         {
             string targetFolderName = packConfig.buildTarget.ToString();
-            string outputTargetDir = packConfig.bundleOutputDir + "/" + targetFolderName+"/assetbundles";
+            string outputTargetDir = packConfig.bundleOutputDir + "/" + targetFolderName + "/" + AssetBundleConst.ASSETBUNDLE_MAINFEST_NAME;
 
             BuildTarget buildTarget = BuildTarget.NoTarget;
             if (packConfig.buildTarget == BundleBuildTarget.StandaloneWindows64)

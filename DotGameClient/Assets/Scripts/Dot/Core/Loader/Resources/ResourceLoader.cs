@@ -18,7 +18,7 @@ namespace Dot.Core.Loader
             for(int i =0;i<rLoaderData.assetPaths.Length;++i)
             {
                 ResourceAsyncOperation resourceAsyncOperation = new ResourceAsyncOperation(rLoaderData.assetPaths[i]);
-                asyncOperations.Add(resourceAsyncOperation);
+                asyncOperationORM.PushData(resourceAsyncOperation);
 
                 rLoaderData.asyncOperations[i] = resourceAsyncOperation;
             }
