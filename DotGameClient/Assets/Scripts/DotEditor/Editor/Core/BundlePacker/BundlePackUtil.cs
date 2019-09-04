@@ -1,74 +1,127 @@
 ﻿using Dot.Core.Loader.Config;
 using DotEditor.Core.Asset;
 using DotEditor.Core.Util;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using static DotEditor.Core.Packer.AssetBundlePackConfig;
 
 namespace DotEditor.Core.Packer
 {
     public class BundlePackUtil
     {
-        public static AssetBundlePackConfig FindOrCreateConfig()
+        public static AssetBundleTagConfig FindOrCreateTagConfig()
         {
-            AssetBundlePackConfig config = AssetDatabase.LoadAssetAtPath<AssetBundlePackConfig>(AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
+            AssetBundleTagConfig config = AssetDatabase.LoadAssetAtPath<AssetBundleTagConfig>(AssetBundleTagConfig.CONFIG_PATH);
 
-            bool isNewCreate = false;
             if (config == null)
             {
-                isNewCreate = true;
-                config = ScriptableObject.CreateInstance<AssetBundlePackConfig>();
-                AssetDatabase.CreateAsset(config, AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
+                config = ScriptableObject.CreateInstance<AssetBundleTagConfig>();
+                AssetDatabase.CreateAsset(config, AssetBundleTagConfig.CONFIG_PATH);
 
-                AssetDatabase.ImportAsset(AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
+                AssetDatabase.ImportAsset(AssetBundleTagConfig.CONFIG_PATH);
             }
 
-            if (isNewCreate)
-            {
-                AssetDatabase.SaveAssets();
-            }
+             AssetDatabase.SaveAssets();
             return config;
         }
 
-        public static void UpdatePackConfigBySchema()
+        public static AssetBundlePackConfig FindOrCreatePackConfig()
         {
-            AssetBundlePackConfig config = AssetDatabase.LoadAssetAtPath<AssetBundlePackConfig>(AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
+            AssetBundlePackConfig config = AssetDatabase.LoadAssetAtPath<AssetBundlePackConfig>(AssetBundlePackConfig.CONFIG_PATH);
+
             if (config == null)
             {
-                Debug.LogError("AssetBundleSchemaUtil::UpdatePackConfigBySchema->config is null;");
+                config = ScriptableObject.CreateInstance<AssetBundlePackConfig>();
+                AssetDatabase.CreateAsset(config, AssetBundlePackConfig.CONFIG_PATH);
+
+                AssetDatabase.ImportAsset(AssetBundlePackConfig.CONFIG_PATH);
+            }
+
+            AssetDatabase.SaveAssets();
+            return config;
+        }
+
+        public static void UpdateTagConfigBySchema()
+        {
+            AssetBundleTagConfig config = AssetDatabase.LoadAssetAtPath<AssetBundleTagConfig>(AssetBundleTagConfig.CONFIG_PATH);
+            if (config == null)
+            {
+                Debug.LogError("AssetBundleSchemaUtil::UpdateTagConfigBySchema->config is null;");
                 return;
             }
 
             string[] settingPaths = AssetDatabaseUtil.FindAssets<AssetBundleSchemaSetting>();
             if (settingPaths == null || settingPaths.Length == 0)
             {
-                Debug.LogError("AssetBundleSchemaUtil::UpdatePackConfigBySchema->Not found schema Setting;");
+                Debug.LogError("AssetBundleSchemaUtil::UpdateTagConfigBySchema->Not found schema Setting;");
                 return;
             }
 
             AssetBundleSchemaSetting setting = AssetDatabase.LoadAssetAtPath<AssetBundleSchemaSetting>(settingPaths[0]);
             if (setting == null)
             {
-                Debug.LogError("AssetBundleSchemaUtil::UpdatePackConfigBySchema->Schema Setting is Null.");
+                Debug.LogError("AssetBundleSchemaUtil::UpdateTagConfigBySchema->Schema Setting is Null.");
                 return;
             }
 
-            AssetBundleSchemaUtil.UpdatePackConfigBySchema(config, setting);
+            AssetBundleSchemaUtil.UpdateTagConfigBySchema(config, setting);
+            CreateAssetInBundleConfig(config);
         }
 
         public static void SetAssetBundleNames(bool isShowProgressBar = false)
         {
-            AssetBundlePackConfig config = AssetDatabase.LoadAssetAtPath<AssetBundlePackConfig>(AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
+            AssetBundleTagConfig config = AssetDatabase.LoadAssetAtPath<AssetBundleTagConfig>(AssetBundleTagConfig.CONFIG_PATH);
             if (config == null)
             {
                 Debug.LogError("AssetBundleSchemaUtil::SetAssetBundleNames->config is null;");
                 return;
             }
 
-            AssetImporter assetImporter = AssetImporter.GetAtPath(AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
-            assetImporter.assetBundleName = typeof(AssetBundlePackConfig).Name.ToLower();
+            AssetImporter assetImporter = AssetImporter.GetAtPath(AssetInBundleConfig.CONFIG_PATH);
+            assetImporter.assetBundleName = AssetInBundleConfig.CONFIG_ASSET_BUNDLE_NAME;
 
             AssetBundleSchemaUtil.SetAssetBundleNames(config, isShowProgressBar);
+        }
 
+        public static void CreateAssetInBundleConfig(AssetBundleTagConfig tagConfig)
+        {
+            AssetInBundleConfig config = AssetDatabase.LoadAssetAtPath<AssetInBundleConfig>(AssetInBundleConfig.CONFIG_PATH);
+            if(config==null)
+            {
+                config = ScriptableObject.CreateInstance<AssetInBundleConfig>();
+                AssetDatabase.CreateAsset(config, AssetInBundleConfig.CONFIG_PATH);
+                AssetDatabase.ImportAsset(AssetInBundleConfig.CONFIG_PATH);
+            }
+
+            AssetBundleAssetData[] datas = (from groupData in tagConfig.groupDatas
+                                            where groupData.isMain == true
+                                            from assetData in groupData.assetDatas
+                                            select assetData).ToArray();
+
+            List<AssetInBundleData> aiDatas = new List<AssetInBundleData>();
+            foreach(var assetData in datas)
+            {
+                AssetInBundleData aibData = new AssetInBundleData()
+                {
+                    assetAddress = assetData.address,
+                    assetPath = assetData.path,
+                    bundlePath = assetData.bundle,
+                };
+                if(assetData.labels!=null && assetData.labels.Length>0)
+                {
+                    aibData.labels = new string[assetData.labels.Length];
+                    Array.Copy(assetData.labels, aibData.labels, aibData.labels.Length);
+                }
+                aiDatas.Add(aibData);
+            }
+
+            config.datas = aiDatas.ToArray();
+
+            AssetDatabase.SaveAssets();
         }
 
         public static void ClearAssetBundleNames(bool isShowProgressBar = false)
@@ -91,7 +144,45 @@ namespace DotEditor.Core.Packer
             AssetDatabase.SaveAssets();
         }
 
+        public static void PackAssetBundle(AssetBundlePackConfig packConfig)
+        {
+            string targetFolderName = packConfig.buildTarget.ToString();
+            string outputTargetDir = packConfig.bundleOutputDir + "/" + targetFolderName+"/assetbundles";
 
+            BuildTarget buildTarget = BuildTarget.NoTarget;
+            if (packConfig.buildTarget == BundleBuildTarget.StandaloneWindows64)
+            {
+                buildTarget = BuildTarget.StandaloneWindows64;
+            }
+            else if (packConfig.buildTarget == BundleBuildTarget.PS4)
+            {
+                buildTarget = BuildTarget.PS4;
+            }
+            else if (packConfig.buildTarget == BundleBuildTarget.XBoxOne)
+            {
+                buildTarget = BuildTarget.XboxOne;
+            }
+
+            PackAsssetBundle(outputTargetDir, packConfig.cleanupBeforeBuild, packConfig.bundleOptions, buildTarget, true);
+        }
+
+        public static void PackAsssetBundle(string outputDir,bool isClean,BuildAssetBundleOptions options, BuildTarget buildTarget, bool isShowProgress = false)
+        {
+            if(isClean && Directory.Exists(outputDir))
+            {
+                Directory.Delete(outputDir,true);
+            }
+            if (!Directory.Exists(outputDir))
+            {
+                Directory.CreateDirectory(outputDir);
+            }
+            
+            UpdateTagConfigBySchema();
+            ClearAssetBundleNames(isShowProgress);
+            SetAssetBundleNames(isShowProgress);
+
+            BuildPipeline.BuildAssetBundles(outputDir, options, buildTarget);
+        }
     }
 }
 

@@ -46,7 +46,7 @@ namespace DotEditor.Core.Asset
             serializedObject.Update();
 
             EditorGUILayout.PropertyField(isEnable);
-            EditorGUILayoutUtil.DrawFolderSelection(folder);
+            EditorGUILayoutUtil.DrawAssetFolderSelection(folder);
             EditorGUILayout.PropertyField(includeSubfolder);
             EditorGUILayout.PropertyField(fileNameFilterRegex);
 

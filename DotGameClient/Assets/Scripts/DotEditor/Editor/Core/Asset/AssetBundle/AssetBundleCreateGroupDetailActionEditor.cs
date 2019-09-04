@@ -64,7 +64,7 @@ namespace DotEditor.Core.Asset
             {
                 EditorGUILayout.PropertyField(fileNameFormat);
             }
-            EditorGUILayoutUtil.DrawFolderSelection(filterFolder);
+            EditorGUILayoutUtil.DrawAssetFolderSelection(filterFolder);
 
             labelList.DoLayoutList();
 

@@ -18,31 +18,13 @@ namespace DotEditor.Core.Asset
     
     public class AssetBundleGroupInput : AssetExecuteInput
     {
-        public AssetBundlePackConfig packConfig;
+        public AssetBundleTagConfig tagConfig;
     }
 
     public class AssetBundleActionInput :AssetExecuteInput
     {
         public AssetBundleGroupData groupData;
         public AssetFilterResult[] filterResults;
-    }
-    
-
-
-
-    //------------------------
-    
-    public enum AssetGroupType
-    {
-        Addressable,
-        AssetBundle,
-        AssetFormat,
-    }
-
-    public class AssetGroupActionData
-    {
-        public string groupName;
-        public AssetFilterResult[] filterResults = new AssetFilterResult[0];
     }
 
     public enum AssetBundlePackMode
@@ -59,4 +41,22 @@ namespace DotEditor.Core.Asset
         FileName,
         FileFormatName,
     }
+
+
+    //------------------------
+
+    public enum AssetGroupType
+    {
+        Addressable,
+        AssetBundle,
+        AssetFormat,
+    }
+
+    public class AssetGroupActionData
+    {
+        public string groupName;
+        public AssetFilterResult[] filterResults = new AssetFilterResult[0];
+    }
+
+
 }

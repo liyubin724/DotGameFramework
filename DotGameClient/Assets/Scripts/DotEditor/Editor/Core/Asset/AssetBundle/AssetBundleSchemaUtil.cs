@@ -6,20 +6,20 @@ namespace DotEditor.Core.Asset
 {
     public static class AssetBundleSchemaUtil
     {
-        public static void UpdatePackConfigBySchema(AssetBundlePackConfig config, AssetBundleSchemaSetting setting)
+        public static void UpdateTagConfigBySchema(AssetBundleTagConfig config, AssetBundleSchemaSetting setting)
         {
             config.groupDatas.Clear();
 
-            AssetBundleGroupInput groupInput = new AssetBundleGroupInput() { packConfig = config };
+            AssetBundleGroupInput groupInput = new AssetBundleGroupInput() { tagConfig = config };
             foreach (var group in setting.groupSchemas)
             {
                 group?.Execute(groupInput);
             }
             AssetDatabase.SaveAssets();
-            AssetDatabase.ImportAsset(AssetBundlePackConst.ASSET_BUNDLE_PACK_CONFIG_PATH);
+            AssetDatabase.ImportAsset(AssetBundleTagConfig.CONFIG_PATH);
         }
 
-        public static void SetAssetBundleNames(AssetBundlePackConfig config, bool isShowProgressBar = false)
+        public static void SetAssetBundleNames(AssetBundleTagConfig config, bool isShowProgressBar = false)
         {
             AssetBundleAssetData[] datas = (from groupData in config.groupDatas
                                        from detailData in groupData.assetDatas

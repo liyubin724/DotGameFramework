@@ -18,14 +18,15 @@ namespace DotEditor.Core.Packer
         }
     }
 
-    public class AssetBundlePackConfigTreeView : TreeViewWithTreeModel<TreeElementWithData<AssetBundleGroupTreeData>>
+    public class AssetBundleTagConfigTreeView : TreeViewWithTreeModel<TreeElementWithData<AssetBundleGroupTreeData>>
     {
-        public AssetBundlePackConfigTreeView(TreeViewState state, TreeModel<TreeElementWithData<AssetBundleGroupTreeData>> model) : 
+        public AssetBundleTagConfigTreeView(TreeViewState state, TreeModel<TreeElementWithData<AssetBundleGroupTreeData>> model) : 
             base(state, model)
         {
             showBorder = true;
             showAlternatingRowBackgrounds = true;
             rowHeight = EditorGUIUtility.singleLineHeight * 2+8;
+            Reload();
         }
 
         protected override bool CanMultiSelect(TreeViewItem item)

@@ -7,12 +7,12 @@ namespace DotEditor.Core.Asset
     [CustomEditor(typeof(AssetBundleSchemaSetting))]
     public class AssetBundleSchemaSettingEditor : BaseAssetSchemaSettingEditor
     {
-        private SerializedProperty packConfig;
+        private SerializedProperty tagConfig;
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            packConfig = serializedObject.FindProperty("packConfig");
+            tagConfig = serializedObject.FindProperty("tagConfig");
         }
 
         public override void OnInspectorGUI()
@@ -21,7 +21,7 @@ namespace DotEditor.Core.Asset
 
             EditorGUILayout.BeginHorizontal();
             {
-                EditorGUILayout.PropertyField(packConfig);
+                EditorGUILayout.PropertyField(tagConfig);
                 if(GUILayout.Button("find or create",GUILayout.Width(100)))
                 {
                     FindOrCreateConfig();
@@ -47,17 +47,17 @@ namespace DotEditor.Core.Asset
             FindOrCreateConfig();
 
             AssetBundleSchemaSetting setting = target as AssetBundleSchemaSetting;
-            AssetBundlePackConfig config = setting.packConfig;
+            AssetBundleTagConfig config = setting.tagConfig;
             config.groupDatas.Clear();
 
-            AssetBundleSchemaUtil.UpdatePackConfigBySchema(config, setting);
+            AssetBundleSchemaUtil.UpdateTagConfigBySchema(config, setting);
         }
 
         private void FindOrCreateConfig()
         {
-            if(packConfig.objectReferenceValue == null)
+            if(tagConfig.objectReferenceValue == null)
             {
-                packConfig.objectReferenceValue = BundlePackUtil.FindOrCreateConfig();
+                tagConfig.objectReferenceValue = BundlePackUtil.FindOrCreateTagConfig();
             }
         }
 
@@ -66,7 +66,7 @@ namespace DotEditor.Core.Asset
             FindOrCreateConfig();
 
             AssetBundleSchemaSetting setting = target as AssetBundleSchemaSetting;
-            AssetBundlePackConfig config = setting.packConfig;
+            AssetBundleTagConfig config = setting.tagConfig;
 
             AssetBundleSchemaUtil.SetAssetBundleNames(config, true);
         }

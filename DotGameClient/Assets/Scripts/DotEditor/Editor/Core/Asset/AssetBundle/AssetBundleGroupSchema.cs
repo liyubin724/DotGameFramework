@@ -15,7 +15,7 @@ namespace DotEditor.Core.Asset
             AssetBundleGroupData abGroupData = new AssetBundleGroupData();
             abGroupData.groupName = groupName;
             abGroupData.isMain = isMain;
-            groupInput.packConfig.groupDatas.Add(abGroupData);
+            groupInput.tagConfig.groupDatas.Add(abGroupData);
 
             AssetBundleActionInput actionInput = new AssetBundleActionInput()
             {

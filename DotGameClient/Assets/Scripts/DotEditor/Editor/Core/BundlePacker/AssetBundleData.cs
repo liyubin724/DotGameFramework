@@ -3,11 +3,6 @@ using System.Collections.Generic;
 
 namespace DotEditor.Core.Packer
 {
-    public class AssetBundlePackConst
-    {
-        public static readonly string ASSET_BUNDLE_PACK_CONFIG_PATH = "Assets/Tools/BundlePack/bundle_pack_config.asset";
-    }
-
     [Serializable]
     public class AssetBundleAssetData
     {

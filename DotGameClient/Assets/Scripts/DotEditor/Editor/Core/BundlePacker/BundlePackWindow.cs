@@ -1,4 +1,5 @@
-﻿using DotEditor.Core.EGUI.TreeGUI;
+﻿using DotEditor.Core.EGUI;
+using DotEditor.Core.EGUI.TreeGUI;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -17,14 +18,18 @@ namespace DotEditor.Core.Packer
             win.Show();
         }
 
-        private AssetBundlePackConfigTreeView detailGroupTreeView;
+        private AssetBundleTagConfigTreeView detailGroupTreeView;
         private TreeViewState detailGroupTreeViewState;
 
-        private AssetBundlePackConfig detailConfig = null;
+        private AssetBundleTagConfig tagConfig = null;
+        private AssetBundlePackConfig packConfig = null;
+        private SerializedObject packConfigSerializedObject = null;
 
         private void OnEnable()
         {
-            detailConfig = BundlePackUtil.FindOrCreateConfig();
+            tagConfig = BundlePackUtil.FindOrCreateTagConfig();
+            packConfig = BundlePackUtil.FindOrCreatePackConfig();
+            packConfigSerializedObject = new SerializedObject(packConfig);
         }
 
         private void InitDetailGroupTreeView()
@@ -36,7 +41,7 @@ namespace DotEditor.Core.Packer
                     new TreeElementWithData<AssetBundleGroupTreeData>(AssetBundleGroupTreeData.Root,"",-1,-1),
                });
 
-            detailGroupTreeView = new AssetBundlePackConfigTreeView(detailGroupTreeViewState, data);
+            detailGroupTreeView = new AssetBundleTagConfigTreeView(detailGroupTreeViewState, data);
             
         }
 
@@ -46,9 +51,9 @@ namespace DotEditor.Core.Packer
             TreeElementWithData<AssetBundleGroupTreeData> treeModelRoot = treeModel.root;
             treeModelRoot.children?.Clear();
 
-            for (int i = 0; i < detailConfig.groupDatas.Count; i++)
+            for (int i = 0; i < tagConfig.groupDatas.Count; i++)
             {
-                AssetBundleGroupData groupData = detailConfig.groupDatas[i];
+                AssetBundleGroupData groupData = tagConfig.groupDatas[i];
                 TreeElementWithData<AssetBundleGroupTreeData> groupElementData = new TreeElementWithData<AssetBundleGroupTreeData>(
                     new AssetBundleGroupTreeData()
                     {
@@ -142,23 +147,20 @@ namespace DotEditor.Core.Packer
                 FilterTreeModel();
             }
             detailGroupTreeView?.OnGUI(lastRect);
-            
-            EditorGUILayout.BeginHorizontal(GUILayout.ExpandHeight(true));
+
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
             {
-                if (GUILayout.Button("Update Asset Detail"))
+                EditorGUILayout.BeginVertical(EditorStyles.helpBox,GUILayout.ExpandHeight(true),GUILayout.ExpandWidth(true));
                 {
-                    BundlePackUtil.UpdatePackConfigBySchema();
-                    detailConfig = BundlePackUtil.FindOrCreateConfig();
-                    FilterTreeModel();
+                    DrawBundleSetting();
                 }
-                if (GUILayout.Button("Set Asset Bundle Names"))
+                EditorGUILayout.EndVertical();
+                EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.MaxWidth(180),GUILayout.ExpandHeight(true));
                 {
-                    BundlePackUtil.SetAssetBundleNames(true);
+                    DrawOperation();
                 }
-                if (GUILayout.Button("Clear Asset Bundle Names"))
-                {
-                    BundlePackUtil.ClearAssetBundleNames(true);
-                }
+                EditorGUILayout.EndVertical();
             }
             EditorGUILayout.EndHorizontal();
         }
@@ -222,5 +224,58 @@ namespace DotEditor.Core.Packer
             EditorGUILayout.EndHorizontal();
         }
 
+        private void DrawBundleSetting()
+        {
+            GUIStyle labelStyle = new GUIStyle(EditorStyles.label);
+            labelStyle.fontStyle = FontStyle.Bold;
+            EditorGUILayout.LabelField("Asset Bundle Pack Config:",labelStyle);
+
+            packConfigSerializedObject.Update();
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            {
+                packConfig.bundleOutputDir = EditorGUILayoutUtil.DrawDiskFolderSelection("Bundle Output:", packConfig.bundleOutputDir);
+                EditorGUILayoutUtil.PropertyField(packConfigSerializedObject, "cleanupBeforeBuild");
+                EditorGUILayoutUtil.PropertyField(packConfigSerializedObject, "bundleOptions");
+                EditorGUILayoutUtil.PropertyField(packConfigSerializedObject, "buildTarget");
+            }
+            EditorGUILayout.EndVertical();
+            packConfigSerializedObject.ApplyModifiedProperties();
+        }
+
+        private void DrawOperation()
+        {
+            if (GUILayout.Button("Update Asset Detail"))
+            {
+                BundlePackUtil.UpdateTagConfigBySchema();
+                tagConfig = BundlePackUtil.FindOrCreateTagConfig();
+                FilterTreeModel();
+            }
+            if (GUILayout.Button("Set Asset Bundle Names"))
+            {
+                BundlePackUtil.SetAssetBundleNames(true);
+            }
+            if (GUILayout.Button("Clear Asset Bundle Names"))
+            {
+                BundlePackUtil.ClearAssetBundleNames(true);
+            }
+
+            GUILayout.FlexibleSpace();
+
+            EditorGUIUtil.BeginGUIBackgroundColor(Color.red);
+            {
+                if(GUILayout.Button("Pack Bundle",GUILayout.Height(60)))
+                {
+                    if(string.IsNullOrEmpty(packConfig.bundleOutputDir))
+                    {
+                        EditorUtility.DisplayDialog("Warning", "Output Dir is Null", "OK");
+                    }
+                    else
+                    {
+                        BundlePackUtil.PackAssetBundle(packConfig);
+                    }
+                }
+            }
+            EditorGUIUtil.EndGUIBackgroundColor();
+        }
     }
 }
