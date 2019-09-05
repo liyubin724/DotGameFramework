@@ -156,31 +156,38 @@ namespace Dot.Core.Loader
                 
                 if (loaderData.IsAssetInAsyncOperation(assetPath))
                 {
-                    if(loaderData.IsAsyncOperationComplete(assetPath))
+                    if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
                     {
-                        AssetBundleAsyncOperation[] assetAsyncOperations = loaderData.GetAllOperation(assetPath);
-                        foreach(AssetBundleAsyncOperation operation in assetAsyncOperations)
-                        {
-                            if(!bundleNodeDic.ContainsKey(operation.AssetPath))
-                            {
-                                BundleNode bundleNode = bundleNodePool.Get();
-                                bundleNode.InitNode(operation.AssetPath, operation.GetAsset() as AssetBundle);
-                                bundleNode.RefCount = operation.RefCount;
-
-                                bundleNodeDic.Add(operation.AssetPath, bundleNode);
-                            }
-                        }
-
-                        string bundlePath = assetInBundleConfig.GetBundlePathByPath(assetPath);
-                        BundleNode mainBundleNode = bundleNodeDic[bundlePath];
-
-                        AssetNode assetNode = assetNodePool.Get();
-                        assetNode.InitNode(assetPath, mainBundleNode);
                         assetNode.RetainLoadCount();
+                        loaderData.DeleteAssetAsyncOperation(assetPath);
+                    }else
+                    {
+                        if (loaderData.IsAsyncOperationComplete(assetPath))
+                        {
+                            AssetBundleAsyncOperation[] assetAsyncOperations = loaderData.GetAllOperation(assetPath);
+                            foreach (AssetBundleAsyncOperation operation in assetAsyncOperations)
+                            {
+                                if (!bundleNodeDic.ContainsKey(operation.AssetPath))
+                                {
+                                    BundleNode bundleNode = bundleNodePool.Get();
+                                    bundleNode.InitNode(operation.AssetPath, operation.GetAsset() as AssetBundle);
+                                    bundleNode.RefCount = operation.RefCount;
 
-                        assetNodeDic.Add(assetPath, assetNode);
+                                    bundleNodeDic.Add(operation.AssetPath, bundleNode);
+                                }
+                            }
 
-                    }//IsAsyncOperationComplete
+                            string bundlePath = assetInBundleConfig.GetBundlePathByPath(assetPath);
+                            BundleNode mainBundleNode = bundleNodeDic[bundlePath];
+
+                            assetNode = assetNodePool.Get();
+                            assetNode.InitNode(assetPath, mainBundleNode);
+                            assetNode.RetainLoadCount();
+
+                            assetNodeDic.Add(assetPath, assetNode);
+                            loaderData.DeleteAssetAsyncOperation(assetPath);
+                        }//IsAsyncOperationComplete
+                    }
                 }
             }
         }
