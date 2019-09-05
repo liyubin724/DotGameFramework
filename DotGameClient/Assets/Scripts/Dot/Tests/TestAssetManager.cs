@@ -11,7 +11,7 @@ namespace Dot.Tests
 {
     public class TestAssetManager : MonoBehaviour
     {
-        
+        public Canvas rootCanvas = null;
         private void Awake()
         {
             GameController.StartUp();
@@ -29,31 +29,48 @@ namespace Dot.Tests
         }
         private string[] assetAssetPathArr = new string[]
         {
-            "Assets/Resources/Prefabs/AtlasImage.prefab",
-            "Assets/Resources/Prefabs/Capsule.prefab",
-            "Assets/Resources/Prefabs/Cylinder.prefab",
-            "Assets/Resources/Prefabs/Sphere.prefab",
+            "Assets/ArtRes/Prefabs/AtlasImage.prefab",
+             "Assets/ArtRes/Prefabs/AtlasImage.prefab",
+              "Assets/ArtRes/Prefabs/AtlasImage.prefab",
+            //"Assets/ArtRes/Prefabs/Capsule.prefab",
+            //"Assets/ArtRes/Prefabs/Cylinder.prefab",
+            //"Assets/ArtRes/Prefabs/Sphere.prefab",
         };
+
+        private List<UnityObject> objList = new List<UnityObject>();
         private void OnGUI()
         {
             if (GUILayout.Button("Unload Unused Asset"))
             {
                 AssetManager.GetInstance().UnloadUnusedAsset(null);
             }
-            if (GUILayout.Button("Resources Load Prefab"))
+            if (GUILayout.Button("Load Prefab"))
             {
                 AssetManager.GetInstance().LoadAssetAsync(assetAssetPathArr[0], (assetPath, uObj, userData) =>
                  {
-                     AssetManager.GetInstance().InstantiateAsset(assetAssetPathArr[0], uObj);
-                     //GameObject.Instantiate<GameObject>(uObj as GameObject);
+                     GameObject gObj = AssetManager.GetInstance().InstantiateAsset(assetPath, uObj) as GameObject;
+                     gObj.transform.SetParent(rootCanvas.transform,false);
+                     objList.Add(gObj);
                  });
             }
 
-            if (GUILayout.Button("Resources Load Prefab"))
+            if(GUILayout.Button("DeleteAll"))
+            {
+                foreach(var obj in objList)
+                {
+                    UnityObject.Destroy(obj);
+
+                }
+                objList.Clear();
+            }
+
+            if (GUILayout.Button("Load Prefabs"))
             {
                 AssetManager.GetInstance().LoadBatchAssetAsync(assetAssetPathArr, (assetPath, uObj, userData) =>
                 {
-                    GameObject.Instantiate<GameObject>(uObj as GameObject);
+                    GameObject gObj = AssetManager.GetInstance().InstantiateAsset(assetPath, uObj) as GameObject;
+                    gObj.transform.SetParent(rootCanvas.transform, false);
+                    objList.Add(gObj);
                 }, (assetPaths, uObjs, userData) =>
                  {
 

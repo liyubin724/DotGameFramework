@@ -233,12 +233,16 @@ namespace DotEditor.Core.Packer
             packConfigSerializedObject.Update();
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             {
-                packConfig.bundleOutputDir = EditorGUILayoutUtil.DrawDiskFolderSelection("Bundle Output:", packConfig.bundleOutputDir);
+                packConfig.bundleOutputDir = EditorGUILayoutUtil.DrawDiskFolderSelection("Bundle Output", packConfig.bundleOutputDir);
                 EditorGUILayoutUtil.PropertyField(packConfigSerializedObject, "cleanupBeforeBuild");
-                EditorGUILayoutUtil.PropertyField(packConfigSerializedObject, "bundleOptions");
+                packConfig.bundleOptions = (BuildAssetBundleOptions)EditorGUILayout.EnumFlagsField("Bundle Option", packConfig.bundleOptions);
                 EditorGUILayoutUtil.PropertyField(packConfigSerializedObject, "buildTarget");
             }
             EditorGUILayout.EndVertical();
+            if(GUI.changed)
+            {
+                EditorUtility.SetDirty(packConfig);
+            }
             packConfigSerializedObject.ApplyModifiedProperties();
         }
 

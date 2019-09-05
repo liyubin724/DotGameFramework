@@ -327,6 +327,7 @@ namespace Dot.Core.Loader
             {
                 UnityObject instance = base.InstantiateAsset(assetPath, asset);
                 assetNode.AddInstance(instance);
+                return instance;
             }
             return null;
         }
