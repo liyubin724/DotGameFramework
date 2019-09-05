@@ -11,8 +11,9 @@ namespace Dot.Core.Loader
     {
         internal ResourceAsyncOperation[] asyncOperations = null;
 
-        internal void Init()
+        public override void InitData()
         {
+            base.InitData();
             asyncOperations = new ResourceAsyncOperation[assetPaths.Length];
         }
 

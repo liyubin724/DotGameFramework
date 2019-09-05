@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 using SystemObject = System.Object;
+using Dot.Core.Generic;
 
 namespace Dot.Core.Loader
 {
@@ -98,7 +99,7 @@ namespace Dot.Core.Loader
 
         private void LoadAssetBundle(AssetBundleLoaderData loaderData,string assetPath ,string bundlePath)
         {
-            AssetBundleAsyncOperation mainAsyncOperation = (AssetBundleAsyncOperation)asyncOperationORM.GetDataByKey(bundlePath);
+            AssetBundleAsyncOperation mainAsyncOperation = (AssetBundleAsyncOperation)asyncOperations.GetDataByKey(bundlePath);
             if (mainAsyncOperation != null)
             {
                 mainAsyncOperation.RetainRefCount();
@@ -108,7 +109,7 @@ namespace Dot.Core.Loader
                 mainAsyncOperation = new AssetBundleAsyncOperation(bundlePath, GetAssetRootPath());
                 mainAsyncOperation.RetainRefCount();
 
-                asyncOperationORM.PushData(mainAsyncOperation);
+                asyncOperations.PushData(mainAsyncOperation);
             }
             loaderData.AddAsyncOperation(assetPath, mainAsyncOperation);
 
@@ -123,7 +124,7 @@ namespace Dot.Core.Loader
                     }
                     else
                     {
-                        if (asyncOperationORM.GetDataByKey(path) is AssetBundleAsyncOperation dependOperation)
+                        if (asyncOperations.GetDataByKey(path) is AssetBundleAsyncOperation dependOperation)
                         {
                             dependOperation.RetainRefCount();
                         }
@@ -132,7 +133,7 @@ namespace Dot.Core.Loader
                             dependOperation = new AssetBundleAsyncOperation(path, GetAssetRootPath());
                             dependOperation.RetainRefCount();
 
-                            asyncOperationORM.PushData(dependOperation);
+                            asyncOperations.PushData(dependOperation);
                         }
 
                         loaderData.AddAsyncOperation(assetPath, dependOperation);
@@ -337,6 +338,22 @@ namespace Dot.Core.Loader
                 return instance;
             }
             return null;
+        }
+
+        protected IndexMapORM<string, AssetBundleAsyncOperation> asyncOperations = new IndexMapORM<string, AssetBundleAsyncOperation>();
+        protected override void DeleteAsyncOperation(int index)
+        {
+            asyncOperations.DeleteByIndex(index);
+        }
+
+        protected override AAssetAsyncOperation GetAsyncOperation(int index)
+        {
+            return asyncOperations.GetDataByIndex(index);
+        }
+
+        protected override int GetAsyncOperationCount()
+        {
+            return asyncOperations.Count;
         }
     }
 }

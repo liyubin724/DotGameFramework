@@ -1,4 +1,5 @@
 ﻿using Dot.Core.Pool;
+using System.Collections.Generic;
 using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
@@ -6,6 +7,22 @@ namespace Dot.Core.Loader
     public class AssetDatabaseLoader : AAssetLoader
     {
         private readonly ObjectPool<AssetDatabaseLoaderData> loaderDataPool = new ObjectPool<AssetDatabaseLoaderData>(4);
+        private List<AssetDatabaseAsyncOperation> asyncOperations = new List<AssetDatabaseAsyncOperation>();
+        protected override void DeleteAsyncOperation(int index)
+        {
+            asyncOperations.RemoveAt(index);
+        }
+
+        protected override AAssetAsyncOperation GetAsyncOperation(int index)
+        {
+            return asyncOperations[index];
+        }
+
+        protected override int GetAsyncOperationCount()
+        {
+            return asyncOperations.Count;
+        }
+
         protected override AssetLoaderData GetLoaderData() => loaderDataPool.Get();
 
         protected override void ReleaseLoaderData(AssetLoaderData loaderData) => loaderDataPool.Release(loaderData as AssetDatabaseLoaderData);
@@ -17,7 +34,7 @@ namespace Dot.Core.Loader
             for (int i = 0; i < rLoaderData.assetPaths.Length; ++i)
             {
                 AssetDatabaseAsyncOperation operation = new AssetDatabaseAsyncOperation(rLoaderData.assetPaths[i], GetAssetRootPath());
-                asyncOperationORM.PushData(operation);
+                asyncOperations.Add(operation);
 
                 rLoaderData.asyncOperations[i] = operation;
             }
@@ -35,26 +52,25 @@ namespace Dot.Core.Loader
             bool isComplete = true;
             for (int i = 0; i < adLoaderData.assetPaths.Length; ++i)
             {
-                AssetDatabaseAsyncOperation operation = adLoaderData.asyncOperations[i];
+                if (loaderData.GetIsCompleteCalled(i))
+                {
+                    continue;
+                }
                 string assetPath = adLoaderData.assetPaths[i];
+                AssetDatabaseAsyncOperation operation = adLoaderData.asyncOperations[i];
+                
                 if (operation.Status == AssetAsyncOperationStatus.Loaded)
                 {
-                    UnityObject operationAsset = operation.GetAsset();
-                    if (operationAsset == null)
+                    UnityObject uObj = operation.GetAsset();
+                    if (uObj != null && adLoaderData.isInstance)
                     {
-                        operation.Status = AssetAsyncOperationStatus.Error;
-                        adLoaderData.completeCallback?.Invoke(assetPath, null, adLoaderData.userData);
+                        uObj = UnityObject.Instantiate(uObj);
                     }
-                    else if (operationAsset != null && loaderHandle.GetObject(i) == null)
-                    {
-                        UnityObject uObj = operationAsset;
-                        if (adLoaderData.isInstance)
-                        {
-                            uObj = UnityObject.Instantiate(uObj);
-                        }
-                        loaderHandle.SetObject(i, uObj);
-                        adLoaderData.completeCallback?.Invoke(assetPath, uObj, adLoaderData.userData);
-                    }
+                    loaderHandle.SetObject(i, uObj);
+                    loaderHandle.SetProgress(i, 1.0f);
+
+                    adLoaderData.InvokeProgress(i, 1.0f);
+                    adLoaderData.InvokeComplete(i, uObj);
                 }
                 else if (operation.Status == AssetAsyncOperationStatus.Loading)
                 {
@@ -63,8 +79,7 @@ namespace Dot.Core.Loader
                     if (oldProgress != curProgress)
                     {
                         loaderHandle.SetProgress(i, curProgress);
-
-                        adLoaderData.progressCallback?.Invoke(assetPath, curProgress);
+                        adLoaderData.InvokeProgress(i, curProgress);
                     }
                     isComplete = false;
                 }
@@ -74,11 +89,11 @@ namespace Dot.Core.Loader
                 }
             }
 
-            adLoaderData.batchProgressCallback?.Invoke(adLoaderData.assetPaths, loaderHandle.Progresses());
+            adLoaderData.InvokeBatchProgress(loaderHandle.Progresses());
 
             if (isComplete)
             {
-                adLoaderData.batchCompleteCallback?.Invoke(adLoaderData.assetPaths, loaderHandle.GetObjects(), adLoaderData.userData);
+                adLoaderData.InvokeBatchComplete(loaderHandle.GetObjects());
             }
             return isComplete;
         }

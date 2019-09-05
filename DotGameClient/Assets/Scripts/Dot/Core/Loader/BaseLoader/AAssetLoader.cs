@@ -19,7 +19,6 @@ namespace Dot.Core.Loader
         protected FastPriorityQueue<AssetLoaderData> loaderDataWaitingQueue = new FastPriorityQueue<AssetLoaderData>(10);
         protected Dictionary<long, AssetLoaderData> loaderDataLoadingDic = new Dictionary<long, AssetLoaderData>();
 
-        protected IndexMapORM<string, AAssetAsyncOperation> asyncOperationORM = new IndexMapORM<string, AAssetAsyncOperation>();
         public virtual int MaxLoadingCount { get; set; } = 5;
 
         private bool isInit = false;
@@ -77,14 +76,14 @@ namespace Dot.Core.Loader
                 return;
             }
 
-            if(loaderDataWaitingQueue.Count>0 && asyncOperationORM.Count<MaxLoadingCount)
+            if(loaderDataWaitingQueue.Count>0 && GetAsyncOperationCount() < MaxLoadingCount)
             {
                 AssetLoaderData loaderData = loaderDataWaitingQueue.Dequeue();
                 loaderDataLoadingDic.Add(loaderData.uniqueID, loaderData);
                 StartLoaderDataLoading(loaderData);
             }
 
-            if(asyncOperationORM.Count > 0)
+            if(GetAsyncOperationCount() > 0)
             {
                 UpdateAsyncOperation();
             }
@@ -120,16 +119,16 @@ namespace Dot.Core.Loader
         private void UpdateAsyncOperation()
         {
             int index = 0;
-            while(index< asyncOperationORM.Count && index<MaxLoadingCount)
+            while(index< GetAsyncOperationCount() && index<MaxLoadingCount)
             {
-                AAssetAsyncOperation operation = asyncOperationORM.GetDataByIndex(index);
+                AAssetAsyncOperation operation = GetAsyncOperation(index);
                 operation.DoUpdate();
                 if (operation.Status == AssetAsyncOperationStatus.None)
                 {
                     operation.StartAsync();
                 }else if(operation.Status == AssetAsyncOperationStatus.Loaded)
                 {
-                    asyncOperationORM.DeleteByIndex(index);
+                    DeleteAsyncOperation(index);
                     continue;
                 }
 
@@ -150,7 +149,16 @@ namespace Dot.Core.Loader
         {
 
         }
-        
+
+        #region Async Operation
+
+        protected abstract int GetAsyncOperationCount();
+        protected abstract AAssetAsyncOperation GetAsyncOperation(int index);
+        protected abstract void DeleteAsyncOperation(int index);
+
+        #endregion
+
+
         #region init Loader
         private void CheckInitializeAction()
         {

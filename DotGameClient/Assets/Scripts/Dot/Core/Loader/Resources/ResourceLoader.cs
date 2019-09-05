@@ -1,4 +1,5 @@
 ﻿using Dot.Core.Pool;
+using System.Collections.Generic;
 using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
@@ -6,6 +7,21 @@ namespace Dot.Core.Loader
     public class ResourceLoader : AAssetLoader
     {
         private readonly ObjectPool<ResourceLoaderData> loaderDataPool = new ObjectPool<ResourceLoaderData>(4);
+        private List<ResourceAsyncOperation> asyncOperations = new List<ResourceAsyncOperation>();
+        protected override void DeleteAsyncOperation(int index)
+        {
+            asyncOperations.RemoveAt(index);
+        }
+
+        protected override AAssetAsyncOperation GetAsyncOperation(int index)
+        {
+            return asyncOperations[index];
+        }
+
+        protected override int GetAsyncOperationCount()
+        {
+            return asyncOperations.Count;
+        }
 
         protected override AssetLoaderData GetLoaderData()=> loaderDataPool.Get();
 
@@ -14,11 +30,11 @@ namespace Dot.Core.Loader
         protected override void StartLoaderDataLoading(AssetLoaderData loaderData)
         {
             ResourceLoaderData rLoaderData = loaderData as ResourceLoaderData;
-            rLoaderData.Init();
+            rLoaderData.InitData();
             for(int i =0;i<rLoaderData.assetPaths.Length;++i)
             {
                 ResourceAsyncOperation resourceAsyncOperation = new ResourceAsyncOperation(rLoaderData.assetPaths[i], GetAssetRootPath());
-                asyncOperationORM.PushData(resourceAsyncOperation);
+                asyncOperations.Add(resourceAsyncOperation);
 
                 rLoaderData.asyncOperations[i] = resourceAsyncOperation;
             }
@@ -36,25 +52,25 @@ namespace Dot.Core.Loader
             bool isComplete = true;
             for (int i = 0; i < rLoaderData.assetPaths.Length; ++i)
             {
-                ResourceAsyncOperation operation = rLoaderData.asyncOperations[i];
-                string assetPath = rLoaderData.assetPaths[i];
-                if(operation.Status == AssetAsyncOperationStatus.Loaded)
+                if(loaderData.GetIsCompleteCalled(i))
                 {
-                    UnityObject operationAsset = operation.GetAsset();
-                    if(operationAsset == null)
+                    continue;
+                }
+                string assetPath = rLoaderData.assetPaths[i];
+                ResourceAsyncOperation operation = rLoaderData.asyncOperations[i];
+                
+                if (operation.Status == AssetAsyncOperationStatus.Loaded)
+                {
+                    UnityObject uObj = operation.GetAsset();
+                    if (uObj!=null && rLoaderData.isInstance)
                     {
-                        operation.Status = AssetAsyncOperationStatus.Error;
-                        rLoaderData.completeCallback?.Invoke(assetPath, null, rLoaderData.userData);
-                    }else if(operationAsset !=null && loaderHandle.GetObject(i) == null)
-                    {
-                        UnityObject uObj = operationAsset;
-                        if(rLoaderData.isInstance)
-                        {
-                            uObj = UnityObject.Instantiate(uObj);
-                        }
-                        loaderHandle.SetObject(i, uObj);
-                        rLoaderData.completeCallback?.Invoke(assetPath, uObj, rLoaderData.userData);
+                        uObj = UnityObject.Instantiate(uObj);
                     }
+                    loaderHandle.SetObject(i, uObj);
+                    loaderHandle.SetProgress(i, 1.0f);
+
+                    rLoaderData.InvokeProgress(i, 1.0f);
+                    rLoaderData.InvokeComplete(i, uObj);
                 }else if(operation.Status == AssetAsyncOperationStatus.Loading)
                 {
                     float oldProgress = loaderHandle.GetProgress(i);
@@ -62,8 +78,7 @@ namespace Dot.Core.Loader
                     if(oldProgress!=curProgress)
                     {
                         loaderHandle.SetProgress(i, curProgress);
-
-                        rLoaderData.progressCallback?.Invoke(assetPath, curProgress);
+                        rLoaderData.InvokeProgress(i, curProgress);
                     }
                     isComplete = false;
                 }else
@@ -72,16 +87,13 @@ namespace Dot.Core.Loader
                 }
             }
 
-            rLoaderData.batchProgressCallback?.Invoke(rLoaderData.assetPaths, loaderHandle.Progresses());
+            rLoaderData.InvokeBatchProgress(loaderHandle.Progresses());
 
             if(isComplete)
             {
-                rLoaderData.batchCompleteCallback?.Invoke(rLoaderData.assetPaths, loaderHandle.GetObjects(), rLoaderData.userData);
+                rLoaderData.InvokeBatchComplete(loaderHandle.GetObjects());
             }
             return isComplete;
         }
-
-        
     }
-
 }
