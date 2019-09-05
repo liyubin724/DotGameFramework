@@ -1,9 +1,11 @@
 ﻿using Dot.Core.Loader.Config;
 using Dot.Core.Pool;
+using Dot.Core.Timer;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
+using SystemObject = System.Object;
 
 namespace Dot.Core.Loader
 {
@@ -25,24 +27,38 @@ namespace Dot.Core.Loader
         private Dictionary<string, AssetNode> assetNodeDic = new Dictionary<string, AssetNode>();
         private Dictionary<string, BundleNode> bundleNodeDic = new Dictionary<string, BundleNode>();
 
+        private float assetCleanInterval = 300;
+        private TimerTaskInfo assetCleanTimer = null;
+
         protected override AssetLoaderData GetLoaderData() => loaderDataPool.Get();
 
         protected override void ReleaseLoaderData(AssetLoaderData loaderData) => loaderDataPool.Release(loaderData as AssetBundleLoaderData);
 
-        public override void Initialize(Action<bool> initCallback, params object[] sysObjs)
+        public override void Initialize(AssetPathMode pathMode, Action<bool> initCallback, params SystemObject[] sysObjs)
         {
-            base.Initialize(initCallback, sysObjs);
+            base.Initialize(pathMode,initCallback, sysObjs);
             assetBundleRootPath = sysObjs[0] as string;
+
+            if(sysObjs.Length>1)
+            {
+                assetCleanInterval = (float)sysObjs[1];
+                if(assetCleanInterval<=0)
+                {
+                    assetCleanInterval = 300;
+                }
+            }
+
+            assetCleanTimer = TimerManager.GetInstance().AddIntervalTimer(assetCleanInterval, OnCleanAssetInterval);
 
             string manifestPath = $"{assetBundleRootPath}/{AssetBundleConst.ASSETBUNDLE_MAINFEST_NAME}";
             AssetBundle manifestAB = AssetBundle.LoadFromFile(manifestPath);
             assetBundleManifest = manifestAB.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
-            //manifestAB.Unload(false);
+            manifestAB.Unload(false);
 
             string assetInBundlePath = $"{assetBundleRootPath}/{AssetInBundleConfig.CONFIG_ASSET_BUNDLE_NAME}";
             AssetBundle assetInBundleAB = AssetBundle.LoadFromFile(assetInBundlePath);
             assetInBundleConfig = assetInBundleAB.LoadAsset<AssetInBundleConfig>(AssetInBundleConfig.CONFIG_PATH);
-            //assetInBundleAB.Unload(false);
+            assetInBundleAB.Unload(false);
         }
 
         protected override bool UpdateInitialize(out bool isSuccess)
@@ -258,9 +274,61 @@ namespace Dot.Core.Loader
             }
         }
 
+        private List<string> assetDicKeys = new List<string>();
+        private void OnCleanAssetInterval(System.Object userData)
+        {
+            assetDicKeys.AddRange(assetNodeDic.Keys);
+            foreach (string key in assetDicKeys)
+            {
+                AssetNode assetNode = assetNodeDic[key];
+                if(!assetNode.IsAlive())
+                {
+                    assetNodeDic.Remove(key);
+                    assetNodePool.Release(assetNode);
+                }
+            }
+
+            assetDicKeys.Clear();
+            assetDicKeys.AddRange(bundleNodeDic.Keys);
+            foreach(string key in assetDicKeys)
+            {
+                BundleNode bundleNode = bundleNodeDic[key];
+                if(bundleNode.RefCount == 0)
+                {
+                    string[] depends = assetBundleManifest.GetAllDependencies(key);
+                    foreach(var path in depends)
+                    {
+                        bundleNodeDic[path].ReleaseRefCount();
+                    }
+                    bundleNodeDic.Remove(key);
+                    bundleNodePool.Release(bundleNode);
+                }
+                else if(bundleNode.RefCount<0)
+                {
+                    Debug.LogError("AssetBundleLoader::OnCleanAssetInterval->bundle node's refcount is less 0.path = " + key);
+                }
+            }
+            assetDicKeys.Clear();
+        }
+
+        protected override void InnerUnloadUnusedAssets()
+        {
+            OnCleanAssetInterval(null);
+        }
+
         protected override string GetAssetRootPath()
         {
             return assetBundleRootPath + "/";
+        }
+
+        public override UnityObject InstantiateAsset(string assetPath, UnityObject asset)
+        {
+            if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
+            {
+                UnityObject instance = base.InstantiateAsset(assetPath, asset);
+                assetNode.AddInstance(instance);
+            }
+            return null;
         }
     }
 }

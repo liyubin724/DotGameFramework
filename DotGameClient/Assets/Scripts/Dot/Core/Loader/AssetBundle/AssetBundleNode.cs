@@ -34,7 +34,7 @@ namespace Dot.Core.Loader
 
             if(weakInstances!=null)
             {
-                for(int i =weakInstances.Count;i>=0;--i)
+                for(int i =weakInstances.Count-1;i>=0;--i)
                 {
                     if(!IsNull(weakInstances[i].Target))
                     {
@@ -100,6 +100,11 @@ namespace Dot.Core.Loader
         public void OnNew() { }
         public void OnRelease()
         {
+            assetPath = null;
+            bundleNode.ReleaseRefCount();
+            weakAsset = null;
+            weakInstances = null;
+            loadCount = 0;
         }
     }
 
@@ -108,9 +113,6 @@ namespace Dot.Core.Loader
         private string bundlePath;
         private AssetBundle assetBundle;
         private int refCount;
-
-        private List<BundleNode> dependencies = new List<BundleNode>();
-
         public int RefCount { get => refCount; set => refCount = value; }
         public void RetainRefCount() => ++refCount;
         public void ReleaseRefCount() => --refCount;
@@ -131,10 +133,10 @@ namespace Dot.Core.Loader
         public void OnNew() { }
         public void OnRelease()
         {
-            dependencies.ForEach((node) =>
-            {
-                node.ReleaseRefCount();
-            });
+            bundlePath = null;
+            assetBundle.Unload(true);
+            assetBundle = null;
+            refCount = 0;
         }
     }
 }

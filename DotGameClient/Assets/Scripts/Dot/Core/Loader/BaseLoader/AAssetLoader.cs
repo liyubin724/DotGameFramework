@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using SystemObject = System.Object;
+using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
 {
@@ -23,8 +24,10 @@ namespace Dot.Core.Loader
 
         private bool isInit = false;
         protected Action<bool> initCallback = null;
-        public virtual void Initialize(Action<bool> initCallback, params SystemObject[] sysObjs)
+        protected AssetPathMode pathMode = AssetPathMode.Path;
+        public virtual void Initialize(AssetPathMode pathMode,Action<bool> initCallback, params SystemObject[] sysObjs)
         {
+            this.pathMode = pathMode;
             this.initCallback = initCallback;
         }
 
@@ -91,12 +94,8 @@ namespace Dot.Core.Loader
                 UpdateLoadingLoaderData();
             }
 
-            InnerDoUpdate();
-
             CheckUnloadUnusedAction();
         }
-
-        protected virtual void InnerDoUpdate() { }
 
         private void UpdateLoadingLoaderData()
         {
@@ -152,7 +151,7 @@ namespace Dot.Core.Loader
 
         }
         
-        #region init asset Loader
+        #region init Loader
         private void CheckInitializeAction()
         {
             if(UpdateInitialize(out bool isSuccess))
@@ -186,11 +185,23 @@ namespace Dot.Core.Loader
         {
             if(unloadUnusedAssetOperation == null)
             {
+                InnerUnloadUnusedAssets();
                 GC.Collect();
                 unloadUnusedAssetOperation = Resources.UnloadUnusedAssets();
                 unloadUnusedAssetCallback = callback;
             }
         }
+
+        protected virtual void InnerUnloadUnusedAssets()
+        {
+
+        }
+
         #endregion
+
+        public virtual UnityObject InstantiateAsset(string assetPath, UnityObject asset)
+        {
+            return UnityObject.Instantiate(asset);
+        }
     }
 }

@@ -11,6 +11,7 @@ namespace Dot.Tests
 {
     public class TestAssetManager : MonoBehaviour
     {
+        
         private void Awake()
         {
             GameController.StartUp();
@@ -21,26 +22,30 @@ namespace Dot.Tests
             //GameObject.Instantiate(prefab);
 
 
-            AssetManager.GetInstance().InitLoader(AssetLoaderMode.AssetBundle, (isSuccess) =>
+            AssetManager.GetInstance().InitLoader(AssetLoaderMode.AssetBundle, AssetPathMode.Path, (isSuccess) =>
             {
                 Debug.Log("Asset Manager init Success");
-
-            }, "D:/assetbundles/StandaloneWindows64/assetbundles");
+            }, "D:/assetbundles/StandaloneWindows64/assetbundles",5.0f);
         }
         private string[] assetAssetPathArr = new string[]
         {
-            "Assets/Resources/Prefabs/Cube.prefab",
+            "Assets/Resources/Prefabs/AtlasImage.prefab",
             "Assets/Resources/Prefabs/Capsule.prefab",
             "Assets/Resources/Prefabs/Cylinder.prefab",
             "Assets/Resources/Prefabs/Sphere.prefab",
         };
         private void OnGUI()
         {
-            if(GUILayout.Button("Resources Load Prefab"))
+            if (GUILayout.Button("Unload Unused Asset"))
+            {
+                AssetManager.GetInstance().UnloadUnusedAsset(null);
+            }
+            if (GUILayout.Button("Resources Load Prefab"))
             {
                 AssetManager.GetInstance().LoadAssetAsync(assetAssetPathArr[0], (assetPath, uObj, userData) =>
                  {
-                     GameObject.Instantiate<GameObject>(uObj as GameObject);
+                     AssetManager.GetInstance().InstantiateAsset(assetAssetPathArr[0], uObj);
+                     //GameObject.Instantiate<GameObject>(uObj as GameObject);
                  });
             }
 

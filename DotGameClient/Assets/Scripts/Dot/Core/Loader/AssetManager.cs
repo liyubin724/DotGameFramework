@@ -13,7 +13,7 @@ namespace Dot.Core.Loader
     {
         private AAssetLoader assetLoader = null;
         private bool isInit = false;
-        public void InitLoader(AssetLoaderMode loaderMode,Action<bool> initCallback,params SystemObject[] sysObjs)
+        public void InitLoader(AssetLoaderMode loaderMode, AssetPathMode pathMode, Action<bool> initCallback,params SystemObject[] sysObjs)
         {
             if(loaderMode == AssetLoaderMode.Resources)
             {
@@ -28,7 +28,7 @@ namespace Dot.Core.Loader
 
             if(assetLoader!=null)
             {
-                assetLoader.Initialize((isSuccess) =>
+                assetLoader.Initialize(pathMode,(isSuccess) =>
                 {
                     isInit = isSuccess;
                     initCallback?.Invoke(isSuccess);
@@ -78,6 +78,16 @@ namespace Dot.Core.Loader
             SystemObject userData = null)
         {
             return assetLoader.LoadOrInstanceBatchAssetAsync(assetPaths, true, priority, complete, progress, batchComplete, batchProgress, userData);
+        }
+
+        public UnityObject InstantiateAsset(string assetPath,UnityObject asset)
+        {
+            return assetLoader.InstantiateAsset(assetPath, asset);
+        }
+
+        public void UnloadUnusedAsset(Action callback = null)
+        {
+            assetLoader.UnloadUnusedAssets(callback);
         }
 
         public void UnloadAssetLoader(AssetLoaderHandle handle)
