@@ -5,7 +5,8 @@ namespace Dot.Core.Loader
     public class AssetBundleAsyncOperation : AAssetAsyncOperation
     {
         private AssetBundleCreateRequest asyncOperation = null;
-        public AssetBundleAsyncOperation(string assetPath) : base(assetPath)
+
+        public AssetBundleAsyncOperation(string assetPath, string assetRoot) : base(assetPath, assetRoot)
         {
         }
 
@@ -47,7 +48,7 @@ namespace Dot.Core.Loader
 
         protected override void CreateAsyncOperation()
         {
-            asyncOperation = AssetBundle.LoadFromFileAsync(assetPath);
+            asyncOperation = AssetBundle.LoadFromFileAsync(assetRootPath+assetPath);
         }
     }
 }

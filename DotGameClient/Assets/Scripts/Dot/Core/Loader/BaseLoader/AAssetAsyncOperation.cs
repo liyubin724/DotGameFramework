@@ -17,9 +17,13 @@ namespace Dot.Core.Loader
         protected AssetAsyncOperationStatus status = AssetAsyncOperationStatus.None;
         protected int loadRefCount = 0;
 
-        public AAssetAsyncOperation(string assetPath)
+        public string AssetPath { get => assetPath; }
+
+        protected string assetRootPath;
+        public AAssetAsyncOperation(string assetPath,string assetRoot)
         {
             this.assetPath = assetPath;
+            assetRootPath = assetRoot;
         }
 
         public AssetAsyncOperationStatus Status { get => status; internal set => status = value; }
@@ -30,6 +34,7 @@ namespace Dot.Core.Loader
             CreateAsyncOperation();
         }
 
+        public int RefCount { get => loadRefCount; }
         public bool IsInLoading() => loadRefCount > 0;
         public void RetainRefCount() => ++loadRefCount;
         public void ReleaseRefCount() => --loadRefCount;

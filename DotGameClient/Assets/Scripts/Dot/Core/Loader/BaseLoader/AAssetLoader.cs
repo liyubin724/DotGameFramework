@@ -3,11 +3,8 @@ using Priority_Queue;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using SystemObject = System.Object;
-using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
 {
@@ -51,7 +48,8 @@ namespace Dot.Core.Loader
             loaderData.batchCompleteCallback = batchComplete;
             loaderData.batchProgressCallback = batchProgress;
             loaderData.userData = userData;
-            
+            loaderData.InitData();
+
             loaderDataDic.Add(uniqueID, loaderData);
             if (loaderDataWaitingQueue.Count >= loaderDataWaitingQueue.MaxSize)
             {
@@ -83,7 +81,7 @@ namespace Dot.Core.Loader
                 StartLoaderDataLoading(loaderData);
             }
 
-            if(asyncOperationORM.Count>0)
+            if(asyncOperationORM.Count > 0)
             {
                 UpdateAsyncOperation();
             }
@@ -93,8 +91,12 @@ namespace Dot.Core.Loader
                 UpdateLoadingLoaderData();
             }
 
+            InnerDoUpdate();
+
             CheckUnloadUnusedAction();
         }
+
+        protected virtual void InnerDoUpdate() { }
 
         private void UpdateLoadingLoaderData()
         {
@@ -138,8 +140,12 @@ namespace Dot.Core.Loader
 
         protected abstract AssetLoaderData GetLoaderData();
         protected abstract void ReleaseLoaderData(AssetLoaderData loaderData);
-
         protected abstract void StartLoaderDataLoading(AssetLoaderData loaderData);
+
+        protected virtual string GetAssetRootPath()
+        {
+            return "";
+        }
 
         public void UnloadAsset(AssetLoaderHandle handle)
         {

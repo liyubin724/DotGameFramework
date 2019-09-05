@@ -121,6 +121,7 @@ namespace DotEditor.Core.Packer
             }
 
             config.datas = aiDatas.ToArray();
+            EditorUtility.SetDirty(config);
 
             AssetDatabase.SaveAssets();
         }

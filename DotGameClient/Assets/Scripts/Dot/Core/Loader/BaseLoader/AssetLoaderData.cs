@@ -1,5 +1,6 @@
 ﻿using Priority_Queue;
 using SystemObject = System.Object;
+using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
 {
@@ -16,6 +17,38 @@ namespace Dot.Core.Loader
         public bool isInstance = false;
         public SystemObject userData;
 
+        private bool[] isCompleteCalled = null;
+
+        public virtual void InitData()
+        {
+            isCompleteCalled = new bool[assetPaths.Length];
+            for (int i = 0; i < assetPaths.Length; ++i)
+            {
+                isCompleteCalled[i] = false;
+            }
+        }
+
+        public bool GetIsCompleteCalled(int index) => isCompleteCalled[index];
+
+        public void InvokeComplete(int index, UnityObject uObj)
+        {
+            isCompleteCalled[index] = true;
+            completeCallback?.Invoke(GetInvokeAssetPath(index), uObj, userData);
+        }
+        public void InvokeProgress(int index, float progress) => progressCallback?.Invoke(GetInvokeAssetPath(index), progress);
+        public void InvokeBatchComplete(UnityObject[] uObjs) => batchCompleteCallback?.Invoke(GetInvokeAssetPaths(), uObjs, userData);
+        public void InvokeBatchProgress(float[] progresses) => batchProgressCallback?.Invoke(GetInvokeAssetPaths(), progresses);
+
+        private string GetInvokeAssetPath(int index)
+        {
+            return assetPaths[index];
+        }
+
+        public string[] GetInvokeAssetPaths()
+        {
+            return assetPaths;
+        }
+        
         protected void Reset()
         {
             uniqueID = -1;
@@ -26,6 +59,7 @@ namespace Dot.Core.Loader
             batchProgressCallback = null;
             isInstance = false;
             userData = null;
+            isCompleteCalled = null;
         }
     }
 }

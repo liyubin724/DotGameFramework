@@ -5,7 +5,8 @@ namespace Dot.Core.Loader
     public class ResourceAsyncOperation : AAssetAsyncOperation
     {
         private ResourceRequest asyncOperation = null;
-        public ResourceAsyncOperation(string assetPath) : base(assetPath)
+
+        public ResourceAsyncOperation(string assetPath, string assetRoot) : base(assetPath, assetRoot)
         {
         }
 

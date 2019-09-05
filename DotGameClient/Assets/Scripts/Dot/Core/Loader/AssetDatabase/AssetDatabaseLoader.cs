@@ -16,7 +16,7 @@ namespace Dot.Core.Loader
             rLoaderData.Init();
             for (int i = 0; i < rLoaderData.assetPaths.Length; ++i)
             {
-                AssetDatabaseAsyncOperation operation = new AssetDatabaseAsyncOperation(rLoaderData.assetPaths[i]);
+                AssetDatabaseAsyncOperation operation = new AssetDatabaseAsyncOperation(rLoaderData.assetPaths[i], GetAssetRootPath());
                 asyncOperationORM.PushData(operation);
 
                 rLoaderData.asyncOperations[i] = operation;
@@ -78,7 +78,7 @@ namespace Dot.Core.Loader
 
             if (isComplete)
             {
-                adLoaderData.batchCompleteCallback?.Invoke(adLoaderData.assetPaths, loaderHandle.Objects(), adLoaderData.userData);
+                adLoaderData.batchCompleteCallback?.Invoke(adLoaderData.assetPaths, loaderHandle.GetObjects(), adLoaderData.userData);
             }
             return isComplete;
         }

@@ -15,6 +15,12 @@ namespace Dot.Tests
         {
             GameController.StartUp();
 
+            //string bundlePath = "D:/assetbundles/StandaloneWindows64/assetbundles/assets/resources/prefabs/capsule_prefab";
+            //AssetBundle ab = AssetBundle.LoadFromFile(bundlePath);
+            //GameObject prefab = ab.LoadAsset<GameObject>("Assets/Resources/Prefabs/Capsule.prefab");
+            //GameObject.Instantiate(prefab);
+
+
             AssetManager.GetInstance().InitLoader(AssetLoaderMode.AssetBundle, (isSuccess) =>
             {
                 Debug.Log("Asset Manager init Success");

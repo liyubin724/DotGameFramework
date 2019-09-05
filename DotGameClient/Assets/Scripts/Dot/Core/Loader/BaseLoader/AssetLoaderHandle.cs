@@ -1,4 +1,5 @@
-﻿using UnityObject = UnityEngine.Object;
+﻿using System.Linq;
+using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
 {
@@ -8,6 +9,7 @@ namespace Dot.Core.Loader
         private string[] assetPaths;
         private UnityObject[] uObjs;
         private float[] progresses;
+        private bool[] completeCalls;
 
         public AssetLoaderHandle(long id,string[] paths)
         {
@@ -15,28 +17,15 @@ namespace Dot.Core.Loader
             assetPaths = paths;
             uObjs = new UnityObject[paths.Length];
             progresses = new float[paths.Length];
+            completeCalls = new bool[paths.Length];
             for(int i =0;i<paths.Length;++i)
             {
                 progresses[i] = 0.0f;
+                completeCalls[i] = false;
             }
         }
 
-        public string AssetPath
-        {
-            get
-            {
-                if(assetPaths!=null && assetPaths.Length>0)
-                {
-                    return assetPaths[0];
-                }
-                return null;
-            }
-        }
-
-        public string[] AssetPaths { get => assetPaths; }
-
-        internal UnityObject[] Objects() => uObjs;
-
+        public UnityObject[] GetObjects() => uObjs;
         public UnityObject GetObject(int index = 0)
         {
             if(index>=0&&index<assetPaths.Length)
@@ -45,11 +34,16 @@ namespace Dot.Core.Loader
             }
             return null;
         }
-
         internal void SetObject(int index,UnityObject uObj)=> uObjs[index] = uObj;
 
-        internal float[] Progresses() => progresses;
-
+        public float Progress
+        {
+            get
+            {
+                return progresses.Sum((v) => v) / progresses.Length;
+            }
+        }
+        public float[] Progresses() => progresses;
         public float GetProgress(int index = 0)
         {
             if (index >= 0 && index < assetPaths.Length)
@@ -58,7 +52,6 @@ namespace Dot.Core.Loader
             }
             return 0;
         }
-
         public void SetProgress(int index, float progress) => progresses[index] = progress;
     }
 }

@@ -9,21 +9,27 @@ namespace Dot.Core.Loader
 {
     public class AssetNode : IObjectPoolItem
     {
-        private string assetPath;
-        private BundleNode assetBundleNode;
+        private string assetPath = null;
+        private BundleNode bundleNode = null;
         private WeakReference weakAsset;
         private List<WeakReference> weakInstances;
+        private int loadCount = 0;
+
+        public void RetainLoadCount() => ++loadCount;
+        public void ReleaseLoadCount() => --loadCount;
 
         public AssetNode() { }
-        public void InitNode(string path,BundleNode node,UnityObject uObj)
+        public void InitNode(string path,BundleNode node)
         {
             assetPath = path;
-            assetBundleNode = node;
-            weakAsset = new WeakReference(uObj);
+            bundleNode = node;
+            weakAsset = new WeakReference(node.GetAsset(assetPath));
         }
 
         public bool IsAlive()
         {
+            if (loadCount > 0) return true;
+
             if (!IsNull(weakAsset.Target)) return true;
 
             if(weakInstances!=null)
@@ -41,7 +47,20 @@ namespace Dot.Core.Loader
 
         public UnityObject GetAsset()
         {
+            if(IsNull(weakAsset.Target))
+            {
+                weakAsset.Target = bundleNode.GetAsset(assetPath);
+            }
+
             return weakAsset.Target as UnityObject;
+        }
+
+        public UnityObject GetInstance()
+        {
+            UnityObject asset = GetAsset();
+            UnityObject instance = UnityObject.Instantiate(asset);
+            AddInstance(instance);
+            return instance;
         }
 
         public void AddInstance(UnityObject uObj)
@@ -78,18 +97,13 @@ namespace Dot.Core.Loader
             return false;
         }
 
-        public void OnNew()
-        {
-            
-        }
-
+        public void OnNew() { }
         public void OnRelease()
         {
-            
         }
     }
 
-    public class BundleNode
+    public class BundleNode : IObjectPoolItem
     {
         private string bundlePath;
         private AssetBundle assetBundle;
@@ -97,6 +111,10 @@ namespace Dot.Core.Loader
 
         private List<BundleNode> dependencies = new List<BundleNode>();
 
+        public int RefCount { get => refCount; set => refCount = value; }
+        public void RetainRefCount() => ++refCount;
+        public void ReleaseRefCount() => --refCount;
+        
         public BundleNode() { }
 
         public void InitNode(string path,AssetBundle bundle)
@@ -105,20 +123,18 @@ namespace Dot.Core.Loader
             assetBundle = bundle;
         }
 
-        public void Retain()
-        {
-            ++refCount;
-        }
-
-        public void Release()
-        {
-            --refCount;
-        }
-
         public UnityObject GetAsset(string assetPath)
         {
             return assetBundle.LoadAsset(assetPath);
         }
 
+        public void OnNew() { }
+        public void OnRelease()
+        {
+            dependencies.ForEach((node) =>
+            {
+                node.ReleaseRefCount();
+            });
+        }
     }
 }

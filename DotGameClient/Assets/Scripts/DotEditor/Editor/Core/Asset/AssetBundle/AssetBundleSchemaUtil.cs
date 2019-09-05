@@ -15,6 +15,7 @@ namespace DotEditor.Core.Asset
             {
                 group?.Execute(groupInput);
             }
+            EditorUtility.SetDirty(config);
             AssetDatabase.SaveAssets();
             AssetDatabase.ImportAsset(AssetBundleTagConfig.CONFIG_PATH);
         }
