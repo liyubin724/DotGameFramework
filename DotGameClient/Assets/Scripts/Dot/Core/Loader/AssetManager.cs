@@ -1,5 +1,6 @@
 ﻿using Dot.Core.Util;
 using System;
+using UnityEngine;
 using SystemObject = System.Object;
 using UnityObject = UnityEngine.Object;
 
@@ -14,22 +15,23 @@ namespace Dot.Core.Loader
             if(loaderMode == AssetLoaderMode.Resources)
             {
                 assetLoader = new ResourceLoader();
-            }else if(loaderMode == AssetLoaderMode.AssetDatabase)
-            {
-                assetLoader = new AssetDatabaseLoader();
             }else if(loaderMode == AssetLoaderMode.AssetBundle)
             {
                 assetLoader = new AssetBundleLoader();
             }
-
-            if(assetLoader!=null)
+            else if (loaderMode == AssetLoaderMode.AssetDatabase)
             {
-                assetLoader.Initialize(pathMode,(isSuccess) =>
-                {
-                    isInit = isSuccess;
-                    initCallback?.Invoke(isSuccess);
-                }, sysObjs);
+#if UNITY_EDITOR
+                assetLoader = new AssetDatabaseLoader();
+#else
+                Debug.LogError("AssetManager::InitLoader->AssetLoaderMode(AssetDatabase) can be used in Editor");
+#endif
             }
+            assetLoader?.Initialize(pathMode,(isSuccess) =>
+            {
+                isInit = isSuccess;
+                initCallback?.Invoke(isSuccess);
+            }, sysObjs);
         }
 
         public AssetLoaderHandle LoadAssetAsync(
@@ -39,7 +41,14 @@ namespace Dot.Core.Loader
             OnAssetLoadProgress progress = null,
             SystemObject userData = null)
         {
-            return assetLoader.LoadOrInstanceBatchAssetAsync(new string[] { assetPath }, false, priority, complete, progress, null, null, userData);
+            if(isInit)
+            {
+                return assetLoader.LoadOrInstanceBatchAssetAsync(new string[] { assetPath }, false, priority, complete, progress, null, null, userData);
+            }else
+            {
+                Debug.LogError("AssetManager::LoadAssetAsync->init is failed");
+                return null;
+            }
         }
 
         public AssetLoaderHandle LoadBatchAssetAsync(
@@ -51,7 +60,15 @@ namespace Dot.Core.Loader
             OnBatchAssetsLoadProgress batchProgress = null,
             SystemObject userData = null)
         {
-            return assetLoader.LoadOrInstanceBatchAssetAsync(assetPaths, false, priority, complete, progress, batchComplete, batchProgress, userData);
+            if (isInit)
+            {
+                return assetLoader.LoadOrInstanceBatchAssetAsync(assetPaths, false, priority, complete, progress, batchComplete, batchProgress, userData);
+            }
+            else
+            {
+                Debug.LogError("AssetManager::LoadAssetAsync->init is failed");
+                return null;
+            }
         }
 
         public AssetLoaderHandle InstanceAssetAsync(
@@ -61,7 +78,15 @@ namespace Dot.Core.Loader
             OnAssetLoadProgress progress = null,
             SystemObject userData = null)
         {
-            return assetLoader.LoadOrInstanceBatchAssetAsync(new string[] { assetPath }, true, priority, complete, progress, null, null, userData);
+            if (isInit)
+            {
+                return assetLoader.LoadOrInstanceBatchAssetAsync(new string[] { assetPath }, true, priority, complete, progress, null, null, userData);
+            }
+            else
+            {
+                Debug.LogError("AssetManager::LoadAssetAsync->init is failed");
+                return null;
+            }
         }
 
         public AssetLoaderHandle InstanceBatchAssetAsync(
@@ -73,22 +98,52 @@ namespace Dot.Core.Loader
             OnBatchAssetsLoadProgress batchProgress = null,
             SystemObject userData = null)
         {
-            return assetLoader.LoadOrInstanceBatchAssetAsync(assetPaths, true, priority, complete, progress, batchComplete, batchProgress, userData);
+            if (isInit)
+            {
+                return assetLoader.LoadOrInstanceBatchAssetAsync(assetPaths, true, priority, complete, progress, batchComplete, batchProgress, userData);
+            }
+            else
+            {
+                Debug.LogError("AssetManager::LoadAssetAsync->init is failed");
+                return null;
+            }
         }
 
         public UnityObject InstantiateAsset(string assetPath,UnityObject asset)
         {
-            return assetLoader.InstantiateAsset(assetPath, asset);
+            if (isInit)
+            {
+                return assetLoader?.InstantiateAsset(assetPath, asset);
+            }
+            else
+            {
+                Debug.LogError("AssetManager::InstantiateAsset->init is failed");
+                return null;
+            }
         }
 
         public void UnloadUnusedAsset(Action callback = null)
         {
-            assetLoader.UnloadUnusedAssets(callback);
+            if (isInit)
+            {
+                assetLoader?.UnloadUnusedAssets(callback);
+            }
+            else
+            {
+                Debug.LogError("AssetManager::InstantiateAsset->init is failed");
+            }
         }
 
         public void UnloadAssetLoader(AssetLoaderHandle handle)
         {
-            assetLoader.UnloadAssetLoader(handle);
+            if (isInit)
+            {
+                assetLoader?.UnloadAssetLoader(handle);
+            }
+            else
+            {
+                Debug.LogError("AssetManager::InstantiateAsset->init is failed");
+            }
         }
         
         public void DoUpdate(float deltaTime)
