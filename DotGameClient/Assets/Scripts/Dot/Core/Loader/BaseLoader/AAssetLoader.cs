@@ -193,17 +193,15 @@ namespace Dot.Core.Loader
         {
             if(unloadUnusedAssetOperation == null)
             {
-                InnerUnloadUnusedAssets();
                 GC.Collect();
                 unloadUnusedAssetOperation = Resources.UnloadUnusedAssets();
+                GC.Collect();
+                InnerUnloadUnusedAssets();
                 unloadUnusedAssetCallback = callback;
             }
         }
 
-        protected virtual void InnerUnloadUnusedAssets()
-        {
-
-        }
+        protected virtual void InnerUnloadUnusedAssets() { }
 
         #endregion
 

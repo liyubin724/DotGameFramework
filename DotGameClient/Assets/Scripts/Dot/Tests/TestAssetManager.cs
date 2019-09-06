@@ -61,7 +61,7 @@ namespace Dot.Tests
                     UnityObject.Destroy(obj);
 
                 }
-                objList.Clear();
+                //objList.Clear();
             }
 
             if (GUILayout.Button("Load Prefabs"))

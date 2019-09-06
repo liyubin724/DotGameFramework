@@ -11,9 +11,12 @@ namespace Dot.Core.Loader
     {
         private string assetPath = null;
         private BundleNode bundleNode = null;
-        private WeakReference weakAsset;
-        private List<WeakReference> weakInstances;
+        //private WeakReference weakAsset;
+        //private List<WeakReference> weakInstances;
+        private List<WeakReference> weakAssets = new List<WeakReference>();
+
         private int loadCount = 0;
+
 
         public void RetainLoadCount() => ++loadCount;
         public void ReleaseLoadCount() => --loadCount;
@@ -23,59 +26,71 @@ namespace Dot.Core.Loader
         {
             assetPath = path;
             bundleNode = node;
-            weakAsset = new WeakReference(node.GetAsset(assetPath));
+            //weakAsset = new WeakReference(node.GetAsset(assetPath),true);
         }
 
         public bool IsAlive()
         {
             if (loadCount > 0) return true;
 
-            if (!IsNull(weakAsset.Target)) return true;
-
-            if(weakInstances!=null)
+            foreach(var weakAsset in weakAssets)
             {
-                for(int i =weakInstances.Count-1;i>=0;--i)
+                if (!IsNull(weakAsset.Target))
                 {
-                    if(!IsNull(weakInstances[i].Target))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
+            
+            //if (!IsNull(weakAsset.Target)) return true;
+
+            //if(weakInstances!=null)
+            //{
+            //    for(int i =weakInstances.Count-1;i>=0;--i)
+            //    {
+            //        if(!IsNull(weakInstances[i].Target))
+            //        {
+            //            return true;
+            //        }
+            //    }
+            //}
             return false;
         }
 
         public UnityObject GetAsset()
         {
-            if(IsNull(weakAsset.Target))
-            {
-                weakAsset.Target = bundleNode.GetAsset(assetPath);
-            }
+            UnityObject asset = bundleNode.GetAsset(assetPath);
+            weakAssets.Add(new WeakReference(asset, false));
+            return asset;
+            //if (IsNull(weakAsset.Target))
+            //{
+            //    weakAsset.Target = bundleNode.GetAsset(assetPath);
+            //}
 
-            return weakAsset.Target as UnityObject;
+            //return weakAsset.Target as UnityObject;
         }
 
         public UnityObject GetInstance()
         {
-            UnityObject asset = GetAsset();
+            UnityObject asset = bundleNode.GetAsset(assetPath);
             UnityObject instance = UnityObject.Instantiate(asset);
+            Resources.UnloadAsset(asset);
             AddInstance(instance);
             return instance;
         }
 
         public void AddInstance(UnityObject uObj)
         {
-            if (weakInstances == null)
-            {
-                weakInstances = new List<WeakReference>();
-            }
+            //if (weakInstances == null)
+            //{
+            //    weakInstances = new List<WeakReference>();
+            //}
 
             bool isSet = false;
-            for (int i = 0; i < weakInstances.Count; ++i)
+            for (int i = 0; i < weakAssets.Count; ++i)
             {
-                if (IsNull(weakInstances[i].Target))
+                if (IsNull(weakAssets[i].Target))
                 {
-                    weakInstances[i].Target = uObj;
+                    weakAssets[i].Target = uObj;
                     isSet = true;
                     break;
                 }
@@ -83,7 +98,7 @@ namespace Dot.Core.Loader
 
             if(!isSet)
             {
-                weakInstances.Add(new WeakReference(uObj));
+                weakAssets.Add(new WeakReference(uObj,false));
             }
         }
 
@@ -102,8 +117,9 @@ namespace Dot.Core.Loader
         {
             assetPath = null;
             bundleNode.ReleaseRefCount();
-            weakAsset = null;
-            weakInstances = null;
+            //weakAsset = null;
+            //weakInstances = null;
+            weakAssets.Clear();
             loadCount = 0;
         }
     }
