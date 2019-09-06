@@ -1,9 +1,4 @@
 ﻿using Dot.Core.Pool;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dot.Core.Loader
 {
@@ -11,9 +6,9 @@ namespace Dot.Core.Loader
     {
         internal ResourceAsyncOperation[] asyncOperations = null;
 
-        public override void InitData()
+        public override void InitData(AssetPathMode pathMode)
         {
-            base.InitData();
+            base.InitData(pathMode);
             asyncOperations = new ResourceAsyncOperation[assetPaths.Length];
         }
 

@@ -1,9 +1,5 @@
 ﻿using Dot.Core.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SystemObject = System.Object;
 using UnityObject = UnityEngine.Object;
 
@@ -92,7 +88,7 @@ namespace Dot.Core.Loader
 
         public void UnloadAssetLoader(AssetLoaderHandle handle)
         {
-
+            assetLoader.UnloadAssetLoader(handle);
         }
         
         public void DoUpdate(float deltaTime)

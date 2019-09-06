@@ -82,20 +82,20 @@ namespace DotEditor.Core.Packer
                 return;
             }
 
-            AssetImporter assetImporter = AssetImporter.GetAtPath(AssetInBundleConfig.CONFIG_PATH);
-            assetImporter.assetBundleName = AssetInBundleConfig.CONFIG_ASSET_BUNDLE_NAME;
+            AssetImporter assetImporter = AssetImporter.GetAtPath(AssetAddressConfig.CONFIG_PATH);
+            assetImporter.assetBundleName = AssetAddressConfig.CONFIG_ASSET_BUNDLE_NAME;
 
             AssetBundleSchemaUtil.SetAssetBundleNames(config, isShowProgressBar);
         }
 
         public static void CreateAssetInBundleConfig(AssetBundleTagConfig tagConfig)
         {
-            AssetInBundleConfig config = AssetDatabase.LoadAssetAtPath<AssetInBundleConfig>(AssetInBundleConfig.CONFIG_PATH);
+            AssetAddressConfig config = AssetDatabase.LoadAssetAtPath<AssetAddressConfig>(AssetAddressConfig.CONFIG_PATH);
             if(config==null)
             {
-                config = ScriptableObject.CreateInstance<AssetInBundleConfig>();
-                AssetDatabase.CreateAsset(config, AssetInBundleConfig.CONFIG_PATH);
-                AssetDatabase.ImportAsset(AssetInBundleConfig.CONFIG_PATH);
+                config = ScriptableObject.CreateInstance<AssetAddressConfig>();
+                AssetDatabase.CreateAsset(config, AssetAddressConfig.CONFIG_PATH);
+                AssetDatabase.ImportAsset(AssetAddressConfig.CONFIG_PATH);
             }
 
             AssetBundleAssetData[] datas = (from groupData in tagConfig.groupDatas
@@ -103,10 +103,10 @@ namespace DotEditor.Core.Packer
                                             from assetData in groupData.assetDatas
                                             select assetData).ToArray();
 
-            List<AssetInBundleData> aiDatas = new List<AssetInBundleData>();
+            List<AssetAddressData> addressDatas = new List<AssetAddressData>();
             foreach(var assetData in datas)
             {
-                AssetInBundleData aibData = new AssetInBundleData()
+                AssetAddressData addressData = new AssetAddressData()
                 {
                     assetAddress = assetData.address,
                     assetPath = assetData.path,
@@ -114,13 +114,13 @@ namespace DotEditor.Core.Packer
                 };
                 if(assetData.labels!=null && assetData.labels.Length>0)
                 {
-                    aibData.labels = new string[assetData.labels.Length];
-                    Array.Copy(assetData.labels, aibData.labels, aibData.labels.Length);
+                    addressData.labels = new string[assetData.labels.Length];
+                    Array.Copy(assetData.labels, addressData.labels, addressData.labels.Length);
                 }
-                aiDatas.Add(aibData);
+                addressDatas.Add(addressData);
             }
 
-            config.datas = aiDatas.ToArray();
+            config.addressDatas = addressDatas.ToArray();
             EditorUtility.SetDirty(config);
 
             AssetDatabase.SaveAssets();

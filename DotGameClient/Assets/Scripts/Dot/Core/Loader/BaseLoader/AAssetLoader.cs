@@ -1,4 +1,5 @@
 ﻿using Dot.Core.Generic;
+using Dot.Core.Loader.Config;
 using Priority_Queue;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace Dot.Core.Loader
     public abstract class AAssetLoader
     {
         private UniqueIDCreator idCreator = new UniqueIDCreator();
+        protected AssetAddressConfig assetAddressConfig = null;
 
         protected Dictionary<long, AssetLoaderData> loaderDataDic = new Dictionary<long, AssetLoaderData>();
         protected Dictionary<long, AssetLoaderHandle> loaderHandleDic = new Dictionary<long, AssetLoaderHandle>();
@@ -43,14 +45,22 @@ namespace Dot.Core.Loader
             
             AssetLoaderData loaderData = GetLoaderData();
             loaderData.uniqueID = uniqueID;
-            loaderData.assetPaths = assetPaths;
+            if(pathMode == AssetPathMode.Address)
+            {
+                loaderData.assetAddresses = assetPaths;
+                loaderData.assetPaths = assetAddressConfig.GetAssetPathByAddress(assetPaths);
+            }
+            else
+            {
+                loaderData.assetPaths = assetPaths;
+            }
             loaderData.isInstance = isInstance;
             loaderData.completeCallback = complete;
             loaderData.progressCallback = progress;
             loaderData.batchCompleteCallback = batchComplete;
             loaderData.batchProgressCallback = batchProgress;
             loaderData.userData = userData;
-            loaderData.InitData();
+            loaderData.InitData(pathMode);
 
             loaderDataDic.Add(uniqueID, loaderData);
             if (loaderDataWaitingQueue.Count >= loaderDataWaitingQueue.MaxSize)
@@ -145,7 +155,7 @@ namespace Dot.Core.Loader
             return "";
         }
 
-        public void UnloadAsset(AssetLoaderHandle handle)
+        public void UnloadAssetLoader(AssetLoaderHandle handle)
         {
 
         }

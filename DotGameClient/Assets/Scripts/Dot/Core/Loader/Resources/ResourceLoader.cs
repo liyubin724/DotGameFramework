@@ -1,4 +1,5 @@
 ﻿using Dot.Core.Pool;
+using System;
 using System.Collections.Generic;
 using UnityObject = UnityEngine.Object;
 
@@ -30,7 +31,7 @@ namespace Dot.Core.Loader
         protected override void StartLoaderDataLoading(AssetLoaderData loaderData)
         {
             ResourceLoaderData rLoaderData = loaderData as ResourceLoaderData;
-            rLoaderData.InitData();
+            rLoaderData.InitData(pathMode);
             for(int i =0;i<rLoaderData.assetPaths.Length;++i)
             {
                 ResourceAsyncOperation resourceAsyncOperation = new ResourceAsyncOperation(rLoaderData.assetPaths[i], GetAssetRootPath());
@@ -38,6 +39,11 @@ namespace Dot.Core.Loader
 
                 rLoaderData.asyncOperations[i] = resourceAsyncOperation;
             }
+        }
+
+        public override void Initialize(AssetPathMode pathMode, Action<bool> initCallback, params object[] sysObjs)
+        {
+            base.Initialize(pathMode, initCallback, sysObjs);
         }
 
         protected override bool UpdateInitialize(out bool isSuccess)

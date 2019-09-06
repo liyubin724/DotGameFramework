@@ -1,6 +1,7 @@
 ﻿using Dot.Core.Loader;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace Dot.Tests
             //GameObject.Instantiate(prefab);
 
 
-            AssetManager.GetInstance().InitLoader(AssetLoaderMode.AssetBundle, AssetPathMode.Path, (isSuccess) =>
+            AssetManager.GetInstance().InitLoader(AssetLoaderMode.AssetBundle, AssetPathMode.Address, (isSuccess) =>
             {
                 Debug.Log("Asset Manager init Success");
             }, "D:/assetbundles/StandaloneWindows64/assetbundles",5.0f);
@@ -30,11 +31,11 @@ namespace Dot.Tests
         private string[] assetAssetPathArr = new string[]
         {
             "Assets/ArtRes/Prefabs/AtlasImage.prefab",
+            "Assets/ArtRes/Prefabs/Capsule.prefab",
              "Assets/ArtRes/Prefabs/AtlasImage.prefab",
+            "Assets/ArtRes/Prefabs/Cylinder.prefab",
               "Assets/ArtRes/Prefabs/AtlasImage.prefab",
-            //"Assets/ArtRes/Prefabs/Capsule.prefab",
-            //"Assets/ArtRes/Prefabs/Cylinder.prefab",
-            //"Assets/ArtRes/Prefabs/Sphere.prefab",
+            "Assets/ArtRes/Prefabs/Sphere.prefab",
         };
 
         private List<UnityObject> objList = new List<UnityObject>();
@@ -46,8 +47,10 @@ namespace Dot.Tests
             }
             if (GUILayout.Button("Load Prefab"))
             {
-                AssetManager.GetInstance().LoadAssetAsync(assetAssetPathArr[0], (assetPath, uObj, userData) =>
+                string path = Path.GetFileNameWithoutExtension(assetAssetPathArr[0]);
+                AssetManager.GetInstance().LoadAssetAsync(path, (assetPath, uObj, userData) =>
                  {
+                     Debug.Log(assetPath);
                      GameObject gObj = AssetManager.GetInstance().InstantiateAsset(assetPath, uObj) as GameObject;
                      gObj.transform.SetParent(rootCanvas.transform,false);
                      objList.Add(gObj);

@@ -19,7 +19,6 @@ namespace Dot.Core.Loader
     {
         private string assetBundleRootPath = "";
         private AssetBundleManifest assetBundleManifest = null;
-        private AssetInBundleConfig assetInBundleConfig = null;
 
         private readonly ObjectPool<AssetBundleLoaderData> loaderDataPool = new ObjectPool<AssetBundleLoaderData>(5);
         private readonly ObjectPool<AssetNode> assetNodePool = new ObjectPool<AssetNode>(50);
@@ -56,15 +55,15 @@ namespace Dot.Core.Loader
             assetBundleManifest = manifestAB.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
             manifestAB.Unload(false);
 
-            string assetInBundlePath = $"{assetBundleRootPath}/{AssetInBundleConfig.CONFIG_ASSET_BUNDLE_NAME}";
-            AssetBundle assetInBundleAB = AssetBundle.LoadFromFile(assetInBundlePath);
-            assetInBundleConfig = assetInBundleAB.LoadAsset<AssetInBundleConfig>(AssetInBundleConfig.CONFIG_PATH);
-            assetInBundleAB.Unload(false);
+            string assetAddressConfigPath = $"{assetBundleRootPath}/{AssetAddressConfig.CONFIG_ASSET_BUNDLE_NAME}";
+            AssetBundle assteAddressConfigAB = AssetBundle.LoadFromFile(assetAddressConfigPath);
+            assetAddressConfig = assteAddressConfigAB.LoadAsset<AssetAddressConfig>(AssetAddressConfig.CONFIG_PATH);
+            assteAddressConfigAB.Unload(false);
         }
 
         protected override bool UpdateInitialize(out bool isSuccess)
         {
-            isSuccess = assetBundleManifest != null && assetInBundleConfig != null;
+            isSuccess = assetBundleManifest != null && assetAddressConfig != null;
             return true;
         }
 
@@ -80,7 +79,7 @@ namespace Dot.Core.Loader
                     continue;
                 }
 
-                string mainBunldePath = assetInBundleConfig.GetBundlePathByPath(assetPath);
+                string mainBunldePath = assetAddressConfig.GetBundlePathByPath(assetPath);
                 if(bundleNodeDic.TryGetValue(mainBunldePath,out BundleNode bundleNode))
                 {
                     bundleNode.RetainRefCount();
@@ -178,7 +177,7 @@ namespace Dot.Core.Loader
                                 }
                             }
 
-                            string bundlePath = assetInBundleConfig.GetBundlePathByPath(assetPath);
+                            string bundlePath = assetAddressConfig.GetBundlePathByPath(assetPath);
                             BundleNode mainBundleNode = bundleNodeDic[bundlePath];
 
                             assetNode = assetNodePool.Get();
@@ -254,7 +253,7 @@ namespace Dot.Core.Loader
         private void CheckAssetLoadProgress(AssetBundleLoaderData loaderData, int index, AssetLoaderHandle loaderHandle)
         {
             string assetPath = loaderData.assetPaths[index];
-            string bundlePath = assetInBundleConfig.GetBundlePathByPath(assetPath);
+            string bundlePath = assetAddressConfig.GetBundlePathByPath(assetPath);
             string[] depends = assetBundleManifest.GetAllDependencies(bundlePath);
 
             int bundleCount = 1;
@@ -331,6 +330,10 @@ namespace Dot.Core.Loader
 
         public override UnityObject InstantiateAsset(string assetPath, UnityObject asset)
         {
+            if(pathMode == AssetPathMode.Address)
+            {
+                assetPath = assetAddressConfig.GetAssetPathByAddress(assetPath);
+            }
             if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
             {
                 UnityObject instance = base.InstantiateAsset(assetPath, asset);

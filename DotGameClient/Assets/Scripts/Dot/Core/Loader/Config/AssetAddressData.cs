@@ -3,7 +3,7 @@
 namespace Dot.Core.Loader.Config
 {
     [Serializable]
-    public class AssetInBundleData
+    public class AssetAddressData
     {
         public string assetAddress;
         public string assetPath;

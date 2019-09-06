@@ -8,6 +8,7 @@ namespace Dot.Core.Loader
     {
         public long uniqueID = -1;
         public string[] assetPaths;
+        public string[] assetAddresses;
 
         public OnAssetLoadComplete completeCallback;
         public OnAssetLoadProgress progressCallback;
@@ -18,9 +19,11 @@ namespace Dot.Core.Loader
         public SystemObject userData;
 
         private bool[] isCompleteCalled = null;
+        private AssetPathMode pathMode;
 
-        public virtual void InitData()
+        public virtual void InitData(AssetPathMode pMode)
         {
+            pathMode = pMode;
             isCompleteCalled = new bool[assetPaths.Length];
             for (int i = 0; i < assetPaths.Length; ++i)
             {
@@ -41,11 +44,19 @@ namespace Dot.Core.Loader
 
         private string GetInvokeAssetPath(int index)
         {
+            if (pathMode == AssetPathMode.Address)
+            {
+                return assetAddresses[index];
+            }
             return assetPaths[index];
         }
 
         public string[] GetInvokeAssetPaths()
         {
+            if(pathMode == AssetPathMode.Address)
+            {
+                return assetAddresses;
+            }
             return assetPaths;
         }
         

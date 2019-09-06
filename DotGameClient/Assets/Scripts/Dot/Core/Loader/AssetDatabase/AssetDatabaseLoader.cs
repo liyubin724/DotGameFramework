@@ -1,4 +1,6 @@
-﻿using Dot.Core.Pool;
+﻿using Dot.Core.Loader.Config;
+using Dot.Core.Pool;
+using System;
 using System.Collections.Generic;
 using UnityObject = UnityEngine.Object;
 
@@ -38,6 +40,14 @@ namespace Dot.Core.Loader
 
                 rLoaderData.asyncOperations[i] = operation;
             }
+        }
+
+        public override void Initialize(AssetPathMode pathMode, Action<bool> initCallback, params object[] sysObjs)
+        {
+            base.Initialize(pathMode, initCallback, sysObjs);
+#if UNITY_EDITOR
+            assetAddressConfig = UnityEditor.AssetDatabase.LoadAssetAtPath<AssetAddressConfig>(AssetAddressConfig.CONFIG_PATH);
+#endif
         }
 
         protected override bool UpdateInitialize(out bool isSuccess)
