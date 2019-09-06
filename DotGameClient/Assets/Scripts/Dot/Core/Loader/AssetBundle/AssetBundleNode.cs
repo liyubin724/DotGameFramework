@@ -11,8 +11,6 @@ namespace Dot.Core.Loader
     {
         private string assetPath = null;
         private BundleNode bundleNode = null;
-        //private WeakReference weakAsset;
-        //private List<WeakReference> weakInstances;
         private List<WeakReference> weakAssets = new List<WeakReference>();
 
         private int loadCount = 0;
@@ -26,7 +24,6 @@ namespace Dot.Core.Loader
         {
             assetPath = path;
             bundleNode = node;
-            //weakAsset = new WeakReference(node.GetAsset(assetPath),true);
         }
 
         public bool IsAlive()
@@ -40,19 +37,6 @@ namespace Dot.Core.Loader
                     return true;
                 }
             }
-            
-            //if (!IsNull(weakAsset.Target)) return true;
-
-            //if(weakInstances!=null)
-            //{
-            //    for(int i =weakInstances.Count-1;i>=0;--i)
-            //    {
-            //        if(!IsNull(weakInstances[i].Target))
-            //        {
-            //            return true;
-            //        }
-            //    }
-            //}
             return false;
         }
 
@@ -61,12 +45,6 @@ namespace Dot.Core.Loader
             UnityObject asset = bundleNode.GetAsset(assetPath);
             weakAssets.Add(new WeakReference(asset, false));
             return asset;
-            //if (IsNull(weakAsset.Target))
-            //{
-            //    weakAsset.Target = bundleNode.GetAsset(assetPath);
-            //}
-
-            //return weakAsset.Target as UnityObject;
         }
 
         public UnityObject GetInstance()
@@ -80,11 +58,6 @@ namespace Dot.Core.Loader
 
         public void AddInstance(UnityObject uObj)
         {
-            //if (weakInstances == null)
-            //{
-            //    weakInstances = new List<WeakReference>();
-            //}
-
             bool isSet = false;
             for (int i = 0; i < weakAssets.Count; ++i)
             {
@@ -117,8 +90,6 @@ namespace Dot.Core.Loader
         {
             assetPath = null;
             bundleNode.ReleaseRefCount();
-            //weakAsset = null;
-            //weakInstances = null;
             weakAssets.Clear();
             loadCount = 0;
         }
