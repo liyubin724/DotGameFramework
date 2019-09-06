@@ -157,7 +157,19 @@ namespace Dot.Core.Loader
 
         public void UnloadAssetLoader(AssetLoaderHandle handle)
         {
+            if(loaderDataDic.TryGetValue(handle.UniqueID,out AssetLoaderData loaderData))
+            {
+                if(loaderDataWaitingQueue.Contains(loaderData))
+                {
+                    loaderDataWaitingQueue.Remove(loaderData);
+                    loaderDataDic.Remove(handle.UniqueID);
+                    loaderHandleDic.Remove(handle.UniqueID);
+                    return;
+                }
 
+
+
+            }
         }
 
         #region Async Operation

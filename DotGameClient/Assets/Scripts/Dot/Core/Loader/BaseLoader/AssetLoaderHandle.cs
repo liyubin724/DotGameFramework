@@ -11,6 +11,8 @@ namespace Dot.Core.Loader
         private float[] progresses;
         private bool[] completeCalls;
 
+        public long UniqueID { get => uniqueID; }
+
         public AssetLoaderHandle(long id,string[] paths)
         {
             uniqueID = id;
