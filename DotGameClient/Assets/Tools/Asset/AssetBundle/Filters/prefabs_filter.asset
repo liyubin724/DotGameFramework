@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: prefabs_filter
   m_EditorClassIdentifier: 
   isEnable: 1
-  folder: Assets/Resources/Prefabs
+  folder: Assets/ArtRes/Prefabs
   includeSubfolder: 1
   fileNameFilterRegex: ^\w*.prefab$
   assets:
-  - Assets/Resources/Prefabs/Capsule.prefab
-  - Assets/Resources/Prefabs/Cube.prefab
-  - Assets/Resources/Prefabs/Cylinder.prefab
-  - Assets/Resources/Prefabs/Sphere.prefab
+  - Assets/ArtRes/Prefabs/AtlasImage.prefab
+  - Assets/ArtRes/Prefabs/Capsule.prefab
+  - Assets/ArtRes/Prefabs/Cube.prefab
+  - Assets/ArtRes/Prefabs/Cylinder.prefab
+  - Assets/ArtRes/Prefabs/Sphere.prefab

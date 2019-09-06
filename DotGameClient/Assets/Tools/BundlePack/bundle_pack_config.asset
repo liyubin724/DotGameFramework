@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bundleOutputDir: D:/assetbundles
   cleanupBeforeBuild: 0
-  bundleOptions: 0
+  bundleOptions: 272
   buildTarget: 0

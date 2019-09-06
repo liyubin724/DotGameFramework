@@ -12,4 +12,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a6707e33f4763a43b6b79ddd005cdb4, type: 3}
   m_Name: bundle_tag_config
   m_EditorClassIdentifier: 
-  groupDatas: []
+  groupDatas:
+  - groupName: Prefabs
+    isMain: 1
+    assetDatas:
+    - address: AtlasImage
+      path: Assets/ArtRes/Prefabs/AtlasImage.prefab
+      bundle: assets/artres/prefabs/atlasimage_prefab
+      labels: []
+    - address: Capsule
+      path: Assets/ArtRes/Prefabs/Capsule.prefab
+      bundle: assets/artres/prefabs/capsule_prefab
+      labels: []
+    - address: Cube
+      path: Assets/ArtRes/Prefabs/Cube.prefab
+      bundle: assets/artres/prefabs/cube_prefab
+      labels: []
+    - address: Cylinder
+      path: Assets/ArtRes/Prefabs/Cylinder.prefab
+      bundle: assets/artres/prefabs/cylinder_prefab
+      labels: []
+    - address: Sphere
+      path: Assets/ArtRes/Prefabs/Sphere.prefab
+      bundle: assets/artres/prefabs/sphere_prefab
+      labels: []
+  - groupName: SpriteAtlas
+    isMain: 1
+    assetDatas:
+    - address: common_atlas
+      path: Assets/ArtRes/UI/Atlas/common_atlas.spriteatlas
+      bundle: assets/artres/ui/atlas/common_atlas_spriteatlas
+      labels:
+      - spriteatlas
+    - address: login_atlas
+      path: Assets/ArtRes/UI/Atlas/login_atlas.spriteatlas
+      bundle: assets/artres/ui/atlas/login_atlas_spriteatlas
+      labels:
+      - spriteatlas
