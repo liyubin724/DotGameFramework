@@ -4,7 +4,7 @@ namespace Dot.Core.Loader
 {
     public class AssetDatabaseAsyncOperation : AAssetAsyncOperation
     {
-        public AssetDatabaseAsyncOperation(string assetPath, string assetRoot) : base(assetPath, assetRoot)
+        public AssetDatabaseAsyncOperation(string assetPath) : base(assetPath, "")
         {
         }
 

@@ -1,68 +1,77 @@
 ﻿using Dot.Core.Loader.Config;
 using Dot.Core.Pool;
-using System;
-using System.Collections.Generic;
+using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
 {
     public class AssetDatabaseLoader : AAssetLoader
     {
-        private readonly ObjectPool<AssetDatabaseLoaderData> loaderDataPool = new ObjectPool<AssetDatabaseLoaderData>(4);
-        private List<AssetDatabaseAsyncOperation> asyncOperations = new List<AssetDatabaseAsyncOperation>();
-        protected override void DeleteAsyncOperation(int index)
+        private AssetAddressConfig assetAddressConfig = null;
+        private AssetPathMode pathMode = AssetPathMode.Address;
+        protected override void InnerInitialize(AssetPathMode pathMode, string assetRootDir)
         {
-            asyncOperations.RemoveAt(index);
-        }
-
-        protected override AAssetAsyncOperation GetAsyncOperation(int index)
-        {
-            return asyncOperations[index];
-        }
-
-        protected override int GetAsyncOperationCount()
-        {
-            return asyncOperations.Count;
-        }
-
-        protected override AssetLoaderData GetLoaderData() => loaderDataPool.Get();
-
-        protected override void ReleaseLoaderData(AssetLoaderData loaderData) => loaderDataPool.Release(loaderData as AssetDatabaseLoaderData);
-
-        protected override void StartLoaderDataLoading(AssetLoaderData loaderData)
-        {
-            AssetDatabaseLoaderData rLoaderData = loaderData as AssetDatabaseLoaderData;
-            rLoaderData.Init();
-            for (int i = 0; i < rLoaderData.assetPaths.Length; ++i)
-            {
-                AssetDatabaseAsyncOperation operation = new AssetDatabaseAsyncOperation(rLoaderData.assetPaths[i], GetAssetRootPath());
-                asyncOperations.Add(operation);
-
-                rLoaderData.asyncOperations[i] = operation;
-            }
-        }
-
-        public override void Initialize(AssetPathMode pathMode, Action<bool> initCallback, params object[] sysObjs)
-        {
-            base.Initialize(pathMode, initCallback, sysObjs);
 #if UNITY_EDITOR
-            assetAddressConfig = UnityEditor.AssetDatabase.LoadAssetAtPath<AssetAddressConfig>(AssetAddressConfig.CONFIG_PATH);
+            this.pathMode = pathMode;
+            if(pathMode == AssetPathMode.Address)
+            {
+                assetAddressConfig = UnityEditor.AssetDatabase.LoadAssetAtPath<AssetAddressConfig>(AssetAddressConfig.CONFIG_PATH);
+            }
+#else
+            Debug.LogErrror("");
 #endif
         }
 
         protected override bool UpdateInitialize(out bool isSuccess)
         {
             isSuccess = true;
+            if(pathMode == AssetPathMode.Address && assetAddressConfig == null)
+            {
+                isSuccess = false;
+            }
             return true;
         }
 
+        private readonly ObjectPool<AssetDatabaseLoaderData> loaderDataPool = new ObjectPool<AssetDatabaseLoaderData>(4);
+        protected override AssetLoaderData GetLoaderData(string[] assetPaths)
+        {
+            AssetDatabaseLoaderData loaderData = loaderDataPool.Get();
+
+            if (pathMode == AssetPathMode.Address)
+            {
+                loaderData.assetAddresses = assetPaths;
+                loaderData.assetPaths = assetAddressConfig.GetAssetPathByAddress(assetPaths);
+            }
+            else
+            {
+                loaderData.assetPaths = assetPaths;
+            }
+            loaderData.InitData(pathMode);
+            return loaderData;
+        }
+
+        protected override void ReleaseLoaderData(AssetLoaderData loaderData) => loaderDataPool.Release(loaderData as AssetDatabaseLoaderData);
+
+        protected override void StartLoaderDataLoading(AssetLoaderData loaderData)
+        {
+            AssetDatabaseLoaderData rLoaderData = loaderData as AssetDatabaseLoaderData;
+            for (int i = 0; i < rLoaderData.assetPaths.Length; ++i)
+            {
+                AssetDatabaseAsyncOperation operation = new AssetDatabaseAsyncOperation(rLoaderData.assetPaths[i]);
+                loadingAsyncOperationList.Add(operation);
+
+                rLoaderData.asyncOperations[i] = operation;
+            }
+        }
+        
         protected override bool UpdateLoadingLoaderData(AssetLoaderData loaderData, AssetLoaderHandle loaderHandle)
         {
             AssetDatabaseLoaderData adLoaderData = loaderData as AssetDatabaseLoaderData;
+            
             bool isComplete = true;
             for (int i = 0; i < adLoaderData.assetPaths.Length; ++i)
             {
-                if (loaderData.GetIsCompleteCalled(i))
+                if(loaderHandle.GetAssetState(i))
                 {
                     continue;
                 }
@@ -72,6 +81,12 @@ namespace Dot.Core.Loader
                 if (operation.Status == AssetAsyncOperationStatus.Loaded)
                 {
                     UnityObject uObj = operation.GetAsset();
+
+                    if(uObj == null)
+                    {
+                        Debug.LogError($"AssetDatabaseLoader::UpdateLoadingLoaderData->asset is null.path = {assetPath}");
+                    }
+
                     if (uObj != null && adLoaderData.isInstance)
                     {
                         uObj = UnityObject.Instantiate(uObj);
@@ -99,13 +114,36 @@ namespace Dot.Core.Loader
                 }
             }
 
-            adLoaderData.InvokeBatchProgress(loaderHandle.Progresses());
+            adLoaderData.InvokeBatchProgress(loaderHandle.AssetProgresses);
 
             if (isComplete)
             {
-                adLoaderData.InvokeBatchComplete(loaderHandle.GetObjects());
+                adLoaderData.InvokeBatchComplete(loaderHandle.AssetObjects);
             }
             return isComplete;
+        }
+
+        protected override void UnloadLoadingAssetLoader(AssetLoaderData loaderData, AssetLoaderHandle handle, bool destroyIfLoaded)
+        {
+            AssetDatabaseLoaderData adLoaderData = loaderData as AssetDatabaseLoaderData;
+            for(int i =0;i<adLoaderData.assetPaths.Length;++i)
+            {
+                if(handle.GetAssetState(i))
+                {
+                    if(loaderData.isInstance && destroyIfLoaded)
+                    {
+                        UnityObject uObj = handle.GetObject(i);
+                        if (uObj != null)
+                        {
+                            UnityObject.Destroy(uObj);
+                        }
+                    }
+                }else
+                {
+                    AssetDatabaseAsyncOperation operation = adLoaderData.asyncOperations[i];
+                    loadingAsyncOperationList.Remove(operation);
+                }
+            }
         }
     }
 }

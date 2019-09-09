@@ -17,10 +17,6 @@ namespace Dot.Core.Loader
 
     public class AssetBundleLoader : AAssetLoader
     {
-        private string assetBundleRootPath = "";
-        private AssetBundleManifest assetBundleManifest = null;
-
-        private readonly ObjectPool<AssetBundleLoaderData> loaderDataPool = new ObjectPool<AssetBundleLoaderData>(5);
         private readonly ObjectPool<AssetNode> assetNodePool = new ObjectPool<AssetNode>(50);
         private readonly ObjectPool<BundleNode> bundleNodePool = new ObjectPool<BundleNode>(50);
 
@@ -29,24 +25,15 @@ namespace Dot.Core.Loader
 
         private float assetCleanInterval = 300;
         private TimerTaskInfo assetCleanTimer = null;
-
-        protected override AssetLoaderData GetLoaderData() => loaderDataPool.Get();
-
-        protected override void ReleaseLoaderData(AssetLoaderData loaderData) => loaderDataPool.Release(loaderData as AssetBundleLoaderData);
-
-        public override void Initialize(AssetPathMode pathMode, Action<bool> initCallback, params SystemObject[] sysObjs)
+        
+        private string assetBundleRootPath = "";
+        private AssetBundleManifest assetBundleManifest = null;
+        private AssetAddressConfig assetAddressConfig = null;
+        private AssetPathMode pathMode = AssetPathMode.Address;
+        protected override void InnerInitialize(AssetPathMode pathMode, string assetRootDir)
         {
-            base.Initialize(pathMode,initCallback, sysObjs);
-            assetBundleRootPath = sysObjs[0] as string;
-
-            if(sysObjs.Length>1)
-            {
-                assetCleanInterval = (float)sysObjs[1];
-                if(assetCleanInterval<=0)
-                {
-                    assetCleanInterval = 300;
-                }
-            }
+            this.pathMode = pathMode;
+            assetBundleRootPath = assetRootDir;
 
             assetCleanTimer = TimerManager.GetInstance().AddIntervalTimer(assetCleanInterval, OnCleanAssetInterval);
 
@@ -63,41 +50,119 @@ namespace Dot.Core.Loader
 
         protected override bool UpdateInitialize(out bool isSuccess)
         {
-            isSuccess = assetBundleManifest != null && assetAddressConfig != null;
+            isSuccess = true;
+            if(assetBundleManifest == null)
+            {
+                isSuccess = false;
+            }
+            if(isSuccess && pathMode == AssetPathMode.Address && assetAddressConfig == null)
+            {
+                isSuccess = false;
+            }
+
             return true;
         }
+
+        private readonly ObjectPool<AssetBundleLoaderData> loaderDataPool = new ObjectPool<AssetBundleLoaderData>(5);
+        protected override AssetLoaderData GetLoaderData(string[] assetPaths)
+        {
+            AssetBundleLoaderData loaderData = loaderDataPool.Get();
+
+            if (pathMode == AssetPathMode.Address)
+            {
+                loaderData.assetAddresses = assetPaths;
+                loaderData.assetPaths = assetAddressConfig.GetAssetPathByAddress(assetPaths);
+            }
+            else
+            {
+                loaderData.assetPaths = assetPaths;
+            }
+            loaderData.InitData(pathMode);
+
+            return loaderData;
+        }
+
+        protected override void ReleaseLoaderData(AssetLoaderData loaderData) => loaderDataPool.Release(loaderData as AssetBundleLoaderData);
 
         protected override void StartLoaderDataLoading(AssetLoaderData loaderData)
         {
             AssetBundleLoaderData abLoaderData = loaderData as AssetBundleLoaderData;
-            for (int i =0;i<abLoaderData.assetPaths.Length;++i)
+            for (int i = 0; i < abLoaderData.assetPaths.Length; ++i)
             {
                 string assetPath = abLoaderData.assetPaths[i];
-                if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
+                if (assetNodeDic.TryGetValue(assetPath, out AssetNode assetNode))
                 {
                     assetNode.RetainLoadCount();
                     continue;
                 }
 
-                string mainBunldePath = assetAddressConfig.GetBundlePathByPath(assetPath);
-                if(bundleNodeDic.TryGetValue(mainBunldePath,out BundleNode bundleNode))
+                string bundlePath = assetAddressConfig.GetBundlePathByPath(assetPath);
+                string[] needLoadBundles = FindAndRetainAssetBundle(bundlePath);
+                if(needLoadBundles == null)
                 {
-                    bundleNode.RetainRefCount();
-
+                    BundleNode bundleNode = bundleNodeDic[bundlePath];
                     assetNode = assetNodePool.Get();
                     assetNode.InitNode(assetPath, bundleNode);
-                    assetNode.RetainLoadCount();
 
-                    assetNodeDic.Add(assetPath,assetNode);
+                    assetNode.RetainLoadCount();
                     continue;
                 }
 
-                LoadAssetBundle(abLoaderData,assetPath,mainBunldePath);
+                LoadAssetBundle(abLoaderData, assetPath, needLoadBundles);
             }
         }
 
-        private void LoadAssetBundle(AssetBundleLoaderData loaderData,string assetPath ,string bundlePath)
+        private string[] FindAndRetainAssetBundle(string bundlePath)
         {
+            List<string> bundles = new List<string>();
+            if(!bundleNodeDic.ContainsKey(bundlePath))
+            {
+                bundles.Add(bundlePath);
+            }
+
+            string[] dependBundlePaths = assetBundleManifest.GetAllDependencies(bundlePath);
+            if(dependBundlePaths!=null && dependBundlePaths.Length>0)
+            {
+                foreach (var path in dependBundlePaths)
+                {
+                    if (!bundleNodeDic.ContainsKey(path))
+                    {
+                        bundles.Add(path);
+                    }
+                }
+            }
+
+            if(bundles.Count>0)
+            {
+                return bundles.ToArray();
+            }
+            
+            return null;
+        }
+
+
+        private void LoadAssetBundle(AssetBundleLoaderData loaderData,string assetPath,string[] bundles)
+        {
+
+
+
+
+
+
+
+
+            string bundlePath = assetAddressConfig.GetBundlePathByPath(assetPath);
+            string[] dependBundlePaths = assetBundleManifest.GetAllDependencies(bundlePath);
+
+            List<string> allBundlePaths = new List<string>();
+            allBundlePaths.Add(bundlePath);
+            if(dependBundlePaths!=null)
+            {
+                allBundlePaths.AddRange(dependBundlePaths);
+            }
+
+
+
             AssetBundleAsyncOperation mainAsyncOperation = (AssetBundleAsyncOperation)asyncOperations.GetDataByKey(bundlePath);
             if (mainAsyncOperation != null)
             {
@@ -112,10 +177,10 @@ namespace Dot.Core.Loader
             }
             loaderData.AddAsyncOperation(assetPath, mainAsyncOperation);
 
-            string[] dependBundles = assetBundleManifest.GetAllDependencies(bundlePath);
-            if (dependBundles != null && dependBundles.Length > 0)
+            
+            if (dependBundlePaths != null && dependBundlePaths.Length > 0)
             {
-                Array.ForEach(dependBundles, (path) =>
+                Array.ForEach(dependBundlePaths, (path) =>
                 {
                     if (bundleNodeDic.TryGetValue(path, out BundleNode bundleNode))
                     {
@@ -318,12 +383,34 @@ namespace Dot.Core.Loader
             assetDicKeys.Clear();
         }
 
+        protected override void OnAsyncOperationLoaded(AAssetAsyncOperation operation)
+        {
+            AssetBundleAsyncOperation assetBundleOperation = operation as AssetBundleAsyncOperation;
+            AssetBundle assetBundle = assetBundleOperation.GetAsset() as AssetBundle;
+            if(assetBundle == null)
+            {
+                Debug.LogError("AssetBundleLoader::OnAsyncOperationLoaded->asset Bundle is Null,path = " + operation.AssetPath);
+            }else
+            {
+                BundleNode bundleNode = bundleNodePool.Get();
+                bundleNode.InitNode(operation.AssetPath, assetBundle);
+                bundleNode.RefCount = operation.RefCount;
+
+                bundleNodeDic.Add(operation.AssetPath, bundleNode);
+            }
+        }
+
+        protected override void UnloadLoadingAssetLoader(AssetLoaderData loaderData, AssetLoaderHandle handle, bool destroyIfLoaded)
+        {
+
+        }
+
         protected override void InnerUnloadUnusedAssets()
         {
             OnCleanAssetInterval(null);
         }
 
-        protected override string GetAssetRootPath()
+        private string GetAssetRootPath()
         {
             return assetBundleRootPath + "/";
         }
@@ -341,22 +428,6 @@ namespace Dot.Core.Loader
                 return instance;
             }
             return null;
-        }
-
-        protected IndexMapORM<string, AssetBundleAsyncOperation> asyncOperations = new IndexMapORM<string, AssetBundleAsyncOperation>();
-        protected override void DeleteAsyncOperation(int index)
-        {
-            asyncOperations.DeleteByIndex(index);
-        }
-
-        protected override AAssetAsyncOperation GetAsyncOperation(int index)
-        {
-            return asyncOperations.GetDataByIndex(index);
-        }
-
-        protected override int GetAsyncOperationCount()
-        {
-            return asyncOperations.Count;
         }
     }
 }

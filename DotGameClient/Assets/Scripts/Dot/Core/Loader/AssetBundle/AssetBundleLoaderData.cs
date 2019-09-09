@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Dot.Core.Loader
 {
-    public class AssetBundleLoaderData : AssetLoaderData, IObjectPoolItem
+    public class AssetBundleLoaderData : AssetLoaderData
     {
         private Dictionary<string, List<AssetBundleAsyncOperation>> asyncOperationDic = new Dictionary<string, List<AssetBundleAsyncOperation>>();
 
@@ -54,14 +54,10 @@ namespace Dot.Core.Loader
             asyncOperationDic.Remove(assetPath);
         }
         
-        public void OnNew()
-        {
-        }
-
-        public void OnRelease()
+        public override void OnRelease()
         {
             asyncOperationDic.Clear();
-            Reset();
+            base.OnRelease();
         }
     }
 }

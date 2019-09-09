@@ -1,22 +1,19 @@
-﻿using Dot.Core.Pool;
-
-namespace Dot.Core.Loader
+﻿namespace Dot.Core.Loader
 {
-    public class AssetDatabaseLoaderData : AssetLoaderData, IObjectPoolItem
+    public class AssetDatabaseLoaderData : AssetLoaderData
     {
         internal AssetDatabaseAsyncOperation[] asyncOperations = null;
-        internal void Init()
+
+        public override void InitData(AssetPathMode pMode)
         {
+            base.InitData(pMode);
             asyncOperations = new AssetDatabaseAsyncOperation[assetPaths.Length];
         }
 
-        public void OnNew()
+        public override void OnRelease()
         {
-        }
-
-        public void OnRelease()
-        {
-            Reset();
+            asyncOperations = null;
+            base.OnRelease();
         }
     }
 }

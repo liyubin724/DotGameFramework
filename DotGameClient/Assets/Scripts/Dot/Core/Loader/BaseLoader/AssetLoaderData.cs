@@ -1,43 +1,31 @@
-﻿using Priority_Queue;
+﻿using Dot.Core.Pool;
+using Priority_Queue;
 using SystemObject = System.Object;
 using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
 {
-    public class AssetLoaderData : FastPriorityQueueNode
+    public class AssetLoaderData : FastPriorityQueueNode,IObjectPoolItem
     {
         public long uniqueID = -1;
         public string[] assetPaths;
         public string[] assetAddresses;
 
+        public bool isInstance = false;
+        public SystemObject userData;
+
         public OnAssetLoadComplete completeCallback;
         public OnAssetLoadProgress progressCallback;
         public OnBatchAssetLoadComplete batchCompleteCallback;
         public OnBatchAssetsLoadProgress batchProgressCallback;
-
-        public bool isInstance = false;
-        public SystemObject userData;
-
-        private bool[] isCompleteCalled = null;
+        
         private AssetPathMode pathMode;
-
         public virtual void InitData(AssetPathMode pMode)
         {
             pathMode = pMode;
-            isCompleteCalled = new bool[assetPaths.Length];
-            for (int i = 0; i < assetPaths.Length; ++i)
-            {
-                isCompleteCalled[i] = false;
-            }
         }
 
-        public bool GetIsCompleteCalled(int index) => isCompleteCalled[index];
-
-        public void InvokeComplete(int index, UnityObject uObj)
-        {
-            isCompleteCalled[index] = true;
-            completeCallback?.Invoke(GetInvokeAssetPath(index), uObj, userData);
-        }
+        public void InvokeComplete(int index, UnityObject uObj)=> completeCallback?.Invoke(GetInvokeAssetPath(index), uObj, userData);
         public void InvokeProgress(int index, float progress) => progressCallback?.Invoke(GetInvokeAssetPath(index), progress);
         public void InvokeBatchComplete(UnityObject[] uObjs) => batchCompleteCallback?.Invoke(GetInvokeAssetPaths(), uObjs, userData);
         public void InvokeBatchProgress(float[] progresses) => batchProgressCallback?.Invoke(GetInvokeAssetPaths(), progresses);
@@ -59,8 +47,10 @@ namespace Dot.Core.Loader
             }
             return assetPaths;
         }
-        
-        protected void Reset()
+       
+        public void OnNew() { }
+
+        public virtual void OnRelease()
         {
             uniqueID = -1;
             assetPaths = null;
@@ -70,7 +60,6 @@ namespace Dot.Core.Loader
             batchProgressCallback = null;
             isInstance = false;
             userData = null;
-            isCompleteCalled = null;
         }
     }
 }

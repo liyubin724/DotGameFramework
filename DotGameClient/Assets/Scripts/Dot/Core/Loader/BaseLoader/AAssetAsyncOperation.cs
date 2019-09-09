@@ -8,18 +8,17 @@ namespace Dot.Core.Loader
         None,
         Loading,
         Loaded,
-        Error,
     }
 
-    public abstract class AAssetAsyncOperation : IORMData<string>
+    public abstract class AAssetAsyncOperation
     {
         protected string assetPath;
+        protected string assetRootPath;
         protected AssetAsyncOperationStatus status = AssetAsyncOperationStatus.None;
         protected int loadRefCount = 0;
 
         public string AssetPath { get => assetPath; }
 
-        protected string assetRootPath;
         public AAssetAsyncOperation(string assetPath,string assetRoot)
         {
             this.assetPath = assetPath;
@@ -38,14 +37,10 @@ namespace Dot.Core.Loader
         public bool IsInLoading() => loadRefCount > 0;
         public void RetainRefCount() => ++loadRefCount;
         public void ReleaseRefCount() => --loadRefCount;
+
         protected abstract void CreateAsyncOperation();
         public abstract void DoUpdate();
         public abstract UnityObject GetAsset();
         public abstract float Progress();
-
-        public string GetKey()
-        {
-            return assetPath;
-        }
     }
 }

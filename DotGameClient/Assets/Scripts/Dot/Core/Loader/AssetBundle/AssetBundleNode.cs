@@ -15,7 +15,6 @@ namespace Dot.Core.Loader
 
         private int loadCount = 0;
 
-
         public void RetainLoadCount() => ++loadCount;
         public void ReleaseLoadCount() => --loadCount;
 

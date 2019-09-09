@@ -1,9 +1,7 @@
 ﻿using Dot.Core.Generic;
-using Dot.Core.Loader.Config;
 using Priority_Queue;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using SystemObject = System.Object;
 using UnityObject = UnityEngine.Object;
@@ -13,24 +11,31 @@ namespace Dot.Core.Loader
     public abstract class AAssetLoader
     {
         private UniqueIDCreator idCreator = new UniqueIDCreator();
-        protected AssetAddressConfig assetAddressConfig = null;
-
-        protected Dictionary<long, AssetLoaderData> loaderDataDic = new Dictionary<long, AssetLoaderData>();
-        protected Dictionary<long, AssetLoaderHandle> loaderHandleDic = new Dictionary<long, AssetLoaderHandle>();
 
         protected FastPriorityQueue<AssetLoaderData> loaderDataWaitingQueue = new FastPriorityQueue<AssetLoaderData>(10);
-        protected Dictionary<long, AssetLoaderData> loaderDataLoadingDic = new Dictionary<long, AssetLoaderData>();
+        protected List<AssetLoaderData> loaderDataLoadingList = new List<AssetLoaderData>();
 
-        public virtual int MaxLoadingCount { get; set; } = 5;
+        protected Dictionary<long, AssetLoaderHandle> loaderHandleDic = new Dictionary<long, AssetLoaderHandle>();
 
-        private bool isInit = false;
+        protected List<AAssetAsyncOperation> loadingAsyncOperationList = new List<AAssetAsyncOperation>();
+
+        #region init Loader
+        private bool isInitFinished = false;
+        private bool isInitSuccess = false;
+
         protected Action<bool> initCallback = null;
-        protected AssetPathMode pathMode = AssetPathMode.Path;
-        public virtual void Initialize(AssetPathMode pathMode,Action<bool> initCallback, params SystemObject[] sysObjs)
+        private int maxLoadingCount = 5;
+        public void Initialize(Action<bool> initCallback,AssetPathMode pathMode,int maxLoadingCount,string assetRootDir)
         {
-            this.pathMode = pathMode;
             this.initCallback = initCallback;
+            this.maxLoadingCount = maxLoadingCount;
+
+            InnerInitialize(pathMode, assetRootDir);
         }
+        protected abstract void InnerInitialize(AssetPathMode pathMode, string assetRootDir);
+        protected abstract bool UpdateInitialize(out bool isSuccess);
+        #endregion
+
 
         public AssetLoaderHandle LoadOrInstanceBatchAssetAsync(string[] assetPaths,
             bool isInstance,
@@ -43,26 +48,15 @@ namespace Dot.Core.Loader
         {
             long uniqueID = idCreator.Next();
             
-            AssetLoaderData loaderData = GetLoaderData();
+            AssetLoaderData loaderData = GetLoaderData(assetPaths);
             loaderData.uniqueID = uniqueID;
-            if(pathMode == AssetPathMode.Address)
-            {
-                loaderData.assetAddresses = assetPaths;
-                loaderData.assetPaths = assetAddressConfig.GetAssetPathByAddress(assetPaths);
-            }
-            else
-            {
-                loaderData.assetPaths = assetPaths;
-            }
             loaderData.isInstance = isInstance;
             loaderData.completeCallback = complete;
             loaderData.progressCallback = progress;
             loaderData.batchCompleteCallback = batchComplete;
             loaderData.batchProgressCallback = batchProgress;
             loaderData.userData = userData;
-            loaderData.InitData(pathMode);
 
-            loaderDataDic.Add(uniqueID, loaderData);
             if (loaderDataWaitingQueue.Count >= loaderDataWaitingQueue.MaxSize)
             {
                 loaderDataWaitingQueue.Resize(loaderDataWaitingQueue.MaxSize * 2);
@@ -77,123 +71,143 @@ namespace Dot.Core.Loader
         
         public void DoUpdate(float deltaTime)
         {
-            if(!isInit)
+            if(!isInitFinished)
             {
-                CheckInitializeAction();
+                isInitFinished = UpdateInitialize(out isInitSuccess);
+                if(isInitFinished)
+                {
+                    if(!isInitSuccess)
+                    {
+                        Debug.LogError("AssetLoader::DoUpdate->init failed");
+                    }
+
+                    initCallback?.Invoke(isInitSuccess);
+                    initCallback = null;
+                }
+                return;
             }
-            if(!isInit)
+            if(!isInitSuccess)
             {
                 return;
             }
 
-            if(loaderDataWaitingQueue.Count>0 && GetAsyncOperationCount() < MaxLoadingCount)
-            {
-                AssetLoaderData loaderData = loaderDataWaitingQueue.Dequeue();
-                loaderDataLoadingDic.Add(loaderData.uniqueID, loaderData);
-                StartLoaderDataLoading(loaderData);
-            }
-
-            if(GetAsyncOperationCount() > 0)
-            {
-                UpdateAsyncOperation();
-            }
-
-            if(loaderDataLoadingDic.Count>0)
-            {
-                UpdateLoadingLoaderData();
-            }
+            UpdateWaitingLoaderData();
+            UpdateAsyncOperation();
+            UpdateLoadingLoaderData();
 
             CheckUnloadUnusedAction();
         }
 
+        private void UpdateWaitingLoaderData()
+        {
+            while (loaderDataWaitingQueue.Count > 0 && loadingAsyncOperationList.Count < maxLoadingCount)
+            {
+                AssetLoaderData loaderData = loaderDataWaitingQueue.Dequeue();
+                loaderDataLoadingList.Add(loaderData);
+                StartLoaderDataLoading(loaderData);
+            }
+        }
+
+        private void UpdateAsyncOperation()
+        {
+            if(loadingAsyncOperationList.Count>0)
+            {
+                int index = 0;
+                while(index<loadingAsyncOperationList.Count&&index<maxLoadingCount)
+                {
+                    AAssetAsyncOperation operation = loadingAsyncOperationList[index];
+                    operation.DoUpdate();
+
+                    if (operation.Status == AssetAsyncOperationStatus.None)
+                    {
+                        operation.StartAsync();
+                    }
+                    else if (operation.Status == AssetAsyncOperationStatus.Loaded)
+                    {
+                        loadingAsyncOperationList.RemoveAt(index);
+                        OnAsyncOperationLoaded(operation);
+                        continue;
+                    }
+
+                    ++index;
+                }
+            }
+        }
+
+        protected virtual void OnAsyncOperationLoaded(AAssetAsyncOperation operation)
+        {
+
+        }
+
         private void UpdateLoadingLoaderData()
         {
-            long[] uniqeIDs = loaderDataLoadingDic.Keys.ToArray();
-            foreach(var uniqueID in uniqeIDs)
+            if(loaderDataLoadingList.Count>0)
             {
-                AssetLoaderData loaderData = loaderDataLoadingDic[uniqueID];
-                AssetLoaderHandle loaderHandle = loaderHandleDic[uniqueID];
-                if(UpdateLoadingLoaderData(loaderData,loaderHandle))
+                for(int i = loaderDataLoadingList.Count-1;i>=0;--i)
                 {
-                    loaderDataLoadingDic.Remove(uniqueID);
-                    loaderHandleDic.Remove(uniqueID);
-                    loaderDataDic.Remove(uniqueID);
+                    AssetLoaderData loaderData = loaderDataLoadingList[i];
+                    long uniqueID = loaderData.uniqueID;
+                    AssetLoaderHandle loaderHandle = loaderHandleDic[uniqueID];
+                    if (UpdateLoadingLoaderData(loaderData, loaderHandle))
+                    {
+                        loaderDataLoadingList.RemoveAt(i);
+                        loaderHandleDic.Remove(uniqueID);
 
-                    ReleaseLoaderData(loaderData);
+                        ReleaseLoaderData(loaderData);
+                    }
                 }
             }
         }
 
         protected abstract bool UpdateLoadingLoaderData(AssetLoaderData loaderData, AssetLoaderHandle loaderHandle);
 
-        private void UpdateAsyncOperation()
-        {
-            int index = 0;
-            while(index< GetAsyncOperationCount() && index<MaxLoadingCount)
-            {
-                AAssetAsyncOperation operation = GetAsyncOperation(index);
-                operation.DoUpdate();
-                if (operation.Status == AssetAsyncOperationStatus.None)
-                {
-                    operation.StartAsync();
-                }else if(operation.Status == AssetAsyncOperationStatus.Loaded)
-                {
-                    DeleteAsyncOperation(index);
-                    continue;
-                }
-
-                ++index;
-            }
-        }
-
-        protected abstract AssetLoaderData GetLoaderData();
+        
+        protected abstract AssetLoaderData GetLoaderData(string[] assetPaths);
         protected abstract void ReleaseLoaderData(AssetLoaderData loaderData);
         protected abstract void StartLoaderDataLoading(AssetLoaderData loaderData);
 
-        protected virtual string GetAssetRootPath()
+        public void UnloadAssetLoader(AssetLoaderHandle handle,bool destroyIfLoaded)
         {
-            return "";
-        }
-
-        public void UnloadAssetLoader(AssetLoaderHandle handle)
-        {
-            if(loaderDataDic.TryGetValue(handle.UniqueID,out AssetLoaderData loaderData))
+            if(loaderHandleDic.ContainsKey(handle.UniqueID))
             {
-                if(loaderDataWaitingQueue.Contains(loaderData))
+                loaderHandleDic.Remove(handle.UniqueID);
+            }else
+            {
+                return;
+            }
+
+            AssetLoaderData loaderData = null;
+            foreach(var data in loaderDataWaitingQueue)
+            {
+                if(data.uniqueID == handle.UniqueID)
                 {
-                    loaderDataWaitingQueue.Remove(loaderData);
-                    loaderDataDic.Remove(handle.UniqueID);
-                    loaderHandleDic.Remove(handle.UniqueID);
-                    return;
+                    loaderData = data;
+                    break;
                 }
-
-
-
             }
-        }
-
-        #region Async Operation
-
-        protected abstract int GetAsyncOperationCount();
-        protected abstract AAssetAsyncOperation GetAsyncOperation(int index);
-        protected abstract void DeleteAsyncOperation(int index);
-
-        #endregion
-
-
-        #region init Loader
-        private void CheckInitializeAction()
-        {
-            if(UpdateInitialize(out bool isSuccess))
+            if(loaderData!=null)
             {
-                isInit = true;
-                initCallback?.Invoke(isSuccess);
-                initCallback = null;
+                loaderDataWaitingQueue.Remove(loaderData);
+                ReleaseLoaderData(loaderData);
+                return;
+            }
+            foreach(var data in loaderDataLoadingList)
+            {
+                if(data.uniqueID == handle.UniqueID)
+                {
+                    loaderData = data;
+                    break;
+                }
+            }
+            if(loaderData!=null)
+            {
+                loaderDataLoadingList.Remove(loaderData);
+                UnloadLoadingAssetLoader(loaderData, handle,destroyIfLoaded);
+                ReleaseLoaderData(loaderData);
             }
         }
 
-        protected abstract bool UpdateInitialize(out bool isSuccess);
-        #endregion
+        protected abstract void UnloadLoadingAssetLoader(AssetLoaderData loaderData, AssetLoaderHandle handle, bool destroyIfLoaded);
 
         #region unloadUnusedAsset
         private void CheckUnloadUnusedAction()
