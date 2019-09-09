@@ -202,6 +202,8 @@ namespace Dot.Core.Loader
             {
                 if(unloadUnusedAssetOperation.isDone)
                 {
+                    InnerUnloadUnusedAssets();
+
                     unloadUnusedAssetOperation = null;
                     unloadUnusedAssetCallback?.Invoke();
                     unloadUnusedAssetCallback = null;
@@ -215,16 +217,15 @@ namespace Dot.Core.Loader
         {
             if(unloadUnusedAssetOperation == null)
             {
+                unloadUnusedAssetCallback = callback;
+
                 GC.Collect();
                 unloadUnusedAssetOperation = Resources.UnloadUnusedAssets();
                 GC.Collect();
-                InnerUnloadUnusedAssets();
-                unloadUnusedAssetCallback = callback;
             }
         }
 
         protected virtual void InnerUnloadUnusedAssets() { }
-
         #endregion
 
         public virtual UnityObject InstantiateAsset(string assetPath, UnityObject asset)
