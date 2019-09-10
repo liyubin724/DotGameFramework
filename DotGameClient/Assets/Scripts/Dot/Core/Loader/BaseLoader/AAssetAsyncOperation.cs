@@ -1,5 +1,4 @@
-﻿using Dot.Core.Generic;
-using UnityObject = UnityEngine.Object;
+﻿using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
 {
@@ -15,8 +14,7 @@ namespace Dot.Core.Loader
         protected string assetPath;
         protected string assetRootPath;
         protected AssetAsyncOperationStatus status = AssetAsyncOperationStatus.None;
-        protected int loadRefCount = 0;
-
+        
         public string AssetPath { get => assetPath; }
 
         public AAssetAsyncOperation(string assetPath,string assetRoot)
@@ -32,12 +30,7 @@ namespace Dot.Core.Loader
             status = AssetAsyncOperationStatus.Loading;
             CreateAsyncOperation();
         }
-
-        public int RefCount { get => loadRefCount; }
-        public bool IsInLoading() => loadRefCount > 0;
-        public void RetainRefCount() => ++loadRefCount;
-        public void ReleaseRefCount() => --loadRefCount;
-
+        
         protected abstract void CreateAsyncOperation();
         public abstract void DoUpdate();
         public abstract UnityObject GetAsset();

@@ -62,17 +62,17 @@ namespace Dot.Tests
                         }
                         initStatus = AssetManagerInitStatus.Initing;
 
-                        AssetManager.GetInstance().InitLoader(assetLoaderMode, assetPathMode, (isSuccess) =>
-                        {
-                            if (isSuccess)
-                            {
-                                initStatus = AssetManagerInitStatus.Inited;
-                            }
-                            else
-                            {
-                                initStatus = AssetManagerInitStatus.InitError;
-                            }
-                        }, datas);
+                        //AssetManager.GetInstance().InitLoader(assetLoaderMode, assetPathMode, (isSuccess) =>
+                        //{
+                        //    if (isSuccess)
+                        //    {
+                        //        initStatus = AssetManagerInitStatus.Inited;
+                        //    }
+                        //    else
+                        //    {
+                        //        initStatus = AssetManagerInitStatus.InitError;
+                        //    }
+                        //}, datas);
                     }
                 }
                 else

@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
 {
     public class AssetBundleAsyncOperation : AAssetAsyncOperation
     {
         private AssetBundleCreateRequest asyncOperation = null;
-
         public AssetBundleAsyncOperation(string assetPath, string assetRoot) : base(assetPath, assetRoot)
         {
         }
@@ -21,7 +21,7 @@ namespace Dot.Core.Loader
             }
         }
 
-        public override UnityEngine.Object GetAsset()
+        public override UnityObject GetAsset()
         {
             if (status == AssetAsyncOperationStatus.Loaded)
             {

@@ -125,7 +125,6 @@ namespace Dot.Core.Loader
                     else if (operation.Status == AssetAsyncOperationStatus.Loaded)
                     {
                         loadingAsyncOperationList.RemoveAt(index);
-                        OnAsyncOperationLoaded(operation);
                         continue;
                     }
 

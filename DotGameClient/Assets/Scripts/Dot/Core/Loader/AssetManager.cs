@@ -10,7 +10,7 @@ namespace Dot.Core.Loader
     {
         private AAssetLoader assetLoader = null;
         private bool isInit = false;
-        public void InitLoader(AssetLoaderMode loaderMode, AssetPathMode pathMode, Action<bool> initCallback,params SystemObject[] sysObjs)
+        public void InitLoader(AssetLoaderMode loaderMode, AssetPathMode pathMode, int maxLoadingCount, string assetRootDir, Action<bool> initCallback)
         {
             if(loaderMode == AssetLoaderMode.Resources)
             {
@@ -27,11 +27,11 @@ namespace Dot.Core.Loader
                 Debug.LogError("AssetManager::InitLoader->AssetLoaderMode(AssetDatabase) can be used in Editor");
 #endif
             }
-            assetLoader?.Initialize(pathMode,(isSuccess) =>
+            assetLoader?.Initialize((isSuccess) =>
             {
                 isInit = isSuccess;
                 initCallback?.Invoke(isSuccess);
-            }, sysObjs);
+            },pathMode,maxLoadingCount,assetRootDir);
         }
 
         public AssetLoaderHandle LoadAssetAsync(
@@ -138,7 +138,7 @@ namespace Dot.Core.Loader
         {
             if (isInit)
             {
-                assetLoader?.UnloadAssetLoader(handle);
+               // assetLoader?.UnloadAssetLoader(handle);
             }
             else
             {

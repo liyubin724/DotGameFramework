@@ -23,6 +23,8 @@ namespace Dot.Core.Loader
         {
             assetPath = path;
             bundleNode = node;
+
+            bundleNode.RetainRefCount();
         }
 
         public bool IsAlive()
