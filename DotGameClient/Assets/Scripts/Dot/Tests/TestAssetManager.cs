@@ -25,10 +25,8 @@ namespace Dot.Tests
         private void Awake()
         {
             GameController.StartUp();
-            datas.Add(new TestData() { address = "AtlasImage", assetPath = "Assets/ArtRes/Prefabs/AtlasImage.prefab" });
-            datas.Add(new TestData() { address = "Capsule", assetPath = "Assets/ArtRes/Prefabs/Capsule.prefab" });
-            datas.Add(new TestData() { address = "Cylinder", assetPath = "Assets/ArtRes/Prefabs/Cylinder.prefab" });
-            datas.Add(new TestData() { address = "Sphere", assetPath = "Assets/ArtRes/Prefabs/Sphere.prefab" });
+            datas.Add(new TestData() { address = "ch_pc_hou_006.prefab", assetPath = "Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_006.prefab" });
+            datas.Add(new TestData() { address = "ch_pc_hou_008.prefab", assetPath = "Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_008.prefab" });
         }
         private AssetManagerInitStatus initStatus = AssetManagerInitStatus.None;
         private AssetPathMode assetPathMode = AssetPathMode.Address;
@@ -53,26 +51,22 @@ namespace Dot.Tests
 
                     if (GUILayout.Button("Init Asset Manager"))
                     {
-                        SystemObject[] datas = null;
-                        if (assetLoaderMode == AssetLoaderMode.AssetBundle)
-                        {
-                            datas = new SystemObject[2];
-                            datas[0] = "D:/assetbundles/StandaloneWindows64/assetbundles";
-                            datas[1] = 5.0f;
-                        }
+                        int maxLoadingCount = 3;
+                        string assetRoot = "D:/assetbundles/StandaloneWindows64/assetbundles";
+  
                         initStatus = AssetManagerInitStatus.Initing;
 
-                        //AssetManager.GetInstance().InitLoader(assetLoaderMode, assetPathMode, (isSuccess) =>
-                        //{
-                        //    if (isSuccess)
-                        //    {
-                        //        initStatus = AssetManagerInitStatus.Inited;
-                        //    }
-                        //    else
-                        //    {
-                        //        initStatus = AssetManagerInitStatus.InitError;
-                        //    }
-                        //}, datas);
+                        AssetManager.GetInstance().InitLoader(assetLoaderMode, assetPathMode,maxLoadingCount,assetRoot, (isSuccess) =>
+                        {
+                            if (isSuccess)
+                            {
+                                initStatus = AssetManagerInitStatus.Inited;
+                            }
+                            else
+                            {
+                                initStatus = AssetManagerInitStatus.InitError;
+                            }
+                        });
                     }
                 }
                 else

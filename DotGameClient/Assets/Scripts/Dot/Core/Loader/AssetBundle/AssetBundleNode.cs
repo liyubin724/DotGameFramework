@@ -15,6 +15,7 @@ namespace Dot.Core.Loader
 
         private int loadCount = 0;
 
+        public int LoadCount { get => loadCount; internal set => loadCount = value; }
         public void RetainLoadCount() => ++loadCount;
         public void ReleaseLoadCount() => --loadCount;
 
@@ -122,7 +123,7 @@ namespace Dot.Core.Loader
         public void OnRelease()
         {
             bundlePath = null;
-            assetBundle.Unload(true);
+            assetBundle.Unload(false);
             assetBundle = null;
             refCount = 0;
         }

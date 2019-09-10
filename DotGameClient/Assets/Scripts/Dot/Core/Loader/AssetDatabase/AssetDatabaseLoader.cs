@@ -18,7 +18,7 @@ namespace Dot.Core.Loader
                 assetAddressConfig = UnityEditor.AssetDatabase.LoadAssetAtPath<AssetAddressConfig>(AssetAddressConfig.CONFIG_PATH);
             }
 #else
-            Debug.LogErrror("");
+            Debug.LogError("");
 #endif
         }
 
