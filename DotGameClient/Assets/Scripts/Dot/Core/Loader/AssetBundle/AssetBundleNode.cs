@@ -123,7 +123,7 @@ namespace Dot.Core.Loader
         public void OnRelease()
         {
             bundlePath = null;
-            assetBundle.Unload(false);
+            assetBundle.Unload(true);
             assetBundle = null;
             refCount = 0;
         }

@@ -234,7 +234,7 @@ namespace Dot.Core.Loader
                 if(loadingAsyncOperationDic.TryGetValue(path,out AssetBundleAsyncOperation operation))
                 {
                     BundleNode bn = bundleNodePool.Get();
-                    bn.InitNode(path, mainOperation.GetAsset() as AssetBundle);
+                    bn.InitNode(path, operation.GetAsset() as AssetBundle);
                     bundleNodeDic.Add(path, bn);
 
                     loadingAsyncOperationDic.Remove(path);
@@ -375,15 +375,15 @@ namespace Dot.Core.Loader
         private List<string> assetDicKeys = new List<string>();
         private void OnCleanAssetInterval(System.Object userData)
         {
-            foreach(var kvp in assetNodeDic)
+            foreach (var kvp in assetNodeDic)
             {
-                if(!kvp.Value.IsAlive())
+                if (!kvp.Value.IsAlive())
                 {
                     assetDicKeys.Add(kvp.Key);
                 }
             }
 
-            foreach(var key in assetDicKeys)
+            foreach (var key in assetDicKeys)
             {
                 AssetNode assetNode = assetNodeDic[key];
                 assetNodeDic.Remove(key);
@@ -391,7 +391,7 @@ namespace Dot.Core.Loader
 
                 string mainBundlePath = assetAddressConfig.GetBundlePathByPath(key);
                 BundleNode bundleNode = bundleNodeDic[mainBundlePath];
-                if(bundleNode.RefCount == 0)
+                if (bundleNode.RefCount == 0)
                 {
                     string[] depends = assetBundleManifest.GetAllDependencies(mainBundlePath);
                     foreach (var path in depends)
@@ -403,10 +403,10 @@ namespace Dot.Core.Loader
 
             assetDicKeys.Clear();
             assetDicKeys.AddRange(bundleNodeDic.Keys);
-            foreach(var key in assetDicKeys)
+            foreach (var key in assetDicKeys)
             {
                 BundleNode bundleNode = bundleNodeDic[key];
-                if(bundleNode.RefCount == 0)
+                if (bundleNode.RefCount == 0)
                 {
                     bundleNodeDic.Remove(key);
                     bundleNodePool.Release(bundleNode);

@@ -27,7 +27,47 @@ namespace Dot.Tests
             GameController.StartUp();
             datas.Add(new TestData() { address = "ch_pc_hou_006.prefab", assetPath = "Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_006.prefab" });
             datas.Add(new TestData() { address = "ch_pc_hou_008.prefab", assetPath = "Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_008.prefab" });
+
+            //TestBundle();
         }
+        AssetBundle prefabAB;
+        AssetBundle matAB;
+        GameObject goInstance;
+        void TestBundle()
+        {
+            string rootDir = "D:/assetbundles/StandaloneWindows64/assetbundles/";
+            string prefabPath = rootDir + "assets/artres/prefabs/cube_prefab";
+            string matPath = rootDir + "assets/artres/shaders/roundrectmat_mat";
+
+            prefabAB = AssetBundle.LoadFromFile(prefabPath);
+            matAB = AssetBundle.LoadFromFile(matPath);
+
+            GameObject prefab = prefabAB.LoadAsset<GameObject>("Assets/ArtRes/Prefabs/Cube.prefab");
+            goInstance = GameObject.Instantiate(prefab);
+        }
+
+        private void OnGUI2()
+        {
+            if(GUILayout.Button("Delete"))
+            {
+                Object.Destroy(goInstance);
+            }
+            if(GUILayout.Button("Unload"))
+            {
+                prefabAB.Unload(true);
+                int index = 1;
+                index++;
+            }
+
+            if(GUILayout.Button("GC"))
+            {
+                System.GC.Collect();
+                Resources.UnloadUnusedAssets();
+                System.GC.Collect();
+            }
+        }
+
+
         private AssetManagerInitStatus initStatus = AssetManagerInitStatus.None;
         private AssetPathMode assetPathMode = AssetPathMode.Address;
         private AssetLoaderMode assetLoaderMode = AssetLoaderMode.AssetDatabase;
