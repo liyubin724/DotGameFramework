@@ -20,7 +20,7 @@ namespace Dot.Core.Loader
         public OnBatchAssetsLoadProgress batchProgressCallback;
         
         private AssetPathMode pathMode;
-        public virtual void InitData(AssetPathMode pMode)
+        public void InitData(AssetPathMode pMode)
         {
             pathMode = pMode;
         }
@@ -50,7 +50,7 @@ namespace Dot.Core.Loader
        
         public void OnNew() { }
 
-        public virtual void OnRelease()
+        public void OnRelease()
         {
             uniqueID = -1;
             assetPaths = null;

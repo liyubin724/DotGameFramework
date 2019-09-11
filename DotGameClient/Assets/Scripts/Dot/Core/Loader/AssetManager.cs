@@ -139,11 +139,11 @@ namespace Dot.Core.Loader
             }
         }
 
-        public void UnloadAssetLoader(AssetLoaderHandle handle)
+        public void UnloadAssetLoader(AssetLoaderHandle handle, bool destroyIfLoaded = false)
         {
             if (isInit)
             {
-               // assetLoader?.UnloadAssetLoader(handle);
+               assetLoader?.UnloadAssetLoader(handle, destroyIfLoaded);
             }
             else
             {

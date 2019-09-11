@@ -1,4 +1,6 @@
 ﻿using Dot.Core.Generic;
+using Dot.Core.Loader.Config;
+using Dot.Core.Pool;
 using Priority_Queue;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,7 @@ namespace Dot.Core.Loader
     {
         private UniqueIDCreator idCreator = new UniqueIDCreator();
 
+        private ObjectPool<AssetLoaderData> loaderDataPool = new ObjectPool<AssetLoaderData>(10);
         protected FastPriorityQueue<AssetLoaderData> loaderDataWaitingQueue = new FastPriorityQueue<AssetLoaderData>(10);
         protected List<AssetLoaderData> loaderDataLoadingList = new List<AssetLoaderData>();
 
@@ -23,16 +26,20 @@ namespace Dot.Core.Loader
         private bool isInitFinished = false;
         private bool isInitSuccess = false;
 
+        protected AssetAddressConfig assetAddressConfig = null;
+        protected AssetPathMode pathMode = AssetPathMode.Address;
+
         protected Action<bool> initCallback = null;
         private int maxLoadingCount = 5;
         public void Initialize(Action<bool> initCallback,AssetPathMode pathMode,int maxLoadingCount,string assetRootDir)
         {
             this.initCallback = initCallback;
             this.maxLoadingCount = maxLoadingCount;
+            this.pathMode = pathMode;
 
-            InnerInitialize(pathMode, assetRootDir);
+            InnerInitialize(assetRootDir);
         }
-        protected abstract void InnerInitialize(AssetPathMode pathMode, string assetRootDir);
+        protected abstract void InnerInitialize(string assetRootDir);
         protected abstract bool UpdateInitialize(out bool isSuccess);
         #endregion
 
@@ -53,13 +60,25 @@ namespace Dot.Core.Loader
                 Debug.LogError($"AssetLoader::LoadOrInstanceBatchAssetAsync->assetPaths is Null");
                 return null;
             }
-            
-            AssetLoaderData loaderData = GetLoaderData(assetPaths);
-            if(loaderData == null)
+
+            AssetLoaderData loaderData = loaderDataPool.Get();
+            if (pathMode == AssetPathMode.Address)
             {
-                Debug.LogError($"AssetLoader::LoadOrInstanceBatchAssetAsync->Loader Data is Null.AssetPath = {string.Join(",", assetPaths)}");
-                return null;
+                loaderData.assetAddresses = assetPaths;
+                loaderData.assetPaths = assetAddressConfig.GetAssetPathByAddress(assetPaths);
+                if (loaderData.assetPaths == null)
+                {
+                    loaderDataPool.Release(loaderData);
+                    Debug.LogError($"ResourceLoader::GetLoaderData->asset not found.address = {string.Join(",", assetPaths)}");
+                    return null;
+                }
             }
+            else
+            {
+                loaderData.assetPaths = assetPaths;
+            }
+            loaderData.InitData(pathMode);
+
             loaderData.uniqueID = uniqueID;
             loaderData.isInstance = isInstance;
             loaderData.completeCallback = complete;
@@ -169,17 +188,14 @@ namespace Dot.Core.Loader
                         loaderDataLoadingList.RemoveAt(i);
                         loaderHandleDic.Remove(uniqueID);
 
-                        ReleaseLoaderData(loaderData);
+                        loaderDataPool.Release(loaderData);
                     }
                 }
             }
         }
 
         protected abstract bool UpdateLoadingLoaderData(AssetLoaderData loaderData, AssetLoaderHandle loaderHandle);
-
         
-        protected abstract AssetLoaderData GetLoaderData(string[] assetPaths);
-        protected abstract void ReleaseLoaderData(AssetLoaderData loaderData);
         protected abstract void StartLoaderDataLoading(AssetLoaderData loaderData);
 
         public void UnloadAssetLoader(AssetLoaderHandle handle,bool destroyIfLoaded)
@@ -204,7 +220,7 @@ namespace Dot.Core.Loader
             if(loaderData!=null)
             {
                 loaderDataWaitingQueue.Remove(loaderData);
-                ReleaseLoaderData(loaderData);
+                loaderDataPool.Release(loaderData);
                 return;
             }
             foreach(var data in loaderDataLoadingList)
@@ -219,7 +235,7 @@ namespace Dot.Core.Loader
             {
                 loaderDataLoadingList.Remove(loaderData);
                 UnloadLoadingAssetLoader(loaderData, handle,destroyIfLoaded);
-                ReleaseLoaderData(loaderData);
+                loaderDataPool.Release(loaderData);
             }
         }
 

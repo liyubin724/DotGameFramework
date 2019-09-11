@@ -26,11 +26,8 @@ namespace Dot.Core.Loader
         
         private string assetRootDir = "";
         private AssetBundleManifest assetBundleManifest = null;
-        private AssetAddressConfig assetAddressConfig = null;
-        private AssetPathMode pathMode = AssetPathMode.Address;
-        protected override void InnerInitialize(AssetPathMode pathMode, string rootDir)
+        protected override void InnerInitialize(string rootDir)
         {
-            this.pathMode = pathMode;
             assetRootDir = rootDir;
             if(!string.IsNullOrEmpty(assetRootDir) && !assetRootDir.EndsWith("/"))
             {
@@ -64,40 +61,13 @@ namespace Dot.Core.Loader
 
             return true;
         }
-
-        private readonly ObjectPool<AssetBundleLoaderData> loaderDataPool = new ObjectPool<AssetBundleLoaderData>(5);
-        protected override AssetLoaderData GetLoaderData(string[] assetPaths)
-        {
-            AssetBundleLoaderData loaderData = loaderDataPool.Get();
-
-            if (pathMode == AssetPathMode.Address)
-            {
-                loaderData.assetAddresses = assetPaths;
-                loaderData.assetPaths = assetAddressConfig.GetAssetPathByAddress(assetPaths);
-                if(loaderData.assetPaths == null)
-                {
-                    ReleaseLoaderData(loaderData);
-                    Debug.LogError($"AssetBundleLoader::GetLoaderData->asset not found.address = {string.Join(",", assetPaths)}");
-                    return null;
-                }
-            }
-            else
-            {
-                loaderData.assetPaths = assetPaths;
-            }
-            loaderData.InitData(pathMode);
-
-            return loaderData;
-        }
-        protected override void ReleaseLoaderData(AssetLoaderData loaderData) => loaderDataPool.Release(loaderData as AssetBundleLoaderData);
-
+        
         private Dictionary<string, AssetBundleAsyncOperation> loadingAsyncOperationDic = new Dictionary<string, AssetBundleAsyncOperation>();
         protected override void StartLoaderDataLoading(AssetLoaderData loaderData)
         {
-            AssetBundleLoaderData abLoaderData = loaderData as AssetBundleLoaderData;
-            for (int i = 0; i < abLoaderData.assetPaths.Length; ++i)
+            for (int i = 0; i < loaderData.assetPaths.Length; ++i)
             {
-                string assetPath = abLoaderData.assetPaths[i];
+                string assetPath = loaderData.assetPaths[i];
                 if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
                 {
                     assetNode.RetainLoadCount();
@@ -326,15 +296,14 @@ namespace Dot.Core.Loader
         }
         protected override bool UpdateLoadingLoaderData(AssetLoaderData loaderData, AssetLoaderHandle loaderHandle)
         {
-            AssetBundleLoaderData abLoaderData = loaderData as AssetBundleLoaderData;
             bool isComplete = true;
-            for (int i = 0; i < abLoaderData.assetPaths.Length; ++i)
+            for (int i = 0; i < loaderData.assetPaths.Length; ++i)
             {
                 if(loaderHandle.GetAssetState(i))
                 {
                     continue;
                 }
-                string assetPath = abLoaderData.assetPaths[i];
+                string assetPath = loaderData.assetPaths[i];
 
                 if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
                 {
@@ -353,8 +322,8 @@ namespace Dot.Core.Loader
                     loaderHandle.SetObject(i, uObj);
                     loaderHandle.SetProgress(i, 1.0f);
 
-                    abLoaderData.InvokeProgress(i, 1.0f);
-                    abLoaderData.InvokeComplete(i, uObj);
+                    loaderData.InvokeProgress(i, 1.0f);
+                    loaderData.InvokeComplete(i, uObj);
                     continue;
                 }
 
@@ -363,16 +332,16 @@ namespace Dot.Core.Loader
                 if (oldProgress != curProgress)
                 {
                     loaderHandle.SetProgress(i, curProgress);
-                    abLoaderData.InvokeProgress(i, curProgress);
+                    loaderData.InvokeProgress(i, curProgress);
                 }
                 isComplete = false;
             }
 
-            abLoaderData.InvokeBatchProgress(loaderHandle.AssetProgresses);
+            loaderData.InvokeBatchProgress(loaderHandle.AssetProgresses);
 
             if (isComplete)
             {
-                abLoaderData.InvokeBatchComplete(loaderHandle.AssetObjects);
+                loaderData.InvokeBatchComplete(loaderHandle.AssetObjects);
             }
 
             return isComplete;
