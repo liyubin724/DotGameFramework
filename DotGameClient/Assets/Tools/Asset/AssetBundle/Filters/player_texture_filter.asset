@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1a1fed7f05645c45902822502c79003, type: 3}
+  m_Name: player_texture_filter
+  m_EditorClassIdentifier: 
+  isEnable: 1
+  folder: Assets/ArtRes/Character/Player/Test01/Textures
+  includeSubfolder: 1
+  fileNameFilterRegex: ^\w*.tga$
+  assets:
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_004_jiao_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_004_shen_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_004_shou_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_004_tou_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_008_jiao_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_008_shen_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_008_shou_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_008_tou_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_we_one_hou_004_d.tga
+  - Assets/ArtRes/Character/Player/Test01/Textures/ch_we_one_hou_008_d.tga

@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4586566993746044d8627ebfe5b14f7a, type: 3}
-  m_Name: spriteatlas_group
+  m_Name: prefab_group
   m_EditorClassIdentifier: 
   isEnable: 1
-  groupName: SpriteAtlas
+  groupName: Prefabs
   groupType: 1
   filters:
-  - {fileID: 11400000, guid: 7650f5746a65b774bb33f0d6966d3ad5, type: 2}
+  - {fileID: 11400000, guid: ae5279b21d8312d4296c5d94014d3ab6, type: 2}
+  - {fileID: 11400000, guid: 7995f1b2eb8b79945bbd009100bf3816, type: 2}
   actions:
-  - {fileID: 11400000, guid: 5f555ee2b59a11f43a99257df7ae7196, type: 2}
+  - {fileID: 11400000, guid: 9c1a368555420ac4e96e8c77eb2b05d2, type: 2}
+  isMain: 1

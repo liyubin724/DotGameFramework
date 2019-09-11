@@ -128,20 +128,23 @@ namespace DotEditor.Core.Packer
 
         public static void ClearAssetBundleNames(bool isShowProgressBar = false)
         {
-            string[] assetPaths = AssetDatabaseUtil.FindAssetWithBundleName();
-            if (assetPaths != null && assetPaths.Length > 0)
+            string[] bundleNames = AssetDatabase.GetAllAssetBundleNames();
+            if(isShowProgressBar)
             {
-                EditorUtility.DisplayProgressBar("Clear Asset Bundle Names", "", 0.0f);
-                for(int i =0;i<assetPaths.Length;i++)
+                EditorUtility.DisplayProgressBar("Clear Bundle Names", "", 0.0f);
+            }
+            for (int i = 0; i < bundleNames.Length; i++)
+            {
+                if (isShowProgressBar)
                 {
-                    EditorUtility.DisplayProgressBar("Clear Asset Bundle Names", assetPaths[i], i/(float)assetPaths.Length);
-                    AssetImporter assetImporter = AssetImporter.GetAtPath(assetPaths[i]);
-                    assetImporter.assetBundleName = "";
+                    EditorUtility.DisplayProgressBar("Clear Bundle Names", bundleNames[i], i / (float)bundleNames.Length);
                 }
+                AssetDatabase.RemoveAssetBundleName(bundleNames[i], true);
+            }
+            if (isShowProgressBar)
+            {
                 EditorUtility.ClearProgressBar();
             }
-
-            AssetDatabase.RemoveUnusedAssetBundleNames();
 
             AssetDatabase.SaveAssets();
         }

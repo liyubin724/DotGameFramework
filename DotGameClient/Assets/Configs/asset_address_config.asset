@@ -13,33 +13,123 @@ MonoBehaviour:
   m_Name: asset_address_config
   m_EditorClassIdentifier: 
   addressDatas:
-  - assetAddress: AtlasImage
-    assetPath: Assets/ArtRes/Prefabs/AtlasImage.prefab
-    bundlePath: assets/artres/prefabs/atlasimage_prefab
+  - assetAddress: ch_pc_hou_004_jiao_d.mat
+    assetPath: Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_004_jiao_d.mat
+    bundlePath: assets/artres/character/player/test01/materials/ch_pc_hou_004_jiao_d_mat
     labels: []
-  - assetAddress: Capsule
+  - assetAddress: ch_pc_hou_004_shen_d.mat
+    assetPath: Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_004_shen_d.mat
+    bundlePath: assets/artres/character/player/test01/materials/ch_pc_hou_004_shen_d_mat
+    labels: []
+  - assetAddress: ch_pc_hou_004_shou_d.mat
+    assetPath: Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_004_shou_d.mat
+    bundlePath: assets/artres/character/player/test01/materials/ch_pc_hou_004_shou_d_mat
+    labels: []
+  - assetAddress: ch_pc_hou_004_tou_d.mat
+    assetPath: Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_004_tou_d.mat
+    bundlePath: assets/artres/character/player/test01/materials/ch_pc_hou_004_tou_d_mat
+    labels: []
+  - assetAddress: ch_pc_hou_006_jiao_d.mat
+    assetPath: Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_006_jiao_d.mat
+    bundlePath: assets/artres/character/player/test01/materials/ch_pc_hou_006_jiao_d_mat
+    labels: []
+  - assetAddress: ch_pc_hou_006_shen_d.mat
+    assetPath: Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_006_shen_d.mat
+    bundlePath: assets/artres/character/player/test01/materials/ch_pc_hou_006_shen_d_mat
+    labels: []
+  - assetAddress: ch_pc_hou_006_shou_d.mat
+    assetPath: Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_006_shou_d.mat
+    bundlePath: assets/artres/character/player/test01/materials/ch_pc_hou_006_shou_d_mat
+    labels: []
+  - assetAddress: ch_pc_hou_006_tou_d.mat
+    assetPath: Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_006_tou_d.mat
+    bundlePath: assets/artres/character/player/test01/materials/ch_pc_hou_006_tou_d_mat
+    labels: []
+  - assetAddress: ch_pc_hou_008_jiao_d.mat
+    assetPath: Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_008_jiao_d.mat
+    bundlePath: assets/artres/character/player/test01/materials/ch_pc_hou_008_jiao_d_mat
+    labels: []
+  - assetAddress: ch_pc_hou_008_shen_d.mat
+    assetPath: Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_008_shen_d.mat
+    bundlePath: assets/artres/character/player/test01/materials/ch_pc_hou_008_shen_d_mat
+    labels: []
+  - assetAddress: ch_pc_hou_008_shou_d.mat
+    assetPath: Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_008_shou_d.mat
+    bundlePath: assets/artres/character/player/test01/materials/ch_pc_hou_008_shou_d_mat
+    labels: []
+  - assetAddress: ch_pc_hou_008_tou_d.mat
+    assetPath: Assets/ArtRes/Character/Player/Test01/Materials/ch_pc_hou_008_tou_d.mat
+    bundlePath: assets/artres/character/player/test01/materials/ch_pc_hou_008_tou_d_mat
+    labels: []
+  - assetAddress: ch_pc_hou_006.prefab
+    assetPath: Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_006.prefab
+    bundlePath: assets/artres/character/player/test01/prefab/ch_pc_hou_006_prefab
+    labels: []
+  - assetAddress: ch_pc_hou_008.prefab
+    assetPath: Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_008.prefab
+    bundlePath: assets/artres/character/player/test01/prefab/ch_pc_hou_008_prefab
+    labels: []
+  - assetAddress: ch_pc_hou_009.prefab
+    assetPath: Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_009.prefab
+    bundlePath: assets/artres/character/player/test01/prefab/ch_pc_hou_009_prefab
+    labels: []
+  - assetAddress: ch_pc_hou_004_jiao_d.tga
+    assetPath: Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_004_jiao_d.tga
+    bundlePath: assets/artres/character/player/test01/textures/ch_pc_hou_004_jiao_d_tga
+    labels: []
+  - assetAddress: ch_pc_hou_004_shen_d.tga
+    assetPath: Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_004_shen_d.tga
+    bundlePath: assets/artres/character/player/test01/textures/ch_pc_hou_004_shen_d_tga
+    labels: []
+  - assetAddress: ch_pc_hou_004_shou_d.tga
+    assetPath: Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_004_shou_d.tga
+    bundlePath: assets/artres/character/player/test01/textures/ch_pc_hou_004_shou_d_tga
+    labels: []
+  - assetAddress: ch_pc_hou_004_tou_d.tga
+    assetPath: Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_004_tou_d.tga
+    bundlePath: assets/artres/character/player/test01/textures/ch_pc_hou_004_tou_d_tga
+    labels: []
+  - assetAddress: ch_pc_hou_008_jiao_d.tga
+    assetPath: Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_008_jiao_d.tga
+    bundlePath: assets/artres/character/player/test01/textures/ch_pc_hou_008_jiao_d_tga
+    labels: []
+  - assetAddress: ch_pc_hou_008_shen_d.tga
+    assetPath: Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_008_shen_d.tga
+    bundlePath: assets/artres/character/player/test01/textures/ch_pc_hou_008_shen_d_tga
+    labels: []
+  - assetAddress: ch_pc_hou_008_shou_d.tga
+    assetPath: Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_008_shou_d.tga
+    bundlePath: assets/artres/character/player/test01/textures/ch_pc_hou_008_shou_d_tga
+    labels: []
+  - assetAddress: ch_pc_hou_008_tou_d.tga
+    assetPath: Assets/ArtRes/Character/Player/Test01/Textures/ch_pc_hou_008_tou_d.tga
+    bundlePath: assets/artres/character/player/test01/textures/ch_pc_hou_008_tou_d_tga
+    labels: []
+  - assetAddress: ch_we_one_hou_004_d.tga
+    assetPath: Assets/ArtRes/Character/Player/Test01/Textures/ch_we_one_hou_004_d.tga
+    bundlePath: assets/artres/character/player/test01/textures/ch_we_one_hou_004_d_tga
+    labels: []
+  - assetAddress: ch_we_one_hou_008_d.tga
+    assetPath: Assets/ArtRes/Character/Player/Test01/Textures/ch_we_one_hou_008_d.tga
+    bundlePath: assets/artres/character/player/test01/textures/ch_we_one_hou_008_d_tga
+    labels: []
+  - assetAddress: Capsule.prefab
     assetPath: Assets/ArtRes/Prefabs/Capsule.prefab
     bundlePath: assets/artres/prefabs/capsule_prefab
     labels: []
-  - assetAddress: Cube
+  - assetAddress: Cube.prefab
     assetPath: Assets/ArtRes/Prefabs/Cube.prefab
     bundlePath: assets/artres/prefabs/cube_prefab
     labels: []
-  - assetAddress: Cylinder
+  - assetAddress: Cylinder.prefab
     assetPath: Assets/ArtRes/Prefabs/Cylinder.prefab
     bundlePath: assets/artres/prefabs/cylinder_prefab
     labels: []
-  - assetAddress: Sphere
+  - assetAddress: Sphere.prefab
     assetPath: Assets/ArtRes/Prefabs/Sphere.prefab
     bundlePath: assets/artres/prefabs/sphere_prefab
     labels: []
-  - assetAddress: common_atlas
-    assetPath: Assets/ArtRes/UI/Atlas/common_atlas.spriteatlas
-    bundlePath: assets/artres/ui/atlas/common_atlas_spriteatlas
-    labels:
-    - spriteatlas
-  - assetAddress: login_atlas
-    assetPath: Assets/ArtRes/UI/Atlas/login_atlas.spriteatlas
-    bundlePath: assets/artres/ui/atlas/login_atlas_spriteatlas
-    labels:
-    - spriteatlas
+  - assetAddress: RoundRectMat.mat
+    assetPath: Assets/ArtRes/Shaders/RoundRectMat.mat
+    bundlePath: assets/artres/shaders/roundrectmat_mat
+    labels: []

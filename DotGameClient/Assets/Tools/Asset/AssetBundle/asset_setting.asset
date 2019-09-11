@@ -16,5 +16,5 @@ MonoBehaviour:
   groupType: 1
   groupSchemas:
   - {fileID: 11400000, guid: 1b918e46eca59a148b73ac43ecb766cb, type: 2}
-  - {fileID: 11400000, guid: 5de6405ebc808984e8d93fb877cf0a7a, type: 2}
-  packConfig: {fileID: 11400000, guid: 5fa12c701a60205438d07c4cf09a775a, type: 2}
+  - {fileID: 11400000, guid: 7bb24d8720204c544b61e5060f1e0c51, type: 2}
+  tagConfig: {fileID: 11400000, guid: 35e47812882facc409221892f76f0b3e, type: 2}

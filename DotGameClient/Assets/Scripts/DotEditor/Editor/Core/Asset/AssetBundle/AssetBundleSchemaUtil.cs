@@ -39,7 +39,9 @@ namespace DotEditor.Core.Asset
                         EditorUtility.DisplayProgressBar("Set Bundle Names", datas[i].path, i / (float)datas.Length);
                     }
                     AssetImporter assetImporter = AssetImporter.GetAtPath(datas[i].path);
+                    //assetImporter.SetAssetBundleNameAndVariant(datas[i].bundle, "");
                     assetImporter.assetBundleName = datas[i].bundle;
+                    //assetImporter.SaveAndReimport();
                 }
             }
             if (isShowProgressBar)

@@ -10,12 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4586566993746044d8627ebfe5b14f7a, type: 3}
-  m_Name: prefabs_group
+  m_Name: player_group
   m_EditorClassIdentifier: 
   isEnable: 1
-  groupName: Prefabs
+  groupName: Player
   groupType: 1
   filters:
+  - {fileID: 11400000, guid: 7650f5746a65b774bb33f0d6966d3ad5, type: 2}
+  - {fileID: 11400000, guid: ad682c5b39d27c84eaf9054993e48efc, type: 2}
   - {fileID: 11400000, guid: 7a32d95f3db496446bed42b0c4ee1475, type: 2}
   actions:
   - {fileID: 11400000, guid: 12cd95b8c16b69b4f8d969bd98674d3b, type: 2}
+  isMain: 1

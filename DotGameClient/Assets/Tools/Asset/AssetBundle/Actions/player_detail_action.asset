@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6456f3946d9f7d840afa8be3e51757dd, type: 3}
-  m_Name: prefabs_detail_action
+  m_Name: player_detail_action
   m_EditorClassIdentifier: 
   isEnable: 1
   actionName: Prefabs
   packMode: 1
   packCount: 0
-  addressMode: 1
+  addressMode: 2
   fileNameFormat: '{0}'
   filterFolder: 
   labels: []

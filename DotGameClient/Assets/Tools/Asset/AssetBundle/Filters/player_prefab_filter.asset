@@ -10,14 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1a1fed7f05645c45902822502c79003, type: 3}
-  m_Name: prefabs_filter
+  m_Name: player_prefab_filter
   m_EditorClassIdentifier: 
   isEnable: 1
-  folder: Assets/ArtRes/Prefabs
+  folder: Assets/ArtRes/Character/Player/Test01/Prefab
   includeSubfolder: 1
   fileNameFilterRegex: ^\w*.prefab$
   assets:
-  - Assets/ArtRes/Prefabs/Capsule.prefab
-  - Assets/ArtRes/Prefabs/Cube.prefab
-  - Assets/ArtRes/Prefabs/Cylinder.prefab
-  - Assets/ArtRes/Prefabs/Sphere.prefab
+  - Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_006.prefab
+  - Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_008.prefab

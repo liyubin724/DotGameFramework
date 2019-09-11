@@ -9,15 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6456f3946d9f7d840afa8be3e51757dd, type: 3}
-  m_Name: spriteatlas_detail_action
+  m_Script: {fileID: 11500000, guid: d1a1fed7f05645c45902822502c79003, type: 3}
+  m_Name: prefabs_mat_filter
   m_EditorClassIdentifier: 
   isEnable: 1
-  actionName: SpriteAtlasCreate
-  packMode: 1
-  packCount: 0
-  addressMode: 1
-  fileNameFormat: '{0}'
-  filterFolder: 
-  labels:
-  - spriteatlas
+  folder: Assets/ArtRes/Shaders
+  includeSubfolder: 1
+  fileNameFilterRegex: ^\w*.mat$
+  assets:
+  - Assets/ArtRes/Shaders/RoundRectMat.mat
