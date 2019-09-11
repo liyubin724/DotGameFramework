@@ -38,10 +38,17 @@ namespace Dot.Core.Loader
             }
         }
         
-        protected override bool UpdateLoadingLoaderData(AssetLoaderData loaderData, AssetLoaderHandle loaderHandle)
+        protected override bool UpdateLoadingLoaderData(AssetLoaderData loaderData)
         {
             List<ResourceAsyncOperation> operationList = asyncOperationDic[loaderData.uniqueID];
             bool isComplete = true;
+
+            AssetLoaderHandle loaderHandle = null;
+            if(loaderHandleDic.ContainsKey(loaderData.uniqueID))
+            {
+                loaderHandle = loaderHandleDic[loaderData.uniqueID];
+            }
+
             for (int i = 0; i < loaderData.assetPaths.Length; ++i)
             {
                 if (loaderHandle.GetAssetState(i))
@@ -99,25 +106,17 @@ namespace Dot.Core.Loader
 
         protected override void UnloadLoadingAssetLoader(AssetLoaderData loaderData, AssetLoaderHandle handle, bool destroyIfLoaded)
         {
-            //for (int i = 0; i < loaderData.assetPaths.Length; ++i)
-            //{
-            //    if (handle.GetAssetState(i))
-            //    {
-            //        if (loaderData.isInstance && destroyIfLoaded)
-            //        {
-            //            UnityObject uObj = handle.GetObject(i);
-            //            if (uObj != null)
-            //            {
-            //                UnityObject.Destroy(uObj);
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        ResourceAsyncOperation operation = rLoaderData.asyncOperations[i];
-            //        loadingAsyncOperationList.Remove(operation);
-            //    }
-            //}
+            handle.BreakLoader(loaderData.isInstance && destroyIfLoaded);
+
+            List<ResourceAsyncOperation> operationList = asyncOperationDic[loaderData.uniqueID];
+            operationList.ForEach((operation) =>
+            {
+                loadingAsyncOperationList.Remove(operation);
+            });
+            asyncOperationDic.Remove(loaderData.uniqueID);
+
+            loaderDataLoadingList.Remove(loaderData);
+            loaderDataPool.Release(loaderData);
         }
 
     }

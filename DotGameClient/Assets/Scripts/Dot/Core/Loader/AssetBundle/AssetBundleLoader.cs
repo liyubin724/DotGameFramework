@@ -294,8 +294,14 @@ namespace Dot.Core.Loader
             }
             return progress / totalCount;
         }
-        protected override bool UpdateLoadingLoaderData(AssetLoaderData loaderData, AssetLoaderHandle loaderHandle)
+        protected override bool UpdateLoadingLoaderData(AssetLoaderData loaderData)
         {
+            AssetLoaderHandle loaderHandle = null;
+            if (loaderHandleDic.ContainsKey(loaderData.uniqueID))
+            {
+                loaderHandle = loaderHandleDic[loaderData.uniqueID];
+            }
+
             bool isComplete = true;
             for (int i = 0; i < loaderData.assetPaths.Length; ++i)
             {

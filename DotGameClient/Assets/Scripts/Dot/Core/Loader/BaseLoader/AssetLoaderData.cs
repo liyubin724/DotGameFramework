@@ -35,13 +35,23 @@ namespace Dot.Core.Loader
             return assetPaths[index];
         }
 
-        public string[] GetInvokeAssetPaths()
+        private string[] GetInvokeAssetPaths()
         {
             if(pathMode == AssetPathMode.Address)
             {
                 return assetAddresses;
             }
             return assetPaths;
+        }
+
+        internal void BreakLoader()
+        {
+            completeCallback = null;
+            progressCallback = null;
+            batchCompleteCallback = null;
+            batchProgressCallback = null;
+            isInstance = false;
+            userData = null;
         }
        
         public void OnNew() { }

@@ -14,7 +14,7 @@ namespace Dot.Core.Loader
     {
         private UniqueIDCreator idCreator = new UniqueIDCreator();
 
-        private ObjectPool<AssetLoaderData> loaderDataPool = new ObjectPool<AssetLoaderData>(10);
+        protected ObjectPool<AssetLoaderData> loaderDataPool = new ObjectPool<AssetLoaderData>(10);
         protected FastPriorityQueue<AssetLoaderData> loaderDataWaitingQueue = new FastPriorityQueue<AssetLoaderData>(10);
         protected List<AssetLoaderData> loaderDataLoadingList = new List<AssetLoaderData>();
 
@@ -181,20 +181,17 @@ namespace Dot.Core.Loader
                 for(int i = loaderDataLoadingList.Count-1;i>=0;--i)
                 {
                     AssetLoaderData loaderData = loaderDataLoadingList[i];
-                    long uniqueID = loaderData.uniqueID;
-                    AssetLoaderHandle loaderHandle = loaderHandleDic[uniqueID];
-                    if (UpdateLoadingLoaderData(loaderData, loaderHandle))
+                    if (UpdateLoadingLoaderData(loaderData))
                     {
                         loaderDataLoadingList.RemoveAt(i);
-                        loaderHandleDic.Remove(uniqueID);
-
+                        loaderHandleDic.Remove(loaderData.uniqueID);
                         loaderDataPool.Release(loaderData);
                     }
                 }
             }
         }
 
-        protected abstract bool UpdateLoadingLoaderData(AssetLoaderData loaderData, AssetLoaderHandle loaderHandle);
+        protected abstract bool UpdateLoadingLoaderData(AssetLoaderData loaderData);
         
         protected abstract void StartLoaderDataLoading(AssetLoaderData loaderData);
 
@@ -233,9 +230,7 @@ namespace Dot.Core.Loader
             }
             if(loaderData!=null)
             {
-                loaderDataLoadingList.Remove(loaderData);
                 UnloadLoadingAssetLoader(loaderData, handle,destroyIfLoaded);
-                loaderDataPool.Release(loaderData);
             }
         }
 

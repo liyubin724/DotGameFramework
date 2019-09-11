@@ -69,5 +69,26 @@ namespace Dot.Core.Loader
         {
             return progresses[index];
         }
+
+        internal void BreakLoader(bool destroyIfLoaded)
+        {
+            if(destroyIfLoaded)
+            {
+                for(int i =0;i<uObjs.Length;++i)
+                {
+                    UnityObject uObj = uObjs[i];
+                    if(uObj !=null)
+                    {
+                        UnityObject.Destroy(uObj);
+                        uObjs[i] = null;
+                    }
+                }
+            }
+            uniqueID = -1;
+            assetPaths = null;
+            uObjs = null;
+            progresses = null;
+            states = null;
+        }
     }
 }
