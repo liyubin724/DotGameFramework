@@ -42,6 +42,15 @@ namespace Dot.Core.Loader
         internal void InvokeBatchComplete(UnityObject[] uObjs) => batchCompleteCallback?.Invoke(GetInvokeAssetPaths(), uObjs, userData);
         internal void InvokeBatchProgress(float[] progresses) => batchProgressCallback?.Invoke(GetInvokeAssetPaths(), progresses, userData);
 
+        internal void BreakLoader()
+        {
+            completeCallback = null;
+            progressCallback = null;
+            batchCompleteCallback = null;
+            batchProgressCallback = null;
+            userData = null;
+        }
+
         private string GetInvokeAssetPath(int index)
         {
             if (pathMode == AssetPathMode.Address)

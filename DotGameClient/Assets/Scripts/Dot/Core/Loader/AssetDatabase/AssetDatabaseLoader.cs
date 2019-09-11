@@ -108,10 +108,8 @@ namespace Dot.Core.Loader
             return isComplete;
         }
 
-        protected override void UnloadLoadingAssetLoader(AssetLoaderData loaderData, AssetLoaderHandle handle, bool destroyIfLoaded)
+        protected override void UnloadLoadingAssetLoader(AssetLoaderData loaderData)
         {
-            handle.BreakLoader(loaderData.isInstance && destroyIfLoaded);
-            
             List<AssetDatabaseAsyncOperation> operationList = asyncOperationDic[loaderData.uniqueID];
             operationList.ForEach((operation) =>
             {

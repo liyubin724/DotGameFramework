@@ -301,6 +301,10 @@ namespace Dot.Core.Loader
             {
                 loaderHandle = loaderHandleDic[loaderData.uniqueID];
             }
+            if(loaderHandle == null)
+            {
+                loaderData.BreakLoader();
+            }
 
             bool isComplete = true;
             for (int i = 0; i < loaderData.assetPaths.Length; ++i)
@@ -310,6 +314,18 @@ namespace Dot.Core.Loader
                     continue;
                 }
                 string assetPath = loaderData.assetPaths[i];
+
+                if(loaderHandle == null)
+                {
+                    if (assetNodeDic.TryGetValue(assetPath, out AssetNode node))
+                    {
+                        node.ReleaseLoadCount();
+                    }else
+                    {
+                        isComplete = false;
+                    }
+                    continue;
+                }
 
                 if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
                 {
@@ -337,16 +353,19 @@ namespace Dot.Core.Loader
                 if (oldProgress != curProgress)
                 {
                     loaderHandle.SetProgress(i, curProgress);
+
                     loaderData.InvokeProgress(i, curProgress);
                 }
                 isComplete = false;
             }
 
-            loaderData.InvokeBatchProgress(loaderHandle.AssetProgresses);
-
-            if (isComplete)
+            if(loaderHandle!=null)
             {
-                loaderData.InvokeBatchComplete(loaderHandle.AssetObjects);
+                loaderData.InvokeBatchProgress(loaderHandle.AssetProgresses);
+                if (isComplete)
+                {
+                    loaderData.InvokeBatchComplete(loaderHandle.AssetObjects);
+                }
             }
 
             return isComplete;
@@ -382,9 +401,8 @@ namespace Dot.Core.Loader
             }
         }
 
-        protected override void UnloadLoadingAssetLoader(AssetLoaderData loaderData, AssetLoaderHandle handle, bool destroyIfLoaded)
+        protected override void UnloadLoadingAssetLoader(AssetLoaderData loaderData)
         {
-
         }
 
         protected override void InnerUnloadUnusedAssets()

@@ -204,7 +204,7 @@ namespace Dot.Core.Loader
             {
                 return;
             }
-
+            
             AssetLoaderData loaderData = null;
             foreach(var data in loaderDataWaitingQueue)
             {
@@ -216,6 +216,7 @@ namespace Dot.Core.Loader
             }
             if(loaderData!=null)
             {
+                handle.BreakLoader(loaderData.isInstance && destroyIfLoaded);
                 loaderDataWaitingQueue.Remove(loaderData);
                 loaderDataPool.Release(loaderData);
                 return;
@@ -230,11 +231,12 @@ namespace Dot.Core.Loader
             }
             if(loaderData!=null)
             {
-                UnloadLoadingAssetLoader(loaderData, handle,destroyIfLoaded);
+                handle.BreakLoader(loaderData.isInstance && destroyIfLoaded);
+                UnloadLoadingAssetLoader(loaderData);
             }
         }
 
-        protected abstract void UnloadLoadingAssetLoader(AssetLoaderData loaderData, AssetLoaderHandle handle, bool destroyIfLoaded);
+        protected abstract void UnloadLoadingAssetLoader(AssetLoaderData loaderData);
 
         #region unloadUnusedAsset
         private void CheckUnloadUnusedAction()
