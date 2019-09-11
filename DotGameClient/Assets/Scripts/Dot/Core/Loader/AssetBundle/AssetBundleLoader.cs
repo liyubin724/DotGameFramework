@@ -21,7 +21,7 @@ namespace Dot.Core.Loader
         private Dictionary<string, AssetNode> assetNodeDic = new Dictionary<string, AssetNode>();
         private Dictionary<string, BundleNode> bundleNodeDic = new Dictionary<string, BundleNode>();
 
-        private float assetCleanInterval = 3000000;
+        private float assetCleanInterval = 300;
         private TimerTaskInfo assetCleanTimer = null;
         
         private string assetRootDir = "";
@@ -378,18 +378,10 @@ namespace Dot.Core.Loader
             return isComplete;
         }
         
-        private List<string> assetDicKeys = new List<string>();
         private void OnCleanAssetInterval(System.Object userData)
         {
-            foreach (var kvp in assetNodeDic)
-            {
-                if (!kvp.Value.IsAlive())
-                {
-                    assetDicKeys.Add(kvp.Key);
-                }
-            }
-
-            foreach (var key in assetDicKeys)
+            string[] assetNodeKeys = (from nodeKVP in assetNodeDic where !nodeKVP.Value.IsAlive() select nodeKVP.Key).ToArray();
+            foreach (var key in assetNodeKeys)
             {
                 AssetNode assetNode = assetNodeDic[key];
                 assetNodeDic.Remove(key);
@@ -407,18 +399,13 @@ namespace Dot.Core.Loader
                 }
             }
 
-            assetDicKeys.Clear();
-            assetDicKeys.AddRange(bundleNodeDic.Keys);
-            foreach (var key in assetDicKeys)
+            string[] bundleNodeKeys = (from nodeKVP in bundleNodeDic where nodeKVP.Value.RefCount == 0 select nodeKVP.Key).ToArray();
+            foreach(var key in bundleNodeKeys)
             {
                 BundleNode bundleNode = bundleNodeDic[key];
-                if (bundleNode.RefCount == 0)
-                {
-                    bundleNodeDic.Remove(key);
-                    bundleNodePool.Release(bundleNode);
-                }
+                bundleNodeDic.Remove(key);
+                bundleNodePool.Release(bundleNode);
             }
-            assetDicKeys.Clear();
         }
 
         protected override void UnloadLoadingAssetLoader(AssetLoaderData loaderData, AssetLoaderHandle handle, bool destroyIfLoaded)
