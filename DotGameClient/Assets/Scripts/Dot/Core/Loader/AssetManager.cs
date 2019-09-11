@@ -113,6 +113,11 @@ namespace Dot.Core.Loader
         {
             if (isInit)
             {
+                if(string.IsNullOrEmpty(assetPath) || asset == null)
+                {
+                    Debug.LogError($"AssetManager::InstantiateAsset->asset is null or asset is null.assetPath = {(assetPath ?? "")}");
+                    return null;
+                }
                 return assetLoader?.InstantiateAsset(assetPath, asset);
             }
             else
