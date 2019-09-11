@@ -19,11 +19,7 @@ namespace Dot.Core.Loader
         public OnBatchAssetLoadComplete batchCompleteCallback;
         public OnBatchAssetsLoadProgress batchProgressCallback;
         
-        private AssetPathMode pathMode;
-        public void InitData(AssetPathMode pMode)
-        {
-            pathMode = pMode;
-        }
+        internal AssetPathMode pathMode;
 
         public void InvokeComplete(int index, UnityObject uObj)=> completeCallback?.Invoke(GetInvokeAssetPath(index), uObj, userData);
         public void InvokeProgress(int index, float progress) => progressCallback?.Invoke(GetInvokeAssetPath(index), progress, userData);

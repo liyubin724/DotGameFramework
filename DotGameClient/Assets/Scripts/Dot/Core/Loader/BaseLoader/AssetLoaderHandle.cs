@@ -3,7 +3,7 @@ using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
 {
-    public class AssetLoaderHandle
+    public sealed class AssetLoaderHandle
     {
         private long uniqueID;
         private string[] assetPaths;
