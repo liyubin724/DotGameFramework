@@ -4,10 +4,10 @@ using UnityObject = UnityEngine.Object;
 namespace Dot.Core.Loader
 {
     public delegate void OnAssetLoadComplete(string assetPath, UnityObject uObj, SystemObject userData);
-    public delegate void OnAssetLoadProgress(string assetPath, float progress);
+    public delegate void OnAssetLoadProgress(string assetPath, float progress, SystemObject userData);
 
     public delegate void OnBatchAssetLoadComplete(string[] assetPaths, UnityObject[] uObjs, SystemObject userData);
-    public delegate void OnBatchAssetsLoadProgress(string[] assetPaths, float[] progresses);
+    public delegate void OnBatchAssetsLoadProgress(string[] assetPaths, float[] progresses, SystemObject userData);
 
     public enum AssetLoaderMode
     {

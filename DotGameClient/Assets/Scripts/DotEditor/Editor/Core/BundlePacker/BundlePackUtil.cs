@@ -149,7 +149,7 @@ namespace DotEditor.Core.Packer
             AssetDatabase.SaveAssets();
         }
 
-        public static void PackAssetBundle(AssetBundlePackConfig packConfig)
+        public static void PackAssetBundle(AssetBundlePackConfig packConfig, bool isShowProgress = false)
         {
             string targetFolderName = packConfig.buildTarget.ToString();
             string outputTargetDir = packConfig.bundleOutputDir + "/" + targetFolderName + "/" + AssetBundleConst.ASSETBUNDLE_MAINFEST_NAME;
@@ -168,7 +168,7 @@ namespace DotEditor.Core.Packer
                 buildTarget = BuildTarget.XboxOne;
             }
 
-            PackAsssetBundle(outputTargetDir, packConfig.cleanupBeforeBuild, packConfig.bundleOptions, buildTarget, true);
+            PackAsssetBundle(outputTargetDir, packConfig.cleanupBeforeBuild, packConfig.bundleOptions, buildTarget, isShowProgress);
         }
 
         public static void PackAsssetBundle(string outputDir,bool isClean,BuildAssetBundleOptions options, BuildTarget buildTarget, bool isShowProgress = false)
@@ -182,10 +182,6 @@ namespace DotEditor.Core.Packer
                 Directory.CreateDirectory(outputDir);
             }
             
-            UpdateTagConfigBySchema();
-            ClearAssetBundleNames(isShowProgress);
-            SetAssetBundleNames(isShowProgress);
-
             BuildPipeline.BuildAssetBundles(outputDir, options, buildTarget);
         }
     }

@@ -74,6 +74,12 @@ namespace Dot.Core.Loader
             {
                 loaderData.assetAddresses = assetPaths;
                 loaderData.assetPaths = assetAddressConfig.GetAssetPathByAddress(assetPaths);
+                if(loaderData.assetPaths == null)
+                {
+                    ReleaseLoaderData(loaderData);
+                    Debug.LogError($"AssetBundleLoader::GetLoaderData->asset not found.address = {string.Join(",", assetPaths)}");
+                    return null;
+                }
             }
             else
             {

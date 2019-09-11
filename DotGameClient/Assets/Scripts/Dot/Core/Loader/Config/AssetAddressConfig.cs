@@ -16,12 +16,20 @@ namespace Dot.Core.Loader.Config
 
         public string[] GetAssetPathByAddress(string[] addresses)
         {
-            string[] paths = new string[addresses.Length];
+            List<string> paths = new List<string>();
             for(int i =0;i<addresses.Length;++i)
             {
-                paths[i] = GetAssetPathByAddress(addresses[i]);
+                string assetPath = GetAssetPathByAddress(addresses[i]);
+                if(assetPath == null)
+                {
+                    Debug.LogError($"AssetAddressConfig::GetAssetPathByAddress->Not found Asset by Address.address = {addresses[i]}");
+                    return null;
+                }else
+                {
+                    paths.Add(assetPath);
+                }
             }
-            return paths;
+            return paths.ToArray() ;
         }
 
         public string GetAssetPathByAddress(string address)

@@ -254,20 +254,31 @@ namespace DotEditor.Core.Packer
                 tagConfig = BundlePackUtil.FindOrCreateTagConfig();
                 FilterTreeModel();
             }
+            if (GUILayout.Button("Clear Asset Bundle Names"))
+            {
+                BundlePackUtil.ClearAssetBundleNames(true);
+            }
             if (GUILayout.Button("Set Asset Bundle Names"))
             {
                 BundlePackUtil.SetAssetBundleNames(true);
             }
-            if (GUILayout.Button("Clear Asset Bundle Names"))
+            if (GUILayout.Button("Pack Bundle"))
             {
-                BundlePackUtil.ClearAssetBundleNames(true);
+                if (string.IsNullOrEmpty(packConfig.bundleOutputDir))
+                {
+                    EditorUtility.DisplayDialog("Warning", "Output Dir is Null", "OK");
+                }
+                else
+                {
+                    BundlePackUtil.PackAssetBundle(packConfig, true);
+                }
             }
 
             GUILayout.FlexibleSpace();
 
             EditorGUIUtil.BeginGUIBackgroundColor(Color.red);
             {
-                if(GUILayout.Button("Pack Bundle",GUILayout.Height(60)))
+                if(GUILayout.Button("Auto Pack Bundle",GUILayout.Height(60)))
                 {
                     if(string.IsNullOrEmpty(packConfig.bundleOutputDir))
                     {
@@ -275,7 +286,10 @@ namespace DotEditor.Core.Packer
                     }
                     else
                     {
-                        BundlePackUtil.PackAssetBundle(packConfig);
+                        BundlePackUtil.UpdateTagConfigBySchema();
+                        BundlePackUtil.ClearAssetBundleNames(true);
+                        BundlePackUtil.SetAssetBundleNames(true);
+                        BundlePackUtil.PackAssetBundle(packConfig, true);
                     }
                 }
             }

@@ -47,8 +47,19 @@ namespace Dot.Core.Loader
             SystemObject userData)
         {
             long uniqueID = idCreator.Next();
+
+            if(assetPaths == null || assetPaths.Length == 0)
+            {
+                Debug.LogError($"AssetLoader::LoadOrInstanceBatchAssetAsync->assetPaths is Null");
+                return null;
+            }
             
             AssetLoaderData loaderData = GetLoaderData(assetPaths);
+            if(loaderData == null)
+            {
+                Debug.LogError($"AssetLoader::LoadOrInstanceBatchAssetAsync->Loader Data is Null.AssetPath = {string.Join(",", assetPaths)}");
+                return null;
+            }
             loaderData.uniqueID = uniqueID;
             loaderData.isInstance = isInstance;
             loaderData.completeCallback = complete;

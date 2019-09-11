@@ -26,9 +26,9 @@ namespace Dot.Core.Loader
         }
 
         public void InvokeComplete(int index, UnityObject uObj)=> completeCallback?.Invoke(GetInvokeAssetPath(index), uObj, userData);
-        public void InvokeProgress(int index, float progress) => progressCallback?.Invoke(GetInvokeAssetPath(index), progress);
+        public void InvokeProgress(int index, float progress) => progressCallback?.Invoke(GetInvokeAssetPath(index), progress, userData);
         public void InvokeBatchComplete(UnityObject[] uObjs) => batchCompleteCallback?.Invoke(GetInvokeAssetPaths(), uObjs, userData);
-        public void InvokeBatchProgress(float[] progresses) => batchProgressCallback?.Invoke(GetInvokeAssetPaths(), progresses);
+        public void InvokeBatchProgress(float[] progresses) => batchProgressCallback?.Invoke(GetInvokeAssetPaths(), progresses, userData);
 
         private string GetInvokeAssetPath(int index)
         {
