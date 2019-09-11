@@ -9,7 +9,6 @@ namespace Dot.Core.Loader
         private string[] assetPaths;
         private UnityObject[] uObjs;
         private float[] progresses;
-        private bool[] states;
 
         public long UniqueID { get => uniqueID; }
         public string[] AssetPaths { get => assetPaths; }
@@ -35,23 +34,10 @@ namespace Dot.Core.Loader
 
             uObjs = new UnityObject[paths.Length];
             progresses = new float[paths.Length];
-            states = new bool[paths.Length];
-
-            for (int i = 0; i < paths.Length; ++i)
-            {
-                progresses[i] = 0.0f;
-                states[i] = false;
-            }
-        }
-
-        internal bool GetAssetState(int index)
-        {
-            return states[index];
         }
 
         internal void SetObject(int index,UnityObject uObj)
         {
-            states[index] = true;
             uObjs[index] = uObj;
         }
 
@@ -88,7 +74,6 @@ namespace Dot.Core.Loader
             assetPaths = null;
             uObjs = null;
             progresses = null;
-            states = null;
         }
     }
 }

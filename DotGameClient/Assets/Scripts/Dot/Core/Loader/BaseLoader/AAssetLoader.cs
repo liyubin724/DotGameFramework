@@ -77,7 +77,7 @@ namespace Dot.Core.Loader
             {
                 loaderData.assetPaths = assetPaths;
             }
-            loaderData.pathMode = pathMode;
+            loaderData.InitData(pathMode);
 
             loaderData.uniqueID = uniqueID;
             loaderData.isInstance = isInstance;

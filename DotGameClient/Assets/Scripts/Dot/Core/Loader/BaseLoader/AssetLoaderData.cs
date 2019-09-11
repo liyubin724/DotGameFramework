@@ -19,12 +19,28 @@ namespace Dot.Core.Loader
         public OnBatchAssetLoadComplete batchCompleteCallback;
         public OnBatchAssetsLoadProgress batchProgressCallback;
         
-        internal AssetPathMode pathMode;
+        private AssetPathMode pathMode;
+        private bool[] assetLoadStates;
+        internal void InitData(AssetPathMode pMode)
+        {
+            pathMode = pMode;
+            assetLoadStates = new bool[assetPaths.Length];
+        }
 
-        public void InvokeComplete(int index, UnityObject uObj)=> completeCallback?.Invoke(GetInvokeAssetPath(index), uObj, userData);
-        public void InvokeProgress(int index, float progress) => progressCallback?.Invoke(GetInvokeAssetPath(index), progress, userData);
-        public void InvokeBatchComplete(UnityObject[] uObjs) => batchCompleteCallback?.Invoke(GetInvokeAssetPaths(), uObjs, userData);
-        public void InvokeBatchProgress(float[] progresses) => batchProgressCallback?.Invoke(GetInvokeAssetPaths(), progresses, userData);
+        internal bool GetLoadState(int index) => assetLoadStates[index];
+
+        internal void InvokeComplete(int index,UnityObject uObj)
+        {
+            string assetPath = GetInvokeAssetPath(index);
+
+            assetLoadStates[index] = true;
+            progressCallback?.Invoke(assetPath, 1.0f, userData);
+            completeCallback?.Invoke(assetPath, uObj, userData);
+        }
+
+        internal void InvokeProgress(int index, float progress) => progressCallback?.Invoke(GetInvokeAssetPath(index), progress, userData);
+        internal void InvokeBatchComplete(UnityObject[] uObjs) => batchCompleteCallback?.Invoke(GetInvokeAssetPaths(), uObjs, userData);
+        internal void InvokeBatchProgress(float[] progresses) => batchProgressCallback?.Invoke(GetInvokeAssetPaths(), progresses, userData);
 
         private string GetInvokeAssetPath(int index)
         {
@@ -44,16 +60,6 @@ namespace Dot.Core.Loader
             return assetPaths;
         }
 
-        internal void BreakLoader()
-        {
-            completeCallback = null;
-            progressCallback = null;
-            batchCompleteCallback = null;
-            batchProgressCallback = null;
-            isInstance = false;
-            userData = null;
-        }
-       
         public void OnNew() { }
 
         public void OnRelease()
@@ -66,6 +72,7 @@ namespace Dot.Core.Loader
             batchProgressCallback = null;
             isInstance = false;
             userData = null;
+            assetLoadStates = null;
         }
     }
 }

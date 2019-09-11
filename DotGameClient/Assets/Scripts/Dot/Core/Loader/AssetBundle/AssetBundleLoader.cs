@@ -305,7 +305,7 @@ namespace Dot.Core.Loader
             bool isComplete = true;
             for (int i = 0; i < loaderData.assetPaths.Length; ++i)
             {
-                if(loaderHandle.GetAssetState(i))
+                if(loaderData.GetLoadState(i))
                 {
                     continue;
                 }
@@ -328,7 +328,6 @@ namespace Dot.Core.Loader
                     loaderHandle.SetObject(i, uObj);
                     loaderHandle.SetProgress(i, 1.0f);
 
-                    loaderData.InvokeProgress(i, 1.0f);
                     loaderData.InvokeComplete(i, uObj);
                     continue;
                 }
