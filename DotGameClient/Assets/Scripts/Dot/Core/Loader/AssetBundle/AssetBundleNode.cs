@@ -31,6 +31,7 @@ namespace Dot.Core.Loader
         public bool IsAlive()
         {
             if (loadCount > 0) return true;
+            if (bundleNode.IsScene()) return true;
 
             foreach(var weakAsset in weakAssets)
             {
@@ -45,6 +46,10 @@ namespace Dot.Core.Loader
         public UnityObject GetAsset()
         {
             UnityObject asset = bundleNode.GetAsset(assetPath);
+            if(bundleNode.IsScene())
+            {
+                return asset;
+            }
             weakAssets.Add(new WeakReference(asset, false));
             return asset;
         }
@@ -52,6 +57,11 @@ namespace Dot.Core.Loader
         public UnityObject GetInstance()
         {
             UnityObject asset = bundleNode.GetAsset(assetPath);
+            if (bundleNode.IsScene())
+            {
+                Debug.LogWarning("AssetNode::GetInstance->bundle is scene.can't Instance it");
+                return asset;
+            }
             UnityObject instance = UnityObject.Instantiate(asset);
             Resources.UnloadAsset(asset);
             AddInstance(instance);
@@ -92,6 +102,7 @@ namespace Dot.Core.Loader
         {
             assetPath = null;
             bundleNode.ReleaseRefCount();
+            bundleNode = null;
             weakAssets.Clear();
             loadCount = 0;
         }
@@ -114,9 +125,11 @@ namespace Dot.Core.Loader
             assetBundle = bundle;
         }
 
+        public bool IsScene()=> assetBundle.isStreamedSceneAssetBundle;
+
         public UnityObject GetAsset(string assetPath)
         {
-            return assetBundle.LoadAsset(assetPath);
+            return IsScene()?assetBundle : assetBundle.LoadAsset(assetPath);
         }
 
         public void OnNew() { }
