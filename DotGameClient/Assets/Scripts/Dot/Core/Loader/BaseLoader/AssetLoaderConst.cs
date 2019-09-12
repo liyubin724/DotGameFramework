@@ -9,6 +9,11 @@ namespace Dot.Core.Loader
     public delegate void OnBatchAssetLoadComplete(string[] assetPaths, UnityObject[] uObjs, SystemObject userData);
     public delegate void OnBatchAssetsLoadProgress(string[] assetPaths, float[] progresses, SystemObject userData);
 
+    public delegate void OnSceneLoadComplete(string assetPath,SystemObject userData);
+    public delegate void OnSceneLoadProgress(string assetPath, float progress, SystemObject userData);
+    public delegate void OnSceneUnloadComplete(string assetPath, SystemObject userData);
+    public delegate void OnSceneUnloadProgress(string assetPath, float progress, SystemObject userData);
+
     public enum AssetLoaderMode
     {
         AssetDatabase,

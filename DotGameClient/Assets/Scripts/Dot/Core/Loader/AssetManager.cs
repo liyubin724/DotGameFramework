@@ -9,6 +9,7 @@ namespace Dot.Core.Loader
     public class AssetManager : Singleton<AssetManager>
     {
         private AAssetLoader assetLoader = null;
+        private SceneAssetLoader sceneLoader = null;
         private bool isInit = false;
         public void InitLoader(AssetLoaderMode loaderMode, AssetPathMode pathMode, int maxLoadingCount, string assetRootDir, Action<bool> initCallback)
         {
@@ -31,6 +32,9 @@ namespace Dot.Core.Loader
             {
                 isInit = isSuccess;
                 initCallback?.Invoke(isSuccess);
+
+                sceneLoader = new SceneAssetLoader(loaderMode, assetLoader);
+
             },pathMode,maxLoadingCount,assetRootDir);
         }
 

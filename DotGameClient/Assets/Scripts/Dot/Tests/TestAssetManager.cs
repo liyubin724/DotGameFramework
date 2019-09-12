@@ -1,6 +1,7 @@
 ﻿using Dot.Core.Loader;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using SystemObject = System.Object;
 using UnityObject = UnityEngine.Object;
 
@@ -27,50 +28,16 @@ namespace Dot.Tests
             GameController.StartUp();
             datas.Add(new TestData() { address = "ch_pc_hou_006.prefab", assetPath = "Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_006.prefab" });
             datas.Add(new TestData() { address = "ch_pc_hou_008.prefab", assetPath = "Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_008.prefab" });
-
-            //TestBundle();
+            datas.Add(new TestData() { address = "ch_pc_hou_009.prefab", assetPath = "Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_009.prefab" });
+            datas.Add(new TestData() { address = "Cube.prefab", assetPath = "Assets/ArtRes/Prefabs/Cube.prefab" });
+            DontDestroyOnLoad(this.gameObject);
         }
-        AssetBundle prefabAB;
-        AssetBundle matAB;
-        GameObject goInstance;
-        void TestBundle()
-        {
-            string rootDir = "D:/assetbundles/StandaloneWindows64/assetbundles/";
-            string prefabPath = rootDir + "assets/artres/prefabs/cube_prefab";
-            string matPath = rootDir + "assets/artres/shaders/roundrectmat_mat";
-
-            prefabAB = AssetBundle.LoadFromFile(prefabPath);
-            matAB = AssetBundle.LoadFromFile(matPath);
-
-            GameObject prefab = prefabAB.LoadAsset<GameObject>("Assets/ArtRes/Prefabs/Cube.prefab");
-            goInstance = GameObject.Instantiate(prefab);
-        }
-
-        private void OnGUI2()
-        {
-            if(GUILayout.Button("Delete"))
-            {
-                Object.Destroy(goInstance);
-            }
-            if(GUILayout.Button("Unload"))
-            {
-                prefabAB.Unload(true);
-                int index = 1;
-                index++;
-            }
-
-            if(GUILayout.Button("GC"))
-            {
-                System.GC.Collect();
-                Resources.UnloadUnusedAssets();
-                System.GC.Collect();
-            }
-        }
-
-
+        
         private AssetManagerInitStatus initStatus = AssetManagerInitStatus.None;
         private AssetPathMode assetPathMode = AssetPathMode.Address;
         private AssetLoaderMode assetLoaderMode = AssetLoaderMode.AssetDatabase;
+
+        private AssetLoaderHandle loaderHandle = null;
         private void OnInitAssetManager()
         {
             GUILayout.BeginArea(new Rect(0, 0, 200, Screen.height));
@@ -91,7 +58,7 @@ namespace Dot.Tests
 
                     if (GUILayout.Button("Init Asset Manager"))
                     {
-                        int maxLoadingCount = 3;
+                        int maxLoadingCount = 1;
                         string assetRoot = "D:/assetbundles/StandaloneWindows64/assetbundles";
   
                         initStatus = AssetManagerInitStatus.Initing;
@@ -153,7 +120,7 @@ namespace Dot.Tests
                         int index = UnityEngine.Random.Range(0, datas.Count);
                         TestData data = datas[index];
 
-                        AssetManager.GetInstance().LoadAssetAsync(assetPathMode == AssetPathMode.Address?data.address:data.assetPath, 
+                        loaderHandle = AssetManager.GetInstance().LoadAssetAsync(assetPathMode == AssetPathMode.Address?data.address:data.assetPath, 
                             (assetPath, uObj, userData) =>{
                                 Debug.Log(assetPath);
 
@@ -163,6 +130,11 @@ namespace Dot.Tests
                                     gObj.transform.SetParent(rootCanvas.transform, false);
                                 }
                                 cachedObjects.Add(gObj);
+
+                                loaderHandle = null;
+                            },AssetLoaderPriority.Default,(assetPath,progress,userData)=>
+                            {
+                                Debug.Log($"Loading Progress:assetPath ={assetPath},progress={progress}");
                             });
                     }
 
@@ -178,7 +150,7 @@ namespace Dot.Tests
                             TestData data = datas[di];
                             paths.Add(assetPathMode == AssetPathMode.Address ? data.address : data.assetPath);
                         }
-                        AssetManager.GetInstance().LoadBatchAssetAsync(paths.ToArray(), (assetPath, uObj, userData) =>
+                        loaderHandle = AssetManager.GetInstance().LoadBatchAssetAsync(paths.ToArray(), (assetPath, uObj, userData) =>
                         {
                             Debug.Log(assetPath);
 
@@ -190,10 +162,29 @@ namespace Dot.Tests
                             cachedObjects.Add(gObj);
                         }, (assetPaths, uObjs, userData) =>
                         {
-
+                            loaderHandle = null;
                         });
                     }
-                    if (GUILayout.Button("Delete All"))
+                    if (GUILayout.Button("Stop Loader "))
+                    {
+                        if(loaderHandle!=null)
+                        {
+                            AssetManager.GetInstance().UnloadAssetLoader(loaderHandle);
+                            loaderHandle = null;
+                        }
+                    }
+
+                    if(GUILayout.Button("Load Scene"))
+                    {
+                        string sceneAddress = "other_scene";
+                        AssetManager.GetInstance().LoadAssetAsync(sceneAddress, (address, uObj, userData) =>
+                        {
+                            sceneOperation = SceneManager.LoadSceneAsync(sceneAddress);
+                            
+                        });
+                    }
+
+                        if (GUILayout.Button("Delete All"))
                     {
                         foreach (var obj in cachedObjects)
                         {
@@ -205,11 +196,24 @@ namespace Dot.Tests
             }
             GUILayout.EndArea();
         }
-        
+
+        private AsyncOperation sceneOperation = null;
+
         private void OnGUI()
         {
             OnInitAssetManager();
             OnAssetOperation();
+
+            if(sceneOperation!=null && sceneOperation.isDone)
+            {
+                Scene scene = SceneManager.GetSceneByName("other_scene");
+                GameObject[] objs = scene.GetRootGameObjects();
+                foreach (var go in objs)
+                {
+                    go.SetActive(false);
+                }
+                sceneOperation = null;
+            }
         }
     }
 }

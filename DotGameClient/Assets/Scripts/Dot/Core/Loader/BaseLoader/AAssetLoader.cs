@@ -26,8 +26,17 @@ namespace Dot.Core.Loader
         private bool isInitFinished = false;
         private bool isInitSuccess = false;
 
-        protected AssetAddressConfig assetAddressConfig = null;
         protected AssetPathMode pathMode = AssetPathMode.Address;
+        protected AssetAddressConfig assetAddressConfig = null;
+
+        internal string GetAssetPath(string pathOrAddress)
+        {
+            if(pathMode == AssetPathMode.Address)
+            {
+                return assetAddressConfig.GetAssetPathByAddress(pathOrAddress);
+            }
+            return pathOrAddress;
+        }
 
         protected Action<bool> initCallback = null;
         private int maxLoadingCount = 5;
