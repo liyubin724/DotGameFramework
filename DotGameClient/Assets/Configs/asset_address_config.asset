@@ -133,3 +133,7 @@ MonoBehaviour:
     assetPath: Assets/ArtRes/Shaders/RoundRectMat.mat
     bundlePath: assets/artres/shaders/roundrectmat_mat
     labels: []
+  - assetAddress: other_scene
+    assetPath: Assets/ArtRes/Scenes/other_scene.unity
+    bundlePath: assets/artres/scenes/other_scene_unity
+    labels: []

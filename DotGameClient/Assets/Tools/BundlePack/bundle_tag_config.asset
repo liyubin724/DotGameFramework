@@ -139,3 +139,10 @@ MonoBehaviour:
       path: Assets/ArtRes/Shaders/RoundRectMat.mat
       bundle: assets/artres/shaders/roundrectmat_mat
       labels: []
+  - groupName: Scenes
+    isMain: 1
+    assetDatas:
+    - address: other_scene
+      path: Assets/ArtRes/Scenes/other_scene.unity
+      bundle: assets/artres/scenes/other_scene_unity
+      labels: []

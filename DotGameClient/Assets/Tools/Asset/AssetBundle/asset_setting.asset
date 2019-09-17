@@ -17,4 +17,5 @@ MonoBehaviour:
   groupSchemas:
   - {fileID: 11400000, guid: 1b918e46eca59a148b73ac43ecb766cb, type: 2}
   - {fileID: 11400000, guid: 7bb24d8720204c544b61e5060f1e0c51, type: 2}
+  - {fileID: 11400000, guid: b49c42b0861bcff4883e852868963e57, type: 2}
   tagConfig: {fileID: 11400000, guid: 35e47812882facc409221892f76f0b3e, type: 2}
