@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using Dot.Core.Generic;
 
 namespace Dot.Core.Loader
 {
@@ -13,7 +12,7 @@ namespace Dot.Core.Loader
         internal Scene scene;
 
         public string AssetPath { get => assetPath;  }
-        public string SceneAddress { get => pathOrAddress; }
+        public string PathOrAddress { get => pathOrAddress; }
         public string SceneName { get => sceneName;  }
         public float Progress { get => progress; }
 
