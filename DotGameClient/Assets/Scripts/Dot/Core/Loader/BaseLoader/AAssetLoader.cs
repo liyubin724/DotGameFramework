@@ -204,6 +204,17 @@ namespace Dot.Core.Loader
         
         protected abstract void StartLoaderDataLoading(AssetLoaderData loaderData);
 
+        #region unload Asset
+        /// <summary>
+        /// 
+        /// 警告：在AssetBundle中，会强制性的卸载掉使用的资源，请确保指向的资源没有其它使用者。
+        /// </summary>
+        /// <param name="pathOrAddress"></param>
+        public virtual void UnloadAsset(string pathOrAddress)
+        {
+
+        }
+
         public void UnloadAssetLoader(AssetLoaderHandle handle,bool destroyIfLoaded)
         {
             if(loaderHandleDic.ContainsKey(handle.UniqueID))
@@ -247,7 +258,6 @@ namespace Dot.Core.Loader
 
         protected abstract void UnloadLoadingAssetLoader(AssetLoaderData loaderData);
 
-        #region unloadUnusedAsset
         private void CheckUnloadUnusedAction()
         {
             if(unloadUnusedAssetOperation!=null)

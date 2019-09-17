@@ -401,6 +401,46 @@ namespace Dot.Core.Loader
             }
         }
 
+        public override void UnloadAsset(string pathOrAddress)
+        {
+            string assetPath = GetAssetPath(pathOrAddress);
+            if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
+            {
+                assetNodeDic.Remove(assetPath);
+                assetNodePool.Release(assetNode);
+
+                string mainBundlePath = assetAddressConfig.GetBundlePathByPath(assetPath);
+                BundleNode bundleNode = bundleNodeDic[mainBundlePath];
+                List<string> unloadBundleNodes = null;
+                if (bundleNode.RefCount == 0)
+                {
+                    unloadBundleNodes = new List<string>();
+                    unloadBundleNodes.Add(mainBundlePath);
+
+                    string[] depends = assetBundleManifest.GetAllDependencies(mainBundlePath);
+                    foreach (var path in depends)
+                    {
+                        bundleNodeDic[path].ReleaseRefCount();
+                        if(bundleNodeDic[path].RefCount == 0)
+                        {
+                            unloadBundleNodes.Add(path);
+                        }
+                    }
+                }
+
+                if(unloadBundleNodes!=null && unloadBundleNodes.Count>0)
+                {
+                    foreach (var key in unloadBundleNodes)
+                    {
+                        BundleNode node = bundleNodeDic[key];
+                        bundleNodeDic.Remove(key);
+                        bundleNodePool.Release(node);
+                    }
+                }
+
+            }
+        }
+
         protected override void UnloadLoadingAssetLoader(AssetLoaderData loaderData)
         {
         }
