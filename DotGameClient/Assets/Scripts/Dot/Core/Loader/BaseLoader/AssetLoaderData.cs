@@ -8,8 +8,8 @@ namespace Dot.Core.Loader
     public class AssetLoaderData : FastPriorityQueueNode,IObjectPoolItem
     {
         public long uniqueID = -1;
+        public string[] pathOrAddresses;
         public string[] assetPaths;
-        public string[] assetAddresses;
 
         public bool isInstance = false;
         public SystemObject userData;
@@ -19,11 +19,9 @@ namespace Dot.Core.Loader
         public OnBatchAssetLoadComplete batchCompleteCallback;
         public OnBatchAssetsLoadProgress batchProgressCallback;
         
-        private AssetPathMode pathMode;
         private bool[] assetLoadStates;
-        internal void InitData(AssetPathMode pMode)
+        internal void InitData()
         {
-            pathMode = pMode;
             assetLoadStates = new bool[assetPaths.Length];
         }
 
@@ -31,16 +29,16 @@ namespace Dot.Core.Loader
 
         internal void InvokeComplete(int index,UnityObject uObj)
         {
-            string assetPath = GetInvokeAssetPath(index);
+            string pathOrAddress = pathOrAddresses[index];
 
             assetLoadStates[index] = true;
-            progressCallback?.Invoke(assetPath, 1.0f, userData);
-            completeCallback?.Invoke(assetPath, uObj, userData);
+            progressCallback?.Invoke(pathOrAddress, 1.0f, userData);
+            completeCallback?.Invoke(pathOrAddress, uObj, userData);
         }
 
-        internal void InvokeProgress(int index, float progress) => progressCallback?.Invoke(GetInvokeAssetPath(index), progress, userData);
-        internal void InvokeBatchComplete(UnityObject[] uObjs) => batchCompleteCallback?.Invoke(GetInvokeAssetPaths(), uObjs, userData);
-        internal void InvokeBatchProgress(float[] progresses) => batchProgressCallback?.Invoke(GetInvokeAssetPaths(), progresses, userData);
+        internal void InvokeProgress(int index, float progress) => progressCallback?.Invoke(pathOrAddresses[index], progress, userData);
+        internal void InvokeBatchComplete(UnityObject[] uObjs) => batchCompleteCallback?.Invoke(pathOrAddresses, uObjs, userData);
+        internal void InvokeBatchProgress(float[] progresses) => batchProgressCallback?.Invoke(pathOrAddresses, progresses, userData);
 
         internal void BreakLoader()
         {
@@ -49,24 +47,6 @@ namespace Dot.Core.Loader
             batchCompleteCallback = null;
             batchProgressCallback = null;
             userData = null;
-        }
-
-        private string GetInvokeAssetPath(int index)
-        {
-            if (pathMode == AssetPathMode.Address)
-            {
-                return assetAddresses[index];
-            }
-            return assetPaths[index];
-        }
-
-        private string[] GetInvokeAssetPaths()
-        {
-            if(pathMode == AssetPathMode.Address)
-            {
-                return assetAddresses;
-            }
-            return assetPaths;
         }
 
         public void OnNew() { }

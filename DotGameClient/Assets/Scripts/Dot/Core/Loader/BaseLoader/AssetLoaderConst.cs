@@ -3,11 +3,11 @@ using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
 {
-    public delegate void OnAssetLoadComplete(string assetPath, UnityObject uObj, SystemObject userData);
-    public delegate void OnAssetLoadProgress(string assetPath, float progress, SystemObject userData);
+    public delegate void OnAssetLoadComplete(string pathOrAddress, UnityObject uObj, SystemObject userData);
+    public delegate void OnAssetLoadProgress(string pathOrAddress, float progress, SystemObject userData);
 
-    public delegate void OnBatchAssetLoadComplete(string[] assetPaths, UnityObject[] uObjs, SystemObject userData);
-    public delegate void OnBatchAssetsLoadProgress(string[] assetPaths, float[] progresses, SystemObject userData);
+    public delegate void OnBatchAssetLoadComplete(string[] pathOrAddresses, UnityObject[] uObjs, SystemObject userData);
+    public delegate void OnBatchAssetsLoadProgress(string[] pathOrAddresses, float[] progresses, SystemObject userData);
 
     public delegate void OnSceneComplete(string pathOrAddress,SystemObject userData);
     public delegate void OnSceneProgress(string pathOrAddress, float progress, SystemObject userData);
@@ -17,7 +17,6 @@ namespace Dot.Core.Loader
         AssetDatabase,
         Resources,
         AssetBundle,
-        //PackedAssetBundle,
     }
 
     public enum AssetPathMode

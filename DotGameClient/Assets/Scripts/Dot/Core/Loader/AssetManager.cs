@@ -12,7 +12,11 @@ namespace Dot.Core.Loader
         private AAssetLoader assetLoader = null;
         private SceneAssetLoader sceneLoader = null;
         private bool isInit = false;
-        public void InitLoader(AssetLoaderMode loaderMode, AssetPathMode pathMode, int maxLoadingCount, string assetRootDir, Action<bool> initCallback)
+        public void InitLoader(AssetLoaderMode loaderMode, 
+            AssetPathMode pathMode, 
+            int maxLoadingCount, 
+            string assetRootDir, 
+            Action<bool> initCallback)
         {
             if(loaderMode == AssetLoaderMode.Resources)
             {
@@ -40,7 +44,7 @@ namespace Dot.Core.Loader
         }
 
         public AssetLoaderHandle LoadAssetAsync(
-            string assetPath,
+            string pathOrAddress,
             OnAssetLoadComplete complete, 
             AssetLoaderPriority priority = AssetLoaderPriority.Default,  
             OnAssetLoadProgress progress = null,
@@ -48,7 +52,7 @@ namespace Dot.Core.Loader
         {
             if(isInit)
             {
-                return assetLoader.LoadOrInstanceBatchAssetAsync(new string[] { assetPath }, false, priority, complete, progress, null, null, userData);
+                return assetLoader.LoadOrInstanceBatchAssetAsync(new string[] { pathOrAddress }, false, priority, complete, progress, null, null, userData);
             }else
             {
                 Debug.LogError("AssetManager::LoadAssetAsync->init is failed");
@@ -57,7 +61,7 @@ namespace Dot.Core.Loader
         }
 
         public AssetLoaderHandle LoadBatchAssetAsync(
-            string[] assetPaths,
+            string[] pathOrAddresses,
             OnAssetLoadComplete complete,
             OnBatchAssetLoadComplete batchComplete,
             AssetLoaderPriority priority = AssetLoaderPriority.Default,
@@ -67,7 +71,7 @@ namespace Dot.Core.Loader
         {
             if (isInit)
             {
-                return assetLoader.LoadOrInstanceBatchAssetAsync(assetPaths, false, priority, complete, progress, batchComplete, batchProgress, userData);
+                return assetLoader.LoadOrInstanceBatchAssetAsync(pathOrAddresses, false, priority, complete, progress, batchComplete, batchProgress, userData);
             }
             else
             {
@@ -77,7 +81,7 @@ namespace Dot.Core.Loader
         }
 
         public AssetLoaderHandle InstanceAssetAsync(
-            string assetPath,
+            string pathOrAddress,
             OnAssetLoadComplete complete,
             AssetLoaderPriority priority = AssetLoaderPriority.Default,
             OnAssetLoadProgress progress = null,
@@ -85,7 +89,7 @@ namespace Dot.Core.Loader
         {
             if (isInit)
             {
-                return assetLoader.LoadOrInstanceBatchAssetAsync(new string[] { assetPath }, true, priority, complete, progress, null, null, userData);
+                return assetLoader.LoadOrInstanceBatchAssetAsync(new string[] { pathOrAddress }, true, priority, complete, progress, null, null, userData);
             }
             else
             {
@@ -95,7 +99,7 @@ namespace Dot.Core.Loader
         }
 
         public AssetLoaderHandle InstanceBatchAssetAsync(
-            string[] assetPaths,
+            string[] pathOrAddresses,
             OnAssetLoadComplete complete,
             OnBatchAssetLoadComplete batchComplete,
             AssetLoaderPriority priority = AssetLoaderPriority.Default,
@@ -105,7 +109,7 @@ namespace Dot.Core.Loader
         {
             if (isInit)
             {
-                return assetLoader.LoadOrInstanceBatchAssetAsync(assetPaths, true, priority, complete, progress, batchComplete, batchProgress, userData);
+                return assetLoader.LoadOrInstanceBatchAssetAsync(pathOrAddresses, true, priority, complete, progress, batchComplete, batchProgress, userData);
             }
             else
             {
@@ -114,16 +118,16 @@ namespace Dot.Core.Loader
             }
         }
 
-        public UnityObject InstantiateAsset(string assetPath,UnityObject asset)
+        public UnityObject InstantiateAsset(string pathOrAddress,UnityObject asset)
         {
             if (isInit)
             {
-                if(string.IsNullOrEmpty(assetPath) || asset == null)
+                if(string.IsNullOrEmpty(pathOrAddress) || asset == null)
                 {
-                    Debug.LogError($"AssetManager::InstantiateAsset->asset is null or asset is null.assetPath = {(assetPath ?? "")}");
+                    Debug.LogError($"AssetManager::InstantiateAsset->asset is null or asset is null.assetPath = {(pathOrAddress ?? "")}");
                     return null;
                 }
-                return assetLoader?.InstantiateAsset(assetPath, asset);
+                return assetLoader?.InstantiateAsset(pathOrAddress, asset);
             }
             else
             {

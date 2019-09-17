@@ -53,7 +53,7 @@ namespace Dot.Core.Loader
         #endregion
 
 
-        public AssetLoaderHandle LoadOrInstanceBatchAssetAsync(string[] assetPaths,
+        public AssetLoaderHandle LoadOrInstanceBatchAssetAsync(string[] pathOrAddresses,
             bool isInstance,
             AssetLoaderPriority priority,
             OnAssetLoadComplete complete,
@@ -64,29 +64,30 @@ namespace Dot.Core.Loader
         {
             long uniqueID = idCreator.Next();
 
-            if(assetPaths == null || assetPaths.Length == 0)
+            if(pathOrAddresses == null || pathOrAddresses.Length == 0)
             {
-                Debug.LogError($"AssetLoader::LoadOrInstanceBatchAssetAsync->assetPaths is Null");
+                Debug.LogError($"AssetLoader::LoadOrInstanceBatchAssetAsync->pathOrAddresses is Null");
                 return null;
             }
 
             AssetLoaderData loaderData = loaderDataPool.Get();
+            loaderData.pathOrAddresses = pathOrAddresses;
+
             if (pathMode == AssetPathMode.Address)
             {
-                loaderData.assetAddresses = assetPaths;
-                loaderData.assetPaths = assetAddressConfig.GetAssetPathByAddress(assetPaths);
+                loaderData.assetPaths = assetAddressConfig.GetAssetPathByAddress(pathOrAddresses);
                 if (loaderData.assetPaths == null)
                 {
                     loaderDataPool.Release(loaderData);
-                    Debug.LogError($"ResourceLoader::GetLoaderData->asset not found.address = {string.Join(",", assetPaths)}");
+                    Debug.LogError($"ResourceLoader::GetLoaderData->asset not found.address = {string.Join(",", pathOrAddresses)}");
                     return null;
                 }
             }
             else
             {
-                loaderData.assetPaths = assetPaths;
+                loaderData.assetPaths = pathOrAddresses;
             }
-            loaderData.InitData(pathMode);
+            loaderData.InitData();
 
             loaderData.uniqueID = uniqueID;
             loaderData.isInstance = isInstance;
@@ -102,7 +103,7 @@ namespace Dot.Core.Loader
             }
             loaderDataWaitingQueue.Enqueue(loaderData, (float)priority);
 
-            AssetLoaderHandle handle = new AssetLoaderHandle(uniqueID, assetPaths);
+            AssetLoaderHandle handle = new AssetLoaderHandle(uniqueID, pathOrAddresses);
             loaderHandleDic.Add(uniqueID, handle);
 
             return handle;

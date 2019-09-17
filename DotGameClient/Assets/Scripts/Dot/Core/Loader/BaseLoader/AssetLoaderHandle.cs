@@ -6,13 +6,13 @@ namespace Dot.Core.Loader
     public sealed class AssetLoaderHandle
     {
         private long uniqueID;
-        private string[] assetPaths;
+        private string[] pathOrAddresses;
         private UnityObject[] uObjs;
         private float[] progresses;
 
         public long UniqueID { get => uniqueID; }
-        public string[] AssetPaths { get => assetPaths; }
-        public string AssetPath { get => assetPaths.Length>0?assetPaths[0]:null; }
+        public string[] PathOrAddresses { get => pathOrAddresses; }
+        public string PathOrAddress { get => pathOrAddresses.Length>0?pathOrAddresses[0]:null; }
         public UnityObject[] AssetObjects { get => uObjs; }
         public UnityObject AssetObject { get => uObjs.Length > 0 ? uObjs[0] : null; }
         public float[] AssetProgresses { get => progresses; }
@@ -33,7 +33,7 @@ namespace Dot.Core.Loader
         internal AssetLoaderHandle(long id, string[] paths)
         {
             uniqueID = id;
-            assetPaths = paths;
+            pathOrAddresses = paths;
 
             uObjs = new UnityObject[paths.Length];
             progresses = new float[paths.Length];
@@ -74,7 +74,7 @@ namespace Dot.Core.Loader
                 }
             }
             uniqueID = -1;
-            assetPaths = null;
+            pathOrAddresses = null;
             uObjs = null;
             progresses = null;
         }
