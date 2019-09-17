@@ -1,30 +1,57 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using Dot.Core.Generic;
 
 namespace Dot.Core.Loader
 {
     public sealed class SceneLoaderHandle
     {
-        private string assetAddress;
-        private string assetPath;
-        private string sceneName;
-        private float progress;
-        private Scene scene;
+        internal string pathOrAddress;
+        internal string assetPath;
+        internal string sceneName;
+        internal float progress =0.0f;
+        internal Scene scene;
 
-        public void SetSceneActive(bool isActive)
+        public string AssetPath { get => assetPath;  }
+        public string SceneAddress { get => pathOrAddress; }
+        public string SceneName { get => sceneName;  }
+        public float Progress { get => progress; }
+
+        private bool isActive = true;
+        public bool IsActive
         {
-            if(scene.isLoaded)
+            get
             {
-                GameObject[] gObjs = scene.GetRootGameObjects();
-                foreach(var go in gObjs)
+                return isActive;
+            }
+            set
+            {
+                if(isActive!=value)
                 {
-                    go.SetActive(isActive);
+                    isActive = value;
+                    if(scene.isLoaded)
+                    {
+                        SetSceneActive(isActive);
+                    }
                 }
-            }else
+            }
+        }
+
+        internal void SetScene(Scene scene)
+        {
+            this.scene = scene;
+            if(!isActive)
             {
-                Debug.LogError("");
+                SetSceneActive(isActive);
+            }
+        }
+
+        private void SetSceneActive(bool isActive)
+        {
+            GameObject[] gObjs = scene.GetRootGameObjects();
+            foreach (var go in gObjs)
+            {
+                go.SetActive(isActive);
             }
         }
     }

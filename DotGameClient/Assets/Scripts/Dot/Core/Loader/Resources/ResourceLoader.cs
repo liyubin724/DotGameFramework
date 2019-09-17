@@ -97,6 +97,7 @@ namespace Dot.Core.Loader
 
             if (isComplete)
             {
+                loaderHandle.isDone = true;
                 loaderData.InvokeBatchComplete(loaderHandle.AssetObjects);
                 asyncOperationDic.Remove(loaderData.uniqueID);
             }

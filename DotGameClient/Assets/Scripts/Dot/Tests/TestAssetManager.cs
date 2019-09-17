@@ -177,14 +177,18 @@ namespace Dot.Tests
                     if(GUILayout.Button("Load Scene"))
                     {
                         string sceneAddress = "other_scene";
-                        AssetManager.GetInstance().LoadAssetAsync(sceneAddress, (address, uObj, userData) =>
+                        AssetManager.GetInstance().LoadSceneAsync(sceneAddress, (address, userData) =>
                         {
-                            sceneOperation = SceneManager.LoadSceneAsync(sceneAddress);
                             
-                        });
+                        },null, LoadSceneMode.Additive, true,null);
+                    }
+                    if (GUILayout.Button("Unload Scene"))
+                    {
+                        string sceneAddress = "other_scene";
+                        AssetManager.GetInstance().UnloadSceneAsync(sceneAddress, null,null,null);
                     }
 
-                        if (GUILayout.Button("Delete All"))
+                    if (GUILayout.Button("Delete All"))
                     {
                         foreach (var obj in cachedObjects)
                         {
@@ -197,23 +201,10 @@ namespace Dot.Tests
             GUILayout.EndArea();
         }
 
-        private AsyncOperation sceneOperation = null;
-
         private void OnGUI()
         {
             OnInitAssetManager();
             OnAssetOperation();
-
-            if(sceneOperation!=null && sceneOperation.isDone)
-            {
-                Scene scene = SceneManager.GetSceneByName("other_scene");
-                GameObject[] objs = scene.GetRootGameObjects();
-                foreach (var go in objs)
-                {
-                    go.SetActive(false);
-                }
-                sceneOperation = null;
-            }
         }
     }
 }

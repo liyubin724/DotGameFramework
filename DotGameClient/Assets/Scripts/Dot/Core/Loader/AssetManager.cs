@@ -1,6 +1,7 @@
 ﻿using Dot.Core.Util;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using SystemObject = System.Object;
 using UnityObject = UnityEngine.Object;
 
@@ -131,6 +132,24 @@ namespace Dot.Core.Loader
             }
         }
 
+        public SceneLoaderHandle LoadSceneAsync(string pathOrAddress,
+            OnSceneComplete completeCallback,
+            OnSceneProgress progressCallback,
+            LoadSceneMode loadMode = LoadSceneMode.Single,
+            bool activateOnLoad = true,
+            SystemObject userData = null)
+        {
+            return sceneLoader.LoadSceneAsync(pathOrAddress, completeCallback, progressCallback, loadMode, activateOnLoad, userData);
+        }
+
+        public void UnloadSceneAsync(string pathOrAddress,
+            OnSceneComplete completeCallback,
+            OnSceneProgress progressCallback,
+            SystemObject userData = null)
+        {
+            sceneLoader.UnloadSceneAsync(pathOrAddress, completeCallback, progressCallback, userData);
+        }
+
         public void UnloadUnusedAsset(Action callback = null)
         {
             if (isInit)
@@ -158,6 +177,7 @@ namespace Dot.Core.Loader
         public void DoUpdate(float deltaTime)
         {
             assetLoader?.DoUpdate(deltaTime);
+            sceneLoader?.DoUpdate(deltaTime);
         }
     }
 }

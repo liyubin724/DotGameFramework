@@ -364,6 +364,7 @@ namespace Dot.Core.Loader
                 loaderData.InvokeBatchProgress(loaderHandle.AssetProgresses);
                 if (isComplete)
                 {
+                    loaderHandle.isDone = true;
                     loaderData.InvokeBatchComplete(loaderHandle.AssetObjects);
                 }
             }

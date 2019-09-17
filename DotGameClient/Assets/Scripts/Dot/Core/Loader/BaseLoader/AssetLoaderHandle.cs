@@ -27,6 +27,9 @@ namespace Dot.Core.Loader
             }
         }
 
+        internal bool isDone = false;
+        public bool IsDone { get=>isDone; }
+
         internal AssetLoaderHandle(long id, string[] paths)
         {
             uniqueID = id;
