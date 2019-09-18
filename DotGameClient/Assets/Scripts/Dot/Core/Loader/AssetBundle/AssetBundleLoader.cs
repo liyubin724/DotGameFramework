@@ -85,7 +85,7 @@ namespace Dot.Core.Loader
                     continue;
                 }
 
-                if(IsInBundleLoading(mainBundlePath))
+                if (loadingAsyncOperationDic.ContainsKey(mainBundlePath))
                 {
                     continue;
                 }

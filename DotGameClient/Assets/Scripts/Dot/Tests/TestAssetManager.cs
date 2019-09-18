@@ -118,7 +118,7 @@ namespace Dot.Tests
                     {
                         UnityEngine.Random.InitState((int)Time.realtimeSinceStartup);
                         int index = UnityEngine.Random.Range(0, datas.Count);
-                        TestData data = datas[index];
+                        TestData data = datas[3];//[index];
 
                         loaderHandle = AssetManager.GetInstance().LoadAssetAsync(assetPathMode == AssetPathMode.Address?data.address:data.assetPath, 
                             (assetPath, uObj, userData) =>{
@@ -143,9 +143,12 @@ namespace Dot.Tests
                         UnityEngine.Random.InitState((int)Time.realtimeSinceStartup);
                         int index = UnityEngine.Random.Range(1, 10);
                         List<string> paths = new List<string>();
-                        for(int i =0;i<index;i++)
+                        //paths.Add("ch_pc_hou_006.prefab");
+                        //paths.Add("ch_pc_hou_008.prefab");
+                        //paths.Add("ch_pc_hou_009.prefab");
+                        for (int i = 0; i < index; i++)
                         {
-                            UnityEngine.Random.InitState((int)System.DateTime.Now.Ticks+i);
+                            UnityEngine.Random.InitState((int)System.DateTime.Now.Ticks + i);
                             int di = UnityEngine.Random.Range(0, datas.Count);
                             TestData data = datas[di];
                             paths.Add(assetPathMode == AssetPathMode.Address ? data.address : data.assetPath);
