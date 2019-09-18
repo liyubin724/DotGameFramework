@@ -6,7 +6,9 @@ using Priority_Queue;
 using ReflectionMagic;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -77,6 +79,16 @@ namespace DotEditor.Core.BundleView
                     scrollPos = Vector2.zero;
                 }
                 GUILayout.FlexibleSpace();
+
+                if (GUILayout.Button("Export", EditorStyles.toolbarButton, GUILayout.Width(80)))
+                {
+                    ExportToDisk(false);
+                }
+                if (GUILayout.Button("Export All",EditorStyles.toolbarButton,GUILayout.Width(80)))
+                {
+                    ExportToDisk(true);
+                }
+
                 string tempSearchText = searchField.OnToolbarGUI(searchText);
                 if(tempSearchText!=searchText)
                 {
@@ -263,6 +275,47 @@ namespace DotEditor.Core.BundleView
             EditorGUIUtil.EndGUIBackgroundColor();
         }
 
+        private void ExportAssetNodes(string fileDiskPath,bool isAll)
+        {
+            StringBuilder sb = new StringBuilder();
+            List<AssetNode> exportNodes = new List<AssetNode>();
+            if(isAll)
+            {
+                exportNodes.AddRange(assetNodeDic.Values.ToArray());
+            }else
+            {
+                exportNodes.AddRange(assetNodes);
+            }
+            foreach(var node in exportNodes)
+            {
+                dynamic nodeDynamic = node.AsDynamic();
+                string assetPath = nodeDynamic.assetPath;
+                BundleNode mainBundleNode = nodeDynamic.bundleNode;
+                int loadCount = nodeDynamic.loadCount;
+
+                sb.AppendLine($"Asset Path:{assetPath}");
+                sb.AppendLine($"Load Count:{loadCount}");
+                if(isShowAssetNodeMainBundle)
+                {
+                    sb.AppendLine("Main Bundle:");
+                    sb.AppendLine(GetBundleNodeDesc(mainBundleNode, "    "));
+                }
+                if(isShowAssetNodeDependBundle)
+                {
+                    string mainBundlePath = mainBundleNode.AsDynamic().bundlePath;
+                    string[] depends = assetBundleManifest.GetAllDependencies(mainBundlePath);
+                    sb.AppendLine("Depend Bundle:");
+                    foreach (var depend in depends)
+                    {
+                        BundleNode dependNode = bundleNodeDic[depend];
+                        sb.AppendLine(GetBundleNodeDesc(dependNode, "    "));
+                    }
+                }
+                sb.AppendLine();
+            }
+            File.WriteAllText(fileDiskPath, sb.ToString());
+        }
+
         private void DrawBundleNodes()
         {
             foreach (var node in bundleNodes)
@@ -323,6 +376,72 @@ namespace DotEditor.Core.BundleView
             EditorGUILayout.LabelField($"Bundle Path:{bundlePath}");
             EditorGUILayout.LabelField($"Ref Count:{refCount}");
             EditorGUILayout.LabelField($"IsScene:{isScene}");
+        }
+
+        private void ExportBundleNodes(string fileDiskPath, bool isAll)
+        {
+            StringBuilder sb = new StringBuilder();
+            List<BundleNode> exportNodes = new List<BundleNode>();
+            if (isAll)
+            {
+                exportNodes.AddRange(bundleNodeDic.Values.ToArray());
+            }
+            else
+            {
+                exportNodes.AddRange(bundleNodes);
+            }
+            foreach (var node in exportNodes)
+            {
+                sb.AppendLine(GetBundleNodeDesc(node));
+                if(isShowBundleNodeDepend)
+                {
+                    string bundlePath = node.AsDynamic().bundlePath;
+                    string[] depends = assetBundleManifest.GetAllDependencies(bundlePath);
+                    sb.AppendLine("Depend Bundle:");
+                    foreach (var depend in depends)
+                    {
+                        sb.AppendLine("    " + depend);
+                    }
+                }
+                sb.AppendLine();
+            }
+            File.WriteAllText(fileDiskPath, sb.ToString());
+        }
+
+        private string GetBundleNodeDesc(BundleNode bundleNode,string prefix = "")
+        {
+            dynamic bundleNodeDynamic = bundleNode.AsDynamic();
+            string bundlePath = bundleNodeDynamic.bundlePath;
+            bool isScene = bundleNodeDynamic.IsScene();
+            int refCount = bundleNodeDynamic.RefCount;
+
+            return $"{prefix}Bundle Path:{bundlePath}\n{prefix}Ref Count:{refCount}\n{prefix}IsScene:{isScene}";
+        }
+
+        private void ExportToDisk(bool isAll)
+        {
+            string defaultFileName = "";
+            if (toolbarSelectIndex == 0)
+            {
+                defaultFileName = "asset_nodes";
+            }
+            else if (toolbarSelectIndex == 1)
+            {
+                defaultFileName = "bundle_nodes";
+            };
+
+            string fileDiskPath = EditorUtility.SaveFilePanel("Save Nodes", "D:\\", defaultFileName, "txt");
+            if (!string.IsNullOrEmpty(fileDiskPath))
+            {
+                if (toolbarSelectIndex == 0)
+                {
+                    ExportAssetNodes(fileDiskPath, isAll);
+                }
+                else if (toolbarSelectIndex == 1)
+                {
+                    ExportBundleNodes(fileDiskPath, isAll);
+                }
+            }
         }
     }
 }
