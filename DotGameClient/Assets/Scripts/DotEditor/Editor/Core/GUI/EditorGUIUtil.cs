@@ -359,6 +359,16 @@ namespace DotEditor.Core.EGUI
             if (guiContentColorStack.Count > 0)
                 GUI.contentColor = guiContentColorStack.Pop();
         }
+
+        public static void BeginIndent()
+        {
+            EditorGUI.indentLevel++;
+        }
+
+        public static void EndIndent()
+        {
+            EditorGUI.indentLevel--;
+        }
     }
 
 
