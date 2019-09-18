@@ -75,13 +75,22 @@ namespace Dot.Core.Loader
                 }
                 
                 string mainBundlePath = assetAddressConfig.GetBundlePathByPath(assetPath);
-                if(IsInBundleNode(mainBundlePath))
+                if(bundleNodeDic.TryGetValue(mainBundlePath,out BundleNode bundleNode))
                 {
                     assetNode = assetNodePool.Get();
                     assetNode.InitNode(assetPath, bundleNodeDic[mainBundlePath]);
                     assetNode.RetainLoadCount();
 
-                    assetNodeDic.Add(assetPath,assetNode);
+                    assetNodeDic.Add(assetPath, assetNode);
+
+                    string[] dependBundlePaths = assetBundleManifest.GetAllDependencies(mainBundlePath);
+                    if (dependBundlePaths != null && dependBundlePaths.Length > 0)
+                    {
+                        foreach (var path in dependBundlePaths)
+                        {
+                            bundleNodeDic[path].RetainRefCount();
+                        }
+                    }
                     continue;
                 }
 
@@ -105,7 +114,13 @@ namespace Dot.Core.Loader
             {
                 foreach (var path in dependBundlePaths)
                 {
-                    if (!bundleNodeDic.ContainsKey(path) && !loadingAsyncOperationDic.ContainsKey(path))
+                    if(bundleNodeDic.TryGetValue(path,out BundleNode dependBundleNode))
+                    {
+                        dependBundleNode.RetainRefCount();
+                        continue;
+                    }
+
+                    if (!loadingAsyncOperationDic.ContainsKey(path))
                     {
                         CreateAsyncOperaton(path);
                     }
@@ -119,47 +134,7 @@ namespace Dot.Core.Loader
             loadingAsyncOperationList.Add(operation);
             loadingAsyncOperationDic.Add(bundlePath,operation);
         }
-
-        private bool IsInBundleLoading(string mainBundlePath)
-        {
-            if(loadingAsyncOperationDic.ContainsKey(mainBundlePath))
-            {
-                return true;
-            }
-            string[] dependBundlePaths = assetBundleManifest.GetAllDependencies(mainBundlePath);
-            if(dependBundlePaths!=null && dependBundlePaths.Length>0)
-            {
-                foreach(var path in dependBundlePaths)
-                {
-                    if(loadingAsyncOperationDic.ContainsKey(path))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        private bool IsInBundleNode(string mainBundlePath)
-        {
-            if(!bundleNodeDic.ContainsKey(mainBundlePath))
-            {
-                return false;
-            }
-            string[] dependBundlePaths = assetBundleManifest.GetAllDependencies(mainBundlePath);
-            if (dependBundlePaths != null && dependBundlePaths.Length > 0)
-            {
-                foreach (var path in dependBundlePaths)
-                {
-                    if (!bundleNodeDic.ContainsKey(path))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
+        
         protected override void OnAsyncOperationLoaded()
         {
             List<string> assetPaths = (from loaderData in loaderDataLoadingList
