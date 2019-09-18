@@ -35,7 +35,7 @@ namespace Dot.Tests
         
         private AssetManagerInitStatus initStatus = AssetManagerInitStatus.None;
         private AssetPathMode assetPathMode = AssetPathMode.Address;
-        private AssetLoaderMode assetLoaderMode = AssetLoaderMode.AssetDatabase;
+        private AssetLoaderMode assetLoaderMode = AssetLoaderMode.AssetBundle;
 
         private AssetLoaderHandle loaderHandle = null;
         private void OnInitAssetManager()
@@ -45,10 +45,10 @@ namespace Dot.Tests
                 if (initStatus == AssetManagerInitStatus.None)
                 {
                     GUILayout.Label("Choose Asset Loader Mode:");
-                    bool result = GUILayout.Toggle(assetLoaderMode == AssetLoaderMode.AssetDatabase, "AssetDatabaseMode");
-                    if (result) assetLoaderMode = AssetLoaderMode.AssetDatabase; else assetLoaderMode = AssetLoaderMode.AssetBundle;
-                    result = GUILayout.Toggle(assetLoaderMode == AssetLoaderMode.AssetBundle, "AssetBundleMode");
-                    if (result) assetLoaderMode = AssetLoaderMode.AssetBundle;
+                    bool result = GUILayout.Toggle(assetLoaderMode == AssetLoaderMode.AssetBundle, "AssetBundleMode");
+                    if (result) assetLoaderMode = AssetLoaderMode.AssetBundle; else assetLoaderMode = AssetLoaderMode.AssetDatabase;
+                    result = GUILayout.Toggle(assetLoaderMode == AssetLoaderMode.AssetDatabase, "AssetDatabaseMode");
+                    if (result) assetLoaderMode = AssetLoaderMode.AssetDatabase;
 
                     GUILayout.Label("Choose Asset Path Mode:");
                     bool pathModeResult = GUILayout.Toggle(assetPathMode == AssetPathMode.Address, "Address");
