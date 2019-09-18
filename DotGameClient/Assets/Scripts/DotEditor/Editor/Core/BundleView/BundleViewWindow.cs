@@ -120,6 +120,10 @@ namespace DotEditor.Core.BundleView
             else if(toolbarSelectIndex == 1)
             {
                 isShowBundleNodeDepend = EditorGUILayout.Toggle("Show Depend Bundle:", isShowBundleNodeDepend);
+                if(GUILayout.Button("Check Bundle By Asset",GUILayout.Width(200)))
+                {
+                    CheckBundleNodeByAsset();
+                }
             }
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos,EditorStyles.helpBox);
@@ -416,6 +420,78 @@ namespace DotEditor.Core.BundleView
             int refCount = bundleNodeDynamic.RefCount;
 
             return $"{prefix}Bundle Path:{bundlePath}\n{prefix}Ref Count:{refCount}\n{prefix}IsScene:{isScene}";
+        }
+
+        private void CheckBundleNodeByAsset()
+        {
+            Dictionary<string, int> bundleRefCountDic = new Dictionary<string, int>();
+            foreach(var assetNode in assetNodeDic.Values)
+            {
+                dynamic nodeDynamic = assetNode.AsDynamic();
+                BundleNode mainBundleNode = nodeDynamic.bundleNode;
+                string mainBundlePath = mainBundleNode.AsDynamic().bundlePath;
+                string[] depends = assetBundleManifest.GetAllDependencies(mainBundlePath);
+
+                if(bundleRefCountDic.ContainsKey(mainBundlePath))
+                {
+                    ++bundleRefCountDic[mainBundlePath];
+                }else
+                {
+                    bundleRefCountDic[mainBundlePath] = 1;
+                }
+                foreach(var depend in depends)
+                {
+                    if (bundleRefCountDic.ContainsKey(depend))
+                    {
+                        ++bundleRefCountDic[depend];
+                    }
+                    else
+                    {
+                        bundleRefCountDic[depend] = 1;
+                    }
+                }
+            }
+
+            StringBuilder sb = new StringBuilder();
+            foreach(var bundleNode in bundleNodeDic.Values)
+            {
+                dynamic bundleNodeDynamic = bundleNode.AsDynamic();
+                string bundlePath = bundleNodeDynamic.bundlePath;
+                int refCount = bundleNodeDynamic.RefCount;
+                if(bundleRefCountDic.ContainsKey(bundlePath))
+                {
+                    if(refCount != bundleRefCountDic[bundlePath])
+                    {
+                        sb.AppendLine(bundlePath);
+                        sb.AppendLine($"Asset Ref Count :{bundleRefCountDic[bundlePath]} != Bundle Ref Count :{refCount}");
+                        sb.AppendLine();
+                    }
+                }else
+                {
+                    if(refCount!=0)
+                    {
+                        sb.AppendLine(bundlePath);
+                        sb.AppendLine($"Asset Ref Count :0 != Bundle Ref Count :{refCount}");
+                        sb.AppendLine();
+                    }
+                }
+            }
+            if(sb.Length>0)
+            {
+                Debug.LogError(sb.ToString());
+                if(EditorUtility.DisplayDialog("Prompt","Ref count is not correct,would you like to save the report?","OK","Cancel"))
+                {
+                    string fileDiskPath = EditorUtility.SaveFilePanel("Save Nodes", "D:\\", "asset_vs_bundle_ref_report", "txt");
+                    if(!string.IsNullOrEmpty(fileDiskPath))
+                    {
+                        File.WriteAllText(fileDiskPath, sb.ToString());
+                    }
+                }
+            }else
+            {
+                EditorUtility.DisplayDialog("Success", "Ref count is correct", "OK");
+            }
+
         }
 
         private void ExportToDisk(bool isAll)
