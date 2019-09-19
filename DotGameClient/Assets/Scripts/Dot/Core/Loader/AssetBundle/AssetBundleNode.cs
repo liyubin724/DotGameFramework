@@ -14,8 +14,6 @@ namespace Dot.Core.Loader
         private List<WeakReference> weakAssets = new List<WeakReference>();
 
         private int loadCount = 0;
-
-        public int LoadCount { get => loadCount; internal set => loadCount = value; }
         public void RetainLoadCount() => ++loadCount;
         public void ReleaseLoadCount() => --loadCount;
 
@@ -24,14 +22,21 @@ namespace Dot.Core.Loader
         {
             assetPath = path;
             bundleNode = node;
-
             bundleNode.RetainRefCount();
+        }
+
+        public bool IsDone
+        {
+            get
+            {
+                return bundleNode.IsDone;
+            }
         }
 
         public bool IsAlive()
         {
             if (loadCount > 0) return true;
-            if (bundleNode.IsScene()) return true;
+            if (bundleNode.IsScene) return true;
 
             foreach(var weakAsset in weakAssets)
             {
@@ -46,7 +51,7 @@ namespace Dot.Core.Loader
         public UnityObject GetAsset()
         {
             UnityObject asset = bundleNode.GetAsset(assetPath);
-            if(bundleNode.IsScene())
+            if(bundleNode.IsScene)
             {
                 return asset;
             }
@@ -57,11 +62,12 @@ namespace Dot.Core.Loader
         public UnityObject GetInstance()
         {
             UnityObject asset = bundleNode.GetAsset(assetPath);
-            if (bundleNode.IsScene())
+            if (bundleNode.IsScene)
             {
-                Debug.LogWarning("AssetNode::GetInstance->bundle is scene.can't Instance it");
+                Debug.LogError("AssetNode::GetInstance->bundle is scene.can't Instance it");
                 return asset;
             }
+
             UnityObject instance = UnityObject.Instantiate(asset);
             Resources.UnloadAsset(asset);
             AddInstance(instance);
@@ -111,33 +117,102 @@ namespace Dot.Core.Loader
     public class BundleNode : IObjectPoolItem
     {
         private string bundlePath;
-        private AssetBundle assetBundle;
         private int refCount;
-        public int RefCount { get => refCount; set => refCount = value; }
-        public void RetainRefCount() => ++refCount;
-        public void ReleaseRefCount() => --refCount;
-        
-        public BundleNode() { }
+        private bool isDone = false;
+        private bool isSetAssetBundle = false;
+        private AssetBundle assetBundle = null;
+        private List<BundleNode> directDependNodes = new List<BundleNode>();
 
-        public void InitNode(string path,AssetBundle bundle)
+        public BundleNode() { }
+        public void InitNode(string path)
         {
             bundlePath = path;
-            assetBundle = bundle;
         }
 
-        public bool IsScene()=> assetBundle.isStreamedSceneAssetBundle;
+        public void SetAssetBundle(AssetBundle bundle)
+        {
+            assetBundle = bundle;
+            isSetAssetBundle = true;
+        }
+
+        public void AddDependNode(BundleNode node)
+        {
+            directDependNodes.Add(node);
+            node.RetainRefCount();
+        }
+
+        public int RefCount { get => refCount;}
+        public void RetainRefCount() => ++refCount;
+        public void ReleaseRefCount()
+        {
+            --refCount;
+            if(refCount == 0)
+            {
+                for(int i =0;i<directDependNodes.Count;++i)
+                {
+                    directDependNodes[i].ReleaseRefCount();
+                }
+            }
+        }
+
+        public bool IsDone
+        {
+            get
+            {
+                if(isDone)
+                {
+                    return true;
+                }
+
+                if (!isSetAssetBundle)
+                {
+                    return false;
+                }
+                for (int i = 0; i < directDependNodes.Count; ++i)
+                {
+                    if(!directDependNodes[i].IsDone)
+                    {
+                        return false;
+                    }
+                }
+                isDone = true;
+                return isDone;
+            }
+        }
+
+        public bool IsScene
+        {
+            get
+            {
+                if(assetBundle!=null)
+                {
+                    return assetBundle.isStreamedSceneAssetBundle;
+                }else if(!isSetAssetBundle)
+                {
+                    Debug.LogError("BundleNode::IsScene->AssetBundle has not been set,you should call IsDone at first");
+                }else
+                {
+                    Debug.LogError("BundleNode::IsScene->AssetBundle Load failed");
+                }
+                
+                return false;
+            }
+        }
 
         public UnityObject GetAsset(string assetPath)
         {
-            return IsScene()?assetBundle : assetBundle.LoadAsset(assetPath);
+            return IsScene ? assetBundle : assetBundle?.LoadAsset(assetPath);
         }
 
         public void OnNew() { }
         public void OnRelease()
         {
             bundlePath = null;
-            assetBundle.Unload(true);
+            isSetAssetBundle = false;
+            isDone = false;
+            assetBundle?.Unload(true);
             assetBundle = null;
+            directDependNodes.Clear();
             refCount = 0;
         }
     }

@@ -42,7 +42,10 @@ namespace DotEditor.Core.BundleView
         private Color32 nodeBGColor = new Color32(95, 158, 160, 255);
         private bool isShowAssetNodeMainBundle = true;
         private bool isShowAssetNodeDependBundle = true;
+        private bool isShowLoadingAssetNode = false;
+
         private bool isShowBundleNodeDepend = true;
+        private bool isShowLoadingBundleNode = false;
 
         private List<AssetNode> assetNodes = new List<AssetNode>();
         private List<BundleNode> bundleNodes = new List<BundleNode>();
@@ -53,6 +56,7 @@ namespace DotEditor.Core.BundleView
             "Asset Node",
             "Bundle Node",
         };
+
         private int toolbarSelectIndex = 0;
         private SearchField searchField = null;
         
@@ -101,14 +105,42 @@ namespace DotEditor.Core.BundleView
             {
                 if(toolbarSelectIndex == 0)
                 {
-                    assetNodes = (from nodeKVP in assetNodeDic
-                                  where string.IsNullOrEmpty(searchText) || nodeKVP.Key.ToLower().Contains(searchText.ToLower())
-                                  select nodeKVP.Value).ToList();
+                    assetNodes.Clear();
+                    foreach(var nodeKVP in assetNodeDic)
+                    {
+                        AssetNode node = nodeKVP.Value;
+                        if(!isShowLoadingAssetNode)
+                        {
+                            bool isDone = node.AsDynamic().IsDone;
+                            if(!isDone)
+                            {
+                                continue;
+                            }
+                        }
+                        if(string.IsNullOrEmpty(searchText) || nodeKVP.Key.ToLower().Contains(searchText.ToLower()))
+                        {
+                            assetNodes.Add(node);
+                        }
+                    }
                 }else if(toolbarSelectIndex == 1)
                 {
-                    bundleNodes = (from nodeKVP in bundleNodeDic
-                                   where string.IsNullOrEmpty(searchText) || nodeKVP.Key.ToLower().Contains(searchText.ToLower())
-                                   select nodeKVP.Value).ToList();
+                    bundleNodes.Clear();
+                    foreach (var nodeKVP in bundleNodeDic)
+                    {
+                        BundleNode node = nodeKVP.Value;
+                        if (!isShowLoadingBundleNode)
+                        {
+                            bool isDone = node.AsDynamic().IsDone;
+                            if (!isDone)
+                            {
+                                continue;
+                            }
+                        }
+                        if (string.IsNullOrEmpty(searchText) || nodeKVP.Key.ToLower().Contains(searchText.ToLower()))
+                        {
+                            bundleNodes.Add(node);
+                        }
+                    }
                 }
             }
 
@@ -185,6 +217,13 @@ namespace DotEditor.Core.BundleView
                     isFoldout = false;
                     assetNodeFoldoutDic.Add(assetPath, isFoldout);
                 }
+
+                bool isDone = node.AsDynamic().IsDone;
+                if(!isDone)
+                {
+                    assetPath += "(Loading)";
+                }
+
                 assetNodeFoldoutDic[assetPath] = EditorGUILayout.Foldout(isFoldout, assetPath);
                 if (isFoldout)
                 {
@@ -330,6 +369,13 @@ namespace DotEditor.Core.BundleView
                     isFoldout = false;
                     bundleNodeFoldoutDic.Add(bundlePath, isFoldout);
                 }
+
+                bool isDone = node.AsDynamic().IsDone;
+                if(!isDone)
+                {
+                    bundlePath += "(Loading)";
+                }
+
                 bundleNodeFoldoutDic[bundlePath] = EditorGUILayout.Foldout(isFoldout, bundlePath);
                 if (isFoldout)
                 {
@@ -374,7 +420,7 @@ namespace DotEditor.Core.BundleView
         {
             dynamic bundleNodeDynamic = bundleNode.AsDynamic();
             string bundlePath = bundleNodeDynamic.bundlePath;
-            bool isScene = bundleNodeDynamic.IsScene();
+            bool isScene = bundleNodeDynamic.IsScene;
             int refCount = bundleNodeDynamic.RefCount;
             
             EditorGUILayout.LabelField($"Bundle Path:{bundlePath}");

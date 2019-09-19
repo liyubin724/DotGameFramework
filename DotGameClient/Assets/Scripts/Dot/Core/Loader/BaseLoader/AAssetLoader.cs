@@ -153,7 +153,6 @@ namespace Dot.Core.Loader
             if(loadingAsyncOperationList.Count>0)
             {
                 int index = 0;
-                bool isOperationLoaded = false;
                 while(index<loadingAsyncOperationList.Count&&index<maxLoadingCount)
                 {
                     AAssetAsyncOperation operation = loadingAsyncOperationList[index];
@@ -166,20 +165,16 @@ namespace Dot.Core.Loader
                     else if (operation.Status == AssetAsyncOperationStatus.Loaded)
                     {
                         loadingAsyncOperationList.RemoveAt(index);
-                        isOperationLoaded = true;
+                        OnAsyncOperationLoaded(operation);
                         continue;
                     }
 
                     ++index;
                 }
-                if(isOperationLoaded)
-                {
-                    OnAsyncOperationLoaded();
-                }
             }
         }
 
-        protected virtual void OnAsyncOperationLoaded()
+        protected virtual void OnAsyncOperationLoaded(AAssetAsyncOperation operation)
         {
 
         }

@@ -73,170 +73,64 @@ namespace Dot.Core.Loader
                     assetNode.RetainLoadCount();
                     continue;
                 }
-                
+
                 string mainBundlePath = assetAddressConfig.GetBundlePathByPath(assetPath);
-                if(bundleNodeDic.TryGetValue(mainBundlePath,out BundleNode bundleNode))
+                if(!bundleNodeDic.TryGetValue(mainBundlePath,out BundleNode bundleNode))
                 {
-                    assetNode = assetNodePool.Get();
-                    assetNode.InitNode(assetPath, bundleNodeDic[mainBundlePath]);
-                    assetNode.RetainLoadCount();
-
-                    assetNodeDic.Add(assetPath, assetNode);
-
-                    string[] dependBundlePaths = assetBundleManifest.GetAllDependencies(mainBundlePath);
-                    if (dependBundlePaths != null && dependBundlePaths.Length > 0)
-                    {
-                        foreach (var path in dependBundlePaths)
-                        {
-                            bundleNodeDic[path].RetainRefCount();
-                        }
-                    }
-                    continue;
+                    bundleNode = CreateBundleNode(mainBundlePath);
                 }
+                assetNode = assetNodePool.Get();
+                assetNode.InitNode(assetPath, bundleNode);
+                assetNode.RetainLoadCount();
 
-                if (loadingAsyncOperationDic.ContainsKey(mainBundlePath))
-                {
-                    continue;
-                }
-
-                LoadAssetBundle(mainBundlePath);
+                assetNodeDic.Add(assetPath, assetNode);
             }
         }
 
-        private void LoadAssetBundle(string mainBundlePath)
+        private BundleNode CreateBundleNode(string mainBundlePath)
         {
-            if(!bundleNodeDic.ContainsKey(mainBundlePath) && !loadingAsyncOperationDic.ContainsKey(mainBundlePath))
+            if(!bundleNodeDic.TryGetValue(mainBundlePath,out BundleNode mainBundleNode))
             {
                 CreateAsyncOperaton(mainBundlePath);
+
+                mainBundleNode = bundleNodePool.Get();
+                mainBundleNode.InitNode(mainBundlePath);
+
+                bundleNodeDic.Add(mainBundlePath, mainBundleNode);
             }
+
             string[] dependBundlePaths = assetBundleManifest.GetAllDependencies(mainBundlePath);
             if (dependBundlePaths != null && dependBundlePaths.Length > 0)
             {
                 foreach (var path in dependBundlePaths)
                 {
-                    if(bundleNodeDic.TryGetValue(path,out BundleNode dependBundleNode))
+                    if (!bundleNodeDic.TryGetValue(path, out BundleNode dependBundleNode))
                     {
-                        dependBundleNode.RetainRefCount();
-                        continue;
+                        dependBundleNode = CreateBundleNode(path);
                     }
-
-                    if (!loadingAsyncOperationDic.ContainsKey(path))
-                    {
-                        CreateAsyncOperaton(path);
-                    }
+                    mainBundleNode.AddDependNode(dependBundleNode);                   
                 }
             }
+
+            return mainBundleNode;
         }
 
         private void CreateAsyncOperaton(string bundlePath)
         {
             AssetBundleAsyncOperation operation = new AssetBundleAsyncOperation(bundlePath, assetRootDir);
+
             loadingAsyncOperationList.Add(operation);
             loadingAsyncOperationDic.Add(bundlePath,operation);
         }
         
-        protected override void OnAsyncOperationLoaded()
+        protected override void OnAsyncOperationLoaded(AAssetAsyncOperation operation)
         {
-            List<string> assetPaths = (from loaderData in loaderDataLoadingList
-                                       from assetPath in loaderData.assetPaths
-                                       select assetPath).ToList();
+            BundleNode bundleNode = bundleNodeDic[operation.AssetPath];
+            bundleNode.SetAssetBundle((operation.GetAsset() as AssetBundle));
 
-            Dictionary<string, int> assetPathDic = new Dictionary<string, int>();
-            assetPaths.ForEach((assetPath) =>
-            {
-                if(assetPathDic.ContainsKey(assetPath))
-                {
-                    assetPathDic[assetPath]++;
-                }else
-                {
-                    assetPathDic.Add(assetPath, 1);
-                }
-            });
-
-            foreach(var kvp in assetPathDic)
-            {
-                if(!assetNodeDic.ContainsKey(kvp.Key))
-                {
-                    if(IsAssetLoaded(kvp.Key))
-                    {
-                        AssetNode assetNode = CreateAssetNodeByOperation(kvp.Key);
-                        assetNode.LoadCount = kvp.Value;
-                    }
-                }
-            }
+            loadingAsyncOperationDic.Remove(operation.AssetPath);
         }
-
-        private AssetNode CreateAssetNodeByOperation(string assetPath)
-        {
-            AssetNode assetNode = assetNodePool.Get();
-            string mainBundlePath = assetAddressConfig.GetBundlePathByPath(assetPath);
-            if(loadingAsyncOperationDic.TryGetValue(mainBundlePath,out AssetBundleAsyncOperation mainOperation))
-            {
-                BundleNode bn = bundleNodePool.Get();
-                bn.InitNode(mainBundlePath, mainOperation.GetAsset() as AssetBundle);
-                bundleNodeDic.Add(mainBundlePath, bn);
-
-                loadingAsyncOperationDic.Remove(mainBundlePath);
-            }
-            BundleNode mainBundleNode = bundleNodeDic[mainBundlePath];
-            string[] dependBundlePaths = assetBundleManifest.GetAllDependencies(mainBundlePath);
-            foreach(var path in dependBundlePaths)
-            {
-                if(loadingAsyncOperationDic.TryGetValue(path,out AssetBundleAsyncOperation operation))
-                {
-                    BundleNode bn = bundleNodePool.Get();
-                    bn.InitNode(path, operation.GetAsset() as AssetBundle);
-                    bundleNodeDic.Add(path, bn);
-
-                    loadingAsyncOperationDic.Remove(path);
-                }
-
-                BundleNode dependNode = bundleNodeDic[path];
-                dependNode.RetainRefCount();
-            }
-
-            assetNode.InitNode(assetPath, mainBundleNode);
-
-            assetNodeDic.Add(assetPath, assetNode);
-            return assetNode;
-        }
-
-        private bool IsAssetLoaded(string assetPath)
-        {
-            string mainBundlePath = assetAddressConfig.GetBundlePathByPath(assetPath);
-            if (!IsBundleLoaded(mainBundlePath))
-            {
-                return false;
-            }
-            string[] dependBundlePaths = assetBundleManifest.GetAllDependencies(mainBundlePath);
-            if(dependBundlePaths!=null && dependBundlePaths.Length>0)
-            {
-                foreach(var path in dependBundlePaths)
-                {
-                    if(!IsBundleLoaded(path))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-
-        private bool IsBundleLoaded(string bundlePath)
-        {
-            if(bundleNodeDic.ContainsKey(bundlePath))
-            {
-                return true;
-            }
-            if (loadingAsyncOperationDic.TryGetValue(bundlePath, out AssetBundleAsyncOperation operation))
-            {
-                if(operation.Status == AssetAsyncOperationStatus.Loaded)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        
 
         private float GetAssetLoadingProgress(string assetPath)
         {
@@ -269,16 +163,13 @@ namespace Dot.Core.Loader
             }
             return progress / totalCount;
         }
+
         protected override bool UpdateLoadingLoaderData(AssetLoaderData loaderData)
         {
             AssetLoaderHandle loaderHandle = null;
             if (loaderHandleDic.ContainsKey(loaderData.uniqueID))
             {
                 loaderHandle = loaderHandleDic[loaderData.uniqueID];
-            }
-            if(loaderHandle == null)
-            {
-                loaderData.BreakLoader();
             }
 
             bool isComplete = true;
@@ -289,59 +180,44 @@ namespace Dot.Core.Loader
                     continue;
                 }
                 string assetPath = loaderData.assetPaths[i];
-
-                if(loaderHandle == null)
-                {
-                    if (assetNodeDic.TryGetValue(assetPath, out AssetNode node))
-                    {
-                        node.ReleaseLoadCount();
-                    }else
-                    {
-                        isComplete = false;
-                    }
-                    continue;
-                }
-
-                if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
+                AssetNode assetNode = assetNodeDic[assetPath];
+                if(assetNode.IsDone)
                 {
                     assetNode.ReleaseLoadCount();
-
                     UnityObject uObj = assetNode.GetAsset();
                     if (uObj == null)
                     {
-                        Debug.LogError($"AssetBundleLoader::UpdateLoadingLoaderData->asset is null.path = {assetPath}");
+                        Debug.LogError($"AssetBundleLoader::AssetLoadComplete->asset is null.path = {assetPath}");
                     }
 
                     if (uObj != null && loaderData.isInstance)
                     {
                         uObj = UnityObject.Instantiate(uObj);
                     }
+
                     loaderHandle.SetObject(i, uObj);
                     loaderHandle.SetProgress(i, 1.0f);
 
                     loaderData.InvokeComplete(i, uObj);
-                    continue;
                 }
-
-                float oldProgress = loaderHandle.GetProgress(i);
-                float curProgress = GetAssetLoadingProgress(assetPath);
-                if (oldProgress != curProgress)
+                else
                 {
-                    loaderHandle.SetProgress(i, curProgress);
-
-                    loaderData.InvokeProgress(i, curProgress);
+                    float progress = GetAssetLoadingProgress(assetPath);
+                    float oldProgress = loaderHandle.GetProgress(i);
+                    if (oldProgress != progress)
+                    {
+                        loaderHandle.SetProgress(i, progress);
+                        loaderData.InvokeProgress(i, progress);
+                    }
+                    isComplete = false;
                 }
-                isComplete = false;
             }
 
-            if(loaderHandle!=null)
+            loaderData.InvokeBatchProgress(loaderHandle.AssetProgresses);
+            if (isComplete)
             {
-                loaderData.InvokeBatchProgress(loaderHandle.AssetProgresses);
-                if (isComplete)
-                {
-                    loaderHandle.isDone = true;
-                    loaderData.InvokeBatchComplete(loaderHandle.AssetObjects);
-                }
+                loaderHandle.isDone = true;
+                loaderData.InvokeBatchComplete(loaderHandle.AssetObjects);
             }
 
             return isComplete;
@@ -355,17 +231,6 @@ namespace Dot.Core.Loader
                 AssetNode assetNode = assetNodeDic[key];
                 assetNodeDic.Remove(key);
                 assetNodePool.Release(assetNode);
-
-                string mainBundlePath = assetAddressConfig.GetBundlePathByPath(key);
-                BundleNode bundleNode = bundleNodeDic[mainBundlePath];
-                if (bundleNode.RefCount == 0)
-                {
-                    string[] depends = assetBundleManifest.GetAllDependencies(mainBundlePath);
-                    foreach (var path in depends)
-                    {
-                        bundleNodeDic[path].ReleaseRefCount();
-                    }
-                }
             }
 
             string[] bundleNodeKeys = (from nodeKVP in bundleNodeDic where nodeKVP.Value.RefCount == 0 select nodeKVP.Key).ToArray();
@@ -385,35 +250,7 @@ namespace Dot.Core.Loader
                 assetNodeDic.Remove(assetPath);
                 assetNodePool.Release(assetNode);
 
-                string mainBundlePath = assetAddressConfig.GetBundlePathByPath(assetPath);
-                BundleNode bundleNode = bundleNodeDic[mainBundlePath];
-                List<string> unloadBundleNodes = null;
-                if (bundleNode.RefCount == 0)
-                {
-                    unloadBundleNodes = new List<string>();
-                    unloadBundleNodes.Add(mainBundlePath);
-
-                    string[] depends = assetBundleManifest.GetAllDependencies(mainBundlePath);
-                    foreach (var path in depends)
-                    {
-                        bundleNodeDic[path].ReleaseRefCount();
-                        if(bundleNodeDic[path].RefCount == 0)
-                        {
-                            unloadBundleNodes.Add(path);
-                        }
-                    }
-                }
-
-                if(unloadBundleNodes!=null && unloadBundleNodes.Count>0)
-                {
-                    foreach (var key in unloadBundleNodes)
-                    {
-                        BundleNode node = bundleNodeDic[key];
-                        bundleNodeDic.Remove(key);
-                        bundleNodePool.Release(node);
-                    }
-                }
-
+                OnCleanAssetInterval(null);
             }
         }
 
@@ -434,9 +271,12 @@ namespace Dot.Core.Loader
             }
             if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
             {
-                UnityObject instance = base.InstantiateAsset(assetPath, asset);
-                assetNode.AddInstance(instance);
-                return instance;
+                if(assetNode.IsDone)
+                {
+                    UnityObject instance = base.InstantiateAsset(assetPath, asset);
+                    assetNode.AddInstance(instance);
+                    return instance;
+                }
             }
             return null;
         }
