@@ -35,8 +35,10 @@ namespace Dot.Core.Loader
 
         public bool IsAlive()
         {
-            if (loadCount > 0) return true;
-            if (bundleNode.IsScene) return true;
+            if(!IsDone || loadCount>0 || bundleNode.IsScene)
+            {
+                return true;
+            }
 
             foreach(var weakAsset in weakAssets)
             {

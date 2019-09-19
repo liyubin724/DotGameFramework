@@ -260,6 +260,7 @@ namespace Dot.Core.Loader
             {
                 if(unloadUnusedAssetOperation.isDone)
                 {
+                    GC.Collect();
                     InnerUnloadUnusedAssets();
 
                     unloadUnusedAssetOperation = null;
