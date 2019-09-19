@@ -33,4 +33,13 @@ namespace Dot.Core.Loader
         High = 400,
         VeryHigh = 500,
     }
+
+    public enum AssetLoaderState
+    {
+        None,
+        Waiting,
+        Loading,
+        Complete,
+        Cancel,
+    }
 }

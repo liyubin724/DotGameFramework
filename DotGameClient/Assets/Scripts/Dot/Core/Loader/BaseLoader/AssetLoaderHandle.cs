@@ -27,8 +27,8 @@ namespace Dot.Core.Loader
             }
         }
 
-        internal bool isDone = false;
-        public bool IsDone { get=>isDone; }
+        internal AssetLoaderState state = AssetLoaderState.None;
+        public AssetLoaderState State { get => state; }
 
         internal AssetLoaderHandle(long id, string[] paths)
         {
@@ -59,8 +59,10 @@ namespace Dot.Core.Loader
             return progresses[index];
         }
 
-        internal void BreakLoader(bool destroyIfLoaded)
+        internal void CancelLoader(bool destroyIfLoaded)
         {
+            state = AssetLoaderState.Cancel;
+
             if(destroyIfLoaded)
             {
                 for(int i =0;i<uObjs.Length;++i)

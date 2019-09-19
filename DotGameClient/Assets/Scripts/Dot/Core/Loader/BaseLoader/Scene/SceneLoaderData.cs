@@ -25,7 +25,7 @@ namespace Dot.Core.Loader
         public bool IsAssetLoaderDone()
         {
             if (loaderHandle == null) return false;
-            return loaderHandle.IsDone;
+            return loaderHandle.state == AssetLoaderState.Complete;
         }
 
         public bool IsOperationDone()

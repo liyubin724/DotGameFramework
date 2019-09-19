@@ -71,7 +71,7 @@ namespace DotEditor.Core.BundleView
             }
             EditorGUILayout.BeginHorizontal("toolbar", GUILayout.ExpandWidth(true));
             {
-                int selectedIndex = GUILayout.Toolbar(toolbarSelectIndex, ToolbarTitle, EditorStyles.toolbarButton,GUILayout.MaxWidth(300));
+                int selectedIndex = GUILayout.Toolbar(toolbarSelectIndex, ToolbarTitle, EditorStyles.toolbarButton,GUILayout.MaxWidth(200));
                 if(selectedIndex!=toolbarSelectIndex)
                 {
                     searchText = "";
@@ -81,11 +81,16 @@ namespace DotEditor.Core.BundleView
                 }
                 GUILayout.FlexibleSpace();
 
-                if (GUILayout.Button("Export", EditorStyles.toolbarButton, GUILayout.Width(80)))
+                if (GUILayout.Button("GC", EditorStyles.toolbarButton, GUILayout.Width(40)))
+                {
+                    bundleLoader.UnloadUnusedAssets(null);
+                }
+
+                if (GUILayout.Button("Export", EditorStyles.toolbarButton, GUILayout.Width(60)))
                 {
                     ExportToDisk(false);
                 }
-                if (GUILayout.Button("Export All",EditorStyles.toolbarButton,GUILayout.Width(80)))
+                if (GUILayout.Button("Export All",EditorStyles.toolbarButton,GUILayout.Width(60)))
                 {
                     ExportToDisk(true);
                 }

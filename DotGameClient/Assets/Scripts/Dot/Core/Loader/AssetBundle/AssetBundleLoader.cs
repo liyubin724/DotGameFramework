@@ -1,6 +1,7 @@
 ﻿using Dot.Core.Loader.Config;
 using Dot.Core.Pool;
 using Dot.Core.Timer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace Dot.Core.Loader
         private Dictionary<string, AssetNode> assetNodeDic = new Dictionary<string, AssetNode>();
         private Dictionary<string, BundleNode> bundleNodeDic = new Dictionary<string, BundleNode>();
 
-        private float assetCleanInterval = 300;
+        private float assetCleanInterval = 30;
         private TimerTaskInfo assetCleanTimer = null;
         
         private string assetRootDir = "";
@@ -181,6 +182,25 @@ namespace Dot.Core.Loader
                 }
                 string assetPath = loaderData.assetPaths[i];
                 AssetNode assetNode = assetNodeDic[assetPath];
+                if(assetNode == null)
+                {
+                    loaderData.SetLoadState(i);
+                    loaderData.InvokeComplete(i, null);
+                    continue;
+                }
+                if(loaderHandle == null)
+                {
+                    if(assetNode.IsDone)
+                    {
+                        assetNode.ReleaseLoadCount();
+                        loaderData.SetLoadState(i);
+                    }
+                    else
+                    {
+                        isComplete = false;
+                    }
+                    continue;
+                }
                 if(assetNode.IsDone)
                 {
                     assetNode.ReleaseLoadCount();
@@ -198,6 +218,7 @@ namespace Dot.Core.Loader
                     loaderHandle.SetObject(i, uObj);
                     loaderHandle.SetProgress(i, 1.0f);
 
+                    loaderData.SetLoadState(i);
                     loaderData.InvokeComplete(i, uObj);
                 }
                 else
@@ -212,18 +233,44 @@ namespace Dot.Core.Loader
                     isComplete = false;
                 }
             }
-
-            loaderData.InvokeBatchProgress(loaderHandle.AssetProgresses);
-            if (isComplete)
+            if(loaderHandle!=null)
             {
-                loaderHandle.isDone = true;
-                loaderData.InvokeBatchComplete(loaderHandle.AssetObjects);
+                loaderData.InvokeBatchProgress(loaderHandle.AssetProgresses);
+                if (isComplete)
+                {
+                    loaderHandle.state = AssetLoaderState.Complete;
+                    loaderData.InvokeBatchComplete(loaderHandle.AssetObjects);
+                }
             }
-
+            
             return isComplete;
         }
         
         private void OnCleanAssetInterval(System.Object userData)
+        {
+            InnerUnloadUnusedAssets();
+        }
+
+        public override void UnloadAsset(string pathOrAddress)
+        {
+            string assetPath = GetAssetPath(pathOrAddress);
+            if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
+            {
+                if(assetNode.IsDone)
+                {
+                    assetNodeDic.Remove(assetPath);
+                    assetNodePool.Release(assetNode);
+
+                    InnerUnloadUnusedAssets();
+                }
+            }
+        }
+
+        protected override void UnloadLoadingAssetLoader(AssetLoaderData loaderData)
+        {
+        }
+
+        protected override void InnerUnloadUnusedAssets()
         {
             string[] assetNodeKeys = (from nodeKVP in assetNodeDic where !nodeKVP.Value.IsAlive() select nodeKVP.Key).ToArray();
             foreach (var key in assetNodeKeys)
@@ -234,33 +281,12 @@ namespace Dot.Core.Loader
             }
 
             string[] bundleNodeKeys = (from nodeKVP in bundleNodeDic where nodeKVP.Value.RefCount == 0 select nodeKVP.Key).ToArray();
-            foreach(var key in bundleNodeKeys)
+            foreach (var key in bundleNodeKeys)
             {
                 BundleNode bundleNode = bundleNodeDic[key];
                 bundleNodeDic.Remove(key);
                 bundleNodePool.Release(bundleNode);
             }
-        }
-
-        public override void UnloadAsset(string pathOrAddress)
-        {
-            string assetPath = GetAssetPath(pathOrAddress);
-            if(assetNodeDic.TryGetValue(assetPath,out AssetNode assetNode))
-            {
-                assetNodeDic.Remove(assetPath);
-                assetNodePool.Release(assetNode);
-
-                OnCleanAssetInterval(null);
-            }
-        }
-
-        protected override void UnloadLoadingAssetLoader(AssetLoaderData loaderData)
-        {
-        }
-
-        protected override void InnerUnloadUnusedAssets()
-        {
-            OnCleanAssetInterval(null);
         }
 
         public override UnityObject InstantiateAsset(string assetPath, UnityObject asset)

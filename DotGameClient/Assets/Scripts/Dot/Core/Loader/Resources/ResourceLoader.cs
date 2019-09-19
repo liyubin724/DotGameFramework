@@ -74,6 +74,7 @@ namespace Dot.Core.Loader
                     loaderHandle.SetObject(i, uObj);
                     loaderHandle.SetProgress(i, 1.0f);
 
+                    loaderData.SetLoadState(i);
                     loaderData.InvokeComplete(i, uObj);
                 }
                 else if (operation.Status == AssetAsyncOperationStatus.Loading)
@@ -97,7 +98,7 @@ namespace Dot.Core.Loader
 
             if (isComplete)
             {
-                loaderHandle.isDone = true;
+                loaderHandle.state = AssetLoaderState.Complete;
                 loaderData.InvokeBatchComplete(loaderHandle.AssetObjects);
                 asyncOperationDic.Remove(loaderData.uniqueID);
             }

@@ -38,13 +38,19 @@ namespace Dot
             assetLoader = AssetLoader.GetInstance();
         }
 
+        private float delayTime = 0;
         private void Update()
         {
             float deltaTime = Time.deltaTime;
 
             timerMgr.DoUpdate(deltaTime);
             assetLoader.DoUpdate();
-            AssetManager.GetInstance().DoUpdate(deltaTime);
+            delayTime += deltaTime;
+            if(delayTime>=1.0f)
+            {
+                AssetManager.GetInstance().DoUpdate(deltaTime);
+                delayTime = 0.0f;
+            }
         }
     }
 }

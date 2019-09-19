@@ -104,6 +104,7 @@ namespace Dot.Core.Loader
             loaderDataWaitingQueue.Enqueue(loaderData, (float)priority);
 
             AssetLoaderHandle handle = new AssetLoaderHandle(uniqueID, pathOrAddresses);
+            handle.state = AssetLoaderState.Waiting;
             loaderHandleDic.Add(uniqueID, handle);
 
             return handle;
@@ -143,6 +144,8 @@ namespace Dot.Core.Loader
             while (loaderDataWaitingQueue.Count > 0 && loadingAsyncOperationList.Count < maxLoadingCount)
             {
                 AssetLoaderData loaderData = loaderDataWaitingQueue.Dequeue();
+                loaderHandleDic[loaderData.uniqueID].state = AssetLoaderState.Loading;
+
                 loaderDataLoadingList.Add(loaderData);
                 StartLoaderDataLoading(loaderData);
             }
@@ -226,29 +229,23 @@ namespace Dot.Core.Loader
             {
                 if(data.uniqueID == handle.UniqueID)
                 {
-                    loaderData = data;
-                    break;
+                    handle.CancelLoader(loaderData.isInstance && destroyIfLoaded);
+                    loaderDataWaitingQueue.Remove(loaderData);
+                    loaderDataPool.Release(loaderData);
+                    return;
                 }
             }
-            if(loaderData!=null)
-            {
-                handle.BreakLoader(loaderData.isInstance && destroyIfLoaded);
-                loaderDataWaitingQueue.Remove(loaderData);
-                loaderDataPool.Release(loaderData);
-                return;
-            }
+
             foreach(var data in loaderDataLoadingList)
             {
                 if(data.uniqueID == handle.UniqueID)
                 {
-                    loaderData = data;
-                    break;
+                    handle.CancelLoader(loaderData.isInstance && destroyIfLoaded);
+                    loaderData.CancelLoader();
+
+                    UnloadLoadingAssetLoader(loaderData);
+                    return;
                 }
-            }
-            if(loaderData!=null)
-            {
-                handle.BreakLoader(loaderData.isInstance && destroyIfLoaded);
-                UnloadLoadingAssetLoader(loaderData);
             }
         }
 
