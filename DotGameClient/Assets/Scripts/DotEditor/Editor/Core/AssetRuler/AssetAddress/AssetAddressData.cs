@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Dot.Core.AssetRuler.AssetAddress
+namespace DotEditor.Core.AssetRuler.AssetAddress
 {
     public enum AssetBundlePackMode
     {

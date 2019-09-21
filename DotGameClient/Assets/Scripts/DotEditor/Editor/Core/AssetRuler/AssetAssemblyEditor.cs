@@ -1,5 +1,4 @@
-﻿using Dot.Core.AssetRuler;
-using DotEditor.Core.EGUI;
+﻿using DotEditor.Core.EGUI;
 using DotEditor.Core.Util;
 using System.Collections.Generic;
 using UnityEditor;

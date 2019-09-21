@@ -1,5 +1,4 @@
-﻿using Dot.Core.AssetRuler.AssetAddress;
-using UnityEditor;
+﻿using UnityEditor;
 
 namespace DotEditor.Core.AssetRuler.AssetAddress
 {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Dot.Core.AssetRuler
+namespace DotEditor.Core.AssetRuler
 {
     public class AssetFilter : ScriptableObject
     {

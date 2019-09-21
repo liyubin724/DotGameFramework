@@ -2,7 +2,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace Dot.Core.AssetRuler.AssetAddress
+namespace DotEditor.Core.AssetRuler.AssetAddress
 {
     [CreateAssetMenu(fileName = "pack_mode_operation", menuName = "Asset Ruler/Asset Address/Operation/Pack Mode")]
     public class AssetAddressPackModeOperation : AssetOperation

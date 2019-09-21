@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dot.Core.AssetRuler
+namespace DotEditor.Core.AssetRuler
 {
     public enum AssetAssemblyType
     {

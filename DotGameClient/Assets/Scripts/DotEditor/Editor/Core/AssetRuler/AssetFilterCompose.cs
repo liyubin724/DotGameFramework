@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Dot.Core.AssetRuler
+namespace DotEditor.Core.AssetRuler
 {
     [CreateAssetMenu(fileName = "asset_compose_filter", menuName = "Asset Ruler/Filter/Compose", order = 100)]
     public class AssetFilterCompose : ScriptableObject

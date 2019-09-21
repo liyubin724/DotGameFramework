@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Dot.Core.AssetRuler.AssetAddress
+namespace DotEditor.Core.AssetRuler.AssetAddress
 {
     [CreateAssetMenu(fileName = "assetaddress_group", menuName = "Asset Ruler/Asset Address/Group", order = 2)]
     public class AssetAddressGroup : AssetGroup

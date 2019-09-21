@@ -1,9 +1,9 @@
-﻿using Dot.Util;
+﻿using DotEditor.Core.Util;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Dot.Core.AssetRuler
+namespace DotEditor.Core.AssetRuler
 {
     public class AssetGroup : ScriptableObject
     {

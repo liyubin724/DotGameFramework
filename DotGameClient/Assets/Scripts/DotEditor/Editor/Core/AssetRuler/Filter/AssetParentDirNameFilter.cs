@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace Dot.Core.AssetRuler
+namespace DotEditor.Core.AssetRuler
 {
     [CreateAssetMenu(fileName = "asset_parentdir_filter", menuName = "Asset Ruler/Filter/In Parent Dir", order = 3)]
     public class AssetParentDirNameFilter : AssetFilter

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Dot.Core.AssetRuler
+namespace DotEditor.Core.AssetRuler
 {
     public class AssetOperation : ScriptableObject
     {

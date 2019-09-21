@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Dot.Core.AssetRuler.AssetAddress
+namespace DotEditor.Core.AssetRuler.AssetAddress
 {
     [CreateAssetMenu(fileName = "address_label_operation", menuName = "Asset Ruler/Asset Address/Operation/Set Label")]
     public class AssetAddressLabelOperation : AssetOperation

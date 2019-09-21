@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace Dot.Core.AssetRuler
+namespace DotEditor.Core.AssetRuler
 {
     [CreateAssetMenu(fileName = "asset_filename_filter", menuName = "Asset Ruler/Filter/File Name",order =1)]
     public class AssetFileNameFilter : AssetFilter

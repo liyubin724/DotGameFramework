@@ -2,7 +2,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace Dot.Core.AssetRuler.AssetAddress
+namespace DotEditor.Core.AssetRuler.AssetAddress
 {
     [CreateAssetMenu(fileName = "address_mode_operation", menuName = "Asset Ruler/Asset Address/Operation/Address Mode")]
     public class AssetAddressAddressModeOperation : AssetOperation
