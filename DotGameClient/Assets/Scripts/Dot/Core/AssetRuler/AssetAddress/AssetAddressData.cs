@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Dot.Core.Loader.Config;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dot.Core.AssetRuler.AssetAddress
 {
@@ -23,16 +21,12 @@ namespace Dot.Core.AssetRuler.AssetAddress
 
     public class AssetAddressOperationResult : AssetOperationResult
     {
-        public Dictionary<string, AssetBundleAddressData> addressDataDic = new Dictionary<string, AssetBundleAddressData>();
+        public Dictionary<string, AssetAddressData> addressDataDic = new Dictionary<string, AssetAddressData>();
     }
 
-    [Serializable]
-    public class AssetBundleAddressData
+    public class AssetAddressGroupResult : AssetGroupResult
     {
-        public string address;
-        public string path;
-        public string bundle;
-        public string[] labels = new string[0];
+        public AssetBundleGroupData groupData;
     }
 
     [Serializable]
@@ -40,6 +34,7 @@ namespace Dot.Core.AssetRuler.AssetAddress
     {
         public string groupName;
         public bool isMain = true;
-        public List<AssetBundleAddressData> assetDatas = new List<AssetBundleAddressData>();
+        public bool isPreload = false;
+        public List<AssetAddressData> assetDatas = new List<AssetAddressData>();
     }
 }

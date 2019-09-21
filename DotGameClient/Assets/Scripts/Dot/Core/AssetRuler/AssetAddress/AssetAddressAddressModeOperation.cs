@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Dot.Core.Loader.Config;
+using System.IO;
 using UnityEngine;
 
 namespace Dot.Core.AssetRuler.AssetAddress
@@ -18,14 +19,14 @@ namespace Dot.Core.AssetRuler.AssetAddress
             AssetAddressOperationResult result = operationResult as AssetAddressOperationResult;
             foreach (var assetPath in filterResult.assetPaths)
             {
-                if(!result.addressDataDic.TryGetValue(assetPath,out AssetBundleAddressData addressData))
+                if(!result.addressDataDic.TryGetValue(assetPath,out AssetAddressData addressData))
                 {
-                    addressData = new AssetBundleAddressData();
-                    addressData.path = assetPath;
+                    addressData = new AssetAddressData();
+                    addressData.assetPath = assetPath;
                     result.addressDataDic.Add(assetPath, addressData);
                 }
 
-                addressData.address = GetAssetAddress(assetPath);
+                addressData.assetAddress = GetAssetAddress(assetPath);
             }
 
             return result;

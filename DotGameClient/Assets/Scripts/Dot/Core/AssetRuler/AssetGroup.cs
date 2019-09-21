@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Dot.Core.AssetRuler
 {
-    [CreateAssetMenu(fileName = "asset_group", menuName = "Asset Ruler/Group")]
     public class AssetGroup : ScriptableObject
     {
         public bool isEnable = true;

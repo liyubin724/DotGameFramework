@@ -9,16 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be824534c62ac6d429133acc63ea16f2, type: 3}
+  m_Script: {fileID: 11500000, guid: 3fa26d683f72b4e4aa166b99107b522e, type: 3}
   m_Name: spriteatlas_group
   m_EditorClassIdentifier: 
   isEnable: 1
-  groupName: SpriteAtlas
+  groupName: Asset Group
   assetAssemblyType: 0
   assetSearcher:
-    folder: Assets/ArtRes/UI/Atlas
-    includeSubfolder: 0
-    fileNameFilterRegex: ^\w*.prefab&
-  filterOperations:
-  - filterCompose: {fileID: 0}
-    operationCompose: {fileID: 0}
+    folder: Assets
+    includeSubfolder: 1
+    fileNameFilterRegex: 
+  filterOperations: []
+  isMain: 1
+  isPreload: 0
