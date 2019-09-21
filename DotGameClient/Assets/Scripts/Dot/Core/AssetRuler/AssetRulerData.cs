@@ -35,11 +35,5 @@ namespace Dot.Core.AssetRuler
     {
         public string groupName = "";
         public List<AssetOperationResult> operationResults = new List<AssetOperationResult>();
-
-        public void CopyTo(AssetGroupResult gResult)
-        {
-            gResult.groupName = groupName;
-            gResult.operationResults.AddRange(operationResults);
-        }
     }
 }

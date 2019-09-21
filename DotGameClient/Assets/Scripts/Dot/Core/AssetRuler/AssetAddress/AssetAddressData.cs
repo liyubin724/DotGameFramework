@@ -23,6 +23,23 @@ namespace Dot.Core.AssetRuler.AssetAddress
 
     public class AssetAddressOperationResult : AssetOperationResult
     {
+        public Dictionary<string, AssetBundleAddressData> addressDataDic = new Dictionary<string, AssetBundleAddressData>();
+    }
 
+    [Serializable]
+    public class AssetBundleAddressData
+    {
+        public string address;
+        public string path;
+        public string bundle;
+        public string[] labels = new string[0];
+    }
+
+    [Serializable]
+    public class AssetBundleGroupData
+    {
+        public string groupName;
+        public bool isMain = true;
+        public List<AssetBundleAddressData> assetDatas = new List<AssetBundleAddressData>();
     }
 }
