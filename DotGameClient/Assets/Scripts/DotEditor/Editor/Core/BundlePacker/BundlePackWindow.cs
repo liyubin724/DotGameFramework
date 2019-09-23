@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using static DotEditor.Core.Packer.AssetBundlePackConfig;
 using static DotEditor.Core.Packer.AssetBundleTagConfig;
 
 namespace DotEditor.Core.Packer
@@ -25,13 +26,11 @@ namespace DotEditor.Core.Packer
 
         private AssetBundleTagConfig tagConfig = null;
         private AssetBundlePackConfig packConfig = null;
-        private SerializedObject packConfigSerializedObject = null;
 
         private void OnEnable()
         {
             tagConfig = BundlePackUtil.FindOrCreateTagConfig();
-            packConfig = BundlePackUtil.FindOrCreatePackConfig();
-            packConfigSerializedObject = new SerializedObject(packConfig);
+            packConfig = new AssetBundlePackConfig();
         }
 
         private void InitDetailGroupTreeView()
@@ -67,7 +66,7 @@ namespace DotEditor.Core.Packer
 
                 for (int j = 0; j < groupData.assetDatas.Count; ++j)
                 {
-                    Dot.Core.Loader.Config.AssetAddressData detailData = groupData.assetDatas[j];
+                    AssetAddressData detailData = groupData.assetDatas[j];
                     if(FilterAssetDetailData(detailData))
                     {
                         TreeElementWithData<AssetBundleGroupTreeData> elementData = new TreeElementWithData<AssetBundleGroupTreeData>(
@@ -85,7 +84,7 @@ namespace DotEditor.Core.Packer
             }
         }
 
-        private bool FilterAssetDetailData(Dot.Core.Loader.Config.AssetAddressData detailData)
+        private bool FilterAssetDetailData(AssetAddressData detailData)
         {
             if(string.IsNullOrEmpty(searchText))
             {
@@ -232,20 +231,14 @@ namespace DotEditor.Core.Packer
             labelStyle.fontStyle = FontStyle.Bold;
             EditorGUILayout.LabelField("Asset Bundle Pack Config:",labelStyle);
 
-            packConfigSerializedObject.Update();
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             {
                 packConfig.bundleOutputDir = EditorGUILayoutUtil.DrawDiskFolderSelection("Bundle Output", packConfig.bundleOutputDir);
-                EditorGUILayoutUtil.PropertyField(packConfigSerializedObject, "cleanupBeforeBuild");
+                packConfig.cleanupBeforeBuild = EditorGUILayout.Toggle("cleanupBeforeBuild", packConfig.cleanupBeforeBuild);
                 packConfig.bundleOptions = (BuildAssetBundleOptions)EditorGUILayout.EnumFlagsField("Bundle Option", packConfig.bundleOptions);
-                EditorGUILayoutUtil.PropertyField(packConfigSerializedObject, "buildTarget");
+                packConfig.buildTarget = (BundleBuildTarget)EditorGUILayout.EnumPopup("buildTarget", packConfig.buildTarget);
             }
             EditorGUILayout.EndVertical();
-            if(GUI.changed)
-            {
-                EditorUtility.SetDirty(packConfig);
-            }
-            packConfigSerializedObject.ApplyModifiedProperties();
         }
 
         private void DrawOperation()

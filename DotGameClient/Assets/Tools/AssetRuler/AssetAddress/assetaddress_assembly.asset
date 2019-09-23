@@ -15,6 +15,7 @@ MonoBehaviour:
   assetAssemblyType: 0
   assetGroups:
   - {fileID: 11400000, guid: 64784143e1ab556458cd9e7a242bb9f9, type: 2}
+  - {fileID: 11400000, guid: 317c212737881af4b9058e98b26010f9, type: 2}
   - {fileID: 11400000, guid: 88e2b7402b89ee746ac3852fb02fec43, type: 2}
   - {fileID: 11400000, guid: 19094cc5ee9037b43b05575b880ed09f, type: 2}
   - {fileID: 11400000, guid: eeb90eee19aeaf141a9ea83bde5f8c6b, type: 2}

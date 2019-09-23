@@ -30,22 +30,6 @@ namespace DotEditor.Core.Packer
             return config;
         }
 
-        public static AssetBundlePackConfig FindOrCreatePackConfig()
-        {
-            AssetBundlePackConfig config = AssetDatabase.LoadAssetAtPath<AssetBundlePackConfig>(AssetBundlePackConfig.CONFIG_PATH);
-
-            if (config == null)
-            {
-                config = ScriptableObject.CreateInstance<AssetBundlePackConfig>();
-                AssetDatabase.CreateAsset(config, AssetBundlePackConfig.CONFIG_PATH);
-
-                AssetDatabase.ImportAsset(AssetBundlePackConfig.CONFIG_PATH);
-            }
-
-            AssetDatabase.SaveAssets();
-            return config;
-        }
-
         public static void UpdateTagConfig()
         {
             string[] settingPaths = AssetDatabaseUtil.FindAssets<AssetAddressAssembly>();

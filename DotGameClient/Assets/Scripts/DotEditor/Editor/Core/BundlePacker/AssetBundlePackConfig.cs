@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DotEditor.Core.Packer
 {
-    public class AssetBundlePackConfig : ScriptableObject
+    public class AssetBundlePackConfig
     {
         public enum BundleBuildTarget
         {
@@ -12,9 +12,7 @@ namespace DotEditor.Core.Packer
             XBoxOne,
         }
 
-        public static readonly string CONFIG_PATH = "Assets/Tools/BundlePack/bundle_pack_config.asset";
-
-        public string bundleOutputDir = "";
+        public string bundleOutputDir = "D:/assetbundle";
         public bool cleanupBeforeBuild = false;
         public BuildAssetBundleOptions bundleOptions = BuildAssetBundleOptions.DeterministicAssetBundle | BuildAssetBundleOptions.ChunkBasedCompression;
         public BundleBuildTarget buildTarget = BundleBuildTarget.StandaloneWindows64;
