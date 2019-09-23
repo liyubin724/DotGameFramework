@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc7a645838b6dc949acd653035aa6679, type: 3}
-  m_Name: nofilter_separate_filename_noext_nolabel_operation
+  m_Name: nofilter_separate_filename_nolabel
   m_EditorClassIdentifier: 
   removeMatchFilterItem: 1
   filterComposeType: 0
@@ -18,5 +18,5 @@ MonoBehaviour:
   operationComposeType: 0
   assetOperations:
   - {fileID: 11400000, guid: 0dae14af12bb3ae4888f932d510cf877, type: 2}
-  - {fileID: 11400000, guid: 8627099adc992bc4698bba4a67a2daeb, type: 2}
+  - {fileID: 11400000, guid: aa6b52c04f4bd7d4fa28657deb3c27de, type: 2}
   - {fileID: 11400000, guid: e606c65481f2b6e4c9b28afa26f88737, type: 2}
