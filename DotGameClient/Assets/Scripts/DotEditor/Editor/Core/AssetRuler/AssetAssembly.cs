@@ -8,9 +8,9 @@ namespace DotEditor.Core.AssetRuler
         public AssetAssemblyType assetAssemblyType = AssetAssemblyType.AssetAddress;
         public List<AssetGroup> assetGroups = new List<AssetGroup>();
 
-        public virtual void Execute()
+        public virtual AssetAssemblyResult Execute()
         {
-
+            return null;
         }
     }
 }

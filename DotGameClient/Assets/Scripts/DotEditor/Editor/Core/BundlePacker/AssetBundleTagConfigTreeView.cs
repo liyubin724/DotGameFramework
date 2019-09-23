@@ -1,8 +1,10 @@
-﻿using DotEditor.Core.EGUI;
+﻿using Dot.Core.Loader.Config;
+using DotEditor.Core.EGUI;
 using DotEditor.Core.EGUI.TreeGUI;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using static DotEditor.Core.Packer.AssetBundleTagConfig;
 
 namespace DotEditor.Core.Packer
 {
@@ -67,13 +69,13 @@ namespace DotEditor.Core.Packer
                     {
                         EditorGUIUtil.BeginLabelWidth(60);
                         {
-                            AssetBundleAssetData assetData = groupData.assetDatas[groupTreeData.dataIndex];
+                            AssetAddressData assetData = groupData.assetDatas[groupTreeData.dataIndex];
                             EditorGUILayout.LabelField(new GUIContent("" + groupTreeData.dataIndex), GUILayout.Width(20));
-                            EditorGUILayout.TextField("address:", assetData.address);
+                            EditorGUILayout.TextField("address:", assetData.assetAddress);
                             GUILayout.BeginVertical();
                             {
-                                EditorGUILayout.TextField("path:", assetData.path);
-                                EditorGUILayout.TextField("bundle:", assetData.bundle);
+                                EditorGUILayout.TextField("path:", assetData.assetPath);
+                                EditorGUILayout.TextField("bundle:", assetData.bundlePath);
                             }
                             GUILayout.EndVertical();
                             EditorGUILayout.TextField("labels:", string.Join(",", assetData.labels));

@@ -1,4 +1,5 @@
 ﻿using DotEditor.Core.Packer;
+using static DotEditor.Core.Packer.AssetBundleTagConfig;
 
 namespace DotEditor.Core.Asset
 {

@@ -98,19 +98,19 @@ namespace DotEditor.Core.Packer
                 AssetDatabase.ImportAsset(AssetAddressConfig.CONFIG_PATH);
             }
 
-            AssetBundleAssetData[] datas = (from groupData in tagConfig.groupDatas
+            Dot.Core.Loader.Config.AssetAddressData[] datas = (from groupData in tagConfig.groupDatas
                                             where groupData.isMain == true
                                             from assetData in groupData.assetDatas
                                             select assetData).ToArray();
 
-            List<AssetAddressData> addressDatas = new List<AssetAddressData>();
+            List<Dot.Core.Loader.Config.AssetAddressData> addressDatas = new List<Dot.Core.Loader.Config.AssetAddressData>();
             foreach(var assetData in datas)
             {
-                AssetAddressData addressData = new AssetAddressData()
+                Dot.Core.Loader.Config.AssetAddressData addressData = new Dot.Core.Loader.Config.AssetAddressData()
                 {
-                    assetAddress = assetData.address,
-                    assetPath = assetData.path,
-                    bundlePath = assetData.bundle,
+                    assetAddress = assetData.assetAddress,
+                    assetPath = assetData.assetPath,
+                    bundlePath = assetData.bundlePath,
                 };
                 if(assetData.labels!=null && assetData.labels.Length>0)
                 {

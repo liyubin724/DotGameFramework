@@ -1,5 +1,6 @@
 ﻿using DotEditor.Core.Packer;
 using UnityEngine;
+using static DotEditor.Core.Packer.AssetBundleTagConfig;
 
 namespace DotEditor.Core.Asset
 {

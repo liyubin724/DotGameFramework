@@ -1,10 +1,12 @@
-﻿using DotEditor.Core.EGUI;
+﻿using Dot.Core.Loader.Config;
+using DotEditor.Core.EGUI;
 using DotEditor.Core.EGUI.TreeGUI;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using static DotEditor.Core.Packer.AssetBundleTagConfig;
 
 namespace DotEditor.Core.Packer
 {
@@ -65,7 +67,7 @@ namespace DotEditor.Core.Packer
 
                 for (int j = 0; j < groupData.assetDatas.Count; ++j)
                 {
-                    AssetBundleAssetData detailData = groupData.assetDatas[j];
+                    Dot.Core.Loader.Config.AssetAddressData detailData = groupData.assetDatas[j];
                     if(FilterAssetDetailData(detailData))
                     {
                         TreeElementWithData<AssetBundleGroupTreeData> elementData = new TreeElementWithData<AssetBundleGroupTreeData>(
@@ -83,7 +85,7 @@ namespace DotEditor.Core.Packer
             }
         }
 
-        private bool FilterAssetDetailData(AssetBundleAssetData detailData)
+        private bool FilterAssetDetailData(Dot.Core.Loader.Config.AssetAddressData detailData)
         {
             if(string.IsNullOrEmpty(searchText))
             {
@@ -93,18 +95,18 @@ namespace DotEditor.Core.Packer
             bool isValid = false;
             if(selecteddSearchParamIndex == 0 || selecteddSearchParamIndex == 1)
             {
-                if(!string.IsNullOrEmpty(detailData.address))
+                if(!string.IsNullOrEmpty(detailData.assetAddress))
                 {
-                    isValid = detailData.address.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                    isValid = detailData.assetAddress.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
                 }
             }
             if(!isValid)
             {
                 if(selecteddSearchParamIndex == 0 || selecteddSearchParamIndex == 2)
                 {
-                    if (!string.IsNullOrEmpty(detailData.path))
+                    if (!string.IsNullOrEmpty(detailData.assetPath))
                     {
-                        isValid = detailData.path.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                        isValid = detailData.assetPath.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
                     }
                 }
             }
@@ -112,9 +114,9 @@ namespace DotEditor.Core.Packer
             {
                 if (selecteddSearchParamIndex == 0 || selecteddSearchParamIndex == 3)
                 {
-                    if (!string.IsNullOrEmpty(detailData.bundle))
+                    if (!string.IsNullOrEmpty(detailData.bundlePath))
                     {
-                        isValid = detailData.bundle.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
+                        isValid = detailData.bundlePath.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0;
                     }
                 }
             }

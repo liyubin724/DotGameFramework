@@ -1,4 +1,5 @@
-﻿using DotEditor.Core.Packer;
+﻿using Dot.Core.Loader.Config;
+using DotEditor.Core.Packer;
 using System.Linq;
 using UnityEditor;
 
@@ -22,7 +23,7 @@ namespace DotEditor.Core.Asset
 
         public static void SetAssetBundleNames(AssetBundleTagConfig config, bool isShowProgressBar = false)
         {
-            AssetBundleAssetData[] datas = (from groupData in config.groupDatas
+            AssetAddressData[] datas = (from groupData in config.groupDatas
                                        from detailData in groupData.assetDatas
                                        select detailData).ToArray();
             if (isShowProgressBar)
@@ -36,11 +37,11 @@ namespace DotEditor.Core.Asset
                 {
                     if (isShowProgressBar)
                     {
-                        EditorUtility.DisplayProgressBar("Set Bundle Names", datas[i].path, i / (float)datas.Length);
+                        EditorUtility.DisplayProgressBar("Set Bundle Names", datas[i].assetPath, i / (float)datas.Length);
                     }
-                    AssetImporter assetImporter = AssetImporter.GetAtPath(datas[i].path);
+                    AssetImporter assetImporter = AssetImporter.GetAtPath(datas[i].assetPath);
                     //assetImporter.SetAssetBundleNameAndVariant(datas[i].bundle, "");
-                    assetImporter.assetBundleName = datas[i].bundle;
+                    assetImporter.assetBundleName = datas[i].bundlePath;
                     //assetImporter.SaveAndReimport();
                 }
             }

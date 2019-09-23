@@ -1,9 +1,11 @@
-﻿using DotEditor.Core.Packer;
+﻿using Dot.Core.Loader.Config;
+using DotEditor.Core.Packer;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using static DotEditor.Core.Packer.AssetBundleTagConfig;
 
 namespace DotEditor.Core.Asset
 {
@@ -45,10 +47,10 @@ namespace DotEditor.Core.Asset
 
             for(int i =0;i<assetPaths.Length;++i)
             {
-                AssetBundleAssetData assetData = new AssetBundleAssetData();
-                assetData.address = GetAssetAddress(assetPaths[i]);
-                assetData.path = assetPaths[i];
-                assetData.bundle = GetAssetBundle(rootFolder,assetPaths[i]).ToLower();
+                AssetAddressData assetData = new AssetAddressData();
+                assetData.assetAddress = GetAssetAddress(assetPaths[i]);
+                assetData.assetPath = assetPaths[i];
+                assetData.bundlePath = GetAssetBundle(rootFolder,assetPaths[i]).ToLower();
                 assetData.labels = new string[labels.Length];
                 Array.Copy(labels, assetData.labels, labels.Length);
 
