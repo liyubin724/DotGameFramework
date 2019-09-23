@@ -10,7 +10,7 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
         public AssetAddressMode addressMode = AssetAddressMode.FileNameWithoutExtension;
         public string fileNameFormat = "{0}";
 
-        public override AssetOperationResult Execute(AssetFilterResult filterResult, ref AssetOperationResult operationResult)
+        public override AssetOperationResult Execute(AssetFilterResult filterResult, AssetOperationResult operationResult)
         {
             if(operationResult == null)
             {

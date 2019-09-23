@@ -19,22 +19,21 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
         FileFormatName,
     }
 
+    public class AssetAddressAssemblyResult : AssetAssemblyResult
+    {
+
+    }
+
+    public class AssetAddressGroupResult : AssetGroupResult
+    {
+        public bool isMain = true;
+        public bool isPreload = false;
+    }
+    
     public class AssetAddressOperationResult : AssetOperationResult
     {
         public Dictionary<string, AssetAddressData> addressDataDic = new Dictionary<string, AssetAddressData>();
     }
 
-    public class AssetAddressGroupResult : AssetGroupResult
-    {
-        public AssetBundleGroupData groupData;
-    }
-
-    [Serializable]
-    public class AssetBundleGroupData
-    {
-        public string groupName;
-        public bool isMain = true;
-        public bool isPreload = false;
-        public List<AssetAddressData> assetDatas = new List<AssetAddressData>();
-    }
+   
 }

@@ -8,29 +8,20 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
         public bool isMain = true;
         public bool isPreload = false;
 
-        public override void Execute(ref AssetGroupResult groupResult)
+        protected override AssetGroupResult CreateGroupResult()
         {
-            if(groupResult == null)
+            return new AssetAddressGroupResult();
+        }
+
+        public override AssetGroupResult Execute(AssetAssemblyResult assemblyResult)
+        {
+            AssetAddressGroupResult result = base.Execute(assemblyResult) as AssetAddressGroupResult;
+            if(result != null)
             {
-                groupResult = new AssetAddressGroupResult();
+                result.isMain = isMain;
+                result.isPreload = isPreload;
             }
-            base.Execute(ref groupResult);
-
-            AssetAddressGroupResult result = groupResult as AssetAddressGroupResult;
-            result.groupData = new AssetBundleGroupData();
-            result.groupData.groupName = groupName;
-            result.groupData.isMain = isMain;
-            result.groupData.isPreload = isPreload;
-
-            foreach(var oResult in result.operationResults)
-            {
-                AssetAddressOperationResult r = oResult as AssetAddressOperationResult;
-
-                foreach(var data in r.addressDataDic.Values)
-                {
-                    result.groupData.assetDatas.Add(data);
-                }
-            }
+            return result;
         }
     }
 }

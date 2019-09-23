@@ -12,7 +12,13 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
     {
         public override void Execute()
         {
-            
+            AssetAddressAssemblyResult result = new AssetAddressAssemblyResult();
+            foreach(var group in assetGroups)
+            {
+                group.Execute(result);
+            }
+
+            int index =0;
         }
     }
 }

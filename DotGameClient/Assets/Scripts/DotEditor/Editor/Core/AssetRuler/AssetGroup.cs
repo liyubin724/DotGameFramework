@@ -14,28 +14,39 @@ namespace DotEditor.Core.AssetRuler
         public AssetSearcher assetSearcher = new AssetSearcher();
         public List<AssetGroupFilterOperation> filterOperations = new List<AssetGroupFilterOperation>();
 
-        public virtual void Execute(ref AssetGroupResult groupResult)
+        protected virtual AssetGroupResult CreateGroupResult()
         {
-            if(groupResult == null)
+            return new AssetGroupResult();
+        }
+
+        public virtual AssetGroupResult Execute(AssetAssemblyResult assemblyResult)
+        {
+            if(assemblyResult == null)
             {
-                Debug.LogError("");
-                return;
+                Debug.LogError("AssetGroup::Execute->Assembly Result is Null");
+                return null;
             }
             if(!isEnable ||  filterOperations.Count == 0)
             {
-                return;
+                return null;
             }
-            groupResult.groupName = groupName;
 
             AssetSearcherResult searcherResult = assetSearcher.Execute();
-            foreach(var filterOperation in filterOperations)
+
+            AssetGroupResult groupResult = CreateGroupResult();
+            groupResult.groupName = groupName;
+            assemblyResult.groupResults.Add(groupResult);
+
+            foreach (var filterOperation in filterOperations)
             {
-                AssetOperationResult[] operationResults = filterOperation.Execute(searcherResult);
+                AssetOperationResult[] operationResults = filterOperation.Execute(searcherResult,groupResult);
                 if(operationResults != null)
                 {
                     groupResult.operationResults.AddRange(operationResults);
                 }
             }
+
+            return groupResult;
         }
 
         [Serializable]

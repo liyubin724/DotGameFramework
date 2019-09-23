@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using UnityEngine;
 
 namespace DotEditor.Core.AssetRuler.AssetAddress
 {
@@ -11,6 +12,11 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
 
             DrawGroup();
             DrawOperation();
+
+            if(GUILayout.Button("Execute",GUILayout.Height(40)))
+            {
+                (target as AssetAddressAssembly).Execute();
+            }
 
             serializedObject.ApplyModifiedProperties();
         }

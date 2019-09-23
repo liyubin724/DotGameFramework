@@ -9,7 +9,7 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
     {
         public List<string> labels = new List<string>();
 
-        public override AssetOperationResult Execute(AssetFilterResult filterResult, ref AssetOperationResult operationResult)
+        public override AssetOperationResult Execute(AssetFilterResult filterResult, AssetOperationResult operationResult)
         {
             if (operationResult == null)
             {
