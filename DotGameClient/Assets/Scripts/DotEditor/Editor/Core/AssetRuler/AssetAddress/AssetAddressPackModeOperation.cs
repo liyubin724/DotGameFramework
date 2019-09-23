@@ -28,7 +28,7 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
 
                 string rootFolder = Path.GetDirectoryName(assetPath).Replace("\\", "/");
 
-                addressData.bundlePath = GetAssetBundle(rootFolder,assetPath);
+                addressData.bundlePath = GetAssetBundle(rootFolder,assetPath).ToLower();
             }
 
             return result;

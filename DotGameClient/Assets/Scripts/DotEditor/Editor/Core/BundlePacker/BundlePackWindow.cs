@@ -252,7 +252,7 @@ namespace DotEditor.Core.Packer
         {
             if (GUILayout.Button("Update Asset Detail"))
             {
-                BundlePackUtil.UpdateTagConfigBySchema();
+                BundlePackUtil.UpdateTagConfig();
                 tagConfig = BundlePackUtil.FindOrCreateTagConfig();
                 FilterTreeModel();
             }
@@ -288,7 +288,7 @@ namespace DotEditor.Core.Packer
                     }
                     else
                     {
-                        BundlePackUtil.UpdateTagConfigBySchema();
+                        BundlePackUtil.UpdateTagConfig();
                         BundlePackUtil.ClearAssetBundleNames(true);
                         BundlePackUtil.SetAssetBundleNames(true);
                         BundlePackUtil.PackAssetBundle(packConfig, true);

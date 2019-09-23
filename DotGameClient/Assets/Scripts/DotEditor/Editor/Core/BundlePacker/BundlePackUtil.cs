@@ -1,6 +1,6 @@
 ﻿using Dot.Core.Loader;
 using Dot.Core.Loader.Config;
-using DotEditor.Core.Asset;
+using DotEditor.Core.AssetRuler.AssetAddress;
 using DotEditor.Core.Util;
 using System;
 using System.Collections.Generic;
@@ -46,50 +46,65 @@ namespace DotEditor.Core.Packer
             return config;
         }
 
-        public static void UpdateTagConfigBySchema()
+        public static void UpdateTagConfig()
         {
-            AssetBundleTagConfig config = AssetDatabase.LoadAssetAtPath<AssetBundleTagConfig>(AssetBundleTagConfig.CONFIG_PATH);
-            if (config == null)
-            {
-                Debug.LogError("AssetBundleSchemaUtil::UpdateTagConfigBySchema->config is null;");
-                return;
-            }
-
-            string[] settingPaths = AssetDatabaseUtil.FindAssets<AssetBundleSchemaSetting>();
+            string[] settingPaths = AssetDatabaseUtil.FindAssets<AssetAddressAssembly>();
             if (settingPaths == null || settingPaths.Length == 0)
             {
                 Debug.LogError("AssetBundleSchemaUtil::UpdateTagConfigBySchema->Not found schema Setting;");
                 return;
             }
-
-            AssetBundleSchemaSetting setting = AssetDatabase.LoadAssetAtPath<AssetBundleSchemaSetting>(settingPaths[0]);
-            if (setting == null)
+            foreach(var assetPath in settingPaths)
             {
-                Debug.LogError("AssetBundleSchemaUtil::UpdateTagConfigBySchema->Schema Setting is Null.");
-                return;
+                AssetAddressAssembly aaAssembly = AssetDatabase.LoadAssetAtPath<AssetAddressAssembly>(assetPath);
+                if(aaAssembly!=null)
+                {
+                    aaAssembly.Execute();
+                }
             }
-
-            AssetBundleSchemaUtil.UpdateTagConfigBySchema(config, setting);
-            CreateAssetInBundleConfig(config);
+            
+            CreateAssetInBundleConfig();
         }
 
         public static void SetAssetBundleNames(bool isShowProgressBar = false)
         {
-            AssetBundleTagConfig config = AssetDatabase.LoadAssetAtPath<AssetBundleTagConfig>(AssetBundleTagConfig.CONFIG_PATH);
-            if (config == null)
-            {
-                Debug.LogError("AssetBundleSchemaUtil::SetAssetBundleNames->config is null;");
-                return;
-            }
+            AssetBundleTagConfig config = FindOrCreateTagConfig();
 
             AssetImporter assetImporter = AssetImporter.GetAtPath(AssetAddressConfig.CONFIG_PATH);
             assetImporter.assetBundleName = AssetAddressConfig.CONFIG_ASSET_BUNDLE_NAME;
 
-            AssetBundleSchemaUtil.SetAssetBundleNames(config, isShowProgressBar);
+            AssetAddressData[] datas = (from groupData in config.groupDatas
+                                        from detailData in groupData.assetDatas
+                                        select detailData).ToArray();
+            if (isShowProgressBar)
+            {
+                EditorUtility.DisplayProgressBar("Set Bundle Names", "", 0f);
+            }
+
+            if (datas != null && datas.Length > 0)
+            {
+                for (int i = 0; i < datas.Length; i++)
+                {
+                    if (isShowProgressBar)
+                    {
+                        EditorUtility.DisplayProgressBar("Set Bundle Names", datas[i].assetPath, i / (float)datas.Length);
+                    }
+                    AssetImporter ai = AssetImporter.GetAtPath(datas[i].assetPath);
+                    ai.assetBundleName = datas[i].bundlePath;
+                }
+            }
+            if (isShowProgressBar)
+            {
+                EditorUtility.ClearProgressBar();
+            }
+
+            AssetDatabase.SaveAssets();
         }
 
-        public static void CreateAssetInBundleConfig(AssetBundleTagConfig tagConfig)
+        public static void CreateAssetInBundleConfig()
         {
+            AssetBundleTagConfig tagConfig = FindOrCreateTagConfig();
+
             AssetAddressConfig config = AssetDatabase.LoadAssetAtPath<AssetAddressConfig>(AssetAddressConfig.CONFIG_PATH);
             if(config==null)
             {
@@ -98,15 +113,15 @@ namespace DotEditor.Core.Packer
                 AssetDatabase.ImportAsset(AssetAddressConfig.CONFIG_PATH);
             }
 
-            Dot.Core.Loader.Config.AssetAddressData[] datas = (from groupData in tagConfig.groupDatas
+            AssetAddressData[] datas = (from groupData in tagConfig.groupDatas
                                             where groupData.isMain == true
                                             from assetData in groupData.assetDatas
                                             select assetData).ToArray();
 
-            List<Dot.Core.Loader.Config.AssetAddressData> addressDatas = new List<Dot.Core.Loader.Config.AssetAddressData>();
+            List<AssetAddressData> addressDatas = new List<AssetAddressData>();
             foreach(var assetData in datas)
             {
-                Dot.Core.Loader.Config.AssetAddressData addressData = new Dot.Core.Loader.Config.AssetAddressData()
+                AssetAddressData addressData = new Dot.Core.Loader.Config.AssetAddressData()
                 {
                     assetAddress = assetData.assetAddress,
                     assetPath = assetData.assetPath,
