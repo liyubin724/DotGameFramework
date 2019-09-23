@@ -10,12 +10,18 @@ namespace DotEditor.Core.AssetRuler
         public bool isEnable = true;
         public string groupName = "Asset Group";
         public AssetAssemblyType assetAssemblyType = AssetAssemblyType.AssetAddress;
-        public AssetSearcher assetSearcher = null;
+
+        public AssetSearcher assetSearcher = new AssetSearcher();
         public List<AssetGroupFilterOperation> filterOperations = new List<AssetGroupFilterOperation>();
 
         public virtual void Execute(ref AssetGroupResult groupResult)
         {
-            if(!isEnable || assetSearcher == null || filterOperations.Count == 0)
+            if(groupResult == null)
+            {
+                Debug.LogError("");
+                return;
+            }
+            if(!isEnable ||  filterOperations.Count == 0)
             {
                 return;
             }
@@ -45,33 +51,6 @@ namespace DotEditor.Core.AssetRuler
                 AssetSearcherResult result = new AssetSearcherResult();
                 result.assetPaths.AddRange(assets);
                 return result;
-            }
-        }
-
-        [Serializable]
-        public class AssetGroupFilterOperation
-        {
-            public AssetFilterCompose filterCompose = null;
-            public AssetOperationCompose operationCompose = null;
-
-            public AssetOperationResult[] Execute(AssetSearcherResult searcherResult)
-            {
-                if(operationCompose == null || searcherResult == null)
-                {
-                    return null;
-                }
-
-                AssetFilterResult filterResult = new AssetFilterResult();
-                foreach(var assetPath in searcherResult.assetPaths)
-                {
-                    if(filterCompose == null || filterCompose.IsMatch(assetPath))
-                    {
-                        filterResult.assetPaths.Add(assetPath);
-                        searcherResult.assetPaths.Remove(assetPath);
-                    }
-                }
-
-                return operationCompose.Execute(filterResult);
             }
         }
     }

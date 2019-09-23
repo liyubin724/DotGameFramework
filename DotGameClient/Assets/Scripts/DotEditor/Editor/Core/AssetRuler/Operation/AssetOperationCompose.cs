@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DotEditor.Core.AssetRuler
 {
-    public class AssetOperationCompose : ScriptableObject
+    [Serializable]
+    public class AssetOperationCompose
     {
         public AssetComposeType composeType = AssetComposeType.All;
         public List<AssetOperation> assetOperations = new List<AssetOperation>();

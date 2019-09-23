@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DotEditor.Core.AssetRuler
 {
-    [CreateAssetMenu(fileName = "asset_compose_filter", menuName = "Asset Ruler/Filter/Compose", order = 100)]
-    public class AssetFilterCompose : ScriptableObject
+    [Serializable]
+    public class AssetFilterCompose
     {
         public AssetComposeType composeType = AssetComposeType.All;
         public List<AssetFilter> assetFilters = new List<AssetFilter>();

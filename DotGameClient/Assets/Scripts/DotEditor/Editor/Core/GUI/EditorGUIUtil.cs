@@ -253,6 +253,34 @@ namespace DotEditor.Core.EGUI
             EditorGUILayout.EndHorizontal();
         }
 
+        public static string DrawAssetFolderSelection(string label,string assetFolder, bool isReadonly = true)
+        {
+            string folder = assetFolder;
+            EditorGUILayout.BeginHorizontal();
+            {
+                EditorGUI.BeginDisabledGroup(isReadonly);
+                {
+                    folder = EditorGUILayout.TextField(label, assetFolder);
+                }
+                EditorGUI.EndDisabledGroup();
+
+                if (GUILayout.Button(new GUIContent(EditorGUIUtil.FolderIcon), GUILayout.Width(20), GUILayout.Height(20)))
+                {
+                    string folderPath = EditorUtility.OpenFolderPanel("folder", folder, "");
+                    if (!string.IsNullOrEmpty(folderPath))
+                    {
+                        folder = PathUtil.GetAssetPath(folderPath);
+                    }
+                }
+                if (GUILayout.Button("\u2716", GUILayout.Width(20), GUILayout.Height(20)))
+                {
+                    folder = "";
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+            return folder;
+        }
+
         public static string DrawDiskFolderSelection(string label,string diskFolder,bool isReadonly = true)
         {
             EditorGUILayout.BeginHorizontal();
@@ -368,6 +396,31 @@ namespace DotEditor.Core.EGUI
         public static void EndIndent()
         {
             EditorGUI.indentLevel--;
+        }
+
+        public static string DrawAssetFolderSelection(Rect rect, string label, string assetFolder, bool isReadonly = true)
+        {
+            string folder = assetFolder;
+
+            EditorGUI.BeginDisabledGroup(isReadonly);
+            {
+                folder = EditorGUI.TextField(new Rect(rect.x, rect.y, rect.width - 40, rect.height), label, assetFolder);
+            }
+            EditorGUI.EndDisabledGroup();
+
+            if (GUI.Button(new Rect(rect.x+rect.width - 40, rect.y, 20, rect.height), new GUIContent(EditorGUIUtil.FolderIcon)))
+            {
+                string folderPath = EditorUtility.OpenFolderPanel("folder", folder, "");
+                if (!string.IsNullOrEmpty(folderPath))
+                {
+                    folder = PathUtil.GetAssetPath(folderPath);
+                }
+            }
+            if (GUI.Button(new Rect(rect.x + rect.width - 20, rect.y, 20, rect.height), "\u2716"))
+            {
+                folder = "";
+            }
+            return folder;
         }
     }
 

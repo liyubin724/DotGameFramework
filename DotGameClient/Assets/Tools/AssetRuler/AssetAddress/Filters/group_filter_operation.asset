@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0879cf5db0c22e64b94d10b97b05bd3c, type: 3}
-  m_Name: asset_compose_filter
+  m_Script: {fileID: 11500000, guid: fc7a645838b6dc949acd653035aa6679, type: 3}
+  m_Name: group_filter_operation
   m_EditorClassIdentifier: 
-  composeType: 0
+  filterComposeType: 0
   assetFilters: []
+  operationComposeType: 0
+  assetOperations: []

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3fa26d683f72b4e4aa166b99107b522e, type: 3}
-  m_Name: spriteatlas_group
+  m_Name: assetaddress_group
   m_EditorClassIdentifier: 
   isEnable: 1
   groupName: Asset Group
@@ -19,6 +19,14 @@ MonoBehaviour:
     folder: Assets
     includeSubfolder: 1
     fileNameFilterRegex: 
-  filterOperations: []
+  filterOperations:
+  - filterComposeType: 0
+    assetFilters: []
+    operationComposeType: 0
+    assetOperations: []
+  - filterComposeType: 0
+    assetFilters: []
+    operationComposeType: 0
+    assetOperations: []
   isMain: 1
   isPreload: 0
