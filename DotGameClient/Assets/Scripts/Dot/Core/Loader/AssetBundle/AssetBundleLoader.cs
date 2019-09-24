@@ -204,17 +204,19 @@ namespace Dot.Core.Loader
                 if(assetNode.IsDone)
                 {
                     assetNode.ReleaseLoadCount();
-                    UnityObject uObj = assetNode.GetAsset();
+                    UnityObject uObj = null;
+                    if(loaderData.isInstance)
+                    {
+                        uObj = assetNode.GetInstance();
+                    }else
+                    {
+                        uObj = assetNode.GetAsset();
+                    }
+
                     if (uObj == null)
                     {
                         Debug.LogError($"AssetBundleLoader::AssetLoadComplete->asset is null.path = {assetPath}");
                     }
-
-                    if (uObj != null && loaderData.isInstance)
-                    {
-                        uObj = UnityObject.Instantiate(uObj);
-                    }
-
                     loaderHandle.SetObject(i, uObj);
                     loaderHandle.SetProgress(i, 1.0f);
 

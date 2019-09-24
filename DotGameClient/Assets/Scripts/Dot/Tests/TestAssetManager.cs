@@ -1,4 +1,5 @@
 ﻿using Dot.Core.Loader;
+using Dot.Core.Pool;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -60,7 +61,7 @@ namespace Dot.Tests
                     if (GUILayout.Button("Init Asset Manager"))
                     {
                         int maxLoadingCount = 1;
-                        string assetRoot = "D:/assetbundles/StandaloneWindows64/assetbundles";
+                        string assetRoot = "D:/assetbundle/StandaloneWindows64/assetbundles";
   
                         initStatus = AssetManagerInitStatus.Initing;
 
@@ -100,7 +101,7 @@ namespace Dot.Tests
             GUILayout.EndArea();
         }
 
-        private List<UnityObject> cachedObjects = new List<UnityObject>();
+        private List<GameObject> cachedObjects = new List<GameObject>();
         int assetTestIndex = 0;
         private void OnAssetOperation()
         {
@@ -180,6 +181,34 @@ namespace Dot.Tests
                         }
                     }
 
+                    if(GUILayout.Button("Pool"))
+                    {
+                        PoolData poolData = new PoolData()
+                        {
+                            spawnName = "CubePool",
+                            assetPath = "Cube.prefab",
+                            preloadTotalAmount = 10,
+                            completeCallback = (spawnName, assetPath) =>
+                            {
+                                Debug.Log("Pool Create Success");
+                            },
+                        };
+                        PoolManager.GetInstance().CreateGameObjectPool(poolData);
+                    }
+
+                    if(GUILayout.Button("Get From Pool"))
+                    {
+                        GameObjectPool goPool = PoolManager.GetInstance().GetSpawnPool("CubePool").GetGameObjectPool("Cube.prefab");
+                        GameObject go = goPool.GetGameObjectItem();
+                        go.transform.SetParent(null, false);
+                        cachedObjects.Add(go);
+                    }
+
+                    if(GUILayout.Button("Clean Pool"))
+                    {
+                        PoolManager.GetInstance().DeleteSpawnPool("CubePool");
+                    }
+
                     if(GUILayout.Button("Load Scene"))
                     {
                         string sceneAddress = "other_scene";
@@ -198,7 +227,14 @@ namespace Dot.Tests
                     {
                         foreach (var obj in cachedObjects)
                         {
-                            UnityObject.Destroy(obj);
+                            GameObjectPoolItem poolItem = obj.GetComponent<GameObjectPoolItem>();
+                            if(poolItem!=null)
+                            {
+                                poolItem.ReleaseItem();
+                            }else
+                            {
+                                UnityObject.Destroy(obj);
+                            }
                         }
                         cachedObjects.Clear();
                     }

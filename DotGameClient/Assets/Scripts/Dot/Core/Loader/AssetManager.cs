@@ -37,8 +37,10 @@ namespace Dot.Core.Loader
             {
                 isInit = isSuccess;
                 initCallback?.Invoke(isSuccess);
-
-                sceneLoader = new SceneAssetLoader(loaderMode, assetLoader);
+                if(isSuccess)
+                {
+                    sceneLoader = new SceneAssetLoader(loaderMode, assetLoader);
+                }
 
             },pathMode,maxLoadingCount,assetRootDir);
         }
@@ -143,6 +145,11 @@ namespace Dot.Core.Loader
             bool activateOnLoad = true,
             SystemObject userData = null)
         {
+            if(sceneLoader == null)
+            {
+                Debug.LogError("AssetManager::LoadSceneAsync->sceneLoader has not been inited");
+                return null;
+            }
             return sceneLoader.LoadSceneAsync(pathOrAddress, completeCallback, progressCallback, loadMode, activateOnLoad, userData);
         }
 
@@ -151,6 +158,11 @@ namespace Dot.Core.Loader
             OnSceneProgress progressCallback,
             SystemObject userData = null)
         {
+            if (sceneLoader == null)
+            {
+                Debug.LogError("AssetManager::LoadSceneAsync->sceneLoader has not been inited");
+                return;
+            }
             sceneLoader.UnloadSceneAsync(pathOrAddress, completeCallback, progressCallback, userData);
         }
 

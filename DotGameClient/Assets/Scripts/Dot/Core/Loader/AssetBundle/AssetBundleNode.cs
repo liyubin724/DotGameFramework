@@ -64,6 +64,10 @@ namespace Dot.Core.Loader
         public UnityObject GetInstance()
         {
             UnityObject asset = bundleNode.GetAsset(assetPath);
+            if(asset ==null)
+            {
+                return null;
+            }
             if (bundleNode.IsScene)
             {
                 Debug.LogError("AssetNode::GetInstance->bundle is scene.can't Instance it");
@@ -71,7 +75,6 @@ namespace Dot.Core.Loader
             }
 
             UnityObject instance = UnityObject.Instantiate(asset);
-            Resources.UnloadAsset(asset);
             AddInstance(instance);
             return instance;
         }

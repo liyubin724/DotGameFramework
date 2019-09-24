@@ -174,7 +174,7 @@ namespace Dot.Core.Pool
         {
             PoolData poolData = userData as PoolData;
 
-            if(poolDatas.Contains(poolData))
+            if(!poolDatas.Contains(poolData))
             {
                 UnityObject.Destroy(uObj);
                 return;

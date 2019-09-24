@@ -41,6 +41,10 @@ MonoBehaviour:
     assetPath: Assets/ArtRes/Prefabs/Capsule.prefab
     bundlePath: assets/artres/prefabs/capsule_prefab
     labels: []
+  - assetAddress: other_scene
+    assetPath: Assets/ArtRes/Scenes/other_scene.unity
+    bundlePath: assets/artres/scenes/other_scene_unity
+    labels: []
   - assetAddress: login_atlas
     assetPath: Assets/ArtRes/UI/Atlas/login_atlas.spriteatlas
     bundlePath: assets/artres/ui/atlas/login_atlas_spriteatlas
