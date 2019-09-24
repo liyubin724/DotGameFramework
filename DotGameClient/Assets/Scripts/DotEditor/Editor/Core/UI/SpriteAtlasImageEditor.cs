@@ -40,25 +40,43 @@ namespace DotEditor.Core.UI
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
+
+            DrawSpriteAtlas();
+            AppearanceControlsGUI();
+            RaycastControlsGUI();
+            DrawTypeGUI();
+            DrawImageType();
+            DrawNativeSize();
             
+            serializedObject.ApplyModifiedProperties();
+        }
+
+        protected void DrawSpriteAtlas()
+        {
             DrawAtlasPopupLayout(new GUIContent("Sprite Atlas"), new GUIContent("----"), m_SpriteAtlas);
-            EditorGUI.indentLevel++;
+            EditorGUIUtil.BeginIndent();
             {
                 DrawSpritePopup(m_SpriteAtlas.objectReferenceValue as SpriteAtlas, m_SpriteName);
             }
-            EditorGUI.indentLevel--;
+            EditorGUIUtil.EndIndent();
+        }
 
-            AppearanceControlsGUI();
-            RaycastControlsGUI();
-
+        protected void DrawTypeGUI()
+        {
             animShowType.target = m_SpriteAtlas.objectReferenceValue && !string.IsNullOrEmpty(m_SpriteName.stringValue);
             if (EditorGUILayout.BeginFadeGroup(animShowType.faded))
                 this.TypeGUI();
             EditorGUILayout.EndFadeGroup();
+        }
 
+        protected void DrawImageType()
+        {
             UIIMageType imageType = (UIIMageType)m_Type.intValue;
             base.SetShowNativeSize(imageType == UIIMageType.Simple || imageType == UIIMageType.Filled, false);
+        }
 
+        protected void DrawNativeSize()
+        {
             if (EditorGUILayout.BeginFadeGroup(m_ShowNativeSize.faded))
             {
                 EditorGUI.indentLevel++;
@@ -67,16 +85,14 @@ namespace DotEditor.Core.UI
             }
             EditorGUILayout.EndFadeGroup();
             base.NativeSizeButtonGUI();
-
-            serializedObject.ApplyModifiedProperties();
         }
 
-        public static void DrawAtlasPopupLayout(GUIContent label, GUIContent nullLabel, SerializedProperty atlas, UnityAction<SpriteAtlas> onChange = null, params GUILayoutOption[] option)
+        private void DrawAtlasPopupLayout(GUIContent label, GUIContent nullLabel, SerializedProperty atlas, UnityAction<SpriteAtlas> onChange = null, params GUILayoutOption[] option)
         {
             DrawAtlasPopup(GUILayoutUtility.GetRect(GUIContent.none, EditorStyles.popup, option), label, nullLabel, atlas, onChange);
         }
 
-        public static void DrawAtlasPopup(Rect rect, GUIContent label, GUIContent nullLabel, SerializedProperty atlas, UnityAction<SpriteAtlas> onSelect = null)
+        private void DrawAtlasPopup(Rect rect, GUIContent label, GUIContent nullLabel, SerializedProperty atlas, UnityAction<SpriteAtlas> onSelect = null)
         {
             DrawAtlasPopup(rect, label, nullLabel, atlas.objectReferenceValue as SpriteAtlas, obj =>
             {
@@ -86,7 +102,7 @@ namespace DotEditor.Core.UI
             });
         }
 
-        public static void DrawAtlasPopup(Rect rect, GUIContent label, GUIContent nullLabel, SpriteAtlas atlas, UnityAction<SpriteAtlas> onSelect = null)
+        private void DrawAtlasPopup(Rect rect, GUIContent label, GUIContent nullLabel, SpriteAtlas atlas, UnityAction<SpriteAtlas> onSelect = null)
         {
             rect = EditorGUI.PrefixLabel(rect, label);
             
@@ -110,7 +126,7 @@ namespace DotEditor.Core.UI
             }
         }
 
-        public static void DrawSpritePopup(SpriteAtlas atlas, SerializedProperty spriteProperty)
+        private void DrawSpritePopup(SpriteAtlas atlas, SerializedProperty spriteProperty)
         {
             GUIContent label = new GUIContent(spriteProperty.displayName, spriteProperty.tooltip);
             string spriteName = string.IsNullOrEmpty(spriteProperty.stringValue) ? "----" : spriteProperty.stringValue;

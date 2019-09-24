@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: emoji_atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: cf756d15fd3953f4d8dbb7b456b445cb, type: 3}
+    totalSpriteSurfaceArea: 242064
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300132, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300134, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300124, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300126, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300128, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300130, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300116, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300118, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300146, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300120, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300144, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300122, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300142, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300140, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300138, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300136, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300088, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300090, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300084, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300086, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300080, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300082, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300076, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300078, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300092, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300094, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300106, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300104, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300110, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300108, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300098, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300096, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300102, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300100, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300114, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  - {fileID: 21300112, guid: 48f5a1b7af7993540bc96612acc35adf, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - emoji_28
+  - emoji_29
+  - emoji_24
+  - emoji_25
+  - emoji_26
+  - emoji_27
+  - emoji_20
+  - emoji_21
+  - emoji_35
+  - emoji_22
+  - emoji_34
+  - emoji_23
+  - emoji_33
+  - emoji_32
+  - emoji_31
+  - emoji_30
+  - emoji_6
+  - emoji_7
+  - emoji_4
+  - emoji_5
+  - emoji_2
+  - emoji_3
+  - emoji_0
+  - emoji_1
+  - emoji_8
+  - emoji_9
+  - emoji_15
+  - emoji_14
+  - emoji_17
+  - emoji_16
+  - emoji_11
+  - emoji_10
+  - emoji_13
+  - emoji_12
+  - emoji_19
+  - emoji_18
+  m_Tag: emoji_atlas
+  m_IsVariant: 0

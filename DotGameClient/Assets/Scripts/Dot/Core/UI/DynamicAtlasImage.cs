@@ -133,5 +133,13 @@ namespace Dot.Core.UI
             }
         }
 
+        protected override void OnPopulateMesh(VertexHelper vh)
+        {
+            if(sprite != null)
+            {
+                base.OnPopulateMesh(vh);
+            }
+        }
+
     }
 }
