@@ -29,6 +29,7 @@ namespace Dot.Core.UI.Atlas
         {
             ImagePath = "";
             retainCount = 0;
+            Atlas = null;
         }
     }
 

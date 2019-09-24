@@ -29,6 +29,10 @@ MonoBehaviour:
     assetPath: Assets/ArtRes/Prefabs/Sphere.prefab
     bundlePath: assets/artres/prefabs/sphere_prefab
     labels: []
+  - assetAddress: DynamicAtlasImage.prefab
+    assetPath: Assets/ArtRes/Prefabs/DynamicAtlasImage.prefab
+    bundlePath: assets/artres/prefabs/dynamicatlasimage_prefab
+    labels: []
   - assetAddress: Cylinder.prefab
     assetPath: Assets/ArtRes/Prefabs/Cylinder.prefab
     bundlePath: assets/artres/prefabs/cylinder_prefab
@@ -45,11 +49,75 @@ MonoBehaviour:
     assetPath: Assets/ArtRes/Scenes/other_scene.unity
     bundlePath: assets/artres/scenes/other_scene_unity
     labels: []
-  - assetAddress: login_atlas
-    assetPath: Assets/ArtRes/UI/Atlas/login_atlas.spriteatlas
-    bundlePath: assets/artres/ui/atlas/login_atlas_spriteatlas
-    labels: []
   - assetAddress: common_atlas
     assetPath: Assets/ArtRes/UI/Atlas/common_atlas.spriteatlas
     bundlePath: assets/artres/ui/atlas/common_atlas_spriteatlas
+    labels: []
+  - assetAddress: pic_login_015
+    assetPath: Assets/ArtRes/UI/Login/pic_login_015.png
+    bundlePath: assets/artres/ui/login/pic_login_015_png
+    labels: []
+  - assetAddress: pic_login_014
+    assetPath: Assets/ArtRes/UI/Login/pic_login_014.png
+    bundlePath: assets/artres/ui/login/pic_login_014_png
+    labels: []
+  - assetAddress: pic_login_013
+    assetPath: Assets/ArtRes/UI/Login/pic_login_013.png
+    bundlePath: assets/artres/ui/login/pic_login_013_png
+    labels: []
+  - assetAddress: pic_login_012
+    assetPath: Assets/ArtRes/UI/Login/pic_login_012.png
+    bundlePath: assets/artres/ui/login/pic_login_012_png
+    labels: []
+  - assetAddress: pic_login_011
+    assetPath: Assets/ArtRes/UI/Login/pic_login_011.png
+    bundlePath: assets/artres/ui/login/pic_login_011_png
+    labels: []
+  - assetAddress: pic_login_010
+    assetPath: Assets/ArtRes/UI/Login/pic_login_010.png
+    bundlePath: assets/artres/ui/login/pic_login_010_png
+    labels: []
+  - assetAddress: pic_login_009
+    assetPath: Assets/ArtRes/UI/Login/pic_login_009.png
+    bundlePath: assets/artres/ui/login/pic_login_009_png
+    labels: []
+  - assetAddress: pic_login_008
+    assetPath: Assets/ArtRes/UI/Login/pic_login_008.png
+    bundlePath: assets/artres/ui/login/pic_login_008_png
+    labels: []
+  - assetAddress: pic_login_007
+    assetPath: Assets/ArtRes/UI/Login/pic_login_007.png
+    bundlePath: assets/artres/ui/login/pic_login_007_png
+    labels: []
+  - assetAddress: pic_login_005
+    assetPath: Assets/ArtRes/UI/Login/pic_login_005.png
+    bundlePath: assets/artres/ui/login/pic_login_005_png
+    labels: []
+  - assetAddress: pic_charactor_003
+    assetPath: Assets/ArtRes/UI/Login/pic_charactor_003.png
+    bundlePath: assets/artres/ui/login/pic_charactor_003_png
+    labels: []
+  - assetAddress: pic_charactor_002
+    assetPath: Assets/ArtRes/UI/Login/pic_charactor_002.png
+    bundlePath: assets/artres/ui/login/pic_charactor_002_png
+    labels: []
+  - assetAddress: pic_charactor_001
+    assetPath: Assets/ArtRes/UI/Login/pic_charactor_001.png
+    bundlePath: assets/artres/ui/login/pic_charactor_001_png
+    labels: []
+  - assetAddress: btn_login_006
+    assetPath: Assets/ArtRes/UI/Login/btn_login_006.png
+    bundlePath: assets/artres/ui/login/btn_login_006_png
+    labels: []
+  - assetAddress: btn_login_005
+    assetPath: Assets/ArtRes/UI/Login/btn_login_005.png
+    bundlePath: assets/artres/ui/login/btn_login_005_png
+    labels: []
+  - assetAddress: btn_login_004
+    assetPath: Assets/ArtRes/UI/Login/btn_login_004.png
+    bundlePath: assets/artres/ui/login/btn_login_004_png
+    labels: []
+  - assetAddress: btn_login_001
+    assetPath: Assets/ArtRes/UI/Login/btn_login_001.png
+    bundlePath: assets/artres/ui/login/btn_login_001_png
     labels: []
