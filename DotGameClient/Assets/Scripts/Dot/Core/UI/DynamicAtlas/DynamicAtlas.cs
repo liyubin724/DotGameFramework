@@ -181,7 +181,7 @@ namespace Dot.Core.UI.Atlas
             Color[] colors = new Color[(int)(rect.width * rect.height)];
             for(int i =0;i<colors.Length;i++)
             {
-                colors[i] = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+                colors[i] = new Color(1.0f, 1.0f, 1.0f, 1.0f);
             }
             Texture.SetPixels((int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, colors);
 

@@ -108,21 +108,5 @@ namespace Dot.Core.Pool
                 Object.Destroy(CachedTransform.gameObject);
             }
         }
-
-
-#if UNITY_EDITOR
-        public string[] GetAssetPaths()
-        {
-            string[] result = new string[goPools.Count];
-            int i = 0;
-            foreach (var key in goPools.Keys)
-            {
-                result[i] = key;
-                ++i;
-            }
-            System.Array.Sort(result);
-            return result;
-        }
-#endif
     }
 }

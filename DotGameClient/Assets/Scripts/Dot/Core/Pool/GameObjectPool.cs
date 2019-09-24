@@ -1,4 +1,4 @@
-﻿using Dot.Core.Asset;
+﻿using Dot.Core.Loader;
 using Dot.Core.Logger;
 using Dot.Core.Timer;
 using System;
@@ -24,7 +24,7 @@ namespace Dot.Core.Pool
 
         public int preloadTotalAmount = 0;
         public int preloadOnceAmout = 1;
-        public OnPoolPreloadComplete preloadCompleteCallback = null; 
+        public OnPoolComplete completeCallback = null; 
 
         public bool isCull = false;
         public int cullOnceAmout = 0;
@@ -98,8 +98,8 @@ namespace Dot.Core.Pool
 
         private void PreloadComplete()
         {
-            preloadCompleteCallback?.Invoke(spawnPool.PoolName, assetPath);
-            preloadCompleteCallback = null;
+            completeCallback?.Invoke(spawnPool.PoolName, assetPath);
+            completeCallback = null;
 
             if(preloadTimerTask!=null)
             {
@@ -283,7 +283,7 @@ namespace Dot.Core.Pool
                 return false;
             }
 
-            preloadCompleteCallback = null;
+            completeCallback = null;
             if (preloadTimerTask != null)
             {
                 TimerManager.GetInstance().RemoveTimer(preloadTimerTask);
@@ -317,7 +317,7 @@ namespace Dot.Core.Pool
             }
             else
             {
-                GameObject gObj = AssetLoader.GetInstance().Instantiate<GameObject>(assetPath);
+                GameObject gObj = (GameObject)AssetManager.GetInstance().InstantiateAsset(assetPath, templateItem);
                 if(gObj!=null)
                 {
                     item = gObj.GetComponent<GameObjectPoolItem>();

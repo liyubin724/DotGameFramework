@@ -36,7 +36,7 @@ namespace Dot.Core.Effect
             effectControllerPool.isAutoClean = false;
             effectControllerPool.preloadTotalAmount = 20;
             effectControllerPool.preloadOnceAmout = 2;
-            effectControllerPool.preloadCompleteCallback = OnInitComplete;
+            effectControllerPool.completeCallback = OnInitComplete;
         }
 
         public void SetScenarioSpawnName(EffectScenarioType scenarioType,string spawnName)
@@ -72,14 +72,14 @@ namespace Dot.Core.Effect
             PoolManager.GetInstance().CreateGameObjectPool(poolData);
         }
         
-        public void PreloadEffect(string spawnName, string assetPath, int preloadCount, OnPoolPreloadComplete callback)
+        public void PreloadEffect(string spawnName, string assetPath, int preloadCount, OnPoolComplete callback)
         {
             PoolData poolData = new PoolData()
             {
                 spawnName = spawnName,
                 assetPath = assetPath,
                 preloadTotalAmount = preloadCount,
-                preloadCompleteCallback = callback,
+                completeCallback = callback,
             };
             PreloadEffect(poolData);
         }

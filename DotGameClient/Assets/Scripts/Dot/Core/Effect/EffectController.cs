@@ -1,5 +1,4 @@
-﻿using Dot.Core.Asset;
-using Dot.Core.Logger;
+﻿using Dot.Core.Logger;
 using Dot.Core.Pool;
 using Dot.Core.Timer;
 using UnityEngine;
@@ -29,7 +28,7 @@ namespace Dot.Core.Effect
 
         private EffectStatus status = EffectStatus.None;
         private TimerTaskInfo timer = null;
-        private AssetHandle effectAssetHandle = null;
+        //private AssetHandle effectAssetHandle = null;
 
         private void OnEnable()
         {
@@ -64,14 +63,14 @@ namespace Dot.Core.Effect
 
         public void SetEffect(string effectPath, string spawnName=null)
         {
-            effectAssetHandle?.Release();
-            effectAssetHandle = AssetLoader.GetInstance().InstanceAssetAsync(effectPath, OnEffectLoadComplete, null, spawnName);
+            //effectAssetHandle?.Release();
+            //effectAssetHandle = AssetLoader.GetInstance().InstanceAssetAsync(effectPath, OnEffectLoadComplete, null, spawnName);
         }
 
         private void OnEffectLoadComplete(string effectPath,UnityObject uObj,SystemObject userData)
         {
             string spawnName = userData as string;
-            effectAssetHandle = null;
+            //effectAssetHandle = null;
             GameObject effectGO = (GameObject)uObj;
             if(uObj == null)
             {
@@ -162,7 +161,7 @@ namespace Dot.Core.Effect
 
         private void Dead()
         {
-            effectAssetHandle?.Release();
+            //effectAssetHandle?.Release();
             effectBehaviour?.Dead();
             status = EffectStatus.Dead;
 

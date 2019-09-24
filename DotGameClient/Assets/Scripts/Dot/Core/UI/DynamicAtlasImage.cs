@@ -1,13 +1,15 @@
-﻿using Dot.Core.UI.Atlas;
+﻿using Dot.Core.Loader;
+using Dot.Core.UI.Atlas;
 using UnityEngine;
 using UnityEngine.UI;
+using SystemObject = System.Object;
+using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.UI
 {
     public class DynamicAtlasImage : Image
     {
-        private bool m_isLoading = false;
-        private bool m_IsLoadFinish = false;
+        private AssetLoaderHandle imageLoaderHandle = null;
 
         [SerializeField]
         private string m_AtlasName = "";
@@ -65,10 +67,11 @@ namespace Dot.Core.UI
         {
             if(!string.IsNullOrEmpty(m_RawImagePath))
             {
-                if(m_isLoading)
+                if(imageLoaderHandle!=null)
                 {
-                    DynamicAtlasManager.GetInstance().CancelLoadRawImage(AtlasName, RawImagePath,OnLoadImageComplete);
-                }else if(m_IsLoadFinish)
+                    AssetManager.GetInstance().UnloadAssetLoader(imageLoaderHandle);
+                    imageLoaderHandle = null;
+                }else if(sprite!=null)
                 {
                     DynamicAtlasManager.GetInstance().ReleaseSprite(AtlasName, RawImagePath);
                 }
@@ -77,22 +80,37 @@ namespace Dot.Core.UI
 
         private void ChangeImage()
         {
-            if (!string.IsNullOrEmpty(m_RawImagePath))
+            if (!string.IsNullOrEmpty(RawImagePath))
             {
-                m_isLoading = true;
-                m_IsLoadFinish = false;
-
-                DynamicAtlasManager.GetInstance().LoadRawImage(AtlasName, RawImagePath, OnLoadImageComplete);
+                if(DynamicAtlasManager.GetInstance().Contains(AtlasName, RawImagePath))
+                {
+                    SetSprite();
+                }
+                else
+                {
+                    imageLoaderHandle = AssetManager.GetInstance().LoadAssetAsync(m_RawImagePath, OnLoadImageComplete);
+                }
             }
         }
 
-        private void OnLoadImageComplete(Sprite sprite)
+        private void OnLoadImageComplete(string pathOrAddress, UnityObject uObj, SystemObject userData)
         {
-            m_isLoading = false;
-            m_IsLoadFinish = true;
+            imageLoaderHandle = null;
+            if(pathOrAddress == RawImagePath)
+            {
+                Texture2D texture = uObj as Texture2D;
+                DynamicAtlasManager.GetInstance().AddTexture(AtlasName, RawImagePath, texture);
+
+                SetSprite();
+            }
+        }
+
+        private void SetSprite()
+        {
+            Sprite sprite = DynamicAtlasManager.GetInstance().GetSprite(AtlasName, RawImagePath);
             this.sprite = sprite;
 
-            if(IsSetNativeSize)
+            if (IsSetNativeSize)
                 SetNativeSize();
         }
 

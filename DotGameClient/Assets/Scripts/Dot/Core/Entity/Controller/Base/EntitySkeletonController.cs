@@ -1,9 +1,8 @@
-﻿using Dot.Core.Asset;
-using Dot.Core.Event;
+﻿using Dot.Core.Event;
 using Dot.Core.Logger;
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
 using SystemObject = System.Object;
+using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Entity.Controller
 {
@@ -13,7 +12,7 @@ namespace Dot.Core.Entity.Controller
         private GameObject skeletonGO = null;
         private NodeBehaviour nodeBehaviour = null;
 
-        private AssetHandle skeletonAssetHandle = null;
+        //private AssetHandle skeletonAssetHandle = null;
         
         public bool HasSkeleton() => skeletonGO == null;
 
@@ -26,8 +25,8 @@ namespace Dot.Core.Entity.Controller
 
             this.skeletonAddress = skeletonAddress;
 
-            skeletonAssetHandle?.Release();
-            skeletonAssetHandle = AssetLoader.GetInstance().InstanceAssetAsync(skeletonAddress, OnSkeletonLoadFinish, null,null);
+            //skeletonAssetHandle?.Release();
+            //skeletonAssetHandle = AssetLoader.GetInstance().InstanceAssetAsync(skeletonAddress, OnSkeletonLoadFinish, null,null);
         }
 
         public void RemoveSkeleton()
@@ -37,15 +36,15 @@ namespace Dot.Core.Entity.Controller
                 UnityObject.Destroy(skeletonGO);
                 skeletonGO = null;
             }
-            skeletonAssetHandle?.Release();
-            skeletonAssetHandle = null;
+            //skeletonAssetHandle?.Release();
+            //skeletonAssetHandle = null;
             skeletonAddress = null;
             nodeBehaviour = null;
         }
 
         private void OnSkeletonLoadFinish(string address,UnityObject uObj,SystemObject userData)
         {
-            skeletonAssetHandle = null;
+            //skeletonAssetHandle = null;
             skeletonGO = uObj as GameObject;
             if(skeletonGO == null)
             {

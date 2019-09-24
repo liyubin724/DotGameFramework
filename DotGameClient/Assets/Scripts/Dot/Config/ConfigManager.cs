@@ -1,8 +1,5 @@
-﻿using Dot.Core.Asset;
-using Dot.Core.Util;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Dot.Config
 {
@@ -19,19 +16,19 @@ namespace Dot.Config
                 finishCallback();
                 return;
             }
-            AssetLoader.GetInstance().LoadAssetAsync(CONFIG_ADDRESS_NAME, (address, uObj, userData) => {
-                configData = uObj as ConfigData;
+            //AssetLoader.GetInstance().LoadAssetAsync(CONFIG_ADDRESS_NAME, (address, uObj, userData) => {
+            //    configData = uObj as ConfigData;
 
-                AssetHandle handle = null;
-                handle = AssetLoader.GetInstance().LoadAssetsByLabeAsync("timeline_data", (address2, uObj2, userData2) =>
-                {
-                    timeLineConfigDic.Add(address2, (uObj2 as TextAsset).text);
-                }, null, (addresses, uObjs, userData3) =>
-                {
-                    handle.Release();
-                }, null, null);
+            //    AssetHandle handle = null;
+            //    handle = AssetLoader.GetInstance().LoadAssetsByLabeAsync("timeline_data", (address2, uObj2, userData2) =>
+            //    {
+            //        timeLineConfigDic.Add(address2, (uObj2 as TextAsset).text);
+            //    }, null, (addresses, uObjs, userData3) =>
+            //    {
+            //        handle.Release();
+            //    }, null, null);
 
-            }, null, null);
+            //}, null, null);
         }
 
         public string GetTimeLineConfig(string path)

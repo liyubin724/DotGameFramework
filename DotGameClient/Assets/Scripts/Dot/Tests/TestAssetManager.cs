@@ -149,9 +149,6 @@ namespace Dot.Tests
                         UnityEngine.Random.InitState((int)Time.realtimeSinceStartup);
                         int index = UnityEngine.Random.Range(1, 10);
                         List<string> paths = new List<string>();
-                        //paths.Add("ch_pc_hou_006.prefab");
-                        //paths.Add("ch_pc_hou_008.prefab");
-                        //paths.Add("ch_pc_hou_009.prefab");
                         for (int i = 0; i < index; i++)
                         {
                             UnityEngine.Random.InitState((int)System.DateTime.Now.Ticks + i);

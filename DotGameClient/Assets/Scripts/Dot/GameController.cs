@@ -1,5 +1,4 @@
-﻿using Dot.Core.Asset;
-using Dot.Core.Loader;
+﻿using Dot.Core.Loader;
 using Dot.Core.Timer;
 using Dot.Core.Util;
 using UnityEngine;
@@ -23,7 +22,6 @@ namespace Dot
         }
 
         private TimerManager timerMgr = null;
-        private AssetLoader assetLoader = null;
 
         private void Awake()
         {
@@ -35,7 +33,6 @@ namespace Dot
             gameController = this;
             
             timerMgr = TimerManager.GetInstance();
-            assetLoader = AssetLoader.GetInstance();
         }
 
         private float delayTime = 0;
@@ -44,7 +41,7 @@ namespace Dot
             float deltaTime = Time.deltaTime;
 
             timerMgr.DoUpdate(deltaTime);
-            assetLoader.DoUpdate();
+
             delayTime += deltaTime;
             //if(delayTime>=1.0f)
             {

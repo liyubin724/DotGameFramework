@@ -1,4 +1,4 @@
-﻿using Dot.Core.Asset;
+﻿using Dot.Core.Loader;
 using Dot.Core.Logger;
 using Dot.Core.Timer;
 using Dot.Core.Util;
@@ -8,7 +8,7 @@ using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Pool
 {
-    public delegate void OnPoolPreloadComplete(string spawnName, string assetPath);
+    public delegate void OnPoolComplete(string spawnName, string assetPath);
 
     /// <summary>
     /// 对于需要Pool异步加载的资源，可以通过PoolData指定对应池的属性，等到资源加载完成将会使用指定的属性设置缓存池
@@ -21,7 +21,7 @@ namespace Dot.Core.Pool
 
         public int preloadTotalAmount = 0;
         public int preloadOnceAmout = 1;
-        public OnPoolPreloadComplete preloadCompleteCallback = null;
+        public OnPoolComplete completeCallback = null;
 
         public bool isCull = false;
         public int cullOnceAmout = 0;
@@ -29,6 +29,8 @@ namespace Dot.Core.Pool
 
         public int limitMaxAmount = 0;
         public int limitMinAmount = 0;
+
+        internal AssetLoaderHandle handle = null;
     }
     
     public class PoolManager : Util.Singleton<PoolManager>
@@ -39,7 +41,7 @@ namespace Dot.Core.Pool
         private float cullTimeInterval = 30f;
         private TimerTaskInfo cullTimerTask = null;
 
-        private Dictionary<AssetHandle, PoolData> poolDataDic = new Dictionary<AssetHandle, PoolData>();
+        private List<PoolData> poolDatas = new List<PoolData>();
 
         protected override void DoInit()
         {
@@ -108,16 +110,17 @@ namespace Dot.Core.Pool
         /// <param name="assetPath"></param>
         public void DeleteGameObjectPool(string spawnName,string assetPath)
         {
-            foreach (var kvp in poolDataDic)
+            for (int i = 0; i < poolDatas.Count; i++)
             {
-                if (kvp.Value.assetPath == assetPath && kvp.Value.spawnName == spawnName)
+                PoolData pData = poolDatas[i];
+                if (pData.spawnName == spawnName && pData.assetPath == assetPath)
                 {
-                    poolDataDic.Remove(kvp.Key);
+                    poolDatas.Remove(pData);
                     return;
                 }
             }
 
-            if(HasSpawnPool(spawnName))
+            if (HasSpawnPool(spawnName))
             {
                 SpawnPool spawnPool = GetSpawnPool(spawnName);
                 spawnPool.DeleteGameObjectPool(assetPath);
@@ -147,11 +150,12 @@ namespace Dot.Core.Pool
         /// <param name="poolData"></param>
         public void CreateGameObjectPool(PoolData poolData)
         {
-            foreach(var kvp in poolDataDic)
+            for(int i =0;i< poolDatas.Count;i++)
             {
-                if(kvp.Value.assetPath == poolData.assetPath && kvp.Value.spawnName == poolData.spawnName)
+                PoolData pData = poolDatas[i];
+                if(pData.spawnName == poolData.spawnName && pData.assetPath == poolData.assetPath)
                 {
-                    DebugLogger.LogError("");
+                    Debug.LogError("PoolManager::CreateGameObjectPool->pool data has been added");
                     return;
                 }
             }
@@ -161,23 +165,22 @@ namespace Dot.Core.Pool
                 CreateSpawnPool(poolData.spawnName);
             }
 
-            AssetHandle assetHandle = AssetLoader.GetInstance().InstanceAssetAsync(poolData.assetPath, OnLoadComplete, null, poolData);
-            poolDataDic.Add(assetHandle, poolData);
+            AssetLoaderHandle assetHandle = AssetManager.GetInstance().InstanceAssetAsync(poolData.assetPath, OnLoadComplete, AssetLoaderPriority.Default,null, poolData);
+            poolData.handle = assetHandle;
+            poolDatas.Add(poolData);
         }
 
         private void OnLoadComplete(string assetPath,UnityObject uObj,System.Object userData)
         {
             PoolData poolData = userData as PoolData;
-            AssetHandle assetHandle = null;
-            foreach (var kvp in poolDataDic)
+
+            if(poolDatas.Contains(poolData))
             {
-                if(kvp.Value == poolData)
-                {
-                    assetHandle = kvp.Key;
-                    break;
-                }
+                UnityObject.Destroy(uObj);
+                return;
             }
-            poolDataDic.Remove(assetHandle);
+
+            poolDatas.Remove(poolData);
             
             if(uObj is GameObject templateGO)
             {
@@ -188,7 +191,7 @@ namespace Dot.Core.Pool
                     objPool.isAutoClean = poolData.isAutoClean;
                     objPool.preloadTotalAmount = poolData.preloadTotalAmount;
                     objPool.preloadOnceAmout = poolData.preloadOnceAmout;
-                    objPool.preloadCompleteCallback = poolData.preloadCompleteCallback;
+                    objPool.completeCallback = poolData.completeCallback;
                     objPool.isCull = poolData.isCull;
                     objPool.cullOnceAmout = poolData.cullOnceAmout;
                     objPool.cullDelayTime = poolData.cullDelayTime;
@@ -233,21 +236,6 @@ namespace Dot.Core.Pool
             cullTimerTask = null;
             spawnDic = null;
         }
-        
-#if UNITY_EDITOR
-        public string[] GetSpawnPoolNames()
-        {
-            string[] names = new string[spawnDic.Count];
-            int i = 0;
-            foreach (var key in spawnDic.Keys)
-            {
-                names[i] = key;
-                ++i;
-            }
-
-            System.Array.Sort(names);
-            return names;
-        }
-#endif
+       
     }
 }

@@ -121,6 +121,14 @@ MonoBehaviour:
       assetPath: Assets/ArtRes/Shaders/RoundRectMat.mat
       bundlePath: assets/artres/shaders/roundrectmat_mat
       labels: []
+  - groupName: Scene
+    isMain: 1
+    isPreload: 0
+    assetDatas:
+    - assetAddress: other_scene
+      assetPath: Assets/ArtRes/Scenes/other_scene.unity
+      bundlePath: assets/artres/scenes/other_scene_unity
+      labels: []
   - groupName: Sprite Atlas
     isMain: 1
     isPreload: 0

@@ -66,7 +66,7 @@ namespace Dot.Core.Loader
 
             if(pathOrAddresses == null || pathOrAddresses.Length == 0)
             {
-                Debug.LogError($"AssetLoader::LoadOrInstanceBatchAssetAsync->pathOrAddresses is Null");
+                Debug.LogError($"AAssetLoader::LoadOrInstanceBatchAssetAsync->pathOrAddresses is Null");
                 return null;
             }
 
@@ -79,7 +79,7 @@ namespace Dot.Core.Loader
                 if (loaderData.assetPaths == null)
                 {
                     loaderDataPool.Release(loaderData);
-                    Debug.LogError($"ResourceLoader::GetLoaderData->asset not found.address = {string.Join(",", pathOrAddresses)}");
+                    Debug.LogError($"AAssetLoader::GetLoaderData->asset not found.address = {string.Join(",", pathOrAddresses)}");
                     return null;
                 }
             }

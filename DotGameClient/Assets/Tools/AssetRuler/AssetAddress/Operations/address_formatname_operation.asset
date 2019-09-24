@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c558b87888a494a40b4f204e53a5df08, type: 3}
-  m_Name: address_filename_operation 2
+  m_Name: address_formatname_operation
   m_EditorClassIdentifier: 
   addressMode: 2
   fileNameFormat: '{0}'
