@@ -15,7 +15,7 @@ namespace Dot.Core.UI
             Loop,
             Pingpong,
         }
-
+        public bool isSetNativeSize = false;
         public int frameRate = 8;
         public bool autoPlayOnAwake = true;
         public AnimationPlayMode playMode = AnimationPlayMode.Loop;
@@ -99,6 +99,10 @@ namespace Dot.Core.UI
             if(SpriteName!=spriteName)
             {
                 SpriteName = spriteName;
+                if(isSetNativeSize)
+                {
+                    SetNativeSize();
+                }
             }
         }
 

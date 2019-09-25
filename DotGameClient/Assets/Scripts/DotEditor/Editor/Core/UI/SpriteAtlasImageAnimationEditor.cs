@@ -6,6 +6,7 @@ namespace DotEditor.Core.UI
     [CustomEditor(typeof(SpriteAtlasImageAnimation), false)]
     public class SpriteAtlasImageAnimationEditor : SpriteAtlasImageEditor
     {
+        private SerializedProperty isSetNativeSize;
         private SerializedProperty frameRate;
         private SerializedProperty autoPlayOnAwake;
         private SerializedProperty playMode;
@@ -16,6 +17,7 @@ namespace DotEditor.Core.UI
         protected override void OnEnable()
         {
             base.OnEnable();
+            isSetNativeSize = serializedObject.FindProperty("isSetNativeSize");
             frameRate = serializedObject.FindProperty("frameRate");
             autoPlayOnAwake = serializedObject.FindProperty("autoPlayOnAwake");
             playMode = serializedObject.FindProperty("playMode");
@@ -42,6 +44,7 @@ namespace DotEditor.Core.UI
             EditorGUILayout.PropertyField(spriteIndex);
             EditorGUILayout.PropertyField(spriteStartIndex);
             EditorGUILayout.PropertyField(spriteEndIndex);
+            EditorGUILayout.PropertyField(isSetNativeSize);
 
             if (spriteIndex.intValue > spriteEndIndex.intValue || spriteIndex.intValue < spriteStartIndex.intValue)
             {
