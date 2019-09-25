@@ -19,11 +19,11 @@ namespace Dot.Core.Pool
         public bool isAutoClean = true;
 
         public int preloadTotalAmount = 0;
-        public int preloadOnceAmout = 1;
+        public int preloadOnceAmount = 1;
         public OnPoolComplete completeCallback = null;
 
         public bool isCull = false;
-        public int cullOnceAmout = 0;
+        public int cullOnceAmount = 0;
         public int cullDelayTime = 30;
 
         public int limitMaxAmount = 0;
@@ -156,10 +156,10 @@ namespace Dot.Core.Pool
                     GameObjectPool objPool = spawnPool.CreateGameObjectPool(poolData.assetPath, templateGO);
                     objPool.isAutoClean = poolData.isAutoClean;
                     objPool.preloadTotalAmount = poolData.preloadTotalAmount;
-                    objPool.preloadOnceAmout = poolData.preloadOnceAmout;
+                    objPool.preloadOnceAmount = poolData.preloadOnceAmount;
                     objPool.completeCallback = poolData.completeCallback;
                     objPool.isCull = poolData.isCull;
-                    objPool.cullOnceAmout = poolData.cullOnceAmout;
+                    objPool.cullOnceAmount = poolData.cullOnceAmount;
                     objPool.cullDelayTime = poolData.cullDelayTime;
                     objPool.limitMaxAmount = poolData.limitMaxAmount;
                     objPool.limitMinAmount = poolData.limitMinAmount;

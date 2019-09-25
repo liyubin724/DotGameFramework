@@ -26,10 +26,10 @@ namespace Dot.Core.Pool
         public bool isAutoClean = false;
 
         public int preloadTotalAmount = 0;
-        public int preloadOnceAmout = 1;
+        public int preloadOnceAmount = 1;
 
         public bool isCull = false;
-        public int cullOnceAmout = 0;
+        public int cullOnceAmount = 0;
         public int cullDelayTime = 30;
 
         public int limitMaxAmount = 0;
@@ -74,14 +74,14 @@ namespace Dot.Core.Pool
             }
             else
             {
-                int poa = preloadOnceAmout;
+                int poa = preloadOnceAmount;
                 if (poa == 0)
                 {
                     poa = preloadTotalAmount;
                 }
                 else
                 {
-                    poa = Mathf.Min(preloadOnceAmout, preloadTotalAmount - curAmount);
+                    poa = Mathf.Min(preloadOnceAmount, preloadTotalAmount - curAmount);
                 }
                 for (int i = 0; i < poa; ++i)
                 {
@@ -275,9 +275,9 @@ namespace Dot.Core.Pool
                 }
             }
 
-            if (cullOnceAmout > 0 && cullOnceAmout < cullAmout)
+            if (cullOnceAmount > 0 && cullOnceAmount < cullAmout)
             {
-                cullAmout = cullOnceAmout;
+                cullAmout = cullOnceAmount;
             }
 
             for (int i = 0; i < cullAmout && unusedItemQueue.Count>0; i++)

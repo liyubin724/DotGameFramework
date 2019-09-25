@@ -34,7 +34,7 @@ namespace Dot.Core.Effect
             effectControllerPool = spawnPool.CreateGameObjectPool(CONTROLLER_POOL_PATH, GetEffectControllerTemplate(),true,true);
             effectControllerPool.isAutoClean = false;
             effectControllerPool.preloadTotalAmount = 20;
-            effectControllerPool.preloadOnceAmout = 2;
+            effectControllerPool.preloadOnceAmount = 2;
             effectControllerPool.completeCallback = OnInitComplete;
         }
 
