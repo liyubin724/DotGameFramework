@@ -11,7 +11,7 @@ namespace DotEditor.Core.Pool
 {
     public class PoolManagerWindow : EditorWindow
     {
-        [MenuItem("Game/Pool/Pool Manager Window")]
+        [MenuItem("Game/Manager/Pool Manager Window")]
         public static void ShowWin()
         {
             PoolManagerWindow win = GetWindow<PoolManagerWindow>();
