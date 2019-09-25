@@ -8,6 +8,7 @@ namespace DotEditor.Core.UI
     {
         private SerializedProperty frameRate;
         private SerializedProperty autoPlayOnAwake;
+        private SerializedProperty playMode;
         private SerializedProperty spriteNamePrefix;
         private SerializedProperty spriteIndex;
         private SerializedProperty spriteStartIndex;
@@ -17,6 +18,7 @@ namespace DotEditor.Core.UI
             base.OnEnable();
             frameRate = serializedObject.FindProperty("frameRate");
             autoPlayOnAwake = serializedObject.FindProperty("autoPlayOnAwake");
+            playMode = serializedObject.FindProperty("playMode");
             spriteNamePrefix = serializedObject.FindProperty("spriteNamePrefix");
             spriteIndex = serializedObject.FindProperty("spriteIndex");
             spriteStartIndex = serializedObject.FindProperty("spriteStartIndex");
@@ -35,6 +37,7 @@ namespace DotEditor.Core.UI
                 frameRate.intValue = 0;
             }
             EditorGUILayout.PropertyField(autoPlayOnAwake);
+            EditorGUILayout.PropertyField(playMode);
             EditorGUILayout.PropertyField(spriteNamePrefix);
             EditorGUILayout.PropertyField(spriteIndex);
             EditorGUILayout.PropertyField(spriteStartIndex);

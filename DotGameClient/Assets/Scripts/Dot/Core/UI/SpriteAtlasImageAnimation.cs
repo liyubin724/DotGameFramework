@@ -3,12 +3,22 @@
 namespace Dot.Core.UI
 {
 
+
+
     [AddComponentMenu("UI/Atlas Image Animation", 13)]
     [ExecuteInEditMode]
     public class SpriteAtlasImageAnimation : SpriteAtlasImage
     {
+        public enum AnimationPlayMode
+        {
+            Once,
+            Loop,
+            Pingpong,
+        }
+
         public int frameRate = 8;
         public bool autoPlayOnAwake = true;
+        public AnimationPlayMode playMode = AnimationPlayMode.Loop;
         public string spriteNamePrefix = "";
         public int spriteIndex = 0;
         public int spriteStartIndex = 0;
@@ -17,6 +27,7 @@ namespace Dot.Core.UI
         private float frameTime = 0.0f;
         private float elapseTime = 0.0f;
         private bool isPlaying = false;
+        private bool isForward = true;
         protected override void Awake()
         {
             base.Awake();
@@ -30,7 +41,6 @@ namespace Dot.Core.UI
                 isPlaying = true;
                 ChangeAnimation();
             }
-
         }
 
         private void Update()
@@ -40,7 +50,38 @@ namespace Dot.Core.UI
                 elapseTime += Time.deltaTime;
                 if(elapseTime >= frameTime)
                 {
-                    ++spriteIndex;
+                    if(playMode == AnimationPlayMode.Once)
+                    {
+                        ++spriteIndex;
+                        if (spriteIndex==spriteEndIndex)
+                        {
+                            isPlaying = false;
+                        }
+                    }else if(playMode == AnimationPlayMode.Loop)
+                    {
+                        ++spriteIndex;
+                        if(spriteIndex>spriteEndIndex)
+                        {
+                            spriteIndex = spriteStartIndex;
+                        }
+                    }
+                    else if(playMode == AnimationPlayMode.Pingpong)
+                    {
+                        if(isForward)
+                        {
+                            ++spriteIndex;
+                        }else
+                        {
+                            --spriteIndex;
+                        }
+                        if(spriteIndex==spriteEndIndex)
+                        {
+                            isForward = false; 
+                        }else if(spriteIndex == spriteStartIndex)
+                        {
+                            isForward = true;
+                        }
+                    }
                     ChangeAnimation();
 
                     elapseTime -= frameTime;
