@@ -138,6 +138,9 @@ namespace Dot.Core.UI
             if(sprite != null)
             {
                 base.OnPopulateMesh(vh);
+            }else
+            {
+                vh.Clear();
             }
         }
 
