@@ -2,9 +2,6 @@
 
 namespace Dot.Core.Pool
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class GameObjectPoolItem : MonoBehaviour
     {
         public string AssetPath { get; set; } = string.Empty;
@@ -73,7 +70,7 @@ namespace Dot.Core.Pool
                 Destroy(CachedGameObject);
                 return;
             }
-            gObjPool.ReleasePoolItem(this);
+            gObjPool.ReleasePoolItem(CachedGameObject);
         }
     }
 }

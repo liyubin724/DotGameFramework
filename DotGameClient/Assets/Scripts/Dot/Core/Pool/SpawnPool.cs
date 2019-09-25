@@ -24,6 +24,12 @@ namespace Dot.Core.Pool
             CachedTransform = new GameObject($"Spawn_{PoolName}").transform;
             CachedTransform.SetParent(parentTran, false);
         }
+
+        public bool HasGameObjectPool(string assetPath)
+        {
+            return goPools.ContainsKey(assetPath);
+        }
+
         /// <summary>
         /// 缓存池中将默认以资源的路径为唯一标识，通过资源唯一标识可以获致到对应的缓存池
         /// </summary>
@@ -43,7 +49,7 @@ namespace Dot.Core.Pool
         /// <param name="assetPath">资源唯一标签，一般使用资源路径</param>
         /// <param name="template">模板GameObject</param>
         /// <returns></returns>
-        public GameObjectPool CreateGameObjectPool(string assetPath,GameObject template)
+        public GameObjectPool CreateGameObjectPool(string assetPath,GameObject template, bool isInstance = false, bool isRuntimeInstance = false)
         {
             if(template == null)
             {
@@ -57,7 +63,7 @@ namespace Dot.Core.Pool
             else
             {
                 goPool = new GameObjectPool();
-                goPool.InitPool(this, assetPath, template);
+                goPool.InitPool(this, assetPath, template,isInstance,isRuntimeInstance);
 
                 goPools.Add(assetPath, goPool);
             }
@@ -72,8 +78,7 @@ namespace Dot.Core.Pool
             GameObjectPool gObjPool = GetGameObjectPool(assetPath);
             if(gObjPool!=null)
             {
-                gObjPool.DestroyPool(true);
-
+                gObjPool.DestroyPool();
                 goPools.Remove(assetPath);
             }
         }
@@ -89,24 +94,14 @@ namespace Dot.Core.Pool
             }
         }
 
-        internal void DestroyPool(bool isForce = false)
+        internal void DestroySpawn()
         {
-            List<string> clearPoolNames = new List<string>();
             foreach(var kvp in goPools)
             {
-                if(kvp.Value.DestroyPool(isForce))
-                {
-                    clearPoolNames.Add(kvp.Key);
-                }
+                kvp.Value.DestroyPool();
             }
-            foreach(var name in clearPoolNames)
-            {
-                goPools.Remove(name);
-            }
-            if(goPools.Count == 0)
-            {
-                Object.Destroy(CachedTransform.gameObject);
-            }
+            goPools.Clear();
+            Object.Destroy(CachedTransform.gameObject);
         }
     }
 }

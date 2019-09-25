@@ -1,5 +1,4 @@
 ﻿using Dot.Core.Loader;
-using Dot.Core.Logger;
 using Dot.Core.Timer;
 using Dot.Core.Util;
 using System.Collections.Generic;
@@ -38,7 +37,7 @@ namespace Dot.Core.Pool
         private Transform cachedTransform = null;
         private Dictionary<string, SpawnPool> spawnDic = new Dictionary<string, SpawnPool>();
 
-        private float cullTimeInterval = 30f;
+        private float cullTimeInterval = 60f;
         private TimerTaskInfo cullTimerTask = null;
 
         private List<PoolData> poolDatas = new List<PoolData>();
@@ -99,57 +98,30 @@ namespace Dot.Core.Pool
         {
             if (spawnDic.TryGetValue(name, out SpawnPool spawn))
             {
-                spawn.DestroyPool(true);
+                spawn.DestroySpawn();
                 spawnDic.Remove(name);
             }
-        }
-        /// <summary>
-        /// 删除指定分组中的指定的缓存池
-        /// </summary>
-        /// <param name="spawnName"></param>
-        /// <param name="assetPath"></param>
-        public void DeleteGameObjectPool(string spawnName,string assetPath)
-        {
-            for (int i = 0; i < poolDatas.Count; i++)
-            {
-                PoolData pData = poolDatas[i];
-                if (pData.spawnName == spawnName && pData.assetPath == assetPath)
-                {
-                    poolDatas.Remove(pData);
-                    return;
-                }
-            }
-
-            if (HasSpawnPool(spawnName))
-            {
-                SpawnPool spawnPool = GetSpawnPool(spawnName);
-                spawnPool.DeleteGameObjectPool(assetPath);
-            }
-        }
-
-        /// <summary>
-        /// 将GameObject回收到缓存池中
-        /// </summary>
-        /// <param name="go"></param>
-        public void ReleaseGameObjectToPool(GameObject go)
-        {
-            GameObjectPoolItem pItem = go.GetComponent<GameObjectPoolItem>();
-            if (pItem == null)
-            {
-                DebugLogger.LogError("PoolManager::ReleaseGameObjectToPool->poolItem is null");
-
-                UnityObject.Destroy(go);
-                return;
-            }
-            pItem.ReleaseItem();
         }
 
         /// <summary>
         /// 使用PoolData进行资源加载，资源加载完成后创建对应的缓存池
         /// </summary>
         /// <param name="poolData"></param>
-        public void CreateGameObjectPool(PoolData poolData)
+        public void LoadAssetToCreateGameObjectPool(PoolData poolData)
         {
+            SpawnPool spawnPool = GetSpawnPool(poolData.spawnName);
+            if(spawnPool == null)
+            {
+                CreateSpawnPool(poolData.spawnName);
+            }else
+            {
+                if(spawnPool.HasGameObjectPool(poolData.assetPath))
+                {
+                    Debug.LogWarning("PoolManager::LoadAssetToCreateGameObjectPool->GameObjectPool has been created!");
+                    return;
+                }
+            }
+
             for(int i =0;i< poolDatas.Count;i++)
             {
                 PoolData pData = poolDatas[i];
@@ -160,12 +132,7 @@ namespace Dot.Core.Pool
                 }
             }
 
-            if(!HasSpawnPool(poolData.spawnName))
-            {
-                CreateSpawnPool(poolData.spawnName);
-            }
-
-            AssetLoaderHandle assetHandle = AssetManager.GetInstance().InstanceAssetAsync(poolData.assetPath, OnLoadComplete, AssetLoaderPriority.Default,null, poolData);
+            AssetLoaderHandle assetHandle = AssetManager.GetInstance().LoadAssetAsync(poolData.assetPath, OnLoadComplete, AssetLoaderPriority.Default,null, poolData);
             poolData.handle = assetHandle;
             poolDatas.Add(poolData);
         }
@@ -176,7 +143,6 @@ namespace Dot.Core.Pool
 
             if(!poolDatas.Contains(poolData))
             {
-                UnityObject.Destroy(uObj);
                 return;
             }
 
@@ -184,9 +150,9 @@ namespace Dot.Core.Pool
             
             if(uObj is GameObject templateGO)
             {
-                if(HasSpawnPool(poolData.spawnName))
+                SpawnPool spawnPool = GetSpawnPool(poolData.spawnName);
+                if(spawnPool!=null)
                 {
-                    SpawnPool spawnPool = GetSpawnPool(poolData.spawnName);
                     GameObjectPool objPool = spawnPool.CreateGameObjectPool(poolData.assetPath, templateGO);
                     objPool.isAutoClean = poolData.isAutoClean;
                     objPool.preloadTotalAmount = poolData.preloadTotalAmount;
@@ -198,14 +164,6 @@ namespace Dot.Core.Pool
                     objPool.limitMaxAmount = poolData.limitMaxAmount;
                     objPool.limitMinAmount = poolData.limitMinAmount;
                 }
-                else
-                {
-                    UnityObject.Destroy(uObj);
-                }
-                
-            }else
-            {
-                UnityObject.Destroy(uObj);
             }
         }
 
@@ -221,7 +179,7 @@ namespace Dot.Core.Pool
         {
             foreach (var kvp in spawnDic)
             {
-                kvp.Value.DestroyPool(true);
+                kvp.Value.DestroySpawn();
             }
             spawnDic.Clear();
         }

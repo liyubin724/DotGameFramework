@@ -194,13 +194,13 @@ namespace Dot.Tests
                                 Debug.Log("Pool Create Success");
                             },
                         };
-                        PoolManager.GetInstance().CreateGameObjectPool(poolData);
+                        PoolManager.GetInstance().LoadAssetToCreateGameObjectPool(poolData);
                     }
 
                     if(GUILayout.Button("Get From Pool"))
                     {
                         GameObjectPool goPool = PoolManager.GetInstance().GetSpawnPool("CubePool").GetGameObjectPool("Cube.prefab");
-                        GameObject go = goPool.GetGameObjectItem();
+                        GameObject go = goPool.GetPoolItem();
                         go.transform.SetParent(null, false);
                         cachedObjects.Add(go);
                     }

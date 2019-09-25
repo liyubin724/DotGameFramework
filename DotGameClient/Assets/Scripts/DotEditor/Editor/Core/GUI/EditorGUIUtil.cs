@@ -424,5 +424,15 @@ namespace DotEditor.Core.EGUI
         }
     }
 
+    public static class EditorGUIStyle
+    {
+        public static GUIStyle GetBoldLabelStyle(int fontSize)
+        {
+            GUIStyle style = new GUIStyle(EditorStyles.label);
+            style.fontStyle = FontStyle.Bold;
+            style.fontSize = fontSize;
 
+            return style;
+        }
+    }
 }
