@@ -46,6 +46,12 @@ namespace DotEditor.Core.UI
             GameObject go = UGUIExtensionDefaultControls.CreateDynamicAtlasImage(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
         }
+        [MenuItem("GameObject/UI/Atlas Image Animation", false, 1002)]
+        static public void AddAtlasImageAnimation(MenuCommand menuCommand)
+        {
+            GameObject go = UGUIExtensionDefaultControls.CreateAtlasImageAnimation(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
 
         private static void SetPositionVisibleinSceneView(RectTransform canvasRTransform, RectTransform itemTransform)
         {

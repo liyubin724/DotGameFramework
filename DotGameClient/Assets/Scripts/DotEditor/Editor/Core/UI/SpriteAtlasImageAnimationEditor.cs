@@ -30,6 +30,10 @@ namespace DotEditor.Core.UI
             DrawSpriteAtlas();
 
             EditorGUILayout.PropertyField(frameRate);
+            if(frameRate.intValue<0)
+            {
+                frameRate.intValue = 0;
+            }
             EditorGUILayout.PropertyField(autoPlayOnAwake);
             EditorGUILayout.PropertyField(spriteNamePrefix);
             EditorGUILayout.PropertyField(spriteIndex);
@@ -48,6 +52,37 @@ namespace DotEditor.Core.UI
             DrawNativeSize();
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        protected override void OnSpriteSelectedCallback(SerializedProperty spriteProperty, string spriteName)
+        {
+            spriteProperty.serializedObject.Update();
+            if (string.IsNullOrEmpty(spriteName))
+            {
+                return;
+            }
+            
+            int nDigitStartIndex = -1;
+            for(int i = spriteName.Length-1;i>=0;i--)
+            {
+                if(!char.IsDigit(spriteName[i]))
+                {
+                    nDigitStartIndex = i;
+                    break;
+                }
+            }
+            if(nDigitStartIndex>0)
+            {
+                string prefix = spriteName.Substring(0, nDigitStartIndex+1);
+                if (prefix != spriteNamePrefix.stringValue)
+                {
+                    spriteNamePrefix.stringValue = prefix;
+                }
+                string index = spriteName.Substring(nDigitStartIndex + 1, spriteName.Length - nDigitStartIndex - 1);
+                spriteIndex.intValue = int.Parse(index);
+            }
+            spriteProperty.stringValue = spriteName;
+            spriteProperty.serializedObject.ApplyModifiedProperties();
         }
     }
 }

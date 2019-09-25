@@ -94,5 +94,12 @@ namespace DotEditor.Core.UI
             return go;
         }
 
+        public static GameObject CreateAtlasImageAnimation(Resources resources)
+        {
+            GameObject go = CreateUIElementRoot("AtlasImageAnimation", s_ImageElementSize);
+            go.AddComponent<SpriteAtlasImageAnimation>();
+            return go;
+        }
+
     }
 }

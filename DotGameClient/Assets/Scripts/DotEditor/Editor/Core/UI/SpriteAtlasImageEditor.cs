@@ -140,15 +140,21 @@ namespace DotEditor.Core.UI
                     {
                         AtlasSpriteSelector.Show(atlas, spriteName, (selectedSpriteName) =>
                         {
-                            if (selectedSpriteName == null)
-                                return;
-
-                            spriteProperty.stringValue = selectedSpriteName;
-                            spriteProperty.serializedObject.ApplyModifiedProperties();
+                            OnSpriteSelectedCallback(spriteProperty, selectedSpriteName);
                         });
                     }
                 }
             }
+        }
+
+        protected virtual void OnSpriteSelectedCallback(SerializedProperty spriteProperty,string spriteName)
+        {
+            if (string.IsNullOrEmpty(spriteName))
+                return;
+
+            spriteProperty.serializedObject.Update();
+            spriteProperty.stringValue = spriteName;
+            spriteProperty.serializedObject.ApplyModifiedProperties();
         }
 
         public class PropertyObj

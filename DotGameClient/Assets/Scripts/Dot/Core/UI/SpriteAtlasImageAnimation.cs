@@ -7,7 +7,7 @@ namespace Dot.Core.UI
     [ExecuteInEditMode]
     public class SpriteAtlasImageAnimation : SpriteAtlasImage
     {
-        public int frameRate;
+        public int frameRate = 8;
         public bool autoPlayOnAwake = true;
         public string spriteNamePrefix = "";
         public int spriteIndex = 0;
@@ -20,7 +20,10 @@ namespace Dot.Core.UI
         protected override void Awake()
         {
             base.Awake();
-            frameTime = 1.0f / frameRate;
+            if(frameRate!=0)
+            {
+                frameTime = 1.0f / frameRate;
+            }
 
             if(Application.isPlaying && autoPlayOnAwake)
             {
@@ -32,7 +35,7 @@ namespace Dot.Core.UI
 
         private void Update()
         {
-            if(isPlaying)
+            if(isPlaying && frameRate>0)
             {
                 elapseTime += Time.deltaTime;
                 if(elapseTime >= frameTime)

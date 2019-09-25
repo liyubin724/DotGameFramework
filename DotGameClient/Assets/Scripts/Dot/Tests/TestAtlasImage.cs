@@ -5,8 +5,14 @@ using UnityEngine.U2D;
 public class TestAtlasImage : MonoBehaviour
 {
     public SpriteAtlasImage atlasImage;
-    public string spriteName;
     public SpriteAtlas newAtlas;
+    public string atlasSpriteName;
+
+    public DynamicAtlasImage dynamicAtlasImage;
+    public string dynamicSpriteName;
+
+    public SpriteAtlasImageAnimation atlasImageAnimation;
+    public int animationIndex = 0;
 
     private void OnGUI()
     {
@@ -16,7 +22,24 @@ public class TestAtlasImage : MonoBehaviour
         }
         if (GUILayout.Button("Change SpriteName"))
         {
-            atlasImage.SpriteName = spriteName;
+            atlasImage.SpriteName = atlasSpriteName;
+        }
+
+        if (GUILayout.Button("Animation Play"))
+        {
+            atlasImageAnimation.Play();
+        }
+        if (GUILayout.Button("Animation Play At"))
+        {
+            atlasImageAnimation.PlayAt(animationIndex);
+        }
+        if (GUILayout.Button("Animation Stop"))
+        {
+            atlasImageAnimation.Stop();
+        }
+        if (GUILayout.Button("Animation StopAt"))
+        {
+            atlasImageAnimation.StopAt(animationIndex);
         }
     }
 }
