@@ -200,9 +200,9 @@ namespace Dot.Tests
                     if(GUILayout.Button("Get From Pool"))
                     {
                         GameObjectPool goPool = PoolManager.GetInstance().GetSpawnPool("CubePool").GetGameObjectPool("Cube.prefab");
-                        GameObject go = goPool.GetPoolItem();
-                        go.transform.SetParent(null, false);
-                        cachedObjects.Add(go);
+                        GameObjectPoolItem poolItem = goPool.GetComponentItem<GameObjectPoolItem>(true,true);
+                        poolItem.transform.SetParent(null, false);
+                        cachedObjects.Add(poolItem.gameObject);
                     }
 
                     if(GUILayout.Button("Clean Pool"))

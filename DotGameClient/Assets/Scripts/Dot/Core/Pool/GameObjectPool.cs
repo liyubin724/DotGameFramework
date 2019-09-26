@@ -155,14 +155,32 @@ namespace Dot.Core.Pool
         /// <typeparam name="T">继承于MonoBehaviour的组件</typeparam>
         /// <param name="isAutoActive">是否激获取到的GameObject,默认为true</param>
         /// <returns></returns>
-        public T GetComponentItem<T>(bool isAutoActive = true) where T:MonoBehaviour
+        public T GetComponentItem<T>(bool isAutoActive = true,bool isAddIfNotFind = false) where T:MonoBehaviour
         {
+            if(instanceOrPrefabTemplate.GetComponent<T> ()==null && !isAddIfNotFind)
+            {
+                return null;
+            }
+
             GameObject gObj = GetPoolItem(isAutoActive);
+            T component = null;
             if(gObj!=null)
             {
-                return gObj.GetComponent<T>();
+                component = gObj.GetComponent<T>();
+                if(component == null)
+                {
+                    component = gObj.AddComponent<T>();
+                    GameObjectPoolItem poolItem = component as GameObjectPoolItem;
+                    if(poolItem!=null)
+                    {
+                        poolItem.SpawnName = spawnPool.PoolName;
+                        poolItem.AssetPath = assetPath;
+                        poolItem.DoSpawned();
+                    }
+                }
             }
-            return null;
+
+            return component;
         }
 
         private GameObject CreateNewItem()

@@ -27,6 +27,7 @@ namespace DotEditor.Core.Pool
         }
 
         private Dictionary<string, SpawnPoolFoldoutData> spawnPoolFoldoutDic = new Dictionary<string, SpawnPoolFoldoutData>();
+
         private Vector2 scrollPos = Vector2.zero;
 
         private void OnGUI()
@@ -56,30 +57,27 @@ namespace DotEditor.Core.Pool
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
             {
-                if (poolDatas.Count > 0)
-                {
-                    EditorGUILayout.LabelField("PoolData List", EditorGUIStyle.GetBoldLabelStyle(20), GUILayout.Height(25));
-                    EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.ExpandWidth(true));
-                    {
-                        for (int i = 0; i < poolDatas.Count; ++i)
-                        {
-                            EditorGUILayout.BeginHorizontal();
-                            {
-                                EditorGUILayout.LabelField("" + i, EditorGUIStyle.MiddleLeftLabelStyle);
-                                DrawPoolData(poolDatas[i]);
-                            }
-                            EditorGUILayout.EndHorizontal();
-                        }
-                    }
-                    EditorGUILayout.EndVertical();
-                }
-
                 EditorGUILayout.LabelField("Spawn Pool List", EditorGUIStyle.GetBoldLabelStyle(20), GUILayout.Height(25));
-                EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.ExpandWidth(true));
+                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
                 {
                     foreach (var kvp in spawnDic)
                     {
                         DrawSpawnPool(kvp.Value);
+                    }
+                }
+                EditorGUILayout.EndVertical();
+
+                EditorGUILayout.LabelField("PoolData List", EditorGUIStyle.GetBoldLabelStyle(20), GUILayout.Height(25));
+                EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                {
+                    for (int i = 0; i < poolDatas.Count; ++i)
+                    {
+                        EditorGUILayout.BeginHorizontal();
+                        {
+                            EditorGUILayout.LabelField("" + i, EditorGUIStyle.MiddleLeftLabelStyle);
+                            DrawPoolData(poolDatas[i]);
+                        }
+                        EditorGUILayout.EndHorizontal();
                     }
                 }
                 EditorGUILayout.EndVertical();
@@ -183,12 +181,8 @@ namespace DotEditor.Core.Pool
 
             bool isInstance = dynamicGameObjectPool.isInstance;
             EditorGUILayout.Toggle("Is Instance", isInstance);
-
             bool isRuntimeInstance = dynamicGameObjectPool.isRuntimeInstance;
             EditorGUILayout.Toggle("Is Runtime Instance", isRuntimeInstance);
-
-            OnPoolComplete completeCallback = dynamicGameObjectPool.completeCallback;
-            EditorGUILayout.TextField("Complete Callback", completeCallback==null?"Null":completeCallback.ToString());
 
             bool isAutoClean = dynamicGameObjectPool.isAutoClean;
             EditorGUILayout.Toggle("Auto Clean", isAutoClean);
