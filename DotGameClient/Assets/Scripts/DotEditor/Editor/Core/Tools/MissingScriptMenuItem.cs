@@ -10,7 +10,7 @@ namespace DotEditor.Core.Tools
 {
     public static class MissingScriptMenuItem
     {
-        [MenuItem("Game/Tools/Game Object/Selected Missing Script")]
+        [MenuItem("Game/Missing Finder/Game Object/Selected Missing Script")]
         public static void CheckSelectedGameObjectMissingScript()
         {
             GameObject go = Selection.activeGameObject;
@@ -27,7 +27,7 @@ namespace DotEditor.Core.Tools
             }
         }
 
-        [MenuItem("Game/Tools/Game Object/All Missing Script")]
+        [MenuItem("Game/Missing Finder/Game Object/All Missing Script")]
         public static void CheckAllGameObjectMissingScript()
         {
             if(!EditorUtility.DisplayDialog("Warning", "All asset in project will be searched ,it maybe cost a lot of time.Are you sure to continue", "OK","Cancel"))
@@ -61,7 +61,7 @@ namespace DotEditor.Core.Tools
             }
         }
 
-        [MenuItem("Game/Tools/Scene/Current Scene Missing Script")]
+        [MenuItem("Game/Missing Finder/Scene/Current Scene Missing Script")]
         public static void CheckCurrentSceneMissingScript()
         {
             int sceneCount = SceneManager.sceneCount;
@@ -87,7 +87,7 @@ namespace DotEditor.Core.Tools
             }
         }
 
-        [MenuItem("Game/Tools/Scene/All Scene Missing Script")]
+        [MenuItem("Game/Missing Finder/Scene/All Scene Missing Script")]
         public static void CheckAllSceneMissingScript()
         {
             if (!EditorUtility.DisplayDialog("Warning", "All asset in project will be searched ,it maybe cost a lot of time.Are you sure to continue", "OK", "Cancel"))

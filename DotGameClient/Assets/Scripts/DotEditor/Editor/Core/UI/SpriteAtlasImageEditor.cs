@@ -6,12 +6,9 @@ using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityEditor.UI;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.U2D;
 using UIIMageType = UnityEngine.UI.Image.Type;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace DotEditor.Core.UI
 {
@@ -155,84 +152,6 @@ namespace DotEditor.Core.UI
             spriteProperty.serializedObject.Update();
             spriteProperty.stringValue = spriteName;
             spriteProperty.serializedObject.ApplyModifiedProperties();
-        }
-
-        public class PropertyObj
-        {
-            public string propertyName;
-            public System.Object sysObject;
-        }
-
-        [MenuItem("Game/Tools/UI/Change Image To Atlas", false, 1000)]
-        static public void UseAtlasImageReplaceImage()
-        {
-            GameObject[] selectedGOs = Selection.gameObjects;
-            if (selectedGOs != null && selectedGOs.Length > 0)
-            {
-                List<SpriteAtlas> atlases = new List<SpriteAtlas>();
-                foreach (string path in AssetDatabase.FindAssets("t:" + typeof(SpriteAtlas).Name).Select(x => AssetDatabase.GUIDToAssetPath(x)))
-                {
-                    SpriteAtlas atlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(path);
-                    if (atlas != null)
-                    {
-                        atlases.Add(atlas);
-                    }
-                }
-
-                foreach (var go in selectedGOs)
-                {
-                     Image image = go.GetComponent<Image>();
-                    if (image != null && image.sprite!=null)
-                    {
-                        string spriteName = image.sprite.name;
-                        foreach (var atals in atlases)
-                        {
-                            if(atals.GetSprite(spriteName) !=null)
-                            {
-                                List<PropertyObj> objs = new List<PropertyObj>();
-                                PropertyInfo[] pInfos = typeof(Image).GetProperties(BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty | BindingFlags.Instance);
-                                foreach(var pInfo in pInfos)
-                                {
-                                    if(pInfo.GetGetMethod() == null || pInfo.GetSetMethod() == null)
-                                    {
-                                        continue;
-                                    }
-
-                                    if(pInfo.Name == "sprite" || pInfo.Name == "overrideSprite")
-                                    {
-                                        continue;
-                                    }
-
-                                    objs.Add(new PropertyObj()
-                                    {
-                                        propertyName = pInfo.Name,
-                                        sysObject = pInfo.GetValue(image),
-                                    });
-                                }
-
-                                Object.DestroyImmediate(image);
-                                SpriteAtlasImage atlasImage = go.AddComponent<SpriteAtlasImage>();
-
-                                foreach(var pObj in objs)
-                                {
-                                    PropertyInfo pInfo = typeof(SpriteAtlasImage).GetProperty(pObj.propertyName, BindingFlags.Public | BindingFlags.GetProperty | BindingFlags.SetProperty | BindingFlags.Instance);
-                                    if(pInfo!=null)
-                                    {
-                                        pInfo.SetValue(atlasImage, pObj.sysObject);
-                                    }
-                                }
-                                
-                                atlasImage.Atlas = atals;
-                                atlasImage.SpriteName = spriteName;
-
-                                EditorUtility.SetDirty(go);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            
         }
     }
 }

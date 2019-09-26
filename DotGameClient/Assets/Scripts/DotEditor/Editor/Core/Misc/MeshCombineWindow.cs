@@ -1,27 +1,50 @@
-﻿using Sirenix.OdinInspector;
-using Sirenix.OdinInspector.Editor;
+﻿using DotEditor.Core.EGUI;
 using UnityEditor;
 using UnityEngine;
 
 namespace DotEditor.Core.Misc
 {
-    public class MeshCombineWindow : OdinEditorWindow
+    public class MeshCombineWindow : EditorWindow
     {
         [MenuItem("Game/Tools/Misc/Combine Mesh Window")]
         private static void ShowWindow()
         {
             var win = GetWindow<MeshCombineWindow>();
             win.titleContent = new GUIContent("Mesh Combine");
+            win.Show();
         }
 
-        [FilePath(AbsolutePath =true)]
         public string meshSavedAssetDir = "Assets";
-         
-        public bool isAsChild = true;
-        public bool isRemovedAfter = true;
+        public bool isCombineAsChild = true;
+        public bool isDeleteAfterCombined = true;
         public bool isAddMeshCollider = false;
 
-        [Button("Combine Children",ButtonSizes.Large)]
+        private GUIStyle centerLabelTitleStyle = null;
+        private void OnEnable()
+        {
+            centerLabelTitleStyle = new GUIStyle(EditorStyles.label);
+            centerLabelTitleStyle.alignment = TextAnchor.MiddleCenter;
+            centerLabelTitleStyle.fontSize = 40;
+        }
+
+        public void OnGUI()
+        {
+            EditorGUILayout.LabelField("Mesh Combine Tool", centerLabelTitleStyle, GUILayout.ExpandWidth(true));
+            meshSavedAssetDir = EditorGUILayoutUtil.DrawAssetFolderSelection("Saved Dir", meshSavedAssetDir, true);
+            isCombineAsChild = EditorGUILayout.Toggle("Combine As Child", isCombineAsChild);
+            isDeleteAfterCombined = EditorGUILayout.Toggle("Delete After Combined", isDeleteAfterCombined);
+            isAddMeshCollider = EditorGUILayout.Toggle("Add Mesh Collider", isAddMeshCollider);
+
+            if(GUILayout.Button("Combine Selected",GUILayout.Height(40),GUILayout.ExpandWidth(true)))
+            {
+                CombineSelected();
+            }
+            if(GUILayout.Button("Combine Multiple Selected", GUILayout.Height(40), GUILayout.ExpandWidth(true)))
+            {
+                CombineMultipleSeleted();
+            }
+        }
+
         private void CombineSelected()
         {
             if (Selection.activeGameObject == null)
@@ -37,10 +60,9 @@ namespace DotEditor.Core.Misc
                 return;
             }
 
-            MeshCombine.Combine(new GameObject[] { Selection.activeGameObject }, meshSavedAssetDir, isAsChild, isRemovedAfter, isAddMeshCollider);
+            MeshCombine.Combine(new GameObject[] { Selection.activeGameObject }, meshSavedAssetDir, isCombineAsChild, isDeleteAfterCombined, isAddMeshCollider);
         }
 
-        [Button("Combine All Selected", ButtonSizes.Large)]
         private void CombineMultipleSeleted()
         {
             GameObject[] gObjs = Selection.gameObjects;
@@ -57,7 +79,7 @@ namespace DotEditor.Core.Misc
                 return;
             }
             
-            MeshCombine.Combine(gObjs, meshSavedAssetDir, isAsChild, isRemovedAfter, isAddMeshCollider);
+            MeshCombine.Combine(gObjs, meshSavedAssetDir, isCombineAsChild, isDeleteAfterCombined, isAddMeshCollider);
         }
     }
 }

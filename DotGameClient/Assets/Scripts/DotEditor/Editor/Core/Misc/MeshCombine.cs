@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DotEditor.Core.Misc
 {
-    public class MeshCombine
+    public static class MeshCombine
     {
         public static void Combine(GameObject[] items,
             string meshSavedAssetDir,

@@ -145,7 +145,7 @@ namespace DotEditor.Core.Prefab
                 yield return prop.pptrValue as GameObject;
             }
         }
-        [MenuItem(MENU_ROOT + "search in scene")]
+        //[MenuItem(MENU_ROOT + "search in scene")]
         public static void FindMissingReferencesInCurrentScene()
         {
             var objs = SceneRoots();
@@ -158,7 +158,7 @@ namespace DotEditor.Core.Prefab
             EditorUtility.ClearProgressBar();
         }
 
-        [MenuItem(MENU_ROOT + "search in all assets")]
+        //[MenuItem(MENU_ROOT + "search in all assets")]
         public static void MissingSpritesInAssets()
         {
             var allScriptsIds = findAllScriptUUIDsInAssets();
