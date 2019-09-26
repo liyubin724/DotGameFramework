@@ -41,7 +41,7 @@ namespace DotEditor.Core.BundleView
         private bool isShowAssetNodeDependBundle = true;
         private bool isShowLoadingAssetNode = false;
 
-        private bool isShowBundleNodeDepend = true;
+        private bool isShowBundleNodeDirect = true;
         private bool isShowLoadingBundleNode = false;
 
         private List<AssetNode> assetNodes = new List<AssetNode>();
@@ -178,7 +178,7 @@ namespace DotEditor.Core.BundleView
                     isChanged = true;
                     isShowLoadingBundleNode = isShowLoading;
                 }
-                isShowBundleNodeDepend = EditorGUILayout.Toggle("Show Depend Bundle:", isShowBundleNodeDepend);
+                isShowBundleNodeDirect = EditorGUILayout.Toggle("Show Depend Bundle:", isShowBundleNodeDirect);
             }
 
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos,EditorStyles.helpBox);
@@ -412,10 +412,10 @@ namespace DotEditor.Core.BundleView
                                 }
                                 EditorGUIUtil.EndIndent();
 
-                                if (isShowBundleNodeDepend)
+                                if (isShowBundleNodeDirect)
                                 {
-                                    EditorGUILayout.LabelField("Depend Bundle:");
-                                    string[] depends = assetBundleManifest.GetAllDependencies(bundlePath);
+                                    EditorGUILayout.LabelField("Direct Bundle:");
+                                    string[] depends = assetBundleManifest.GetDirectDependencies(bundlePath);
                                     EditorGUIUtil.BeginIndent();
                                     {
                                         foreach (var depend in depends)
@@ -467,7 +467,7 @@ namespace DotEditor.Core.BundleView
             foreach (var node in exportNodes)
             {
                 sb.AppendLine(GetBundleNodeDesc(node));
-                if(isShowBundleNodeDepend)
+                if(isShowBundleNodeDirect)
                 {
                     string bundlePath = node.AsDynamic().bundlePath;
                     string[] depends = assetBundleManifest.GetAllDependencies(bundlePath);

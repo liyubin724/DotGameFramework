@@ -100,7 +100,7 @@ namespace Dot.Core.Loader
                 bundleNodeDic.Add(mainBundlePath, mainBundleNode);
             }
 
-            string[] dependBundlePaths = assetBundleManifest.GetAllDependencies(mainBundlePath);
+            string[] dependBundlePaths = assetBundleManifest.GetDirectDependencies(mainBundlePath);
             if (dependBundlePaths != null && dependBundlePaths.Length > 0)
             {
                 foreach (var path in dependBundlePaths)
