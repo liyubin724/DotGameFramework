@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8de549e28c277443ba55403ae661d29, type: 3}
+  m_Name: spriteatlas_setting
+  m_EditorClassIdentifier: 
+  atlasDirPath: Assets/ArtRes/UI/Atlas
+  pixelsPerUnit: 100
+  isRotation: 0
+  isTightPacking: 0
+  padding: 4
+  isReadOrWrite: 0
+  isMipmap: 0
+  isSRGB: 1
+  filterMode: 1
+  maxSize: 2048
+  winTextureFormat: -1
+  androidTextureFormat: -1
+  iosTextureFormat: -1

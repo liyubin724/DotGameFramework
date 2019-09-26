@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: spriteatlas_filename_filter
   m_EditorClassIdentifier: 
   ignoreCase: 1
-  fileNameRegex: ^\w*.spriteatlas&
+  fileNameRegex: ^\w*.spriteatlas$

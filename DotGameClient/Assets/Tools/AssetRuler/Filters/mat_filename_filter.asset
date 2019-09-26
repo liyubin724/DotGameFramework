@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8fe53a0f2368b4b4bbf19b58f1fc3b1d, type: 3}
-  m_Name: prefab_filename_filter
+  m_Name: mat_filename_filter
   m_EditorClassIdentifier: 
   ignoreCase: 1
-  fileNameRegex: ^\w*.prefab$
+  fileNameRegex: ^\w*.mat$
