@@ -22,6 +22,6 @@ MonoBehaviour:
   isSRGB: 1
   filterMode: 1
   maxSize: 2048
-  winTextureFormat: -1
-  androidTextureFormat: -1
-  iosTextureFormat: -1
+  winTextureFormat: 0
+  androidTextureFormat: 0
+  iosTextureFormat: 0

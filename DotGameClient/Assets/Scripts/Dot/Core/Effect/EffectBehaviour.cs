@@ -4,10 +4,6 @@ using UnityEngine;
 using Game.VFXController;
 #endif
 
-#if UNITY_EDITOR
-using Sirenix.OdinInspector;
-#endif
-
 namespace Dot.Core.Effect
 {
     public class EffectBehaviour : GameObjectPoolItem
@@ -145,21 +141,5 @@ namespace Dot.Core.Effect
         {
 
         }
-
-
-#if UNITY_EDITOR && !NOT_ETERNITY
-        [Button("Auto Find")]
-        public void AutoFind()
-        {
-            animators = GetComponentsInChildren<Animator>(true);
-            particleSystems = GetComponentsInChildren<ParticleSystem>(true);
-            lineTrails = GetComponentsInChildren<VFXLineRendererTrail>(true);
-            beams = GetComponentsInChildren<VFXBeam>(true);
-            replaceMeshs = GetComponentsInChildren<VFXReplaceMeshWithSpacecraft>(true);
-            postEffects = GetComponentsInChildren<VFXPostEffectComponent>(true);
-            cameraShakes = GetComponentsInChildren<VFXCameraShakeComponent>(true);
-        }
-#endif
-
     }
 }

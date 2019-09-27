@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using Sirenix.OdinInspector;
 using System.Collections.Generic;
 
 
@@ -40,9 +39,7 @@ namespace Dot.Core.Entity
 
     public class NodeBehaviour : MonoBehaviour
     {
-        [ReadOnly]
         public BoneNodeData[] boneNodes = new BoneNodeData[0];
-        [ReadOnly]
         public MeshRendererNodeData[] rendererNodes = new MeshRendererNodeData[0];
         public BindNodeData[] bindNodes = new BindNodeData[0];
 
