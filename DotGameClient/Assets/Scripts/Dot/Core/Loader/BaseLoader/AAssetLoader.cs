@@ -38,6 +38,19 @@ namespace Dot.Core.Loader
             return pathOrAddress;
         }
 
+        public string[] GetAssetPathOrAddressByLabel(string label)
+        {
+            if(isInitSuccess && assetAddressConfig!=null)
+            {
+                if(pathMode == AssetPathMode.Address)
+                {
+                    return assetAddressConfig.GetAssetAddressByLabel(label);
+                }
+                return assetAddressConfig.GetAssetPathByLabel(label);
+            }
+            return null;
+        }
+
         protected Action<bool> initCallback = null;
         private int maxLoadingCount = 5;
         public void Initialize(Action<bool> initCallback,AssetPathMode pathMode,int maxLoadingCount,string assetRootDir)

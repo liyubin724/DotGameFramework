@@ -141,7 +141,7 @@ namespace DotEditor.Core.Packer
             lableStyle.alignment = TextAnchor.MiddleCenter;
             EditorGUILayout.LabelField("Asset Detail Group List", lableStyle, GUILayout.ExpandWidth(true));
 
-            Rect lastRect = EditorGUILayout.GetControlRect(GUILayout.Height(400));
+            Rect lastRect = EditorGUILayout.GetControlRect(GUILayout.Height(600));
             if (detailGroupTreeView == null)
             {
                 InitDetailGroupTreeView();

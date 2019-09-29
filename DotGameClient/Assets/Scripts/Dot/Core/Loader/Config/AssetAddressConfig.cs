@@ -13,6 +13,7 @@ namespace Dot.Core.Loader.Config
         private Dictionary<string, AssetAddressData> pathToAssetDic = new Dictionary<string, AssetAddressData>();
         private Dictionary<string, string> addressToPathDic = new Dictionary<string, string>();
         private Dictionary<string, List<string>> labelToPathDic = new Dictionary<string, List<string>>();
+        private Dictionary<string, List<string>> labelToAddressDic = new Dictionary<string, List<string>>();
 
         public string[] GetAssetPathByAddress(string[] addresses)
         {
@@ -50,6 +51,15 @@ namespace Dot.Core.Loader.Config
             return null;
         }
 
+        public string[] GetAssetAddressByLabel(string label)
+        {
+            if (labelToAddressDic.TryGetValue(label, out List<string> addresses))
+            {
+                return addresses.ToArray();
+            }
+            return null;
+        }
+
         public string GetBundlePathByPath(string path)
         {
             if(pathToAssetDic.TryGetValue(path,out AssetAddressData data))
@@ -73,8 +83,14 @@ namespace Dot.Core.Loader.Config
         {
             foreach(var data in addressDatas)
             {
-                pathToAssetDic.Add(data.assetPath, data);
+                if(addressToPathDic.ContainsKey(data.assetAddress))
+                {
+                    Debug.LogError("AssetAddressConfig::OnAfterDeserialize->address repeat");
+                    continue;
+                }
                 addressToPathDic.Add(data.assetAddress, data.assetPath);
+                pathToAssetDic.Add(data.assetPath, data);
+
                 if(data.labels!=null && data.labels.Length>0)
                 {
                     foreach(var label in data.labels)
@@ -84,7 +100,14 @@ namespace Dot.Core.Loader.Config
                             paths = new List<string>();
                             labelToPathDic.Add(label, paths);
                         }
+
+                        if(!labelToAddressDic.TryGetValue(label,out List<string> addresses))
+                        {
+                            addresses = new List<string>();
+                            labelToAddressDic.Add(label, addresses);
+                        }
                         paths.Add(data.assetPath);
+                        addresses.Add(data.assetAddress);
                     }
                 }
             }

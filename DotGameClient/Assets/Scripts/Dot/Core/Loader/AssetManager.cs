@@ -190,6 +190,15 @@ namespace Dot.Core.Loader
             }
         }
         
+        public string[] GetAssetPathOrAddressByLabel(string label)
+        {
+            if(isInit && assetLoader!=null)
+            {
+                return assetLoader.GetAssetPathOrAddressByLabel(label);
+            }
+            return null;
+        }
+
         public void DoUpdate(float deltaTime)
         {
             assetLoader?.DoUpdate(deltaTime);
