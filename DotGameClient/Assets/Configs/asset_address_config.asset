@@ -25,6 +25,10 @@ MonoBehaviour:
     assetPath: Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_006.prefab
     bundlePath: assets/artres/character/player/test01/prefab/ch_pc_hou_006_prefab
     labels: []
+  - assetAddress: testspriteatlasAtlasImage.prefab
+    assetPath: Assets/ArtRes/Prefabs/testspriteatlasAtlasImage.prefab
+    bundlePath: assets/artres/prefabs/testspriteatlasatlasimage_prefab
+    labels: []
   - assetAddress: Sphere.prefab
     assetPath: Assets/ArtRes/Prefabs/Sphere.prefab
     bundlePath: assets/artres/prefabs/sphere_prefab

@@ -32,7 +32,7 @@ namespace Dot.Tests
             datas.Add(new TestData() { address = "ch_pc_hou_009.prefab", assetPath = "Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_009.prefab" });
             datas.Add(new TestData() { address = "Cube.prefab", assetPath = "Assets/ArtRes/Prefabs/Cube.prefab" });
             datas.Add(new TestData() { address = "Sphere.prefab", assetPath = "Assets/ArtRes/Prefabs/Sphere.prefab" });
-            datas.Add(new TestData() { address = "DynamicAtlasImage.prefab", assetPath = "Assets/ArtRes/Prefabs/DynamicAtlasImage.prefab" });
+            datas.Add(new TestData() { address = "testspriteatlas.prefab", assetPath = "Assets/ArtRes/Prefabs/DynamicAtlasImage.prefab" });
             DontDestroyOnLoad(this.gameObject);
         }
         
@@ -121,12 +121,12 @@ namespace Dot.Tests
                     {
                         UnityEngine.Random.InitState((int)Time.realtimeSinceStartup);
                         int index = UnityEngine.Random.Range(0, datas.Count);
-                        TestData data = datas[3];//[index];
-                        if(assetTestIndex % 2 == 0)
-                        {
-                            data = datas[4];
-                        }
-                        assetTestIndex++;
+                        TestData data = datas[5];//[index];
+                        //if(assetTestIndex % 2 == 0)
+                        //{
+                        //    data = datas[4];
+                        //}
+                        //assetTestIndex++;
 
                         loaderHandle = AssetManager.GetInstance().LoadAssetAsync(assetPathMode == AssetPathMode.Address?data.address:data.assetPath, 
                             (assetPath, uObj, userData) =>{

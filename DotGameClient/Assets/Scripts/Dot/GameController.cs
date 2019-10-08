@@ -43,10 +43,10 @@ namespace Dot
             timerMgr.DoUpdate(deltaTime);
 
             delayTime += deltaTime;
-            //if(delayTime>=1.0f)
+            if(delayTime>=1.0f)
             {
                 AssetManager.GetInstance().DoUpdate(deltaTime);
-                //delayTime = 0.0f;
+                delayTime = 0.0f;
             }
         }
     }

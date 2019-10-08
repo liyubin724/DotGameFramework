@@ -237,14 +237,13 @@ namespace Dot.Core.Loader
                 return;
             }
             
-            AssetLoaderData loaderData = null;
             foreach(var data in loaderDataWaitingQueue)
             {
                 if(data.uniqueID == handle.UniqueID)
                 {
-                    handle.CancelLoader(loaderData.isInstance && destroyIfLoaded);
-                    loaderDataWaitingQueue.Remove(loaderData);
-                    loaderDataPool.Release(loaderData);
+                    handle.CancelLoader(data.isInstance && destroyIfLoaded);
+                    loaderDataWaitingQueue.Remove(data);
+                    loaderDataPool.Release(data);
                     return;
                 }
             }
@@ -253,10 +252,10 @@ namespace Dot.Core.Loader
             {
                 if(data.uniqueID == handle.UniqueID)
                 {
-                    handle.CancelLoader(loaderData.isInstance && destroyIfLoaded);
-                    loaderData.CancelLoader();
+                    handle.CancelLoader(data.isInstance && destroyIfLoaded);
+                    data.CancelLoader();
 
-                    UnloadLoadingAssetLoader(loaderData);
+                    UnloadLoadingAssetLoader(data);
                     return;
                 }
             }
