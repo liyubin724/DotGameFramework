@@ -85,7 +85,7 @@ namespace Dot.Core.Loader.Config
             {
                 if(addressToPathDic.ContainsKey(data.assetAddress))
                 {
-                    Debug.LogError("AssetAddressConfig::OnAfterDeserialize->address repeat");
+                    Debug.LogError("AssetAddressConfig::OnAfterDeserialize->address repeat.address = "+data.assetAddress);
                     continue;
                 }
                 addressToPathDic.Add(data.assetAddress, data.assetPath);

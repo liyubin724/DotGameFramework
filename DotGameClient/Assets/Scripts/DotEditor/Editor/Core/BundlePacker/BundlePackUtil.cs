@@ -12,7 +12,7 @@ using static DotEditor.Core.Packer.AssetBundlePackConfig;
 
 namespace DotEditor.Core.Packer
 {
-    public class BundlePackUtil
+    public static class BundlePackUtil
     {
         public static AssetBundleTagConfig FindOrCreateTagConfig()
         {
@@ -30,7 +30,13 @@ namespace DotEditor.Core.Packer
             return config;
         }
 
-        public static void UpdateTagConfig()
+        public static void UpdateConfig()
+        {
+            UpdateTagConfig();
+            UpdateAddressConfig();
+        }
+
+        private static void UpdateTagConfig()
         {
             string[] settingPaths = AssetDatabaseUtil.FindAssets<AssetAddressAssembly>();
             if (settingPaths == null || settingPaths.Length == 0)
@@ -46,8 +52,46 @@ namespace DotEditor.Core.Packer
                     aaAssembly.Execute();
                 }
             }
-            
-            CreateAssetInBundleConfig();
+        }
+
+        private static void UpdateAddressConfig()
+        {
+            AssetBundleTagConfig tagConfig = FindOrCreateTagConfig();
+
+            AssetAddressConfig config = AssetDatabase.LoadAssetAtPath<AssetAddressConfig>(AssetAddressConfig.CONFIG_PATH);
+            if (config == null)
+            {
+                config = ScriptableObject.CreateInstance<AssetAddressConfig>();
+                AssetDatabase.CreateAsset(config, AssetAddressConfig.CONFIG_PATH);
+                AssetDatabase.ImportAsset(AssetAddressConfig.CONFIG_PATH);
+            }
+
+            AssetAddressData[] datas = (from groupData in tagConfig.groupDatas
+                                        where groupData.isMain == true
+                                        from assetData in groupData.assetDatas
+                                        select assetData).ToArray();
+
+            List<AssetAddressData> addressDatas = new List<AssetAddressData>();
+            foreach (var assetData in datas)
+            {
+                AssetAddressData addressData = new Dot.Core.Loader.Config.AssetAddressData()
+                {
+                    assetAddress = assetData.assetAddress,
+                    assetPath = assetData.assetPath,
+                    bundlePath = assetData.bundlePath,
+                };
+                if (assetData.labels != null && assetData.labels.Length > 0)
+                {
+                    addressData.labels = new string[assetData.labels.Length];
+                    Array.Copy(assetData.labels, addressData.labels, addressData.labels.Length);
+                }
+                addressDatas.Add(addressData);
+            }
+
+            config.addressDatas = addressDatas.ToArray();
+            EditorUtility.SetDirty(config);
+
+            AssetDatabase.SaveAssets();
         }
 
         public static void SetAssetBundleNames(bool isShowProgressBar = false)
@@ -84,47 +128,7 @@ namespace DotEditor.Core.Packer
 
             AssetDatabase.SaveAssets();
         }
-
-        public static void CreateAssetInBundleConfig()
-        {
-            AssetBundleTagConfig tagConfig = FindOrCreateTagConfig();
-
-            AssetAddressConfig config = AssetDatabase.LoadAssetAtPath<AssetAddressConfig>(AssetAddressConfig.CONFIG_PATH);
-            if(config==null)
-            {
-                config = ScriptableObject.CreateInstance<AssetAddressConfig>();
-                AssetDatabase.CreateAsset(config, AssetAddressConfig.CONFIG_PATH);
-                AssetDatabase.ImportAsset(AssetAddressConfig.CONFIG_PATH);
-            }
-
-            AssetAddressData[] datas = (from groupData in tagConfig.groupDatas
-                                            where groupData.isMain == true
-                                            from assetData in groupData.assetDatas
-                                            select assetData).ToArray();
-
-            List<AssetAddressData> addressDatas = new List<AssetAddressData>();
-            foreach(var assetData in datas)
-            {
-                AssetAddressData addressData = new Dot.Core.Loader.Config.AssetAddressData()
-                {
-                    assetAddress = assetData.assetAddress,
-                    assetPath = assetData.assetPath,
-                    bundlePath = assetData.bundlePath,
-                };
-                if(assetData.labels!=null && assetData.labels.Length>0)
-                {
-                    addressData.labels = new string[assetData.labels.Length];
-                    Array.Copy(assetData.labels, addressData.labels, addressData.labels.Length);
-                }
-                addressDatas.Add(addressData);
-            }
-
-            config.addressDatas = addressDatas.ToArray();
-            EditorUtility.SetDirty(config);
-
-            AssetDatabase.SaveAssets();
-        }
-
+        
         public static void ClearAssetBundleNames(bool isShowProgressBar = false)
         {
             string[] bundleNames = AssetDatabase.GetAllAssetBundleNames();

@@ -2,7 +2,7 @@
 
 namespace Dot.Config
 {
-    [CreateAssetMenu(fileName = "config", menuName = "Config Data")]
+   // [CreateAssetMenu(fileName = "config", menuName = "Config Data")]
     public class ConfigData : ScriptableObject
     {
         public BulletConfig bulletConfig;

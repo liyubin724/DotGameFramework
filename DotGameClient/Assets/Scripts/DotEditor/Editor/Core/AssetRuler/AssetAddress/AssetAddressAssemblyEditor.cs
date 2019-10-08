@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using DotEditor.Core.Packer;
 
 namespace DotEditor.Core.AssetRuler.AssetAddress
 {
@@ -15,7 +16,7 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
 
             if(GUILayout.Button("Execute",GUILayout.Height(40)))
             {
-                (target as AssetAddressAssembly).Execute();
+                BundlePackUtil.UpdateConfig();
             }
 
             serializedObject.ApplyModifiedProperties();
