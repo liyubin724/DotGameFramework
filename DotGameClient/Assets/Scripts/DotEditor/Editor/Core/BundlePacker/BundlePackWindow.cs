@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using static DotEditor.Core.Packer.BundlePackConfig;
-using static DotEditor.Core.Packer.AssetBundleTagConfig;
 
 namespace DotEditor.Core.Packer
 {
@@ -25,12 +23,12 @@ namespace DotEditor.Core.Packer
         private TreeViewState detailGroupTreeViewState;
 
         private AssetBundleTagConfig tagConfig = null;
-        private BundlePackConfig packConfig = null;
+        private BundlePackConfigGUI packConfigGUI;
 
         private void OnEnable()
         {
-            tagConfig = BundlePackUtil.FindOrCreateTagConfig();
-            packConfig = new BundlePackConfig();
+            tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
+            packConfigGUI = new BundlePackConfigGUI();
         }
 
         private void InitDetailGroupTreeView()
@@ -154,7 +152,7 @@ namespace DotEditor.Core.Packer
             {
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox,GUILayout.ExpandHeight(true),GUILayout.ExpandWidth(true));
                 {
-                    DrawBundleSetting();
+                    packConfigGUI.LayoutGUI();
                 }
                 EditorGUILayout.EndVertical();
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.MaxWidth(180),GUILayout.ExpandHeight(true));
@@ -225,28 +223,12 @@ namespace DotEditor.Core.Packer
             EditorGUILayout.EndHorizontal();
         }
 
-        private void DrawBundleSetting()
-        {
-            GUIStyle labelStyle = new GUIStyle(EditorStyles.label);
-            labelStyle.fontStyle = FontStyle.Bold;
-            EditorGUILayout.LabelField("Asset Bundle Pack Config:",labelStyle);
-
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            {
-                packConfig.bundleOutputDir = EditorGUILayoutUtil.DrawDiskFolderSelection("Bundle Output", packConfig.bundleOutputDir);
-                packConfig.cleanupBeforeBuild = EditorGUILayout.Toggle("cleanupBeforeBuild", packConfig.cleanupBeforeBuild);
-                packConfig.bundleOptions = (BuildAssetBundleOptions)EditorGUILayout.EnumFlagsField("Bundle Option", packConfig.bundleOptions);
-                packConfig.buildTarget = (BundleBuildTarget)EditorGUILayout.EnumPopup("buildTarget", packConfig.buildTarget);
-            }
-            EditorGUILayout.EndVertical();
-        }
-
         private void DrawOperation()
         {
             if (GUILayout.Button("Update Asset Detail"))
             {
                 BundlePackUtil.UpdateConfig();
-                tagConfig = BundlePackUtil.FindOrCreateTagConfig();
+                tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
                 FilterTreeModel();
             }
             if (GUILayout.Button("Clear Asset Bundle Names"))
@@ -257,17 +239,6 @@ namespace DotEditor.Core.Packer
             {
                 BundlePackUtil.SetAssetBundleNames(true);
             }
-            if (GUILayout.Button("Pack Bundle"))
-            {
-                if (string.IsNullOrEmpty(packConfig.bundleOutputDir))
-                {
-                    EditorUtility.DisplayDialog("Warning", "Output Dir is Null", "OK");
-                }
-                else
-                {
-                    BundlePackUtil.PackAssetBundle(packConfig, true);
-                }
-            }
 
             GUILayout.FlexibleSpace();
 
@@ -275,17 +246,14 @@ namespace DotEditor.Core.Packer
             {
                 if(GUILayout.Button("Auto Pack Bundle",GUILayout.Height(60)))
                 {
-                    if(string.IsNullOrEmpty(packConfig.bundleOutputDir))
-                    {
-                        EditorUtility.DisplayDialog("Warning", "Output Dir is Null", "OK");
-                    }
-                    else
+                    EditorApplication.delayCall += () =>
                     {
                         BundlePackUtil.UpdateConfig();
                         BundlePackUtil.ClearAssetBundleNames(true);
                         BundlePackUtil.SetAssetBundleNames(true);
-                        BundlePackUtil.PackAssetBundle(packConfig, true);
-                    }
+                        BundlePackConfig packConfig = Util.FileUtil.ReadFromBinary<BundlePackConfig>(BundlePackUtil.GetPackConfigPath());
+                        BundlePackUtil.PackAssetBundle(packConfig);
+                    };
                 }
             }
             EditorGUIUtil.EndGUIBackgroundColor();

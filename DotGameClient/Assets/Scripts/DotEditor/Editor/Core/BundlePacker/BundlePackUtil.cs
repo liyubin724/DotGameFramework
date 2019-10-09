@@ -8,26 +8,25 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using static DotEditor.Core.Packer.BundlePackConfig;
 
 namespace DotEditor.Core.Packer
 {
     public static class BundlePackUtil
     {
-        public static AssetBundleTagConfig FindOrCreateTagConfig()
+        internal static string GetPackConfigPath()
         {
-            AssetBundleTagConfig config = AssetDatabase.LoadAssetAtPath<AssetBundleTagConfig>(AssetBundleTagConfig.CONFIG_PATH);
+            var dataPath = Path.GetFullPath(".");
+            dataPath = dataPath.Replace("\\", "/");
+            dataPath += "/Library/BundlePack/pack_config.data";
+            return dataPath;
+        }
 
-            if (config == null)
-            {
-                config = ScriptableObject.CreateInstance<AssetBundleTagConfig>();
-                AssetDatabase.CreateAsset(config, AssetBundleTagConfig.CONFIG_PATH);
-
-                AssetDatabase.ImportAsset(AssetBundleTagConfig.CONFIG_PATH);
-            }
-
-             AssetDatabase.SaveAssets();
-            return config;
+        internal static string GetTagConfigPath()
+        {
+            var dataPath = Path.GetFullPath(".");
+            dataPath = dataPath.Replace("\\", "/");
+            dataPath += "/Library/BundlePack/tag_config.data";
+            return dataPath;
         }
 
         public static void UpdateConfig()
@@ -56,7 +55,7 @@ namespace DotEditor.Core.Packer
 
         private static void UpdateAddressConfig()
         {
-            AssetBundleTagConfig tagConfig = FindOrCreateTagConfig();
+            AssetBundleTagConfig tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
 
             AssetAddressConfig config = AssetDatabase.LoadAssetAtPath<AssetAddressConfig>(AssetAddressConfig.CONFIG_PATH);
             if (config == null)
@@ -96,12 +95,12 @@ namespace DotEditor.Core.Packer
 
         public static void SetAssetBundleNames(bool isShowProgressBar = false)
         {
-            AssetBundleTagConfig config = FindOrCreateTagConfig();
+            AssetBundleTagConfig tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
 
             AssetImporter assetImporter = AssetImporter.GetAtPath(AssetAddressConfig.CONFIG_PATH);
             assetImporter.assetBundleName = AssetAddressConfig.CONFIG_ASSET_BUNDLE_NAME;
 
-            AssetAddressData[] datas = (from groupData in config.groupDatas
+            AssetAddressData[] datas = (from groupData in tagConfig.groupDatas
                                         from detailData in groupData.assetDatas
                                         select detailData).ToArray();
             if (isShowProgressBar)
@@ -152,40 +151,25 @@ namespace DotEditor.Core.Packer
             AssetDatabase.SaveAssets();
         }
 
-        public static void PackAssetBundle(BundlePackConfig packConfig, bool isShowProgress = false)
+        public static void PackAssetBundle(BundlePackConfig packConfig)
         {
-            string targetFolderName = packConfig.buildTarget.ToString();
-            string outputTargetDir = packConfig.bundleOutputDir + "/" + targetFolderName + "/" + AssetBundleConst.ASSETBUNDLE_MAINFEST_NAME;
-
-            BuildTarget buildTarget = BuildTarget.NoTarget;
-            if (packConfig.buildTarget == BundleBuildTarget.StandaloneWindows64)
-            {
-                buildTarget = BuildTarget.StandaloneWindows64;
-            }
-            else if (packConfig.buildTarget == BundleBuildTarget.PS4)
-            {
-                buildTarget = BuildTarget.PS4;
-            }
-            else if (packConfig.buildTarget == BundleBuildTarget.XBoxOne)
-            {
-                buildTarget = BuildTarget.XboxOne;
-            }
-
-            PackAsssetBundle(outputTargetDir, packConfig.cleanupBeforeBuild, packConfig.bundleOptions, buildTarget, isShowProgress);
+            PackAssetBundle(packConfig.outputDirPath, packConfig.cleanupBeforeBuild, packConfig.GetBundleOptions(), packConfig.GetBuildTarget());
         }
 
-        public static void PackAsssetBundle(string outputDir,bool isClean,BuildAssetBundleOptions options, BuildTarget buildTarget, bool isShowProgress = false)
+        public static void PackAssetBundle(string outputDir,bool isClean,BuildAssetBundleOptions options, BuildTarget buildTarget)
         {
-            if(isClean && Directory.Exists(outputDir))
+            string outputTargetDir = outputDir + "/" + buildTarget.ToString() + "/" + AssetBundleConst.ASSETBUNDLE_MAINFEST_NAME;
+
+            if (isClean && Directory.Exists(outputTargetDir))
             {
-                Directory.Delete(outputDir,true);
+                Directory.Delete(outputTargetDir, true);
             }
-            if (!Directory.Exists(outputDir))
+            if (!Directory.Exists(outputTargetDir))
             {
-                Directory.CreateDirectory(outputDir);
+                Directory.CreateDirectory(outputTargetDir);
             }
             
-            BuildPipeline.BuildAssetBundles(outputDir, options, buildTarget);
+            BuildPipeline.BuildAssetBundles(outputTargetDir, options, buildTarget);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
                 group.Execute(result);
             }
 
-            AssetBundleTagConfig tagConfig = BundlePackUtil.FindOrCreateTagConfig();
+            AssetBundleTagConfig tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
             tagConfig.groupDatas.Clear();
 
             foreach (var groupResult in result.groupResults)
@@ -50,9 +50,7 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
                 }
             }
 
-
-            EditorUtility.SetDirty(tagConfig);
-            AssetDatabase.SaveAssets();
+            Util.FileUtil.SaveToBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath(), tagConfig);
 
             return result;
         }

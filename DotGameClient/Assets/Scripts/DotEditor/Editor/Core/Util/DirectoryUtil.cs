@@ -53,6 +53,43 @@ namespace DotEditor.Core.Util
             }
             return assetPathList.ToArray();
         }
-        
+
+        /// <summary>
+        /// 从sourceDirName目录中复制所有的目录及文件到指定的destDirName目录中
+        /// 可以通过ignoreFileExt参数指定忽略的文件后缀。默认采用小写进行比对，忽略大小写
+        /// string[] ignoreFileExt = new string[]{".meta"}
+        /// </summary>
+        /// <param name="sourceDirName">源目录</param>
+        /// <param name="destDirName">目标目录</param>
+        /// <param name="ignoreFileExt">忽略文件后缀</param>
+        private static void Copy(string sourceDirName, string destDirName, string[] ignoreFileExt = null)
+        {
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            foreach (string folderPath in Directory.GetDirectories(sourceDirName, "*", SearchOption.AllDirectories))
+            {
+                if (!Directory.Exists(folderPath.Replace(sourceDirName, destDirName)))
+                    Directory.CreateDirectory(folderPath.Replace(sourceDirName, destDirName));
+            }
+
+            foreach (string filePath in Directory.GetFiles(sourceDirName, "*.*", SearchOption.AllDirectories))
+            {
+                var fileDirName = Path.GetDirectoryName(filePath).Replace("\\", "/");
+
+                var fileExt = Path.GetExtension(filePath).ToLower();
+                if(ignoreFileExt != null && Array.IndexOf(ignoreFileExt,fileExt)>=0)
+                {
+                    continue;
+                }
+
+                var fileName = Path.GetFileName(filePath);
+                string newFilePath = Path.Combine(fileDirName.Replace(sourceDirName, destDirName), fileName);
+
+                File.Copy(filePath, newFilePath, true);
+            }
+        }
     }
 }
