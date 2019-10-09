@@ -21,6 +21,11 @@ namespace DotEditor.Core.Util
             return GetAssetPathByGUID(AssetDatabase.FindAssets("b:"));
         }
 
+        public static string[] FindAssetInFolder<T>(string folderPath)
+        {
+            return GetAssetPathByGUID(AssetDatabase.FindAssets($"t:{typeof(T).Name}",new string[] { folderPath }));
+        }
+
         public static string[] FindAssets<T>() where T:UnityEngine.Object
         {
             return GetAssetPathByGUID(AssetDatabase.FindAssets($"t:{typeof(T).Name} "));

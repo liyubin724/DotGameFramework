@@ -8,6 +8,9 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.U2D;
+using UnityEditor.U2D;
+using UnityObject = UnityEngine.Object;
 
 namespace DotEditor.Core.Packer
 {
@@ -92,7 +95,10 @@ namespace DotEditor.Core.Packer
 
             AssetDatabase.SaveAssets();
         }
-
+        /// <summary>
+        /// 根据配置中的数据设置BundleName，对于SpriteAtlas类型的资源由于Sprite的关联关系，需要特别处理
+        /// </summary>
+        /// <param name="isShowProgressBar"></param>
         public static void SetAssetBundleNames(bool isShowProgressBar = false)
         {
             AssetBundleTagConfig tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
@@ -103,6 +109,7 @@ namespace DotEditor.Core.Packer
             AssetAddressData[] datas = (from groupData in tagConfig.groupDatas
                                         from detailData in groupData.assetDatas
                                         select detailData).ToArray();
+
             if (isShowProgressBar)
             {
                 EditorUtility.DisplayProgressBar("Set Bundle Names", "", 0f);
@@ -116,8 +123,38 @@ namespace DotEditor.Core.Packer
                     {
                         EditorUtility.DisplayProgressBar("Set Bundle Names", datas[i].assetPath, i / (float)datas.Length);
                     }
-                    AssetImporter ai = AssetImporter.GetAtPath(datas[i].assetPath);
-                    ai.assetBundleName = datas[i].bundlePath;
+                    string assetPath = datas[i].assetPath;
+                    string bundlePath = datas[i].bundlePath;
+                    AssetImporter ai = AssetImporter.GetAtPath(assetPath);
+                    ai.assetBundleName = bundlePath;
+
+                    if(Path.GetExtension(assetPath).ToLower() == ".spriteatlas")
+                    {
+                        SpriteAtlas atlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(assetPath);
+                        if(atlas!=null)
+                        {
+                            List<string> spriteAssetPathList = new List<string>();
+                            UnityObject[] objs = atlas.GetPackables();
+                            foreach(var obj in objs)
+                            {
+                                if(obj.GetType() == typeof(Sprite))
+                                {
+                                    spriteAssetPathList.Add(AssetDatabase.GetAssetPath(obj));
+                                }else if(obj.GetType() == typeof(DefaultAsset))
+                                {
+                                    string folderPath = AssetDatabase.GetAssetPath(obj);
+                                    string[] assets = AssetDatabaseUtil.FindAssetInFolder<Sprite>(folderPath);
+                                    spriteAssetPathList.AddRange(assets);
+                                }
+                            }
+                            spriteAssetPathList.Distinct();
+                            foreach (var path in spriteAssetPathList)
+                            {
+                                ai = AssetImporter.GetAtPath(path);
+                                ai.assetBundleName = bundlePath;
+                            }
+                        }
+                    }
                 }
             }
             if (isShowProgressBar)
