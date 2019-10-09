@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using static DotEditor.Core.Packer.AssetBundlePackConfig;
+using static DotEditor.Core.Packer.BundlePackConfig;
 using static DotEditor.Core.Packer.AssetBundleTagConfig;
 
 namespace DotEditor.Core.Packer
@@ -25,12 +25,12 @@ namespace DotEditor.Core.Packer
         private TreeViewState detailGroupTreeViewState;
 
         private AssetBundleTagConfig tagConfig = null;
-        private AssetBundlePackConfig packConfig = null;
+        private BundlePackConfig packConfig = null;
 
         private void OnEnable()
         {
             tagConfig = BundlePackUtil.FindOrCreateTagConfig();
-            packConfig = new AssetBundlePackConfig();
+            packConfig = new BundlePackConfig();
         }
 
         private void InitDetailGroupTreeView()

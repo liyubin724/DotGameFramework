@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using static DotEditor.Core.Packer.AssetBundlePackConfig;
+using static DotEditor.Core.Packer.BundlePackConfig;
 
 namespace DotEditor.Core.Packer
 {
@@ -152,7 +152,7 @@ namespace DotEditor.Core.Packer
             AssetDatabase.SaveAssets();
         }
 
-        public static void PackAssetBundle(AssetBundlePackConfig packConfig, bool isShowProgress = false)
+        public static void PackAssetBundle(BundlePackConfig packConfig, bool isShowProgress = false)
         {
             string targetFolderName = packConfig.buildTarget.ToString();
             string outputTargetDir = packConfig.bundleOutputDir + "/" + targetFolderName + "/" + AssetBundleConst.ASSETBUNDLE_MAINFEST_NAME;

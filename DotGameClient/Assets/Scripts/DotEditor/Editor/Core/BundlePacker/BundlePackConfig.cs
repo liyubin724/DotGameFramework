@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DotEditor.Core.Packer
 {
-    public class AssetBundlePackConfig
+    public class BundlePackConfig
     {
         public enum BundleBuildTarget
         {
