@@ -32,7 +32,7 @@ namespace Dot.Tests
             datas.Add(new TestData() { address = "ch_pc_hou_009.prefab", assetPath = "Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_009.prefab" });
             datas.Add(new TestData() { address = "Cube.prefab", assetPath = "Assets/ArtRes/Prefabs/Cube.prefab" });
             datas.Add(new TestData() { address = "Sphere.prefab", assetPath = "Assets/ArtRes/Prefabs/Sphere.prefab" });
-            datas.Add(new TestData() { address = "testspriteatlas.prefab", assetPath = "Assets/ArtRes/Prefabs/DynamicAtlasImage.prefab" });
+            datas.Add(new TestData() { address = "testspriteatlasAtlasImage.prefab", assetPath = "Assets/ArtRes/Prefabs/DynamicAtlasImage.prefab" });
             DontDestroyOnLoad(this.gameObject);
         }
         

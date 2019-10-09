@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6532168579892896894}
   - component: {fileID: 4963401240630401076}
   m_Layer: 5
-  m_Name: testspriteatlas
+  m_Name: testspriteatlasAtlasImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,8 +65,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: b017f2835aa21744aa6b975b79c5be78, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: aa42b6e6066c1ae49a3b8218c46ae67d, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
