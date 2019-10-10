@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
+using UnityObject = UnityEngine.Object;
 
 namespace DotEditor.Core.Util
 {
@@ -19,6 +20,26 @@ namespace DotEditor.Core.Util
             }
 
             return dirs.ToArray();
+        }
+
+        /// <summary>
+        /// 设置在Project中选中的资源
+        /// </summary>
+        /// <param name="uObj"></param>
+        public static void ActiveObject(UnityObject uObj)
+        {
+            EditorUtility.FocusProjectWindow();
+            Selection.activeObject = uObj;
+        }
+
+        /// <summary>
+        /// 设置在Project中选中的资源
+        /// </summary>
+        /// <param name="uObjs"></param>
+        public static void ActiveObjects(UnityObject[] uObjs)
+        {
+            EditorUtility.FocusProjectWindow();
+            Selection.objects = uObjs;
         }
     }
 }
