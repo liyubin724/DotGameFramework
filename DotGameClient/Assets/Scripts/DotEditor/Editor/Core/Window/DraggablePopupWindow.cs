@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using DotEditor.Core.EGUI;
+using UnityEditor;
 using UnityEngine;
 
 namespace DotEditor.Core.UI
@@ -45,7 +46,16 @@ namespace DotEditor.Core.UI
             this.ShowPopup();
         }
 
-        protected virtual void OnGUI()
+        protected virtual void DrawBackground()
+        {
+            Rect winRect = new Rect(Vector2.zero, position.size);
+            EditorGUI.DrawRect(winRect, EditorGUIUtil.BorderColor);
+
+            Rect backgroundRect = new Rect(Vector2.one, position.size - new Vector2(2f, 2f));
+            EditorGUI.DrawRect(backgroundRect, EditorGUIUtil.BackgroundColor);
+        }
+
+        protected void OnGUIDrag()
         {
             var e = Event.current;
             if (e.button == 0 && e.type == EventType.MouseDown)
@@ -58,6 +68,13 @@ namespace DotEditor.Core.UI
                 var mousePos = GUIUtility.GUIToScreenPoint(e.mousePosition);
                 position = new Rect(mousePos + _offset, position.size);
             }
+        }
+
+        protected virtual void OnGUI()
+        {
+            DrawBackground();
+
+            OnGUIDrag();
         }
     }
 
