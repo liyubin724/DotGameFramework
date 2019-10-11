@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
 namespace DotEditor.Core.Packer
 {
@@ -46,7 +47,7 @@ namespace DotEditor.Core.Packer
                 return EditorGUIUtility.singleLineHeight + 2;
             }else
             {
-                return rowHeight = EditorGUIUtility.singleLineHeight * 2 + 4;
+                return rowHeight = EditorGUIUtility.singleLineHeight * 3 + 4;
             }
         }
 
@@ -109,13 +110,15 @@ namespace DotEditor.Core.Packer
                             AssetAddressData assetData = groupData.assetDatas[groupTreeData.dataIndex];
                             EditorGUILayout.LabelField(new GUIContent("" + groupTreeData.dataIndex), GUILayout.Width(20));
                             EditorGUILayout.TextField("address:", assetData.assetAddress);
+                            UnityObject uObj = AssetDatabase.LoadAssetAtPath<UnityObject>(assetData.assetPath);
+                            EditorGUILayout.ObjectField(GUIContent.none, uObj, typeof(UnityObject), false,GUILayout.Width(120));
                             GUILayout.BeginVertical();
                             {
                                 EditorGUILayout.TextField("path:", assetData.assetPath);
                                 EditorGUILayout.TextField("bundle:", assetData.bundlePath);
+                                EditorGUILayout.TextField("labels:", string.Join(",", assetData.labels));
                             }
                             GUILayout.EndVertical();
-                            EditorGUILayout.TextField("labels:", string.Join(",", assetData.labels));
                         }
                         EditorGUIUtil.EndLableWidth();
                     }
