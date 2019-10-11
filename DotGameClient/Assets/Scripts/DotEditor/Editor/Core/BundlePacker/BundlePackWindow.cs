@@ -243,12 +243,20 @@ namespace DotEditor.Core.Packer
 
         private void DrawOperation()
         {
-            if (GUILayout.Button("Update Asset Detail"))
+            if (GUILayout.Button("Update Asset Group"))
             {
-                BundlePackUtil.UpdateConfig();
+                BundlePackUtil.UpdateTagConfig();
+                if(BundlePackUtil.IsAddressRepeat())
+                {
+                    EditorUtility.DisplayDialog("Error", "Address Repeat!", "OK");
+                }
 
                 tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
                 FilterTreeModel();
+            }
+            if(GUILayout.Button("Update Address Config"))
+            {
+                BundlePackUtil.UpdateAddressConfig();
             }
             if (GUILayout.Button("Clear Asset Bundle Names"))
             {
@@ -267,11 +275,10 @@ namespace DotEditor.Core.Packer
                 {
                     EditorApplication.delayCall += () =>
                     {
-                        BundlePackUtil.UpdateConfig();
-                        BundlePackUtil.ClearAssetBundleNames(true);
-                        BundlePackUtil.SetAssetBundleNames(true);
-                        BundlePackConfig packConfig = Util.FileUtil.ReadFromBinary<BundlePackConfig>(BundlePackUtil.GetPackConfigPath());
-                        BundlePackUtil.PackAssetBundle(packConfig);
+                        if(BundlePackUtil.AutoPackAssetBundle())
+                        {
+                            EditorUtility.DisplayDialog("Success", "Pack AssetBundle Success", "OK");
+                        }
                     };
                 }
             }

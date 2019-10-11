@@ -16,7 +16,14 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
 
             if(GUILayout.Button("Execute",GUILayout.Height(40)))
             {
-                BundlePackUtil.UpdateConfig();
+                BundlePackUtil.UpdateTagConfig();
+                if (BundlePackUtil.IsAddressRepeat())
+                {
+                    EditorUtility.DisplayDialog("Error", "Address Repeat!", "OK");
+                }else
+                {
+                    BundlePackUtil.UpdateAddressConfig();
+                }
             }
 
             serializedObject.ApplyModifiedProperties();

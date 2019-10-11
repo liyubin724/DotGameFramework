@@ -32,13 +32,7 @@ namespace DotEditor.Core.Packer
             return dataPath;
         }
 
-        public static void UpdateConfig()
-        {
-            UpdateTagConfig();
-            UpdateAddressConfig();
-        }
-
-        private static void UpdateTagConfig()
+        public static void UpdateTagConfig()
         {
             string[] settingPaths = AssetDatabaseUtil.FindAssets<AssetAddressAssembly>();
             if (settingPaths == null || settingPaths.Length == 0)
@@ -56,10 +50,9 @@ namespace DotEditor.Core.Packer
             }
         }
 
-        private static void UpdateAddressConfig()
+        public static void UpdateAddressConfig()
         {
             AssetBundleTagConfig tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
-
             AssetAddressConfig config = AssetDatabase.LoadAssetAtPath<AssetAddressConfig>(AssetAddressConfig.CONFIG_PATH);
             if (config == null)
             {
@@ -226,7 +219,45 @@ namespace DotEditor.Core.Packer
             BuildPipeline.BuildAssetBundles(outputTargetDir, options, buildTarget);
         }
 
+        public static bool AutoPackAssetBundle()
+        {
+            UpdateTagConfig();
+            if(IsAddressRepeat())
+            {
+                return false;
+            }
+            UpdateAddressConfig();
+            ClearAssetBundleNames();
+            SetAssetBundleNames();
+            BundlePackConfig packConfig = Util.FileUtil.ReadFromBinary<BundlePackConfig>(BundlePackUtil.GetPackConfigPath());
+            PackAssetBundle(packConfig);
 
+            return true;
+        }
+
+        public static bool IsAddressRepeat()
+        {
+            AssetBundleTagConfig tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
+            AssetAddressData[] datas = (from groupData in tagConfig.groupDatas
+                                        where groupData.isMain
+                                        from assetData in groupData.assetDatas
+                                        select assetData).ToArray();
+
+            List<string> addressList = new List<string>();
+            foreach(var data in datas)
+            {
+                if(addressList.IndexOf(data.assetAddress)>=0)
+                {
+                    Debug.LogError("BundlePackUtil::IsAddressRepeat->assetAddress Repeat");
+                    return true;
+                }else
+                {
+                    addressList.Add(data.assetAddress);
+                }
+            }
+
+            return false;
+        }
     }
 }
 
