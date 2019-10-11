@@ -27,7 +27,9 @@ namespace DotEditor.Core.UI
     /// </summary>
     public abstract class DraggablePopupWindow : EditorWindow
     {
-        private Vector2 _offset;
+        private Vector2 offset;
+        private bool isAutoClose = false;
+        protected bool AutoClose { set => isAutoClose = value; }
 
         public static T GetDraggableWindow<T>() where T : DraggablePopupWindow
         {
@@ -37,13 +39,15 @@ namespace DotEditor.Core.UI
             return t ?? CreateInstance<T>();
         }
 
-        public void Show<T>(Rect position, bool focus = true) where T : DraggablePopupWindow
+        public void Show<T>(Rect position, bool focus = true,bool autoClose = false) where T : DraggablePopupWindow
         {
-            this.minSize = position.size;
+            minSize = position.size;
             this.position = position;
+            isAutoClose = autoClose;
 
-            if (focus) this.Focus();
-            this.ShowPopup();
+            if (focus) Focus();
+
+            ShowPopup();
         }
 
         protected virtual void DrawBackground()
@@ -60,13 +64,13 @@ namespace DotEditor.Core.UI
             var e = Event.current;
             if (e.button == 0 && e.type == EventType.MouseDown)
             {
-                _offset = position.position - GUIUtility.GUIToScreenPoint(e.mousePosition);
+                offset = position.position - GUIUtility.GUIToScreenPoint(e.mousePosition);
             }
 
             if (e.button == 0 && e.type == EventType.MouseDrag)
             {
                 var mousePos = GUIUtility.GUIToScreenPoint(e.mousePosition);
-                position = new Rect(mousePos + _offset, position.size);
+                position = new Rect(mousePos + offset, position.size);
             }
         }
 
@@ -75,6 +79,14 @@ namespace DotEditor.Core.UI
             DrawBackground();
 
             OnGUIDrag();
+        }
+
+        private void OnLostFocus()
+        {
+            if(isAutoClose)
+            {
+                Close();
+            }
         }
     }
 

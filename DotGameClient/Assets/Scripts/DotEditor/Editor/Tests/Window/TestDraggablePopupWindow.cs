@@ -10,17 +10,12 @@ namespace DotEditor.Tests.Window
         public static void ShowTestDraggablePopupWindow()
         {
             var win = GetDraggableWindow<TestDraggablePopupWindow>();
-            win.Show<TestDraggablePopupWindow>(new Rect(100, 100, 400, 300), true);
+            win.Show<TestDraggablePopupWindow>(new Rect(100, 100, 400, 300), true,true);
         }
 
         protected override void OnGUI()
         {
             base.OnGUI();
-
-            if(GUILayout.Button("Close"))
-            {
-                Close();
-            }
         }
     }
 }

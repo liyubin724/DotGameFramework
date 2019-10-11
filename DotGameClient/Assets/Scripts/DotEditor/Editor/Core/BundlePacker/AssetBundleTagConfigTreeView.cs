@@ -27,8 +27,20 @@ namespace DotEditor.Core.Packer
         {
             showBorder = true;
             showAlternatingRowBackgrounds = true;
-            rowHeight = EditorGUIUtility.singleLineHeight * 2+8;
             Reload();
+        }
+
+        protected override float GetCustomRowHeight(int row, TreeViewItem item)
+        {
+            var viewItem = (TreeViewItem<TreeElementWithData<AssetBundleGroupTreeData>>)item;
+            AssetBundleGroupTreeData groupTreeData = viewItem.data.Data;
+            if(groupTreeData.isGroup)
+            {
+                return EditorGUIUtility.singleLineHeight + 2;
+            }else
+            {
+                return rowHeight = EditorGUIUtility.singleLineHeight * 2 + 4;
+            }
         }
 
         protected override bool CanMultiSelect(TreeViewItem item)
