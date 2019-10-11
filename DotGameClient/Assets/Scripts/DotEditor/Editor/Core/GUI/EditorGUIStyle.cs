@@ -40,5 +40,19 @@ namespace DotEditor.Core.EGUI
                 return middleLeftLabelStyle;
             }
         }
+
+        private static GUIStyle wordwrapLabelStyle = null;
+        public static GUIStyle WordwrapLabelStyle
+        {
+            get
+            {
+                if(wordwrapLabelStyle == null)
+                {
+                    wordwrapLabelStyle = new GUIStyle(EditorStyles.label);
+                    wordwrapLabelStyle.wordWrap = true;
+                }
+                return wordwrapLabelStyle;
+            }
+        }
     }
 }
