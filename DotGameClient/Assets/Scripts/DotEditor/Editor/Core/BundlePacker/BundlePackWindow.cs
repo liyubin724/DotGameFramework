@@ -3,6 +3,7 @@ using DotEditor.Core.EGUI;
 using DotEditor.Core.EGUI.TreeGUI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -41,7 +42,6 @@ namespace DotEditor.Core.Packer
                });
 
             detailGroupTreeView = new AssetBundleTagConfigTreeView(detailGroupTreeViewState, data);
-            
         }
 
         private void FilterTreeModel()
@@ -49,6 +49,10 @@ namespace DotEditor.Core.Packer
             TreeModel<TreeElementWithData<AssetBundleGroupTreeData>> treeModel = detailGroupTreeView.treeModel;
             TreeElementWithData<AssetBundleGroupTreeData> treeModelRoot = treeModel.root;
             treeModelRoot.children?.Clear();
+
+            List<AssetAddressData> dataList = (from groupData in tagConfig.groupDatas where groupData.isMain
+                                        from detailData in groupData.assetDatas
+                                        select detailData).ToList();
 
             for (int i = 0; i < tagConfig.groupDatas.Count; i++)
             {
@@ -62,6 +66,7 @@ namespace DotEditor.Core.Packer
 
                 treeModel.AddElement(groupElementData, treeModelRoot, treeModelRoot.hasChildren ? treeModelRoot.children.Count : 0);
 
+                bool isAddressRepeat = false;
                 for (int j = 0; j < groupData.assetDatas.Count; ++j)
                 {
                     AssetAddressData detailData = groupData.assetDatas[j];
@@ -75,10 +80,23 @@ namespace DotEditor.Core.Packer
                                     groupData = groupData,
                                 }, "", 1, (i + 1) * 100 + (j + 1));
 
+                        List<AssetAddressData> repeatList = (from data in dataList
+                                                             where data != detailData && data.assetAddress == detailData.assetAddress
+                                                             select data).ToList();
+                        if(repeatList.Count>0)
+                        {
+                            elementData.Data.isAddressRepeat = true;
+                            elementData.Data.repeatAddressList = repeatList;
+                            if(!isAddressRepeat)
+                            {
+                                isAddressRepeat = true;
+                            }
+                        }
+
                         treeModel.AddElement(elementData, groupElementData, groupElementData.hasChildren ? groupElementData.children.Count : 0);
                     }
                 }
-
+                groupElementData.Data.isAddressRepeat = isAddressRepeat;
             }
         }
 
@@ -228,6 +246,7 @@ namespace DotEditor.Core.Packer
             if (GUILayout.Button("Update Asset Detail"))
             {
                 BundlePackUtil.UpdateConfig();
+
                 tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
                 FilterTreeModel();
             }

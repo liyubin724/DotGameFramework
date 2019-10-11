@@ -1,10 +1,10 @@
 ﻿using Dot.Core.Loader.Config;
 using DotEditor.Core.EGUI;
 using DotEditor.Core.EGUI.TreeGUI;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using static DotEditor.Core.Packer.AssetBundleTagConfig;
 
 namespace DotEditor.Core.Packer
 {
@@ -14,6 +14,10 @@ namespace DotEditor.Core.Packer
         public bool isGroup;
         public int dataIndex = -1;
 
+        public bool isAddressRepeat = false;
+
+        public List<AssetAddressData> repeatAddressList = new List<AssetAddressData>();
+
         public static AssetBundleGroupTreeData Root
         {
             get { return new AssetBundleGroupTreeData(); }
@@ -22,9 +26,12 @@ namespace DotEditor.Core.Packer
 
     public class AssetBundleTagConfigTreeView : TreeViewWithTreeModel<TreeElementWithData<AssetBundleGroupTreeData>>
     {
+        private GUIContent addressRepeatContent;
+
         public AssetBundleTagConfigTreeView(TreeViewState state, TreeModel<TreeElementWithData<AssetBundleGroupTreeData>> model) : 
             base(state, model)
         {
+            addressRepeatContent = EditorGUIUtility.IconContent("console.erroricon.sml", "Address Repeat");
             showBorder = true;
             showAlternatingRowBackgrounds = true;
             Reload();
@@ -67,18 +74,36 @@ namespace DotEditor.Core.Packer
                 AssetBundleGroupData groupData = groupTreeData.groupData;
                 if(groupTreeData.isGroup)
                 {
-                    string groupName = groupData.groupName;
-
-                    if (groupData.isMain)
+                    EditorGUILayout.BeginHorizontal();
                     {
-                        groupName += "(Main)";
+                        EditorGUILayout.LabelField(new GUIContent(groupData.groupName+(groupData.isMain?"(Main)":"")));
+                        if(groupTreeData.isAddressRepeat)
+                        {
+                            if(GUILayout.Button(addressRepeatContent))
+                            {
+                                SetExpanded(args.item.id,true);
+                            }
+                        }
+                        GUILayout.FlexibleSpace();
                     }
-                    EditorGUILayout.LabelField(new GUIContent(groupName));
+                    EditorGUILayout.EndHorizontal();
                 }
                 else
                 {
                     GUILayout.BeginHorizontal();
                     {
+                        if (groupTreeData.isAddressRepeat)
+                        {
+                            if (GUILayout.Button(addressRepeatContent,GUILayout.Width(24)))
+                            {
+                                Vector2 pos = GUIUtility.GUIToScreenPoint(Input.mousePosition);
+                                AssetAddressRepeatPopupWindow.GetWindow().ShowWithParam(groupTreeData.repeatAddressList, pos);
+                            }
+                        }else
+                        {
+                            GUILayout.Label(GUIContent.none, GUILayout.Width(24));
+                        }
+
                         EditorGUIUtil.BeginLabelWidth(60);
                         {
                             AssetAddressData assetData = groupData.assetDatas[groupTreeData.dataIndex];

@@ -13,43 +13,51 @@ MonoBehaviour:
   m_Name: asset_address_config
   m_EditorClassIdentifier: 
   addressDatas:
-  - assetAddress: ch_pc_hou_009.prefab
+  - assetAddress: Image
+    assetPath: Assets/ArtRes/Character/Player/Test01/Prefab/Image.prefab
+    bundlePath: assets/artres/character/player/test01/prefab/image_prefab
+    labels: []
+  - assetAddress: ch_pc_hou_009
     assetPath: Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_009.prefab
     bundlePath: assets/artres/character/player/test01/prefab/ch_pc_hou_009_prefab
     labels: []
-  - assetAddress: ch_pc_hou_008.prefab
+  - assetAddress: ch_pc_hou_008
     assetPath: Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_008.prefab
     bundlePath: assets/artres/character/player/test01/prefab/ch_pc_hou_008_prefab
     labels: []
-  - assetAddress: ch_pc_hou_006.prefab
+  - assetAddress: ch_pc_hou_006
     assetPath: Assets/ArtRes/Character/Player/Test01/Prefab/ch_pc_hou_006.prefab
     bundlePath: assets/artres/character/player/test01/prefab/ch_pc_hou_006_prefab
     labels: []
-  - assetAddress: testspriteatlasAtlasImage.prefab
+  - assetAddress: testspriteatlasAtlasImage
     assetPath: Assets/ArtRes/Prefabs/testspriteatlasAtlasImage.prefab
     bundlePath: assets/artres/prefabs/testspriteatlasatlasimage_prefab
     labels: []
-  - assetAddress: Sphere.prefab
+  - assetAddress: Sphere
     assetPath: Assets/ArtRes/Prefabs/Sphere.prefab
     bundlePath: assets/artres/prefabs/sphere_prefab
     labels: []
-  - assetAddress: DynamicAtlasImage.prefab
+  - assetAddress: Image
+    assetPath: Assets/ArtRes/Prefabs/Image.prefab
+    bundlePath: assets/artres/prefabs/image_prefab
+    labels: []
+  - assetAddress: DynamicAtlasImage
     assetPath: Assets/ArtRes/Prefabs/DynamicAtlasImage.prefab
     bundlePath: assets/artres/prefabs/dynamicatlasimage_prefab
     labels: []
-  - assetAddress: Cylinder.prefab
+  - assetAddress: Cylinder
     assetPath: Assets/ArtRes/Prefabs/Cylinder.prefab
     bundlePath: assets/artres/prefabs/cylinder_prefab
     labels: []
-  - assetAddress: Cube.prefab
+  - assetAddress: Cube
     assetPath: Assets/ArtRes/Prefabs/Cube.prefab
     bundlePath: assets/artres/prefabs/cube_prefab
     labels: []
-  - assetAddress: Capsule.prefab
+  - assetAddress: Capsule
     assetPath: Assets/ArtRes/Prefabs/Capsule.prefab
     bundlePath: assets/artres/prefabs/capsule_prefab
     labels: []
-  - assetAddress: AtlasImageAnimation.prefab
+  - assetAddress: AtlasImageAnimation
     assetPath: Assets/ArtRes/Prefabs/AtlasImageAnimation.prefab
     bundlePath: assets/artres/prefabs/atlasimageanimation_prefab
     labels: []

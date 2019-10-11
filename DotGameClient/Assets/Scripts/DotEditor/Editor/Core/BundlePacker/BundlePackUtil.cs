@@ -95,10 +95,11 @@ namespace DotEditor.Core.Packer
 
             AssetDatabase.SaveAssets();
         }
+
         /// <summary>
-        /// 根据配置中的数据设置BundleName，对于SpriteAtlas类型的资源由于Sprite的关联关系，需要特别处理
+        /// 根据配置中的数据设置BundleName
         /// </summary>
-        /// <param name="isShowProgressBar"></param>
+        /// <param name="isShowProgressBar">是否显示进度</param>
         public static void SetAssetBundleNames(bool isShowProgressBar = false)
         {
             AssetBundleTagConfig tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
@@ -130,30 +131,7 @@ namespace DotEditor.Core.Packer
 
                     if(Path.GetExtension(assetPath).ToLower() == ".spriteatlas")
                     {
-                        SpriteAtlas atlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(assetPath);
-                        if(atlas!=null)
-                        {
-                            List<string> spriteAssetPathList = new List<string>();
-                            UnityObject[] objs = atlas.GetPackables();
-                            foreach(var obj in objs)
-                            {
-                                if(obj.GetType() == typeof(Sprite))
-                                {
-                                    spriteAssetPathList.Add(AssetDatabase.GetAssetPath(obj));
-                                }else if(obj.GetType() == typeof(DefaultAsset))
-                                {
-                                    string folderPath = AssetDatabase.GetAssetPath(obj);
-                                    string[] assets = AssetDatabaseUtil.FindAssetInFolder<Sprite>(folderPath);
-                                    spriteAssetPathList.AddRange(assets);
-                                }
-                            }
-                            spriteAssetPathList.Distinct();
-                            foreach (var path in spriteAssetPathList)
-                            {
-                                ai = AssetImporter.GetAtPath(path);
-                                ai.assetBundleName = bundlePath;
-                            }
-                        }
+                        SetSpriteBundleNameByAtlas(assetPath, bundlePath);
                     }
                 }
             }
@@ -164,7 +142,46 @@ namespace DotEditor.Core.Packer
 
             AssetDatabase.SaveAssets();
         }
+
+        /// <summary>
+        /// 由于UGUI中SpriteAtlas的特殊性，为了防止UI的Prefab打包无法与Atlas关联，
+        /// 从而设定将SpriteAtlas所使用的Sprite一起打包
+        /// </summary>
+        /// <param name="atlasAssetPath">SpriteAtlas所在的资源路径</param>
+        /// <param name="bundlePath">需要设置的BundleName</param>
+        private static void SetSpriteBundleNameByAtlas(string atlasAssetPath,string bundlePath)
+        {
+            SpriteAtlas atlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(atlasAssetPath);
+            if (atlas != null)
+            {
+                List<string> spriteAssetPathList = new List<string>();
+                UnityObject[] objs = atlas.GetPackables();
+                foreach (var obj in objs)
+                {
+                    if (obj.GetType() == typeof(Sprite))
+                    {
+                        spriteAssetPathList.Add(AssetDatabase.GetAssetPath(obj));
+                    }
+                    else if (obj.GetType() == typeof(DefaultAsset))
+                    {
+                        string folderPath = AssetDatabase.GetAssetPath(obj);
+                        string[] assets = AssetDatabaseUtil.FindAssetInFolder<Sprite>(folderPath);
+                        spriteAssetPathList.AddRange(assets);
+                    }
+                }
+                spriteAssetPathList.Distinct();
+                foreach (var path in spriteAssetPathList)
+                {
+                    AssetImporter ai = AssetImporter.GetAtPath(path);
+                    ai.assetBundleName = bundlePath;
+                }
+            }
+        }
         
+        /// <summary>
+        /// 清除设置的BundleName的标签
+        /// </summary>
+        /// <param name="isShowProgressBar">是否显示清除进度</param>
         public static void ClearAssetBundleNames(bool isShowProgressBar = false)
         {
             string[] bundleNames = AssetDatabase.GetAllAssetBundleNames();
@@ -208,6 +225,8 @@ namespace DotEditor.Core.Packer
             
             BuildPipeline.BuildAssetBundles(outputTargetDir, options, buildTarget);
         }
+
+
     }
 }
 

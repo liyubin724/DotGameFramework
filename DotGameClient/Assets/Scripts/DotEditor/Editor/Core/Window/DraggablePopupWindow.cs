@@ -1,63 +1,13 @@
-﻿using DotEditor.Core.EGUI;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace DotEditor.Core.UI
+namespace DotEditor.Core.Window
 {
     /// <summary>
     /// 通过继承DraggablePopupWindow可以生成一个可拖动的弹框
-    /// 
-    /// Example : 示例会生成一个不带任何内容的空的弹板 , 通过重写OnGUI为弹板添加关闭按钮
-    /// public class TestDraggablePopupWindow:DraggablePopupWindow
-    /// {
-    ///     [MenuItem("Test/Window/Test Draggable Popup Win")]
-    ///     public static void ShowTestDraggablePopupWindow()
-    ///     {
-    ///         var win = GetDraggableWindow<TestDraggablePopupWindow>();
-    ///         win.Show<TestDraggablePopupWindow>(new Rect(100, 100, 400, 300), true);
-    ///     }
-    ///     
-    ///     protected override void OnGUI()
-    ///     {
-    ///         base.OnGUI();
-    ///         if(GUILayout.Button("Close")) Close();
-    ///     }
-    /// }
-    /// 
     /// </summary>
-    public abstract class DraggablePopupWindow : EditorWindow
+    public abstract class DraggablePopupWindow : DotPopupWindow
     {
         private Vector2 offset;
-        private bool isAutoClose = false;
-        protected bool AutoClose { set => isAutoClose = value; }
-
-        public static T GetDraggableWindow<T>() where T : DraggablePopupWindow
-        {
-            var array = Resources.FindObjectsOfTypeAll(typeof(T)) as T[];
-            var t = (array.Length <= 0) ? null : array[0];
-
-            return t ?? CreateInstance<T>();
-        }
-
-        public void Show<T>(Rect position, bool focus = true,bool autoClose = false) where T : DraggablePopupWindow
-        {
-            minSize = position.size;
-            this.position = position;
-            isAutoClose = autoClose;
-
-            if (focus) Focus();
-
-            ShowPopup();
-        }
-
-        protected virtual void DrawBackground()
-        {
-            Rect winRect = new Rect(Vector2.zero, position.size);
-            EditorGUI.DrawRect(winRect, EditorGUIUtil.BorderColor);
-
-            Rect backgroundRect = new Rect(Vector2.one, position.size - new Vector2(2f, 2f));
-            EditorGUI.DrawRect(backgroundRect, EditorGUIUtil.BackgroundColor);
-        }
 
         protected void OnGUIDrag()
         {
@@ -74,19 +24,11 @@ namespace DotEditor.Core.UI
             }
         }
 
-        protected virtual void OnGUI()
+        protected override void OnGUI()
         {
             DrawBackground();
 
             OnGUIDrag();
-        }
-
-        private void OnLostFocus()
-        {
-            if(isAutoClose)
-            {
-                Close();
-            }
         }
     }
 
