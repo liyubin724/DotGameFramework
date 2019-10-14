@@ -94,6 +94,7 @@ namespace DotEditor.Core.BundleDepend
         {
             AssetDependWindow win = EditorWindow.GetWindow<AssetDependWindow>();
             win.titleContent = new GUIContent("Bundle Depend");
+            win.wantsMouseMove = true;
             win.Show();
         }
 
@@ -347,6 +348,7 @@ namespace DotEditor.Core.BundleDepend
                });
 
             dependTreeView = new AssetDependTreeView(dependTreeViewState,data);
+            dependTreeView.dependWin = this;
         }
 
         private void RefreshDependTreeView()
@@ -379,64 +381,23 @@ namespace DotEditor.Core.BundleDepend
                 {
                     EditorApplication.delayCall += RefreshData;
                 }
-
-                if (GUILayout.Button("Export All", "toolbarbutton", GUILayout.Width(100)))
-                {
-                }
-                if (GUILayout.Button("Test", "toolbarbutton", GUILayout.Width(100)))
-                {
-                    //SpriteAtlas atlas = Selection.activeObject as SpriteAtlas;
-                    //string[] spritePaths = SpriteAtlasUtil.GetDependAssets(atlas);
-                    //foreach (var spritePath in spritePaths)
-                    //{
-                    //    Debug.Log(spritePath);
-                    //}
-
-                    UnityEngine.Object uObj = Selection.activeObject;
-                    string ap = AssetDatabase.GetAssetPath(uObj);
-
-                    string[] depends = AssetDatabaseUtil.GetDirectlyDependencies(ap, new string[] { ".cs" });
-                    foreach(var d in depends)
-                    {
-                        Debug.Log(d);
-                    }
-                }
-
                 GUILayout.FlexibleSpace();
             }
             EditorGUILayout.EndHorizontal();
         }
         
-        private void ExportLog()
+        public List<AssetData> GetAssetByDepend(string assetPath)
         {
-            //string savedDirPath = EditorUtility.SaveFilePanel("Save Log To", "D:/", "asset_depend_log", ".txt");
-            //if(string.IsNullOrEmpty(savedDirPath))
-            //{
-            //    return;
-            //}
+            List<AssetData> assetDatas = new List<AssetData>();
+            foreach(var kvp in allAssetDic)
+            {
+                if(kvp.Value.Contains(assetPath) && kvp.Value.assetPath!=assetPath)
+                {
+                    assetDatas.Add(kvp.Value);
+                }
+            }
 
-            //StringBuilder sb = new StringBuilder();
-            //foreach (var path in packedAssetPaths)
-            //{
-            //    List<string> assetPaths = packedAssetDependDic[path];
-            //    sb.AppendLine(path);
-
-            //    foreach (var data in assetPaths)
-            //    {
-            //        AssetData assetData = allAssetDic[data];
-
-            //        sb.AppendLine(assetData.ToString(1));
-            //        sb.AppendLine();
-            //    }
-            //    sb.AppendLine("---------------------------");
-            //}
-
-            //File.WriteAllText(savedDirPath, sb.ToString());
+            return assetDatas;
         }
-        
-
-
-
-
     }
 }

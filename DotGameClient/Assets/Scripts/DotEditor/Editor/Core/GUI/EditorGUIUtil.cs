@@ -40,12 +40,13 @@ namespace DotEditor.Core.EGUI
         public static Texture2D GetAssetPreviewIcon(string assetPath)
         {
             UnityObject uObj = AssetDatabase.LoadAssetAtPath<UnityObject>(assetPath);
-            return GetAssetPreviewIcon(uObj);
+            return AssetPreview.GetAssetPreview(uObj);
         }
 
-        public static Texture2D GetAssetPreviewIcon(UnityObject uObj)
+        public static Texture2D GetAssetMiniThumbnail(string assetPath)
         {
-            return AssetPreview.GetAssetPreview(uObj);
+            UnityObject uObj = AssetDatabase.LoadAssetAtPath<UnityObject>(assetPath);
+            return AssetPreview.GetMiniThumbnail(uObj);
         }
 
         public static void DrawAreaLine(Rect rect, Color color)

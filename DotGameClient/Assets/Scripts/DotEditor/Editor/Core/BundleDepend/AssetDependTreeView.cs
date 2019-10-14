@@ -23,13 +23,16 @@ namespace DotEditor.Core.BundleDepend
                 return curMaxID++;
             }
         }
+
+        internal AssetDependWindow dependWin = null;
+
         public AssetDependTreeView(TreeViewState state, TreeModel<TreeElementWithData<AssetData>> model) :
             base(state, model)
         {
             warningIconContent = EditorGUIUtility.IconContent("console.warnicon.sml", "Repeat");
             showBorder = true;
             showAlternatingRowBackgrounds = true;
-            rowHeight = EditorGUIUtility.singleLineHeight+2;
+            rowHeight = EditorGUIUtility.singleLineHeight*2;
             Reload();
         }
 
@@ -96,40 +99,48 @@ namespace DotEditor.Core.BundleDepend
                 return;
             }
 
+            bool isAssetRepeat = assetData.IsAssetRepeat();
             Rect contentRect = args.rowRect;
             contentRect.x += GetContentIndent(item);
             contentRect.width -= GetContentIndent(item);
-            contentRect.height = EditorGUIUtility.singleLineHeight;
-
+            
             Rect iconRect = contentRect;
             iconRect.width = iconRect.height;
-            
-            if (assetData.IsAssetRepeat())
+            if (isAssetRepeat)
             {
                 EditorGUI.LabelField(iconRect, warningIconContent);
             }
+            iconRect.x += iconRect.width;
+            GUI.DrawTexture(iconRect, EditorGUIUtil.GetAssetMiniThumbnail(assetData.assetPath));
 
             EditorGUIUtil.BeginLabelWidth(60);
             {
-                contentRect.x += contentRect.height;
-                contentRect.width = contentRect.width - 280;
-                EditorGUI.TextField(contentRect, GUIContent.none, assetData.assetPath);
-
-                contentRect.x += contentRect.width+20;
-                contentRect.width = 80;
-                //UnityEngine.Object uObj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetData.assetPath);
-                //EditorGUI.ObjectField(contentRect, "Object", uObj, typeof(UnityEngine.Object), false);
-                if(GUI.Button(contentRect,new GUIContent("Select")))
-                {
-                    SelectionUtil.ActiveObject(assetData.assetPath);
-                }
-                contentRect.x += contentRect.width;
-                if(GUI.Button(contentRect,new GUIContent("Detail")))
-                {
-
-                }
+                contentRect.x += contentRect.height*2 + 2;
+                contentRect.width = contentRect.width - 100 - contentRect.height*2;
+                EditorGUI.LabelField(contentRect, assetData.assetPath);
             }
             EditorGUIUtil.EndLableWidth();
+
+            contentRect.x += contentRect.width + 20;
+            contentRect.width = 80;
+            if (GUI.Button(contentRect, new GUIContent("Select")))
+            {
+                SelectionUtil.ActiveObject(assetData.assetPath);
+            }
+
+            if(assetData.isRepeat)
+            {
+                contentRect.x -= contentRect.width;
+                if(GUI.Button(contentRect,new GUIContent("Detail")))
+                {
+                    Vector2 mPos = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
+                    List<AssetData> assets = dependWin.GetAssetByDepend(assetData.assetPath);
+
+                    Vector2 popupWinSize = new Vector2(600, Mathf.Max(200,EditorGUIUtility.singleLineHeight * (assets.Count + 1)));
+                    Rect rect = new Rect(new Vector2(mPos.x - popupWinSize.x, mPos.y - popupWinSize.y * 0.5f), popupWinSize);
+                    AssetDependDetailPopupWindow.ShowPopupWin(rect, assetData.assetPath, assets);
+                }
+            }
         }
     }
 }
