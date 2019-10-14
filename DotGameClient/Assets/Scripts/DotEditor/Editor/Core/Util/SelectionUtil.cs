@@ -32,6 +32,12 @@ namespace DotEditor.Core.Util
             Selection.activeObject = uObj;
         }
 
+        public static void ActiveObject(string assetPath)
+        {
+            EditorUtility.FocusProjectWindow();
+            Selection.activeObject = AssetDatabase.LoadAssetAtPath<UnityObject>(assetPath);
+        }
+
         /// <summary>
         /// 设置在Project中选中的资源
         /// </summary>

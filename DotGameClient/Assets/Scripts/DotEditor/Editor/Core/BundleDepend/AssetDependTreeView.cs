@@ -1,5 +1,6 @@
 ﻿using DotEditor.Core.EGUI;
 using DotEditor.Core.EGUI.TreeGUI;
+using DotEditor.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -112,12 +113,21 @@ namespace DotEditor.Core.BundleDepend
             {
                 contentRect.x += contentRect.height;
                 contentRect.width = contentRect.width - 280;
-                EditorGUI.TextField(contentRect, new GUIContent("Path"), assetData.assetPath);
+                EditorGUI.TextField(contentRect, GUIContent.none, assetData.assetPath);
 
                 contentRect.x += contentRect.width+20;
-                contentRect.width = 240;
-                UnityEngine.Object uObj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetData.assetPath);
-                EditorGUI.ObjectField(contentRect, "Object", uObj, typeof(UnityEngine.Object), false);
+                contentRect.width = 80;
+                //UnityEngine.Object uObj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetData.assetPath);
+                //EditorGUI.ObjectField(contentRect, "Object", uObj, typeof(UnityEngine.Object), false);
+                if(GUI.Button(contentRect,new GUIContent("Select")))
+                {
+                    SelectionUtil.ActiveObject(assetData.assetPath);
+                }
+                contentRect.x += contentRect.width;
+                if(GUI.Button(contentRect,new GUIContent("Detail")))
+                {
+
+                }
             }
             EditorGUIUtil.EndLableWidth();
         }

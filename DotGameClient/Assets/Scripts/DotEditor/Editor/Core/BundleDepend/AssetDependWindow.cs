@@ -105,11 +105,6 @@ namespace DotEditor.Core.BundleDepend
         private Dictionary<string, string> assetInAtlasDic = new Dictionary<string, string>();
         private Dictionary<string, List<string>> assetInDiffAtlasDic = new Dictionary<string, List<string>>();
 
-        private void OnEnable()
-        {
-            RefreshData();
-        }
-
         private void RefreshData()
         {
             AssetBundleTagConfig tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
@@ -122,6 +117,8 @@ namespace DotEditor.Core.BundleDepend
             assetInAtlasDic.Clear();
             assetInDiffAtlasDic.Clear();
 
+            EditorUtility.DisplayProgressBar("In Progress...", "Prepare to Find Depend in Atlas", 0.0f);
+
             FindAtlasDepend();
             FindAssetInDiffAtlasData();
             if(assetInDiffAtlasDic.Count == 0)
@@ -129,6 +126,8 @@ namespace DotEditor.Core.BundleDepend
                 FindAssetWithoutAtlasDepend();
                 RefreshDependTreeView();
             }
+
+            EditorUtility.ClearProgressBar();
         }
 
         private void FindAtlasDepend()
@@ -137,6 +136,7 @@ namespace DotEditor.Core.BundleDepend
                                        where Path.GetExtension(path).ToLower() == ".spriteatlas"
                                        select path).ToList();
 
+            int index = 0;
             foreach (var atlasPath in atlasPaths)
             {
                 SpriteAtlas atlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(atlasPath);
@@ -145,6 +145,9 @@ namespace DotEditor.Core.BundleDepend
                     Debug.LogError("AssetDependWindow::FindAssetDepend->atlas is null.path = " + atlasPath);
                     continue;
                 }
+
+                EditorUtility.DisplayProgressBar("Find Depend in Atlas", atlasPath, index/(float)atlasPaths.Count);
+                index++;
 
                 AssetData atlasAssetData = new AssetData();
                 atlasAssetData.assetPath = atlasPath;
@@ -196,8 +199,12 @@ namespace DotEditor.Core.BundleDepend
                                        where Path.GetExtension(path).ToLower() != ".spriteatlas"
                                        select path).ToList();
 
+            int index = 0;
             foreach (var path in assetPaths)
             {
+                EditorUtility.DisplayProgressBar("Find Depend in Asset", path, index / (float)assetPaths.Count);
+                index++;
+
                 if (!allAssetDic.TryGetValue(path, out AssetData assetData))
                 {
                     assetData = new AssetData();
