@@ -1,4 +1,5 @@
 ﻿using Dot.Core.Loader.Config;
+using DotEditor.Core.BundleDepend;
 using DotEditor.Core.EGUI;
 using DotEditor.Core.EGUI.TreeGUI;
 using System;
@@ -211,6 +212,10 @@ namespace DotEditor.Core.Packer
                     }
                 }
                 GUILayout.FlexibleSpace();
+                if(GUILayout.Button("Open Depend Win","toolbarbutton",GUILayout.Width(160)))
+                {
+                    AssetDependWindow.ShowWin();
+                }
 
                 int newSelectedIndex = EditorGUILayout.Popup(selecteddSearchParamIndex, SearchParams, "ToolbarDropDown", GUILayout.Width(80));
                 if(newSelectedIndex != selecteddSearchParamIndex)

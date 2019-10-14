@@ -105,6 +105,11 @@ namespace DotEditor.Core.BundleDepend
         private Dictionary<string, string> assetInAtlasDic = new Dictionary<string, string>();
         private Dictionary<string, List<string>> assetInDiffAtlasDic = new Dictionary<string, List<string>>();
 
+        private void OnEnable()
+        {
+            RefreshData();
+        }
+
         private void RefreshData()
         {
             AssetBundleTagConfig tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
