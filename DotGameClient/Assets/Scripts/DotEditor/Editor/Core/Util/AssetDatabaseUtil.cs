@@ -6,6 +6,8 @@ using UnityEngine.Profiling;
 using UnityObject = UnityEngine.Object;
 using SystemObject = System.Object;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DotEditor.Core.Util
 {
@@ -37,7 +39,7 @@ namespace DotEditor.Core.Util
         /// <returns></returns>
         public static string[] FindAssetInFolder<T>(string folderPath)
         {
-            return GetAssetPathByGUID(AssetDatabase.FindAssets($"t:{typeof(T).Name}",new string[] { folderPath }));
+            return GetAssetPathByGUID(AssetDatabase.FindAssets($"t:{typeof(T).Name}", new string[] { folderPath }));
         }
 
         /// <summary>
@@ -45,7 +47,7 @@ namespace DotEditor.Core.Util
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static string[] FindAssets<T>() where T:UnityEngine.Object
+        public static string[] FindAssets<T>() where T : UnityEngine.Object
         {
             return GetAssetPathByGUID(AssetDatabase.FindAssets($"t:{typeof(T).Name} "));
         }
@@ -66,7 +68,7 @@ namespace DotEditor.Core.Util
         /// <typeparam name="T"></typeparam>
         /// <param name="label"></param>
         /// <returns>符合条件的资源地址的数组</returns>
-        public static string[] FindAssets<T>(string label) where T: UnityEngine.Object
+        public static string[] FindAssets<T>(string label) where T : UnityEngine.Object
         {
             return GetAssetPathByGUID(AssetDatabase.FindAssets($"t:{typeof(T).Name} l:{label}"));
         }
@@ -79,13 +81,13 @@ namespace DotEditor.Core.Util
         /// <returns></returns>
         private static string[] GetAssetPathByGUID(string[] guids)
         {
-            if(guids == null)
+            if (guids == null)
             {
                 return null;
             }
 
             string[] paths = new string[guids.Length];
-            for(int i =0;i<guids.Length;i++)
+            for (int i = 0; i < guids.Length; i++)
             {
                 paths[i] = AssetDatabase.GUIDToAssetPath(guids[i]);
             }
@@ -101,25 +103,25 @@ namespace DotEditor.Core.Util
         /// <param name="fileName">资源名称</param>
         /// <param name="assetFolder">资源存储目录，默认为空</param>
         /// <returns></returns>
-        public static T CreateAsset<T>(string fileName,string assetFolder = "") where T:ScriptableObject
+        public static T CreateAsset<T>(string fileName, string assetFolder = "") where T : ScriptableObject
         {
             if (fileName.Contains("/"))
                 throw new ArgumentException("Base name should not contain slashes");
-            if(!string.IsNullOrEmpty(assetFolder)&&!assetFolder.StartsWith("Assets"))
+            if (!string.IsNullOrEmpty(assetFolder) && !assetFolder.StartsWith("Assets"))
             {
                 throw new ArgumentException("Asset Folder should be start with Assets");
             }
 
             string folderPath = string.Empty;
-            if(!string.IsNullOrEmpty(assetFolder))
+            if (!string.IsNullOrEmpty(assetFolder))
             {
                 string diskFolderPath = PathUtil.GetDiskPath(assetFolder);
-                if(!Directory.Exists(diskFolderPath))
+                if (!Directory.Exists(diskFolderPath))
                 {
                     Directory.CreateDirectory(diskFolderPath);
                 }
                 folderPath = assetFolder;
-            }else
+            } else
             {
                 folderPath = AssetDatabase.GetAssetPath(Selection.activeObject);
 
@@ -139,6 +141,45 @@ namespace DotEditor.Core.Util
             AssetDatabase.CreateAsset(asset, assetPathAndName);
             AssetDatabase.SaveAssets();
             return asset;
+        }
+        /// <summary>
+        /// 查找指定的资源依赖的所有资源
+        /// 通过设定ignoreExt的值可以忽略掉指定文件后缀的资源
+        /// 默认情况下后缀的检查，以小写字母进行。如string[] ignoreExt = new string[]{".cs"}
+        /// </summary>
+        /// <param name="assetPath"></param>
+        /// <param name="ingoreExt"></param>
+        /// <returns></returns>
+        public static string[] GetDependencies(string assetPath, string[] ignoreExt = null)
+        {
+            return GetAssetDependencies(assetPath, true, ignoreExt);
+        }
+
+        /// <summary>
+        /// 查找指定的资源直接依赖的资源
+        /// 通过设定ignoreExt的值可以忽略掉指定文件后缀的资源
+        /// 默认情况下后缀的检查，以小写字母进行。如string[] ignoreExt = new string[]{".cs"}
+        /// </summary>
+        /// <param name="assetPath"></param>
+        /// <param name="ingoreExt"></param>
+        /// <returns></returns>
+        public static string[] GetDirectlyDependencies(string assetPath, string[] ignoreExt = null)
+        {
+            return GetAssetDependencies(assetPath, false, ignoreExt);
+        }
+
+        private static string[] GetAssetDependencies(string assetPath,bool isRecursive,string[] ignoreExt)
+        {
+            string[] assetPaths = AssetDatabase.GetDependencies(assetPath, isRecursive);
+            if (ignoreExt == null || ignoreExt.Length == 0)
+            {
+                return assetPaths;
+            }
+
+            return (from path in assetPaths
+                    let ext = Path.GetExtension(path).ToLower()
+                    where Array.IndexOf(ignoreExt, ext) < 0
+                    select path).ToArray();
         }
 
         public static long GetTextureStorageSize(Texture texture)

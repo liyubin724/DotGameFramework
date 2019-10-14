@@ -25,7 +25,7 @@ SpriteAtlas:
       m_BuildTarget: Standalone
       m_MaxTextureSize: 2048
       m_ResizeAlgorithm: 0
-      m_TextureFormat: -1
+      m_TextureFormat: 0
       m_TextureCompression: 1
       m_CompressionQuality: 50
       m_CrunchedCompression: 0
@@ -36,7 +36,7 @@ SpriteAtlas:
       m_BuildTarget: Android
       m_MaxTextureSize: 2048
       m_ResizeAlgorithm: 0
-      m_TextureFormat: -1
+      m_TextureFormat: 0
       m_TextureCompression: 1
       m_CompressionQuality: 50
       m_CrunchedCompression: 0
@@ -47,7 +47,7 @@ SpriteAtlas:
       m_BuildTarget: iPhone
       m_MaxTextureSize: 2048
       m_ResizeAlgorithm: 0
-      m_TextureFormat: -1
+      m_TextureFormat: 0
       m_TextureCompression: 1
       m_CompressionQuality: 50
       m_CrunchedCompression: 0
@@ -76,9 +76,7 @@ SpriteAtlas:
     - {fileID: 21300000, guid: 4ef5b8f2a3dcb3e42a84ce4b87deb2c8, type: 3}
     - {fileID: 21300000, guid: ad5102b04a7f044459ec86493fffa158, type: 3}
     - {fileID: 21300000, guid: 9a0dfbb813936fb45834298dc395833e, type: 3}
-    - {fileID: 21300000, guid: aa42b6e6066c1ae49a3b8218c46ae67d, type: 3}
-    - {fileID: 102900000, guid: d47642c70afbf6944868410b818208b7, type: 3}
-    totalSpriteSurfaceArea: 388836
+    totalSpriteSurfaceArea: 89120
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -89,8 +87,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 4ef5b8f2a3dcb3e42a84ce4b87deb2c8, type: 3}
   - {fileID: 21300000, guid: 477d1d4357ec21345acf87790dee9dfb, type: 3}
   - {fileID: 21300000, guid: b017f2835aa21744aa6b975b79c5be78, type: 3}
-  - {fileID: 21300000, guid: e2b65114158851648970e57c04ea8dd1, type: 3}
-  - {fileID: 21300000, guid: aa42b6e6066c1ae49a3b8218c46ae67d, type: 3}
   - {fileID: 21300000, guid: 22b972a766f9c564d87988b9f27b42a6, type: 3}
   - {fileID: 21300000, guid: 9a0dfbb813936fb45834298dc395833e, type: 3}
   - {fileID: 21300000, guid: a6b57cd8eeb829d4b98c9e322be79083, type: 3}
@@ -105,8 +101,6 @@ SpriteAtlas:
   - btn_common_099
   - btn_common_02
   - btn_common_01
-  - pic_login_016
-  - emoji 1
   - btn_common_05
   - btn_common_small_02
   - btn_common_098

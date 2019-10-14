@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
 namespace DotEditor.Core.EGUI
 {
@@ -34,6 +35,17 @@ namespace DotEditor.Core.EGUI
                 }
                 return folderIcon;
             }
+        }
+
+        public static Texture2D GetAssetPreviewIcon(string assetPath)
+        {
+            UnityObject uObj = AssetDatabase.LoadAssetAtPath<UnityObject>(assetPath);
+            return GetAssetPreviewIcon(uObj);
+        }
+
+        public static Texture2D GetAssetPreviewIcon(UnityObject uObj)
+        {
+            return AssetPreview.GetAssetPreview(uObj);
         }
 
         public static void DrawAreaLine(Rect rect, Color color)
