@@ -110,12 +110,12 @@ namespace DotEditor.Core.BundleDepend
             {
                 EditorGUI.LabelField(iconRect, warningIconContent);
             }
-            iconRect.x += iconRect.width;
-            GUI.DrawTexture(iconRect, EditorGUIUtil.GetAssetMiniThumbnail(assetData.assetPath));
+            //iconRect.x += iconRect.width;
+            //GUI.DrawTexture(iconRect, EditorGUIUtil.GetAssetMiniThumbnail(assetData.assetPath));
 
             EditorGUIUtil.BeginLabelWidth(60);
             {
-                contentRect.x += contentRect.height*2 + 2;
+                contentRect.x += contentRect.height + 10;
                 contentRect.width = contentRect.width - 100 - contentRect.height*2;
                 EditorGUI.LabelField(contentRect, assetData.assetPath);
             }
@@ -136,7 +136,12 @@ namespace DotEditor.Core.BundleDepend
                     Vector2 mPos = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
                     List<AssetData> assets = dependWin.GetAssetByDepend(assetData.assetPath);
 
-                    Vector2 popupWinSize = new Vector2(600, Mathf.Max(200,EditorGUIUtility.singleLineHeight * (assets.Count + 1)));
+                    float popupWinWidth = 650;
+                    float popupWinHeight = EditorGUIUtility.singleLineHeight * (assets.Count + 3);
+                    if (popupWinHeight < 200) popupWinHeight = 200;
+                    else if (popupWinHeight > 800) popupWinHeight = 800;
+                    
+                    Vector2 popupWinSize = new Vector2(popupWinWidth, popupWinHeight);
                     Rect rect = new Rect(new Vector2(mPos.x - popupWinSize.x, mPos.y - popupWinSize.y * 0.5f), popupWinSize);
                     AssetDependDetailPopupWindow.ShowPopupWin(rect, assetData.assetPath, assets);
                 }
