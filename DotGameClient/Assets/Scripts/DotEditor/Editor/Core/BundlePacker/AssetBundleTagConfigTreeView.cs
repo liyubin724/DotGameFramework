@@ -110,8 +110,8 @@ namespace DotEditor.Core.Packer
                             AssetAddressData assetData = groupData.assetDatas[groupTreeData.dataIndex];
                             EditorGUILayout.LabelField(new GUIContent("" + groupTreeData.dataIndex), GUILayout.Width(20));
                             EditorGUILayout.TextField("address:", assetData.assetAddress);
-                            UnityObject uObj = AssetDatabase.LoadAssetAtPath<UnityObject>(assetData.assetPath);
-                            EditorGUILayout.ObjectField(GUIContent.none, uObj, typeof(UnityObject), false,GUILayout.Width(120));
+                            //UnityObject uObj = AssetDatabase.LoadAssetAtPath<UnityObject>(assetData.assetPath);
+                            //EditorGUILayout.ObjectField(GUIContent.none, uObj, typeof(UnityObject), false,GUILayout.Width(120));
                             GUILayout.BeginVertical();
                             {
                                 EditorGUILayout.TextField("path:", assetData.assetPath);
