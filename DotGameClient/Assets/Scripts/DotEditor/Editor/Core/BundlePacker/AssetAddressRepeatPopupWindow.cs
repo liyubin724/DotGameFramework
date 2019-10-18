@@ -4,12 +4,13 @@ using DotEditor.Core.Window;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
 namespace DotEditor.Core.Packer
 {
     public class AssetAddressRepeatPopupWindow : DotPopupWindow
     {
-        private static int WIN_WIDTH = 500;
+        private static int WIN_WIDTH = 600;
         private static int WIN_Height = 300;
 
         private Vector2 scrollPos = Vector2.zero;
@@ -44,10 +45,11 @@ namespace DotEditor.Core.Packer
                         EditorGUILayout.LabelField("" + index, GUILayout.Width(20));
                         EditorGUIUtil.BeginLabelWidth(60);
                         {
-                            //EditorGUILayout.TextField("address",data.assetAddress);
                             EditorGUILayout.TextField("assetPath",data.assetPath);
                         }
                         EditorGUIUtil.EndLableWidth();
+                        UnityObject uObj = AssetDatabase.LoadAssetAtPath<UnityObject>(data.assetPath);
+                        EditorGUILayout.ObjectField(uObj, typeof(UnityObject), true, GUILayout.Width(120));
                     }
                     EditorGUILayout.EndHorizontal();
 
