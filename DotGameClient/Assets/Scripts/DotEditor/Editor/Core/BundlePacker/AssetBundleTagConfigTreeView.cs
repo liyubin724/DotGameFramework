@@ -77,8 +77,15 @@ namespace DotEditor.Core.Packer
                 {
                     EditorGUILayout.BeginHorizontal();
                     {
-                        EditorGUILayout.LabelField(new GUIContent(groupData.groupName+(groupData.isMain?"(Main)":"")));
-                        if(groupTreeData.isAddressRepeat)
+                        string groupName = groupData.groupName;
+                        if (groupData.isMain)
+                        {
+                            groupName += "(Main)";
+                        }
+                        groupName += "  " + groupData.assetDatas.Count;
+                        EditorGUILayout.LabelField(new GUIContent(groupName));
+
+                        if (groupTreeData.isAddressRepeat)
                         {
                             if(GUILayout.Button(addressRepeatContent))
                             {

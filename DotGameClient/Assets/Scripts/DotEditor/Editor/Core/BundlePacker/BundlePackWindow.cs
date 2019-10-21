@@ -51,9 +51,10 @@ namespace DotEditor.Core.Packer
             TreeElementWithData<AssetBundleGroupTreeData> treeModelRoot = treeModel.root;
             treeModelRoot.children?.Clear();
 
-            List<AssetAddressData> dataList = (from groupData in tagConfig.groupDatas where groupData.isMain
-                                        from detailData in groupData.assetDatas
-                                        select detailData).ToList();
+            List<AssetAddressData> dataList = (from groupData in tagConfig.groupDatas
+                                               where groupData.isMain
+                                               from detailData in groupData.assetDatas
+                                               select detailData).ToList();
 
             for (int i = 0; i < tagConfig.groupDatas.Count; i++)
             {
@@ -85,11 +86,11 @@ namespace DotEditor.Core.Packer
                                     groupData = groupData,
                                 }, "", 1, (i + 1) * 100 + (j + 1));
 
-                        if(repeatList.Count>1)
+                        if (repeatList.Count > 1)
                         {
                             elementData.Data.isAddressRepeat = true;
                             elementData.Data.repeatAddressList = repeatList;
-                            if(!isAddressRepeat)
+                            if (!isAddressRepeat)
                             {
                                 isAddressRepeat = true;
                             }

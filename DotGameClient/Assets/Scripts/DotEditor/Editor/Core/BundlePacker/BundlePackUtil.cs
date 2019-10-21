@@ -45,6 +45,7 @@ namespace DotEditor.Core.Packer
                 AssetAddressAssembly aaAssembly = AssetDatabase.LoadAssetAtPath<AssetAddressAssembly>(assetPath);
                 if(aaAssembly!=null)
                 {
+                    (Editor.CreateEditor(aaAssembly) as AssetAddressAssemblyEditor).AutoFindGroup();
                     aaAssembly.Execute();
                 }
             }

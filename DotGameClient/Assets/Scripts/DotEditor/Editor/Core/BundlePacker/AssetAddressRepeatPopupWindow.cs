@@ -30,12 +30,19 @@ namespace DotEditor.Core.Packer
         protected override void OnGUI()
         {
             base.OnGUI();
+
             GUIStyle boldCenterStyle = new GUIStyle(EditorStyles.label);
             boldCenterStyle.alignment = TextAnchor.MiddleCenter;
             boldCenterStyle.fontStyle = FontStyle.Bold;
-            EditorGUILayout.LabelField("Repeat Address", boldCenterStyle);
 
-            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+            string address = "";
+            if (repeatAddressList.Count > 0)
+            {
+                address = repeatAddressList[0].assetAddress;
+            }
+            EditorGUILayout.LabelField($"Repeat Address({address})", boldCenterStyle);
+
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos, EditorStyles.helpBox);
             {
                 int index = 0;
                 foreach(var data in repeatAddressList)

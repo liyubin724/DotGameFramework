@@ -52,7 +52,7 @@ namespace DotEditor.Core.AssetRuler
             }
         }
 
-        private void AutoFindGroup()
+        public void AutoFindGroup()
         {
             string[] assetPaths = AssetDatabaseUtil.FindAssets<AssetGroup>();
             List<AssetGroup> groupList = new List<AssetGroup>();
