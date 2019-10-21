@@ -36,12 +36,12 @@ namespace Dot.Core.Loader
             assetLoader?.Initialize((isSuccess) =>
             {
                 isInit = isSuccess;
-                initCallback?.Invoke(isSuccess);
                 if(isSuccess)
                 {
                     sceneLoader = new SceneAssetLoader(loaderMode, assetLoader);
                 }
 
+                initCallback?.Invoke(isSuccess);
             },pathMode,maxLoadingCount,assetRootDir);
         }
 
