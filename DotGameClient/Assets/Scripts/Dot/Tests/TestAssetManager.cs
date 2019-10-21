@@ -213,7 +213,7 @@ namespace Dot.Tests
                     if(GUILayout.Button("Load Scene"))
                     {
                         string sceneAddress = "other_scene";
-                        AssetManager.GetInstance().LoadSceneAsync(sceneAddress, (address, userData) =>
+                        AssetManager.GetInstance().LoadSceneAsync(sceneAddress, (address, scene, userData) =>
                         {
                             
                         },null, LoadSceneMode.Additive, true,null);

@@ -1,4 +1,5 @@
-﻿using SystemObject = System.Object;
+﻿using UnityEngine.SceneManagement;
+using SystemObject = System.Object;
 using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
@@ -9,8 +10,11 @@ namespace Dot.Core.Loader
     public delegate void OnBatchAssetLoadComplete(string[] pathOrAddresses, UnityObject[] uObjs, SystemObject userData);
     public delegate void OnBatchAssetsLoadProgress(string[] pathOrAddresses, float[] progresses, SystemObject userData);
 
-    public delegate void OnSceneComplete(string pathOrAddress,SystemObject userData);
-    public delegate void OnSceneProgress(string pathOrAddress, float progress, SystemObject userData);
+    public delegate void OnSceneLoadComplete(string pathOrAddress,Scene scene,SystemObject userData);
+    public delegate void OnSceneLoadProgress(string pathOrAddress, float progress, SystemObject userData);
+
+    public delegate void OnSceneUnloadComplete(string pathOrAddress, SystemObject userData);
+    public delegate void OnSceneUnloadProgress(string pathOrAddress, float progress, SystemObject userData);
 
     public enum AssetLoaderMode
     {

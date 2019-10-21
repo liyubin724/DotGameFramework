@@ -24,8 +24,8 @@ namespace Dot.Core.Loader
         }
 
         public SceneLoaderHandle LoadSceneAsync(string pathOrAddress,
-            OnSceneComplete completeCallback,
-            OnSceneProgress progressCallback,
+            OnSceneLoadComplete completeCallback,
+            OnSceneLoadProgress progressCallback,
             LoadSceneMode loadMode = LoadSceneMode.Single,
             bool activateOnLoad = true,
             SystemObject userData = null)
@@ -73,8 +73,8 @@ namespace Dot.Core.Loader
         }
 
         public void UnloadSceneAsync(string pathOrAddress,
-            OnSceneComplete completeCallback,
-            OnSceneProgress progressCallback,
+            OnSceneUnloadComplete completeCallback,
+            OnSceneUnloadProgress progressCallback,
             SystemObject userData = null)
         {
             bool isSceneLoaded = loadedSceneHandles.Any((sHandle) =>
@@ -196,8 +196,11 @@ namespace Dot.Core.Loader
             }
 
             SceneLoaderHandle loaderHandle = loadData.handle;
-            loaderHandle.SetScene(SceneManager.GetSceneByName(loaderHandle.SceneName));
+            Scene scene = SceneManager.GetSceneByName(loaderHandle.SceneName);
+            loaderHandle.SetScene(scene);
+
             loadedSceneHandles.Add(loaderHandle);
+            loadData.completeCallback?.Invoke(loadData.pathOrAddress, scene, loadData.userData);
         }
 
         private void SceneUnloadComplete(SceneUnloadData unloadData)
@@ -214,6 +217,8 @@ namespace Dot.Core.Loader
             loadedSceneHandles.Remove(loaderHandle);
 
             assetLoader.UnloadAsset(loaderHandle.pathOrAddress);
+
+            unloadData.completeCallback?.Invoke(unloadData.pathOrAddress, unloadData.userData);
         }
 
         private void SceneUnloadStart(SceneUnloadData unloadData)

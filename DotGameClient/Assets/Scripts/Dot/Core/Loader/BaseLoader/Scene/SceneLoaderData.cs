@@ -12,8 +12,8 @@ namespace Dot.Core.Loader
         public string assetPath;
         public LoadSceneMode loadMode = LoadSceneMode.Single;
         public bool activateOnLoad = true;
-        public OnSceneComplete completeCallback;
-        public OnSceneProgress progressCallback;
+        public OnSceneLoadComplete completeCallback;
+        public OnSceneLoadProgress progressCallback;
         public SystemObject userData;
 
         public SceneLoaderHandle handle;
@@ -59,8 +59,8 @@ namespace Dot.Core.Loader
     public class SceneUnloadData
     {
         public string pathOrAddress;
-        public OnSceneComplete completeCallback;
-        public OnSceneProgress progressCallback;
+        public OnSceneUnloadComplete completeCallback;
+        public OnSceneUnloadProgress progressCallback;
         public SystemObject userData;
         
         public AsyncOperation asyncOperation = null;

@@ -139,8 +139,8 @@ namespace Dot.Core.Loader
         }
 
         public SceneLoaderHandle LoadSceneAsync(string pathOrAddress,
-            OnSceneComplete completeCallback,
-            OnSceneProgress progressCallback,
+            OnSceneLoadComplete completeCallback,
+            OnSceneLoadProgress progressCallback,
             LoadSceneMode loadMode = LoadSceneMode.Single,
             bool activateOnLoad = true,
             SystemObject userData = null)
@@ -154,8 +154,8 @@ namespace Dot.Core.Loader
         }
 
         public void UnloadSceneAsync(string pathOrAddress,
-            OnSceneComplete completeCallback,
-            OnSceneProgress progressCallback,
+            OnSceneUnloadComplete completeCallback,
+            OnSceneUnloadProgress progressCallback,
             SystemObject userData = null)
         {
             if (sceneLoader == null)
