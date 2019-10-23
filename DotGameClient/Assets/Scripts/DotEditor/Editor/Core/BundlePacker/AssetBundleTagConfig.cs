@@ -14,6 +14,7 @@ namespace DotEditor.Core.Packer
     public class AssetBundleGroupData
     {
         public string groupName;
+        public bool isGenAddress = false;
         public bool isMain = true;
         public bool isPreload = false;
         public List<AssetAddressData> assetDatas = new List<AssetAddressData>();

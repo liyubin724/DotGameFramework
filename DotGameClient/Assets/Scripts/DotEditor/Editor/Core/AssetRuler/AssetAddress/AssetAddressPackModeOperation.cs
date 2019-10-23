@@ -9,6 +9,7 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
     {
         public AssetBundlePackMode packMode = AssetBundlePackMode.Together;
         public int packCount = 0;
+        public string packName = "";
 
         public override AssetOperationResult Execute(AssetFilterResult filterResult, AssetOperationResult operationResult)
         {
@@ -27,7 +28,6 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
                 }
 
                 string rootFolder = Path.GetDirectoryName(assetPath).Replace("\\", "/");
-
                 addressData.bundlePath = GetAssetBundle(rootFolder,assetPath).ToLower();
             }
 
@@ -40,11 +40,10 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
         {
             if (packMode == AssetBundlePackMode.Separate)
             {
-                char[] replaceChars = new char[] { '.', ' ', '\t' };
+                char[] replaceChars = new char[] { '.', ' ', '-','\t' };
                 foreach (var c in replaceChars)
                 {
                     assetPath = assetPath.Replace(c, '_');
-
                 }
                 return assetPath;
             }
@@ -61,6 +60,9 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
                     groupCount = 0;
                 }
                 return rootFolder + "_" + groupIndex;
+            }else if(packMode == AssetBundlePackMode.TogetherWithName)
+            {
+                return rootFolder.Replace(' ', '_')+"/"+packName;
             }
             return null;
         }

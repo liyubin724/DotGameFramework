@@ -16,13 +16,9 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
 
             if(GUILayout.Button("Execute",GUILayout.Height(40)))
             {
-                BundlePackUtil.UpdateTagConfig();
-                if (BundlePackUtil.IsAddressRepeat())
+                if(!BundlePackUtil.GenerateConfigs())
                 {
                     EditorUtility.DisplayDialog("Error", "Address Repeat!", "OK");
-                }else
-                {
-                    BundlePackUtil.UpdateAddressConfig();
                 }
             }
 

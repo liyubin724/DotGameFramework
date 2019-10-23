@@ -1,9 +1,7 @@
 ﻿using Dot.Core.Loader.Config;
 using DotEditor.Core.Packer;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using static DotEditor.Core.Packer.AssetBundleTagConfig;
 
 namespace DotEditor.Core.AssetRuler.AssetAddress
 {
@@ -27,6 +25,7 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
 
                 AssetBundleGroupData groupData = new AssetBundleGroupData();
                 groupData.groupName = gResult.groupName;
+                groupData.isGenAddress = gResult.isGenAddress;
                 groupData.isMain = gResult.isMain;
                 groupData.isPreload = gResult.isPreload;
 

@@ -132,7 +132,7 @@ namespace Dot.Core.Pool
                 }
             }
 
-            AssetLoaderHandle assetHandle = AssetManager.GetInstance().LoadAssetAsync(poolData.assetPath, OnLoadComplete, AssetLoaderPriority.Default,null, poolData);
+            AssetLoaderHandle assetHandle = Loader.AssetManager.GetInstance().LoadAssetAsync(poolData.assetPath, OnLoadComplete, AssetLoaderPriority.Default,null, poolData);
             poolData.handle = assetHandle;
             poolDatas.Add(poolData);
         }

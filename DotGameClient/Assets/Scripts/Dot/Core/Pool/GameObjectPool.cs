@@ -10,13 +10,22 @@ using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Pool
 {
+    /// <summary>
+    /// 用于创建缓存池的模板的类型
+    /// </summary>
+    public enum PoolTemplateType
+    {
+        Prefab,//使用Prefab做为缓存池模型
+        PrefabInstance,//使用Prefab实例化后的对象做为模板
+        RuntimeInstance,//运行时创建的对象做模板
+    }
+
     public class GameObjectPool
     {
         private SpawnPool spawnPool = null;
         private string assetPath = null;
+        private PoolTemplateType templateType = PoolTemplateType.Prefab;
         private GameObject instanceOrPrefabTemplate = null;
-        private bool isInstance = true;
-        private bool isRuntimeInstance = false;
         private Queue<GameObject> unusedItemQueue = new Queue<GameObject>();
 
         private List<WeakReference<GameObject>> usedItemList = new List<WeakReference<GameObject>>();
@@ -44,19 +53,20 @@ namespace Dot.Core.Pool
         {
         }
 
-        internal void InitPool(SpawnPool pool, string aPath, GameObject templateGObj, bool isInstance, bool isRuntimeInstance)
+        internal void InitPool(SpawnPool pool, string aPath, GameObject templateGObj, PoolTemplateType templateType)
         {
             spawnPool = pool;
             assetPath = aPath;
 
             instanceOrPrefabTemplate = templateGObj;
-            this.isInstance = isInstance;
-            this.isRuntimeInstance = isRuntimeInstance;
-            if(isInstance)
+            this.templateType = templateType;
+
+            if(templateType!= PoolTemplateType.Prefab)
             {
                 instanceOrPrefabTemplate.SetActive(false);
                 instanceOrPrefabTemplate.transform.SetParent(pool.CachedTransform, false);
             }
+
             preloadTimerTask = TimerManager.GetInstance().AddIntervalTimer(0.05f, OnPreloadTimerUpdate);
         }
 
@@ -186,13 +196,13 @@ namespace Dot.Core.Pool
         private GameObject CreateNewItem()
         {
             GameObject item = null;
-            if (isRuntimeInstance)
+            if(templateType == PoolTemplateType.RuntimeInstance)
             {
                 item = GameObject.Instantiate(instanceOrPrefabTemplate);
             }
             else
             {
-                item = (GameObject)AssetManager.GetInstance().InstantiateAsset(assetPath, instanceOrPrefabTemplate);
+                item = (GameObject)Loader.AssetManager.GetInstance().InstantiateAsset(assetPath, instanceOrPrefabTemplate);
             }
 
             if (item != null)
@@ -323,7 +333,7 @@ namespace Dot.Core.Pool
             }
             unusedItemQueue.Clear();
 
-            if(isInstance)
+            if(templateType == PoolTemplateType.PrefabInstance || templateType == PoolTemplateType.RuntimeInstance)
             {
                 UnityObject.Destroy(instanceOrPrefabTemplate);
             }

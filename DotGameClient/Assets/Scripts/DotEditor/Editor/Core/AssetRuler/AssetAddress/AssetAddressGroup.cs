@@ -5,6 +5,7 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
     [CreateAssetMenu(fileName = "assetaddress_group", menuName = "Asset Ruler/Asset Address/Group", order = 2)]
     public class AssetAddressGroup : AssetGroup
     {
+        public bool isGenAddress = false;
         public bool isMain = true;
         public bool isPreload = false;
 
@@ -18,6 +19,7 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
             AssetAddressGroupResult result = base.Execute(assemblyResult) as AssetAddressGroupResult;
             if(result != null)
             {
+                result.isGenAddress = isGenAddress;
                 result.isMain = isMain;
                 result.isPreload = isPreload;
             }

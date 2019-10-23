@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.U2D;
 using UnityEditor.U2D;
 using UnityObject = UnityEngine.Object;
+using System.Text;
 
 namespace DotEditor.Core.Packer
 {
@@ -30,6 +31,19 @@ namespace DotEditor.Core.Packer
             dataPath = dataPath.Replace("\\", "/");
             dataPath += "/Library/BundlePack/tag_config.data";
             return dataPath;
+        }
+
+        public static bool GenerateConfigs()
+        {
+            UpdateTagConfig();
+            if(IsAddressRepeat())
+            {
+                Debug.LogError("BundlePackUtil::GenerateConfigs->Address Repeat");
+                return false;
+            }
+            UpdateAddressConfig();
+            CreateAddressKeyClass();
+            return true;
         }
 
         public static void UpdateTagConfig()
@@ -88,6 +102,54 @@ namespace DotEditor.Core.Packer
             EditorUtility.SetDirty(config);
 
             AssetDatabase.SaveAssets();
+        }
+
+        public static void CreateAddressKeyClass()
+        {
+            AssetBundleTagConfig tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
+
+            List<string> fieldNameAndValues = new List<string>();
+            foreach (var group in tagConfig.groupDatas)
+            {
+                if (!group.isMain || !group.isGenAddress)
+                {
+                    continue;
+                }
+                string prefix = group.groupName.Replace(" ", "");
+
+                foreach (var data in group.assetDatas)
+                {
+                    string address = data.assetAddress;
+
+                    string tempName = address;
+                    if (tempName.IndexOf('/') > 0)
+                    {
+                        tempName = Path.GetFileNameWithoutExtension(tempName);
+                    }
+                    tempName = tempName.Replace(" ", "_").Replace(".", "_").Replace("-","_");
+
+                    string fieldName = (prefix + "_" + tempName).ToUpper();
+
+                    fieldNameAndValues.Add($"{fieldName} = @\"{address}\";");
+                }
+            }
+
+            StringBuilder classSB = new StringBuilder();
+            classSB.AppendLine("namespace Dot.Core.Loader.Config");
+            classSB.AppendLine("{");
+            classSB.AppendLine("\tpublic static class AssetAddressKey");
+            classSB.AppendLine("\t{");
+
+            fieldNameAndValues.ForEach((value) =>
+            {
+                classSB.AppendLine("\t\tpublic const string " + value);
+            });
+
+            classSB.AppendLine("\t}");
+            classSB.AppendLine("}");
+
+            string filePath = Application.dataPath + "/Scripts/Dot/Core/Loader/Config/AssetAddressKey.cs";
+            File.WriteAllText(filePath, classSB.ToString());
         }
 
         /// <summary>
@@ -220,16 +282,19 @@ namespace DotEditor.Core.Packer
             BuildPipeline.BuildAssetBundles(outputTargetDir, options, buildTarget);
         }
 
-        public static bool AutoPackAssetBundle()
+        public static bool AutoPackAssetBundle(bool isShowProgressBar = false)
         {
             UpdateTagConfig();
-            if(IsAddressRepeat())
+            if (IsAddressRepeat())
             {
+                Debug.LogError("BundlePackUtil::GenerateConfigs->Address Repeat");
                 return false;
             }
             UpdateAddressConfig();
-            ClearAssetBundleNames();
-            SetAssetBundleNames();
+
+            ClearAssetBundleNames(isShowProgressBar);
+            SetAssetBundleNames(isShowProgressBar);
+
             BundlePackConfig packConfig = Util.FileUtil.ReadFromBinary<BundlePackConfig>(BundlePackUtil.GetPackConfigPath());
             PackAssetBundle(packConfig);
 

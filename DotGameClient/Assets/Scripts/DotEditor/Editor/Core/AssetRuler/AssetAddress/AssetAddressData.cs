@@ -9,6 +9,7 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
         Together,
         Separate,
         GroupByCount,
+        TogetherWithName,
     }
 
     public enum AssetAddressMode
@@ -26,6 +27,7 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
 
     public class AssetAddressGroupResult : AssetGroupResult
     {
+        public bool isGenAddress = false;
         public bool isMain = true;
         public bool isPreload = false;
     }

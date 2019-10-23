@@ -11,7 +11,7 @@ namespace DotEditor.Core.AssetRuler
         public string groupName = "Asset Group";
         public AssetAssemblyType assetAssemblyType = AssetAssemblyType.AssetAddress;
 
-        public AssetSearcher assetSearcher = new AssetSearcher();
+        public List<AssetSearcher> assetSearchers = new List<AssetSearcher>();
         public List<AssetGroupFilterOperation> filterOperations = new List<AssetGroupFilterOperation>();
 
         protected virtual AssetGroupResult CreateGroupResult()
@@ -31,7 +31,11 @@ namespace DotEditor.Core.AssetRuler
                 return null;
             }
 
-            AssetSearcherResult searcherResult = assetSearcher.Execute();
+            AssetSearcherResult searcherResult = new AssetSearcherResult();//assetSearcher.Execute();
+            foreach(var searcher in assetSearchers)
+            {
+                searcherResult.assetPaths.AddRange(searcher.Execute().assetPaths);
+            }
 
             AssetGroupResult groupResult = CreateGroupResult();
             groupResult.groupName = groupName;

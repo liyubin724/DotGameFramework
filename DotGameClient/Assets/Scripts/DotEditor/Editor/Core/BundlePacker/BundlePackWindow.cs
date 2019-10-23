@@ -51,10 +51,9 @@ namespace DotEditor.Core.Packer
             TreeElementWithData<AssetBundleGroupTreeData> treeModelRoot = treeModel.root;
             treeModelRoot.children?.Clear();
 
-            List<AssetAddressData> dataList = (from groupData in tagConfig.groupDatas
-                                               where groupData.isMain
-                                               from detailData in groupData.assetDatas
-                                               select detailData).ToList();
+            List<AssetAddressData> dataList = (from groupData in tagConfig.groupDatas where groupData.isMain
+                                        from detailData in groupData.assetDatas
+                                        select detailData).ToList();
 
             for (int i = 0; i < tagConfig.groupDatas.Count; i++)
             {
@@ -265,6 +264,10 @@ namespace DotEditor.Core.Packer
             {
                 BundlePackUtil.UpdateAddressConfig();
             }
+            if(GUILayout.Button("Create Key Class"))
+            {
+                BundlePackUtil.CreateAddressKeyClass();
+            }
             if (GUILayout.Button("Clear Asset Bundle Names"))
             {
                 BundlePackUtil.ClearAssetBundleNames(true);
@@ -282,7 +285,7 @@ namespace DotEditor.Core.Packer
                 {
                     EditorApplication.delayCall += () =>
                     {
-                        if(BundlePackUtil.AutoPackAssetBundle())
+                        if(BundlePackUtil.AutoPackAssetBundle(true))
                         {
                             EditorUtility.DisplayDialog("Success", "Pack AssetBundle Success", "OK");
                         }

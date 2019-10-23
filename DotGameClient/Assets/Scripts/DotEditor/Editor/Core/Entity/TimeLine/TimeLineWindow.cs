@@ -18,7 +18,7 @@ namespace DotEditor.Core.TimeLine
             return win;
         }
 
-        [MenuItem("Tools/TimeLine Editor #&T")]
+        [MenuItem("Game/TimeLine/Edit Window #&T")]
         private static void OpenSkillWindow()
         {
             var win = OpenWindow("TimeLine Editor");
