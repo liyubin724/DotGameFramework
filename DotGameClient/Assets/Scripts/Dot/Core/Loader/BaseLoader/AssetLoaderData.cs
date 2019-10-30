@@ -5,7 +5,7 @@ using UnityObject = UnityEngine.Object;
 
 namespace Dot.Core.Loader
 {
-    public class AssetLoaderData : FastPriorityQueueNode,IObjectPoolItem
+    public class AssetLoaderData : StablePriorityQueueNode,IObjectPoolItem
     {
         public long uniqueID = -1;
         public string[] pathOrAddresses;
