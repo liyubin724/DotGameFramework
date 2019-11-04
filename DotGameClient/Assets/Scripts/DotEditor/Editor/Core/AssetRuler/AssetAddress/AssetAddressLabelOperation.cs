@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DotEditor.Core.AssetRuler.AssetAddress
 {
-    [CreateAssetMenu(fileName = "address_label_operation", menuName = "Asset Ruler/Asset Address/Operation/Set Label")]
+    [CreateAssetMenu(fileName = "address_label_operation", menuName = "Asset Address/Operations/Set Label")]
     public class AssetAddressLabelOperation : AssetOperation
     {
         public List<string> labels = new List<string>();

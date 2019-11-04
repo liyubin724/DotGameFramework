@@ -1,10 +1,11 @@
 ﻿using Dot.Core.Loader.Config;
+using Dot.Core.Util;
 using System.IO;
 using UnityEngine;
 
 namespace DotEditor.Core.AssetRuler.AssetAddress
 {
-    [CreateAssetMenu(fileName = "pack_mode_operation", menuName = "Asset Ruler/Asset Address/Operation/Pack Mode")]
+    [CreateAssetMenu(fileName = "pack_mode_operation", menuName = "Asset Address/Operations/Bundle Pack Mode")]
     public class AssetAddressPackModeOperation : AssetOperation
     {
         public AssetBundlePackMode packMode = AssetBundlePackMode.Together;
@@ -38,18 +39,16 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
         private int groupIndex = 0;
         private string GetAssetBundle(string rootFolder, string assetPath)
         {
+            string path = StringUtil.RemoveSpecialCharacter(assetPath, "_");
+            string folder = StringUtil.RemoveSpecialCharacter(rootFolder, "_");
+
             if (packMode == AssetBundlePackMode.Separate)
             {
-                char[] replaceChars = new char[] { '.', ' ', '-','\t' };
-                foreach (var c in replaceChars)
-                {
-                    assetPath = assetPath.Replace(c, '_');
-                }
-                return assetPath;
+                return path;
             }
             else if (packMode == AssetBundlePackMode.Together)
             {
-                return rootFolder.Replace(' ', '_');
+                return folder;
             }
             else if (packMode == AssetBundlePackMode.GroupByCount)
             {
@@ -59,10 +58,13 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
                     groupIndex++;
                     groupCount = 0;
                 }
-                return rootFolder + "_" + groupIndex;
-            }else if(packMode == AssetBundlePackMode.TogetherWithName)
+                return folder + "_" + groupIndex;
+            }else if(packMode == AssetBundlePackMode.TogetherAppendName)
             {
-                return rootFolder.Replace(' ', '_')+"/"+packName;
+                return folder + "/"+ packName;
+            }else if(packMode == AssetBundlePackMode.TogetherWithNewName)
+            {
+                return packName;
             }
             return null;
         }

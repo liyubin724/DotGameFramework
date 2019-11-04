@@ -15,7 +15,7 @@ namespace Dot.Core.Loader
         private UniqueIDCreator idCreator = new UniqueIDCreator();
 
         protected ObjectPool<AssetLoaderData> loaderDataPool = new ObjectPool<AssetLoaderData>(10);
-        protected FastPriorityQueue<AssetLoaderData> loaderDataWaitingQueue = new FastPriorityQueue<AssetLoaderData>(10);
+        protected StablePriorityQueue<AssetLoaderData> loaderDataWaitingQueue = new StablePriorityQueue<AssetLoaderData>(10);
         protected List<AssetLoaderData> loaderDataLoadingList = new List<AssetLoaderData>();
 
         protected Dictionary<long, AssetLoaderHandle> loaderHandleDic = new Dictionary<long, AssetLoaderHandle>();

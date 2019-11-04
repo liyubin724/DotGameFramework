@@ -1,5 +1,4 @@
 ﻿using Dot.Core.Loader.Config;
-using System;
 using System.Collections.Generic;
 
 namespace DotEditor.Core.AssetRuler.AssetAddress
@@ -9,7 +8,8 @@ namespace DotEditor.Core.AssetRuler.AssetAddress
         Together,
         Separate,
         GroupByCount,
-        TogetherWithName,
+        TogetherAppendName,
+        TogetherWithNewName,
     }
 
     public enum AssetAddressMode

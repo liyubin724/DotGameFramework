@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DotEditor.Core.AssetRuler
 {
-    [CreateAssetMenu(fileName = "group_filter_operation", menuName = "Asset Ruler/Asset Address/Group Filter&Operation", order = 1)]
+    [CreateAssetMenu(fileName = "group_filter_operation", menuName = "Asset Address/Group Filter And Operation", order = 1)]
     public class AssetGroupFilterOperation : ScriptableObject
     {
         public bool removeMatchFilterItem = true;

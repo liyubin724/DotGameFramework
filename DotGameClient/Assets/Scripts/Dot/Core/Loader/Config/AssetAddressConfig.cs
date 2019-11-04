@@ -5,7 +5,7 @@ namespace Dot.Core.Loader.Config
 {
     public class AssetAddressConfig : ScriptableObject, ISerializationCallbackReceiver
     {
-        public static readonly string CONFIG_PATH = "Assets/Configs/asset_address_config.asset";
+        public static readonly string CONFIG_PATH = "Assets/Tools/AssetAddress/asset_address_config.asset";
         public static readonly string CONFIG_ASSET_BUNDLE_NAME = "assetaddressconfig";
 
         public AssetAddressData[] addressDatas = new AssetAddressData[0];

@@ -41,6 +41,12 @@ namespace DotEditor.Core.Packer
             isAppendHash = packConfig.bundleOptions.HasFlag(BuildAssetBundleOptions.AppendHashToAssetBundleName);
         }
 
+        private string GetDefaultOutputDir()
+        {
+            string outputABPath = new System.IO.DirectoryInfo(".").Parent.FullName.Replace('\\', '/');
+            return $"{outputABPath}/eternity_assetbunles";
+        }
+
         internal void LayoutGUI()
         {
             var centeredStyle = new GUIStyle(GUI.skin.GetStyle("Label"));
@@ -52,6 +58,10 @@ namespace DotEditor.Core.Packer
             EditorGUILayout.BeginVertical();
             {
                 packConfig.outputDirPath = EditorGUILayoutUtil.DrawDiskFolderSelection("Bundle Output", packConfig.outputDirPath);
+                if(string.IsNullOrEmpty(packConfig.outputDirPath))
+                {
+                    packConfig.outputDirPath = GetDefaultOutputDir();
+                }
                 packConfig.buildTarget = (ValidBuildTarget)EditorGUILayout.EnumPopup(targetContent, packConfig.buildTarget);
 
                 advancedSettings = EditorGUILayout.Foldout(advancedSettings, "Advanced Settings");

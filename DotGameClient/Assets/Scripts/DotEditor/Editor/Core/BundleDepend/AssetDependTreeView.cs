@@ -1,18 +1,12 @@
-﻿using DotEditor.Core.EGUI;
-using DotEditor.Core.EGUI.TreeGUI;
+﻿using DotEditor.Core.EGUI.TreeGUI;
 using DotEditor.Core.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 namespace DotEditor.Core.BundleDepend
 {
-    public class AssetDependTreeView : TreeViewWithTreeModel<TreeElementWithData<AssetData>>
+    public class AssetDependTreeView : TreeViewWithTreeModel<TreeElementWithData<DependTreeData>>
     {
         private GUIContent warningIconContent;
         private int curMaxID = 1;
@@ -26,7 +20,7 @@ namespace DotEditor.Core.BundleDepend
 
         internal AssetDependWindow dependWin = null;
 
-        public AssetDependTreeView(TreeViewState state, TreeModel<TreeElementWithData<AssetData>> model) :
+        public AssetDependTreeView(TreeViewState state, TreeModel<TreeElementWithData<DependTreeData>> model) :
             base(state, model)
         {
             warningIconContent = EditorGUIUtility.IconContent("console.warnicon.sml", "Repeat");
@@ -36,48 +30,48 @@ namespace DotEditor.Core.BundleDepend
             Reload();
         }
 
-        private List<int> cachedExpandIDs = new List<int>();
-        protected override void ExpandedStateChanged()
-        {
-            List<int> ids = new List<int>(GetExpanded());
+        //private List<int> cachedExpandIDs = new List<int>();
+        //protected override void ExpandedStateChanged()
+        //{
+        //    List<int> ids = new List<int>(GetExpanded());
 
-            IEnumerable<int> collapseIDs = cachedExpandIDs.Except(ids);
-            foreach(var id in collapseIDs)
-            {
-                TreeElementWithData<AssetData> treeViewData = treeModel.Find(id);
-                if (treeViewData.Data.dependAssets.Count > 0)
-                {
-                    treeViewData.children?.Clear();
-                    TreeElementWithData<AssetData> dependTreeData = new TreeElementWithData<AssetData>(null, "", treeViewData.depth + 1, NextID);
-                    treeModel.AddElement(dependTreeData, treeViewData, treeViewData.hasChildren ? treeViewData.children.Count : 0);
-                }
-            }
+        //    IEnumerable<int> collapseIDs = cachedExpandIDs.Except(ids);
+        //    foreach(var id in collapseIDs)
+        //    {
+        //        TreeElementWithData<AssetData> treeViewData = treeModel.Find(id);
+        //        if (treeViewData.Data.dependAssets.Count > 0)
+        //        {
+        //            treeViewData.children?.Clear();
+        //            TreeElementWithData<AssetData> dependTreeData = new TreeElementWithData<AssetData>(null, "", treeViewData.depth + 1, NextID);
+        //            treeModel.AddElement(dependTreeData, treeViewData, treeViewData.hasChildren ? treeViewData.children.Count : 0);
+        //        }
+        //    }
 
-            IEnumerable<int> expandIDs = ids.Except(cachedExpandIDs);
-            foreach (var id in expandIDs)
-            {
-                TreeElementWithData<AssetData> treeViewData = treeModel.Find(id);
-                if (treeViewData.Data.dependAssets.Count > 0)
-                {
-                    treeViewData.children?.Clear();
+        //    IEnumerable<int> expandIDs = ids.Except(cachedExpandIDs);
+        //    foreach (var id in expandIDs)
+        //    {
+        //        TreeElementWithData<AssetData> treeViewData = treeModel.Find(id);
+        //        if (treeViewData.Data.dependAssets.Count > 0)
+        //        {
+        //            treeViewData.children?.Clear();
 
-                    for (int j = 0; j < treeViewData.Data.dependAssets.Count; ++j)
-                    {
-                        AssetData aData = treeViewData.Data.dependAssets[j];
-                        TreeElementWithData<AssetData> dependTreeData = new TreeElementWithData<AssetData>(aData, "", treeViewData.depth + 1, NextID);
-                        treeModel.AddElement(dependTreeData, treeViewData, treeViewData.hasChildren ? treeViewData.children.Count : 0);
+        //            for (int j = 0; j < treeViewData.Data.dependAssets.Count; ++j)
+        //            {
+        //                AssetData aData = treeViewData.Data.dependAssets[j];
+        //                TreeElementWithData<AssetData> dependTreeData = new TreeElementWithData<AssetData>(aData, "", treeViewData.depth + 1, NextID);
+        //                treeModel.AddElement(dependTreeData, treeViewData, treeViewData.hasChildren ? treeViewData.children.Count : 0);
 
-                        if(aData.dependAssets.Count>0)
-                        {
-                            TreeElementWithData<AssetData> emptyData = new TreeElementWithData<AssetData>(null, "", treeViewData.depth + 2, NextID);
-                            treeModel.AddElement(emptyData, dependTreeData, dependTreeData.hasChildren ? dependTreeData.children.Count : 0);
-                        }
-                    }
-                }
-            }
+        //                if(aData.dependAssets.Count>0)
+        //                {
+        //                    TreeElementWithData<AssetData> emptyData = new TreeElementWithData<AssetData>(null, "", treeViewData.depth + 2, NextID);
+        //                    treeModel.AddElement(emptyData, dependTreeData, dependTreeData.hasChildren ? dependTreeData.children.Count : 0);
+        //                }
+        //            }
+        //        }
+        //    }
 
-            cachedExpandIDs = ids;
-        }
+        //    cachedExpandIDs = ids;
+        //}
         
         protected override bool CanMultiSelect(TreeViewItem item)
         {
@@ -91,60 +85,33 @@ namespace DotEditor.Core.BundleDepend
         
         protected override void RowGUI(RowGUIArgs args)
         {
-            var item = (TreeViewItem<TreeElementWithData<AssetData>>)args.item;
-            AssetData assetData = item.data.Data;
+            var item = (TreeViewItem<TreeElementWithData<DependTreeData>>)args.item;
+            DependTreeData assetData = item.data.Data;
 
             if (assetData == null)
             {
                 return;
             }
-
-            bool isAssetRepeat = assetData.IsAssetRepeat();
             Rect contentRect = args.rowRect;
             contentRect.x += GetContentIndent(item);
             contentRect.width -= GetContentIndent(item);
+
+            Rect rect = contentRect;
+            rect.width -= 80;
             
-            Rect iconRect = contentRect;
-            iconRect.width = iconRect.height;
-            if (isAssetRepeat)
+            if(assetData.isBundle)
             {
-                EditorGUI.LabelField(iconRect, warningIconContent);
-            }
-            //iconRect.x += iconRect.width;
-            //GUI.DrawTexture(iconRect, EditorGUIUtil.GetAssetMiniThumbnail(assetData.assetPath));
-
-            EditorGUIUtil.BeginLabelWidth(60);
+                EditorGUI.LabelField(rect, assetData.assetPath);
+            }else
             {
-                contentRect.x += contentRect.height + 10;
-                contentRect.width = contentRect.width - 100 - contentRect.height*2;
-                EditorGUI.LabelField(contentRect, assetData.assetPath);
+                EditorGUI.LabelField(rect, assetData.assetPath+$"({assetData.repeatCount})");
             }
-            EditorGUIUtil.EndLableWidth();
 
-            contentRect.x += contentRect.width + 20;
-            contentRect.width = 80;
-            if (GUI.Button(contentRect, new GUIContent("Select")))
+            rect.x += rect.width+5;
+            rect.width = 70;
+            if(GUI.Button(rect,"selected"))
             {
                 SelectionUtil.ActiveObject(assetData.assetPath);
-            }
-
-            if(assetData.isRepeat)
-            {
-                contentRect.x -= contentRect.width;
-                if(GUI.Button(contentRect,new GUIContent("Detail")))
-                {
-                    Vector2 mPos = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
-                    List<AssetData> assets = dependWin.GetAssetByDepend(assetData.assetPath);
-
-                    float popupWinWidth = 650;
-                    float popupWinHeight = EditorGUIUtility.singleLineHeight * (assets.Count + 3);
-                    if (popupWinHeight < 200) popupWinHeight = 200;
-                    else if (popupWinHeight > 800) popupWinHeight = 800;
-                    
-                    Vector2 popupWinSize = new Vector2(popupWinWidth, popupWinHeight);
-                    Rect rect = new Rect(new Vector2(mPos.x - popupWinSize.x, mPos.y - popupWinSize.y * 0.5f), popupWinSize);
-                    AssetDependDetailPopupWindow.ShowPopupWin(rect, assetData.assetPath, assets);
-                }
             }
         }
     }

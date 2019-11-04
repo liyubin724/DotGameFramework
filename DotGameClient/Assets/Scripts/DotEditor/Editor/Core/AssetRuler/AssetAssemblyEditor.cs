@@ -1,6 +1,4 @@
 ﻿using DotEditor.Core.EGUI;
-using DotEditor.Core.Util;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -48,30 +46,8 @@ namespace DotEditor.Core.AssetRuler
         {
             if (GUILayout.Button("Auto Find Group", GUILayout.Height(40)))
             {
-                AutoFindGroup();
+                (target as AssetAssembly).AutoFind();
             }
-        }
-
-        public void AutoFindGroup()
-        {
-            string[] assetPaths = AssetDatabaseUtil.FindAssets<AssetGroup>();
-            List<AssetGroup> groupList = new List<AssetGroup>();
-            foreach (var assetPath in assetPaths)
-            {
-                AssetGroup group = AssetDatabase.LoadAssetAtPath<AssetGroup>(assetPath);
-                if (group != null && group.assetAssemblyType == (AssetAssemblyType)assetAssemblyType.intValue)
-                {
-                    groupList.Add(group);
-                }
-            }
-            assetGroups.ClearArray();
-            for (int i = 0; i < groupList.Count; ++i)
-            {
-                assetGroups.InsertArrayElementAtIndex(i);
-                assetGroups.GetArrayElementAtIndex(i).objectReferenceValue = groupList[i];
-            }
-
-            serializedObject.ApplyModifiedProperties();
         }
     }
 }

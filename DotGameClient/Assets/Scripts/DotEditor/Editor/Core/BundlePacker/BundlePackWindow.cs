@@ -2,6 +2,7 @@
 using DotEditor.Core.BundleDepend;
 using DotEditor.Core.EGUI;
 using DotEditor.Core.EGUI.TreeGUI;
+using DotEditor.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,12 @@ using UnityEngine;
 
 namespace DotEditor.Core.Packer
 {
+    internal enum RunMode
+    {
+        AssetDatabase,
+        AssetBundle,
+    }
+
     public class BundlePackWindow : EditorWindow
     {
         [MenuItem("Game/Asset Bundle/Bundle Pack Window")]
@@ -20,6 +27,8 @@ namespace DotEditor.Core.Packer
             win.titleContent = new GUIContent("Bundle Packer");
             win.Show();
         }
+
+        private static readonly string ASSET_BUNDLE_SYMBOL = "ASSET_BUNDLE";
 
         private AssetBundleTagConfigTreeView detailGroupTreeView;
         private TreeViewState detailGroupTreeViewState;
@@ -31,6 +40,11 @@ namespace DotEditor.Core.Packer
         {
             tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
             packConfigGUI = new BundlePackConfigGUI();
+
+            if(PlayerSettingsUtil.HasScriptingDefineSymbol(ASSET_BUNDLE_SYMBOL))
+            {
+                runMode = RunMode.AssetBundle;
+            }
         }
 
         private void InitDetailGroupTreeView()
@@ -163,7 +177,10 @@ namespace DotEditor.Core.Packer
             if (detailGroupTreeView == null)
             {
                 InitDetailGroupTreeView();
-                FilterTreeModel();
+                EditorApplication.delayCall += () =>
+                {
+                    FilterTreeModel();
+                };
             }
             detailGroupTreeView?.OnGUI(lastRect);
 
@@ -195,7 +212,9 @@ namespace DotEditor.Core.Packer
         private int selecteddSearchParamIndex = 0;
         private string searchText = "";
         private bool isExpandAll = false;
-        
+
+        private RunMode runMode = RunMode.AssetDatabase;
+
         private void DrawToolbar()
         {
             EditorGUILayout.BeginHorizontal("toolbar", GUILayout.ExpandWidth(true));
@@ -212,8 +231,43 @@ namespace DotEditor.Core.Packer
                         detailGroupTreeView.CollapseAll();
                     }
                 }
+                EditorGUILayout.Space();
+                EditorGUI.BeginChangeCheck();
+                {
+                    EditorGUIUtil.BeginLabelWidth(65);
+                    {
+                        runMode = (RunMode)EditorGUILayout.EnumPopup("Run Mode:",runMode, EditorStyles.toolbarPopup,GUILayout.Width(180));
+                    }
+                    EditorGUIUtil.EndLableWidth();
+                }
+                if(EditorGUI.EndChangeCheck())
+                {
+                    if(runMode == RunMode.AssetBundle)
+                    {
+                        PlayerSettingsUtil.AddScriptingDefineSymbol(ASSET_BUNDLE_SYMBOL);
+                    }else
+                    {
+                        PlayerSettingsUtil.RemoveScriptingDefineSymbol(ASSET_BUNDLE_SYMBOL);
+                    }
+                }
+
                 GUILayout.FlexibleSpace();
-                if(GUILayout.Button("Open Depend Win","toolbarbutton",GUILayout.Width(160)))
+                if (GUILayout.Button("Find Auto Group", "toolbarbutton", GUILayout.Width(120)))
+                {
+                    BundlePackUtil.FindAndAddAutoGroup(true);
+
+                    tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
+                    FilterTreeModel();
+                }
+
+                if(GUILayout.Button("Remove Auto Group", "toolbarbutton", GUILayout.Width(120)))
+                {
+                    BundlePackUtil.DeleteAutoGroup();
+                    tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
+                    FilterTreeModel();
+                }
+
+                if (GUILayout.Button("Open Depend Win","toolbarbutton",GUILayout.Width(160)))
                 {
                     AssetDependWindow.ShowWin();
                 }
@@ -281,11 +335,21 @@ namespace DotEditor.Core.Packer
 
             EditorGUIUtil.BeginGUIBackgroundColor(Color.red);
             {
-                if(GUILayout.Button("Auto Pack Bundle",GUILayout.Height(60)))
+                if(GUILayout.Button("Pack Without Depends",GUILayout.Height(30)))
                 {
                     EditorApplication.delayCall += () =>
                     {
-                        if(BundlePackUtil.AutoPackAssetBundle(true))
+                        if(BundlePackUtil.PackBundle(false,true))
+                        {
+                            EditorUtility.DisplayDialog("Success", "Pack AssetBundle Success", "OK");
+                        }
+                    };
+                }
+                if (GUILayout.Button("Pack With Depends", GUILayout.Height(30)))
+                {
+                    EditorApplication.delayCall += () =>
+                    {
+                        if (BundlePackUtil.PackBundle(true,true))
                         {
                             EditorUtility.DisplayDialog("Success", "Pack AssetBundle Success", "OK");
                         }

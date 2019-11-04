@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DotEditor.Core.AssetRuler
 {
-    [CreateAssetMenu(fileName = "asset_parentdir_filter", menuName = "Asset Ruler/Filter/In Parent Dir", order = 3)]
+    [CreateAssetMenu(fileName = "asset_parentdir_filter", menuName = "Asset Address/Filters/In Parent Dir", order = 3)]
     public class AssetParentDirNameFilter : AssetFilter
     {
         public bool ignoreCase = true;

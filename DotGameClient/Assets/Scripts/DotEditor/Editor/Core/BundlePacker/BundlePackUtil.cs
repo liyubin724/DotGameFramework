@@ -12,11 +12,14 @@ using UnityEngine.U2D;
 using UnityEditor.U2D;
 using UnityObject = UnityEngine.Object;
 using System.Text;
+using DotEditor.Core.BundleDepend;
 
 namespace DotEditor.Core.Packer
 {
     public static class BundlePackUtil
     {
+
+        private static string AUTO_REPEAT_GROUP_NAME = "Auto Group";
         internal static string GetPackConfigPath()
         {
             var dataPath = Path.GetFullPath(".");
@@ -59,7 +62,7 @@ namespace DotEditor.Core.Packer
                 AssetAddressAssembly aaAssembly = AssetDatabase.LoadAssetAtPath<AssetAddressAssembly>(assetPath);
                 if(aaAssembly!=null)
                 {
-                    (Editor.CreateEditor(aaAssembly) as AssetAddressAssemblyEditor).AutoFindGroup();
+                    aaAssembly.AutoFind();
                     aaAssembly.Execute();
                 }
             }
@@ -282,7 +285,7 @@ namespace DotEditor.Core.Packer
             BuildPipeline.BuildAssetBundles(outputTargetDir, options, buildTarget);
         }
 
-        public static bool AutoPackAssetBundle(bool isShowProgressBar = false)
+        public static bool PackBundle(bool findDepend = false,bool isShowProgressBar = false)
         {
             UpdateTagConfig();
             if (IsAddressRepeat())
@@ -290,6 +293,15 @@ namespace DotEditor.Core.Packer
                 Debug.LogError("BundlePackUtil::GenerateConfigs->Address Repeat");
                 return false;
             }
+
+            if(findDepend)
+            {
+                FindAndAddAutoGroup(isShowProgressBar);
+            }else
+            {
+                DeleteAutoGroup();
+            }
+
             UpdateAddressConfig();
 
             ClearAssetBundleNames(isShowProgressBar);
@@ -323,6 +335,71 @@ namespace DotEditor.Core.Packer
             }
 
             return false;
+        }
+
+        public static AssetDependFinder CreateAssetDependFinder(AssetBundleTagConfig tagConfig,bool isShowProgressBar = false)
+        {
+            AssetDependFinder finder = new AssetDependFinder();
+
+            if (isShowProgressBar)
+            {
+                finder.progressCallback = (assetPath, progress) =>
+                {
+                    EditorUtility.DisplayProgressBar("Find Depend", assetPath, progress);
+                };
+            }
+
+            finder.Find(tagConfig);
+
+            if (isShowProgressBar)
+            {
+                EditorUtility.ClearProgressBar();
+            }
+
+            return finder;
+        }
+
+        internal static void DeleteAutoGroup()
+        {
+            AssetBundleTagConfig tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
+            for (int i = 0; i < tagConfig.groupDatas.Count; ++i)
+            {
+                if (tagConfig.groupDatas[i].groupName == AUTO_REPEAT_GROUP_NAME)
+                {
+                    tagConfig.groupDatas.RemoveAt(i);
+                    break;
+                }
+            }
+            Util.FileUtil.SaveToBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath(), tagConfig);
+        }
+
+        internal static void FindAndAddAutoGroup(bool isShowProgressBar = false)
+        {
+            DeleteAutoGroup();
+
+            AssetBundleTagConfig tagConfig = Util.FileUtil.ReadFromBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath());
+            AssetDependFinder finder = CreateAssetDependFinder(tagConfig, isShowProgressBar);
+
+            Dictionary<string, int> repeatAssetDic = finder.GetRepeatUsedAssets();
+
+            AssetBundleGroupData gData = new AssetBundleGroupData();
+            gData.groupName = AUTO_REPEAT_GROUP_NAME;
+            gData.isMain = false;
+
+            foreach (var kvp in repeatAssetDic)
+            {
+                AssetAddressData aaData = new AssetAddressData();
+                aaData.assetAddress = aaData.assetPath = kvp.Key;
+                aaData.bundlePath = AssetDatabase.AssetPathToGUID(kvp.Key);
+                gData.assetDatas.Add(aaData);
+            }
+
+            if (gData.assetDatas.Count > 0)
+            {
+                tagConfig.groupDatas.Add(gData);
+            }
+
+            Util.FileUtil.SaveToBinary<AssetBundleTagConfig>(BundlePackUtil.GetTagConfigPath(), tagConfig);
         }
     }
 }
