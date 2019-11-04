@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DotEditor.Core.AssetRuler.AssetAddress
 {
-    [CreateAssetMenu(fileName = "address_mode_operation", menuName = "Asset Ruler/Asset Address/Operation/Address Mode")]
+    [CreateAssetMenu(fileName = "address_mode_operation", menuName = "Asset Address/Operations/Address Mode")]
     public class AssetAddressAddressModeOperation : AssetOperation
     {
         public AssetAddressMode addressMode = AssetAddressMode.FileNameWithoutExtension;

@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fe53a0f2368b4b4bbf19b58f1fc3b1d, type: 3}
-  m_Name: mat_filename_filter
+  m_Script: {fileID: 11500000, guid: d13a840956d98af4ab21ed7656e57a05, type: 3}
+  m_Name: assetaddress_assembly
   m_EditorClassIdentifier: 
-  ignoreCase: 1
-  fileNameRegex: ^\w*.mat$
+  assetAssemblyType: 0
+  assetGroups: []

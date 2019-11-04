@@ -1,7 +1,14 @@
-﻿namespace Dot.Core.Util
+﻿using System.Text.RegularExpressions;
+
+namespace Dot.Core.Util
 {
     public static class StringUtil
     {
+        public static string RemoveSpecialCharacter(string input,string replacement)
+        {
+            return Regex.Replace(input, "[ \\[ \\] \\^ \\-_*×――(^)|'$%~!@#$…&%￥—+=<>《》!！??？:：•`·、。，；,.;\"‘’“”-]", replacement);
+        }
+
         public unsafe static uint GetHashByTime33(string path)
         {
             uint hash = 5381;

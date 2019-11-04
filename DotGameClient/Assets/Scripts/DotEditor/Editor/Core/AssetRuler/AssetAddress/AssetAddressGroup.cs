@@ -2,7 +2,7 @@
 
 namespace DotEditor.Core.AssetRuler.AssetAddress
 {
-    [CreateAssetMenu(fileName = "assetaddress_group", menuName = "Asset Ruler/Asset Address/Group", order = 2)]
+    [CreateAssetMenu(fileName = "assetaddress_group", menuName = "Asset Address/Group", order = 0)]
     public class AssetAddressGroup : AssetGroup
     {
         public bool isGenAddress = false;
