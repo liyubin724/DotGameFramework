@@ -27,6 +27,7 @@ namespace DotEditor.Core.AssetRuler
                     groupList.Add(group);
                 }
             }
+            assetGroups.Clear();
             assetGroups.AddRange(groupList);
 
             EditorUtility.SetDirty(this);

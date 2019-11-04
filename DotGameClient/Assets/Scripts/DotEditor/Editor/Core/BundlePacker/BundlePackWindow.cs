@@ -177,7 +177,10 @@ namespace DotEditor.Core.Packer
             if (detailGroupTreeView == null)
             {
                 InitDetailGroupTreeView();
-                FilterTreeModel();
+                EditorApplication.delayCall += () =>
+                {
+                    FilterTreeModel();
+                };
             }
             detailGroupTreeView?.OnGUI(lastRect);
 

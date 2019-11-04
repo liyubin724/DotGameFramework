@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d13a840956d98af4ab21ed7656e57a05, type: 3}
-  m_Name: asset_address_assembly
+  m_Script: {fileID: 11500000, guid: c558b87888a494a40b4f204e53a5df08, type: 3}
+  m_Name: filename_address_operation
   m_EditorClassIdentifier: 
-  assetAssemblyType: 0
-  assetGroups:
-  - {fileID: 11400000, guid: 9c6d2fdb854bad845b1b0515f2a6e41a, type: 2}
+  addressMode: 1
+  fileNameFormat: '{0}'
