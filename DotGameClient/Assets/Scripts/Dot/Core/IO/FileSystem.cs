@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Desc = System.ComponentModel.DescriptionAttribute;
-using Dot.Core.Util;
 
 //#if UNITY_EDITOR
 //using UnityEditor;
