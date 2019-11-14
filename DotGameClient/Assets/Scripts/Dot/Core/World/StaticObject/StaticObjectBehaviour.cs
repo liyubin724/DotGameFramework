@@ -5,6 +5,10 @@ namespace Dot.Core.World
 {
     public class StaticObjectBehaviour : MonoBehaviour
     {
+        public string guid = string.Empty;
+        public StaticObjectImportance objectImportance = StaticObjectImportance.Normal;
+        public Bounds bounds;
+
         public MeshRenderer[] meshRenderers = new MeshRenderer[0];
 
         public StaticObjectBehaviour[] childBehaviours = new StaticObjectBehaviour[0];

@@ -17,13 +17,5 @@ namespace Dot.Core.World
         public StaticObjectImportance objectImportance = StaticObjectImportance.Normal;
 
         public StaticObjectLightmap objectLightmap = null;
-
-        public Rect ObjectRect
-        {
-            get
-            {
-                return Rect.zero;
-            }
-        }
     }
 }
